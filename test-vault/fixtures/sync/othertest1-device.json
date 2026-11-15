@@ -1,0 +1,15 @@
+{
+  "id": "othertest1",
+  "type": "devices",
+  "device": "othertest1",
+  "version": {
+    "clock": 1,
+    "at": "2026-10-01T12:00:00.000Z"
+  },
+  "deleted": false,
+  "item": {
+    "id": "othertest1",
+    "name": "Other test device",
+    "lastSeen": "2026-10-01"
+  }
+}

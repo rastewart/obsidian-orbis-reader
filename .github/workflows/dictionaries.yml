@@ -1,0 +1,166 @@
+name: Dictionaries
+
+# Builds the two Look-up dictionaries and uploads them to the `dictionaries` release, where the plugin downloads them.
+#
+# **Run by hand, and only from main.** The books change when an edition does, not when the plugin does, so building
+# them on every release would rebuild the same two files. Started from the Actions tab: Dictionaries → Run workflow.
+#
+# **Nothing is uploaded that the plugin would refuse.** Each file is checked against the SHA-256 pinned in
+# `src/reader/lookup/dictionary-sources.ts` (printed by `scripts/dictionary-pins.ts`). Both builds reproduce byte for
+# byte from sources whose own digests are pinned in the build scripts, so a mismatch means a source or a build script
+# changed — find out why before changing a pin.
+#
+# **Only what the release lacks is built, and an uploaded file is never replaced.** A plugin version already out pins
+# the digest of the file it downloads, so a different file under the same name would break it. A new edition gets a
+# new file name (the edition is part of it) beside the old one. A file already in the release is downloaded and
+# checked instead: the same file passes, a different one stops the run.
+#
+# **Not the "latest" release.** The README links to the latest release for the plugin's own files, and a dictionary
+# release made after a plugin release would otherwise take that place.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+# **Built without the write token, uploaded by a job that runs nothing of the repository's.** Installing and building
+# run dependency code, and the builds download and run other people's; none of it should hold the token that can write
+# releases. So `build` reads only and hands what it built to `upload`, which checks each file again and runs `gh`.
+jobs:
+  build:
+    name: Build the missing dictionaries
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    env:
+      TAG: dictionaries
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26.5.0'
+          # setup-node turns on a dependency cache from `packageManager` unless told not to.
+          package-manager-cache: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          run_install: false
+
+      # No dependency cache: a workflow that publishes should not restore what another run saved.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The plugin's pins, read from the plugin itself, as `<digest>  <file>` lines.
+      - name: Read the plugin's pins
+        run: |
+          set -euo pipefail
+          pnpm exec tsx scripts/dictionary-pins.ts > "$RUNNER_TEMP/pins.txt"
+          cat "$RUNNER_TEMP/pins.txt"
+
+      # A file already in the release is checked, not rebuilt: once a book is uploaded and pinned, its source is never
+      # needed again, so a source that has since gone offline cannot fail a later run.
+      - name: Check what the release already has
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          : > "$RUNNER_TEMP/missing.txt"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' > "$RUNNER_TEMP/existing.txt" 2> /dev/null; then
+            echo "The $TAG release exists."
+          else
+            echo "There is no $TAG release yet."
+            : > "$RUNNER_TEMP/existing.txt"
+          fi
+          while read -r digest file; do
+            if grep -qxF "$file" "$RUNNER_TEMP/existing.txt"; then
+              rm -rf "$RUNNER_TEMP/check"
+              gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$file" --dir "$RUNNER_TEMP/check"
+              if echo "$digest  $RUNNER_TEMP/check/$file" | sha256sum -c --quiet -; then
+                echo "$file: already in the release, and the same file. Not rebuilt."
+              else
+                echo "::error::$file is already in the release with a different digest. It was not replaced."
+                exit 1
+              fi
+            else
+              echo "$file: not in the release. It will be built."
+              echo "$digest  $file" >> "$RUNNER_TEMP/missing.txt"
+            fi
+          done < "$RUNNER_TEMP/pins.txt"
+
+      # No token here: the builds download from other people's repositories and run code, and need no access to this one.
+      # Each book's file is `orbis-<id>-<edition>.json` and its build is `pnpm build:<id>`.
+      - name: Build what is missing
+        run: |
+          set -euo pipefail
+          if [ ! -s "$RUNNER_TEMP/missing.txt" ]; then
+            echo "Nothing to build."
+            exit 0
+          fi
+          while read -r digest file; do
+            id="${file#orbis-}"
+            id="${id%%-*}"
+            echo "::group::pnpm build:$id"
+            pnpm "build:$id"
+            echo "::endgroup::"
+            echo "$digest  dist-assets/$file" | sha256sum -c -
+          done < "$RUNNER_TEMP/missing.txt"
+
+      - name: Gather what was built
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          cp "$RUNNER_TEMP/missing.txt" out/missing.txt
+          while read -r _ file; do cp "dist-assets/$file" out/; done < out/missing.txt
+          ls -l out
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: dictionaries
+          path: out/
+          if-no-files-found: error
+
+  upload:
+    name: Upload the dictionaries
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # create the dictionaries release and upload its files; nothing else
+    env:
+      TAG: dictionaries
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: dictionaries
+          path: dist-assets
+
+      - name: Upload what was built
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mv dist-assets/missing.txt "$RUNNER_TEMP/missing.txt"
+          if [ ! -s "$RUNNER_TEMP/missing.txt" ]; then
+            echo "Nothing to upload: every pinned file is already in the release."
+            exit 0
+          fi
+          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --latest=false \
+              --title "Dictionaries" \
+              --notes "The offline dictionaries Orbis Reader's Look-up panel downloads on demand. Each file is checked against the SHA-256 pinned in the plugin, and a file here is never replaced: a new edition is a new file. Webster's Revised Unabridged Dictionary (1913) is in the public domain. The WordNet file is adapted from Open English WordNet under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/); the file states its own attribution and what was changed."
+            echo "Created the $TAG release."
+          fi
+          while read -r digest file; do
+            echo "$digest  dist-assets/$file" | sha256sum -c -
+            gh release upload "$TAG" --repo "$GITHUB_REPOSITORY" "dist-assets/$file"
+            echo "$file: uploaded."
+          done < "$RUNNER_TEMP/missing.txt"
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY"

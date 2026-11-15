@@ -1,0 +1,33 @@
+{
+  "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
+  // src/main.ts is found as an entry point without being named here.
+  "entry": [
+    // Built as a separate esbuild entry and inlined via the __PIPER_WORKER_SRC__ macro (see
+    // esbuild.config.mjs); it pulls in the vendored phonemizer. Not reachable from main.ts.
+    "src/reader/tts/piper-worker.ts"
+  ],
+  // src/vendor holds third-party code kept as upstream wrote it (foliate-js, lamejs, the phonemizer): its unused
+  // exports and import cycles are upstream's, and editing them would break the byte-for-byte match each folder's
+  // ORBIS-CHANGES.md promises. Its files stay IN the analysis, so what our code uses of them is still checked;
+  // only findings located inside them are hidden.
+  "ignoreFindings": ["src/vendor/**"],
+  // Run by `lint:workflows` from the system, not from a package: CI downloads each pinned and SHA-checked.
+  "ignoreBinaries": ["actionlint", "zizmor"],
+  "duplicates": {
+    "minOccurrences": 3,
+    // The same reason as `ignoreFindings`: vendored code's repetition is upstream's, and counting it took the
+    // duplication figure from 1.8% to 7.7% without one line of ours changing.
+    "ignore": ["src/vendor/**"]
+  },
+  "health": {
+    // src/vendor is third-party code we ship unmodified (the piper phonemizer, emscripten output).
+    // Its complexity is not ours to refactor, and 70 findings from one bundled file drowned out the
+    // ones that are — so it comes out of the findings AND out of the score, which is the point.
+    "ignore": ["src/vendor/**"]
+  },
+  "rules": {
+    // OrbisReaderView methods are called from main.ts via typed view references
+    // and Obsidian lifecycle hooks. Fallow cannot follow this dynamic dispatch.
+    "unused-class-members": "off"
+  }
+}

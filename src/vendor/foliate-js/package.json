@@ -1,0 +1,10 @@
+{
+  "name": "foliate-js",
+  "version": "1.0.1-orbis",
+  "description": "foliate-js, vendored into Orbis Reader. See ORBIS-CHANGES.md for every difference from upstream.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    "./*.js": "./*.js"
+  }
+}

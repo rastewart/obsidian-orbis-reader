@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0" xmlns:l="http://www.w3.org/1999/xlink">
+<description>
+<title-info>
+<genre>prose</genre>
+<author><first-name>Orbis</first-name><last-name>Tester</last-name></author>
+<book-title>FB2 Notes</book-title>
+<annotation><p>Made to test Orbis Reader. Not a real book: its text is invented.</p></annotation>
+<coverpage><image l:href="#cover.png"/></coverpage>
+<lang>en</lang>
+
+</title-info>
+<document-info>
+<author><nickname>fixture-builder</nickname></author>
+<program-used>Orbis Reader fixture generator</program-used>
+<date value="2026-01-01">2026</date>
+<id>orbis-fixture-fb2-notes</id>
+<version>1.0</version>
+</document-info>
+<publish-info><publisher>Orbis Reader test fixtures</publisher><year>2026</year></publish-info>
+</description>
+<body>
+<title><p>FB2 Notes</p></title>
+<section><title><p>Chapter One</p></title>
+<p>When the market closed, Una waited beside the ledger and thought about Oakhallow. A first note<a l:href="#n1" type="note">[1]</a>. As the rain eased, Avel looked across the mill race and thought about Ivel Down.</p>
+<p>In Thistlecombe the footbridge was patient, and the ledger beyond it was narrow too. Two notes in one paragraph<a l:href="#n2" type="note">[2]</a>, and here the second<a l:href="#n3" type="note">[3]</a>.</p>
+<p>“I counted them twice and the numbers still do not agree,” said Wren. “I counted them twice and the numbers still do not agree,” said Delphine. “There is time enough if we start now,” said Wren.</p>
+<p>Una Kestrel looked across the patient hedgerow as the rain eased. In Farrow Cross the reading room was quiet, and the mill race beyond it was tidy too. “There is time enough if we start now,” said Esker. Nobody in Oakhallow could say why the windswept kitchen garden had been left so patient. “Nobody has opened that door since the flood,” said Petra.</p>
+<p>Orrin Tamsin listened at the silent kitchen garden in the last of the light. “We shall need more rope before the week is out,” said Nell. Esker Vantry mended the silent mill race at the turn of the tide. When the market closed, Tobin remembered the harbor wall and thought about Larkspur Mill.</p>
+<p>In Kettleby the harbor wall was quiet, and the mill race beyond it was crooked too. Nobody in Larkspur Mill could say why the distant kitchen garden had been left so silent. In the last of the light, Avel counted the workshop and thought about Nethercombe. Nobody in Rookhaven could say why the silent bell tower had been left so uneven.</p>
+<p>Nobody in Rookhaven could say why the uneven orchard had been left so lamplit. “The ferry will not wait for anyone,” said Isolde. When the market closed, Roan mended the reading room and thought about Hartsbury. Nobody in Thistlecombe could say why the grey reading room had been left so weathered.</p>
+<p>Nobody in Marrowgate could say why the restless ledger had been left so lamplit. In Saltmere the bell tower was lamplit, and the harbor wall beyond it was ancient too. Nobody in Ivel Down could say why the quiet kitchen garden had been left so weathered. Nobody in Oakhallow could say why the tidy kitchen garden had been left so crooked.</p>
+</section>
+<section><title><p>Chapter Two</p></title>
+<p>In Oakhallow the weir was weathered, and the hedgerow beyond it was tidy too. A note that runs to two paragraphs<a l:href="#n4" type="note">[4]</a>. In Ivel Down the harbor wall was ancient, and the lantern beyond it was distant too.</p>
+<p>“Nobody has opened that door since the flood,” said Nell. Jory Mabry returned to the silent workshop before breakfast. “We shall need more rope before the week is out,” said Una. Wren Pellow remembered the patient lane at the turn of the tide. Tobin Marsh remembered the weathered kitchen garden on the second morning.</p>
+<p>In Pellbridge the harbor wall was narrow, and the ledger beyond it was broad too. Long after supper, Isolde listened at the mill race and thought about Kettleby. In Pellbridge the reading room was silent, and the bell tower beyond it was windswept too.</p>
+<p>In Thistlecombe the kitchen garden was restless, and the bell tower beyond it was quiet too. Una Kestrel wrote about the crooked kitchen garden long after supper. In Nethercombe the orchard was quiet, and the lane beyond it was crooked too. Nobody in Rookhaven could say why the windswept weir had been left so narrow.</p>
+<p>In Kettleby the hedgerow was silent, and the ferry beyond it was tidy too. Nobody in Rookhaven could say why the narrow boathouse had been left so narrow. Long after supper, Orrin waited beside the kitchen garden and thought about Kettleby. Nobody in Larkspur Mill could say why the tidy kitchen garden had been left so windswept. As the rain eased, Roan swept out the ledger and thought about Farrow Cross. On the second morning, Roan mended the bell tower and thought about Nethercombe.</p>
+<p>On the second morning, Isolde wrote about the boathouse and thought about Hartsbury. In Saltmere the harbor wall was narrow, and the reading room beyond it was ancient too. “Leave the lantern where it is,” said Delphine. In Thistlecombe the mill race was patient, and the boathouse beyond it was tidy too.</p>
+</section>
+<section><title><p>Chapter Three</p></title>
+<p>Isolde Fenwick walked along the grey ferry long after supper. The first note cited again<a l:href="#n1" type="note">[1]</a>, and a last one<a l:href="#n5" type="note">[5]</a>. Petra Calloway wrote about the crooked harbor wall as the rain eased.</p>
+<p>Wren Pellow returned to the ancient mill race when the market closed. Petra Calloway swept out the ancient reading room before breakfast. “There is time enough if we start now,” said Delphine. “Leave the lantern where it is,” said Una. As the rain eased, Una returned to the hedgerow and thought about Marrowgate.</p>
+<p>Before breakfast, Roan painted the weir and thought about Larkspur Mill. Nobody in Ivel Down could say why the windswept mill race had been left so tidy. “There is time enough if we start now,” said Petra. In Marrowgate the boathouse was restless, and the hedgerow beyond it was uneven too. “There is time enough if we start now,” said Tobin.</p>
+<p>“We shall need more rope before the week is out,” said Delphine. Long after supper, Esker looked across the mill race and thought about Saltmere. In the last of the light, Tobin counted the ledger and thought about Nethercombe. “I counted them twice and the numbers still do not agree,” said Roan.</p>
+<p>“The ferry will not wait for anyone,” said Jory. Isolde Fenwick looked across the windswept kitchen garden while the kettle boiled. Jory Mabry wrote about the windswept workshop while the kettle boiled. Petra Calloway remembered the uneven lantern before breakfast. Roan Fairley counted the silent workshop when the market closed. While the kettle boiled, Una mended the ledger and thought about Farrow Cross.</p>
+<p>In Rookhaven the bell tower was crooked, and the lane beyond it was crooked too. At the turn of the tide, Esker wrote about the footbridge and thought about Larkspur Mill. In Farrow Cross the harbor wall was silent, and the hedgerow beyond it was restless too. Esker Vantry waited beside the restless reading room while the kettle boiled. In Saltmere the harbor wall was patient, and the ledger beyond it was ancient too.</p>
+</section>
+</body>
+<body name="notes">
+<title><p>Notes</p></title>
+<section id="n1"><title><p>1</p></title>
+<p>Note 1, cited from Chapter One and again from Chapter Three. Long after supper, Petra waited beside the footbridge and thought about Nethercombe.</p>
+</section>
+<section id="n2"><title><p>2</p></title>
+<p>Note 2, the first of two in one paragraph. In Saltmere the workshop was grey, and the workshop beyond it was broad too.</p>
+</section>
+<section id="n3"><title><p>3</p></title>
+<p>Note 3, the second of two in one paragraph. In Ivel Down the ledger was crooked, and the mill race beyond it was crooked too.</p>
+</section>
+<section id="n4"><title><p>4</p></title>
+<p>Note 4, first paragraph. “There is time enough if we start now,” said Tobin.</p>
+<p>Note 4, second paragraph. “I counted them twice and the numbers still do not agree,” said Roan.</p>
+</section>
+<section id="n5"><title><p>5</p></title>
+<p>Note 5, cited from Chapter Three. Orrin Tamsin listened at the crooked footbridge on the second morning.</p>
+</section>
+</body>
+<binary id="cover.png" content-type="image/png">iVBORw0KGgoAAAANSUhEUgAAAZAAAAJYCAIAAADDjiffAAAJnElEQVR42u3d3VHzOhSGUSqhHIpIJSnCNXHtIijCJXAPk4xsaUtb8npnXZ2PA8RxnpmE/Hx8mplNMsEyM8EyMxMsMxMsMzPBMjMTLDMTLDMzwTIzEywzEywzM8EyM4sL1uPrCRBKsADBAhAsQLAECxAsAMECBEuwAMECECxAsAQLECwAwQIES7AAwQIQLECwBAsQLADBAgRLsADBAhAsQLAECxAsAMECBEuwAMECECxAsAAECxAswQIEC0CwAMESLECwAAQLECzBAgQLQLAAwRIsQLAABAsQLMECBAtAsADBEixAsAAECxAswQIEC0CwAMESLECwAAQLECyHEhAsAMECBAtAsADBEixAsAAECxAswQIEC0CwAMESLECwAAQLECzBAgQLQLAAwRIsQLAABAsQLMECBAtAsADBEixAsAAECxAswQIEC0CwAMFyNAHBAhAsQLAABAsQLMECBAtAsADBEixAsAAECxAswQIECyBDsI59AwglWIBgAQgWIFiCBQgWgGABgiVYgGABCBYgWIIFCBaAYAGCJViAYAEIFiBYggUIFoBgAYIlWIBgAQgWIFiCBQgWgGABgiVYgGABCBYgWACCBQiWYAGCBSBYgGAJFiBYAIIFCJZgAYIFIFiAYAkWIFgAggUIlmABggUgWIBgCRYgWACCBQiWYAGCBSBYgGAJFiBYAIIFCJZDCQgWgGABggUgWIBgCRYgWACCBQiWYAGCBSBYgGAJFiBYAIIFCJZgAYIFIFiAYAkWsFKwHl9PgFCCBQgWgGABgiVYgGABCBYgWIIFCBaAYAGCJViAYAEIFiBYggUIFoBgAYIlWIBgAQgWIFiCBQgWgGABgiVYgGABCBYgWIIFCBaAYAGCBSBYgGAJFiBYAIIFCJZgAYIFIFiAYAkWIFgAggUIlmABggUgWIBgCRYgWACCBQiWYAGCBSBYgGAJFiBYAIIFCJZgAYIFIFiAYDmUgGABCBYgWACCBQiWYAGCBSBYgGAJFiBYAIIFCJZgAYIFIFiAYAkWIFgAggUIlmABggUgWIBgCRYgWK8c+xYk7mf1vKTZzqe4ozH2GM54Ho69pIIlWIIlWIIlWIIlWIIlWIIlWIIlWIIlWIIlWIIlWIIlWIIlWBluANlubGNv2I7hHb7PjOePYLmxCZZgCZZgCZZjKFiCJViCJViCJVhubIIlWIIlWILlGAqWYK0drFVPuLg/rguWYAmWE06wBEuwBEuwBMv5I1iCJViCJViC5YQTLMESLMESLMFy/njx8w1f9jnF6dUqNILlRfiCJViCJViCJViCJViCJViCJViCJViCJViCJViCJViCJViCJVj3fFrDdH9yDn1rY09rWO96FyzBEizXu2AJlhNXsFzvgiVYTlzBEizBcuIKlutdsATLiStYrnfBEqwZT1NvkSxYgiVYgiVYgiVYgiVYgiVYgiVYgiVYgiVYgiVYgiVYgiVYgiVY6wUr/wut7/xBqtleuJvtxc/Xou/Fz4IlWIIlWIIlWIIlWIIlWIIlWIIlWIIlWIIlWIIlWIIlWIKVIVgAggUIFoBgAQgWIFgAggUIlmABggUgWIBgCRYgWACCBQiWYAGCBSBYgGAJFiBYAIIFCJZgAYIFIFiAYAkWIFgAggUIlmABggUgWIBgCRYgWACCBQgWgGABgiVYgGABCBYgWIIFCBaAYAGCJViAYAEIFiBYggUIFoBgAYIlWIBgAQgWIFiCBQgWgGABgiVYgGABCBYgWIIFCBaAYAGC5VACggUgWIBgAQgWIFiCBQgWgGABgiVYgGABCBYgWIIFCBaAYAGCJViAYAEIFiBYggWsFKz9+wcglGABggUgWIBgCRYgWACCBQiWYAGCBSBYgGAJFiBYAIIFCJZgAYIFIFiAYAkWIFgAggUIlmABggUgWIBgCRYgWABxwfIRj4BPfgYQLECwAAQLECzBAgQLQLAAwRIsQLAABAsQLMECBAtAsADBEqx8jn0bYtTvk+24OQMFC8ESLARLsARLsARLsARLsBAsBEuwECzBEizBEizBEizBQrAQLMFCsNYN1qq/T6uArnr8BUuwBEuwBEuwECzBQrAES7AES7AES7AES7AEC8ESLARLsARLsARLsARLsARLsBAslxfBEizBEizBEizBEizBEizcgF1eBEuwBEuwBEuwBEuwBEuwcAMWLARLsARLsARLsFZ7A7/Zfx9hEizBEizBEizBQrAEC8ESLMESLMESLMESLCehYCFYgoVgCZZgCZZgCZZgCRaChSdSekM+BEuwBEuwBEuwBEuwECwES7AQLMESLMESLMESLMFCsBAswUKwBEtQBEuwEKyMQREmwRIswRIsBAvBEiwES7AES7AES7AES7AQLARLsBAswRIswRIsBEuwECxmC9aqbygofIKFYAkWgiVYgiVYgiVYgiVYgiVYCJZgIViCJViCJViCJViCJViChWAJFoIFCJZgAYIFIFiAYAEIFoBgAYIFIFiAYAkWIFgAggUIlmABggWQJVij3tYDuA/BAgQLQLAAwRIsQLAABAsQLMECBAtAsADBEixAsAAECxAswQIEC0CwAMESLECwAAQLECzBAgQLQLAAwRIsQLAA4oLlIx4Bn/wMIFiAYAEIFiBYggUIFoBgAYIlWIBgAQgWIFiCBQgWgGABgiVYgGABCBYgWIIFCBaAYAGCJViAYAEIFiBYggUIFoBgAYIlWIBgAQgWIFiOJiBYQY59++P9v177mpKfdfa7lV+i8t+55Csjflb9pa7/WWcvXfn3qb++as6f///66v8SLMESLMESLMFql6r3/73V1/Q8aWp+557HJ/qY1HzPa9HJfx6WJ0ywBEuwBEuwBEuwBEuwzn/NpKkSLMESLMESrIWC1epB95ITJe6B57gHy/sfw/rrt9WD3K2CVf9g+dnrwtMaBEuwBEuwBCvHXcJRd/1qvj7iblH0XcKed41n+Z7uEgqWYAmWYAnW6g+61z8Zr2ewav6YPfZB9+i7hILlaQ2CJViCJViCNfqlOfUPKrd6mUv0HxN6PqDe6q5rqwfda14qFP2gu5fmCJZgCZZgCZb3vgAEC0CwAMECECxAsAQLECwAwQIES7AAwQIQLECwBAsQLADBAgRLsADBAhAsQLAECxAsAMECBEuwAMECECxAsAQLECwAwQIES7AAwQIQLECwHE1AsAAECxAsAMECBEuwAMECECxAsAQLECwAwQIE60KwzMwyTLDMTLDMzATLzATLzEywzMwEy8wEy8xMsMzMBMvMBMvMTLDMzC7tF2v7wCm5XHkfAAAAAElFTkSuQmCC</binary>
+</FictionBook>

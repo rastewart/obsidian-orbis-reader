@@ -1,0 +1,5 @@
+/* The guide puts a --- divider before each section, and VitePress already rules a line above every h2: keep one. */
+.vp-doc hr + h2 {
+  border-top: 0;
+  margin-top: 0;
+}

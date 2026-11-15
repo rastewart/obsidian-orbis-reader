@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # The release workflow runs this same gate on the tagged commit before it builds anything.
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26.5.0'
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache pnpm store
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm exec tsc --noEmit --skipLibCheck
+
+      - name: Biome check
+        run: pnpm check
+
+      - name: Obsidian lint
+        run: pnpm lint:obsidian
+
+      - name: Markdownlint
+        run: pnpm lint:md
+
+      - name: i18n audit
+        run: pnpm lint:i18n
+
+      - name: a11y audit
+        run: pnpm lint:a11y
+
+      - name: Keyboard audit
+        run: pnpm lint:keyboard
+
+      - name: Orphan audit
+        run: pnpm lint:orphans
+
+      - name: Vocabulary audit
+        run: pnpm lint:vocab
+
+      - name: Link audit
+        run: pnpm lint:links
+
+      - name: File size audit
+        run: pnpm lint:size
+
+      # Neither is an npm package, so each is a pinned release file checked against its SHA-256 before it runs.
+      - name: Install actionlint and zizmor
+        run: |
+          set -euo pipefail
+          bin="$RUNNER_TEMP/workflow-linters"
+          mkdir -p "$bin"
+          cd "$bin"
+          curl -fsSLO https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_linux_amd64.tar.gz
+          echo "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8  actionlint_1.7.12_linux_amd64.tar.gz" | sha256sum -c -
+          tar -xzf actionlint_1.7.12_linux_amd64.tar.gz actionlint
+          curl -fsSLO https://github.com/zizmorcore/zizmor/releases/download/v1.32.0/zizmor-x86_64-unknown-linux-gnu.tar.gz
+          echo "bb110cc765eca9cd7efb2e284a956be5974c60027b0970f16397d86208a9957b  zizmor-x86_64-unknown-linux-gnu.tar.gz" | sha256sum -c -
+          tar -xzf zizmor-x86_64-unknown-linux-gnu.tar.gz zizmor
+          echo "$bin" >> "$GITHUB_PATH"
+
+      - name: Workflow audit
+        run: pnpm lint:workflows
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: node esbuild.config.mjs production
+
+      # The documentation site: fails on a link between guide pages that points at nothing.
+      - name: Docs site build
+        run: pnpm docs:build

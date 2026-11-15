@@ -1,0 +1,11 @@
+allowBuilds:
+  esbuild: true
+  protobufjs: false
+overrides:
+  brace-expansion@5: ^5.0.9
+  # markdownlint-cli pins these a minor below their advisories' fixes (GHSA js-yaml <5.4.1, smol-toml <1.9.0).
+  js-yaml@5: ^5.4.1
+  smol-toml@1: ^1.9.0
+  # VitePress 1.6.4 asks for Vite 5, whose development server has advisories fixed only in 6.4.4 and later (and
+  # brings esbuild 0.21, GHSA-67mh-4wv8-2f99). The docs site builds and serves the same on Vite 6.
+  vite@5: ^6.4.4

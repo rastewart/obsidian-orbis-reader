@@ -1,0 +1,155 @@
+name: Release
+
+# Drafts a GitHub release of the plugin when a version tag is pushed: `git tag -a 0.2.0 -m "0.2.0"`, then
+# `git push origin 0.2.0`. A beta is the same with a beta tag, `0.2.0-beta.1`. See "Publishing" in
+# docs/design/feature-development-guide.md for the whole procedure.
+#
+# **A draft, never published from here.** The release holds the three files Obsidian installs — `main.js`,
+# `manifest.json`, `styles.css` — and `orbis-test-fixtures.zip`, the test plans' files for the plugin's *Download test
+# fixtures (dev)* command. It is reviewed on GitHub and published by hand. A stable release has the version's
+# CHANGELOG.md section as its notes and is published with "Set as the latest release" ticked: a draft cannot be marked
+# latest, and the `dictionaries` release holds that title until a plugin release takes it. A beta is drafted as a
+# pre-release, which GitHub never marks latest.
+#
+# **Nothing is built from a tag the files disagree with** (`scripts/release-check.ts`). Every tag must be on main. A
+# stable tag is three numbers with no `v` (Obsidian's form), equal to `manifest.json`'s version, listed in
+# `versions.json` at the manifest's floor, with a filled-in CHANGELOG.md section. A beta tag adds `-beta.N` and leads up
+# to a version at least `manifest.json`'s that is not tagged yet; main's files keep the last stable version, because
+# Obsidian's store reads them, and the beta's version goes only into the released `manifest.json`. Then the whole gate
+# runs on the tagged commit (`ci.yml`), and only then is anything built — in a job that can only read. The job that
+# can write runs `gh` and GitHub's build provenance attestation, nothing of the repository's.
+
+on:
+  push:
+    tags: ['[0-9]+.[0-9]+.[0-9]+', '[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+']
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Check the tag against the plugin's files
+    runs-on: ubuntu-24.04
+    steps:
+      # The whole history and every tag, so the tagged commit can be looked for on main and a beta's version among the
+      # versions already released.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: The tagged commit is on main
+        run: |
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::The tagged commit is not on main. Release only what main holds."
+            exit 1
+          fi
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26.5.0'
+          # setup-node turns on a dependency cache from `packageManager` unless told not to.
+          package-manager-cache: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          run_install: false
+
+      # No dependency cache in this workflow: one that publishes should not restore what another run saved.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check the version files and the changelog
+        env:
+          TAG: ${{ github.ref_name }}
+        run: pnpm exec tsx scripts/release-check.ts "$TAG"
+
+  # `./`, not zizmor's preferred `$/`: GitHub added that form in July 2026 and actionlint 1.7.12 rejects it. Move to
+  # `$/` once actionlint accepts it.
+  gate:
+    name: Gate
+    needs: check
+    uses: ./.github/workflows/ci.yml # zizmor: ignore[self-repository]
+
+  # **Built without the write token, published by a job that runs nothing of the repository's.** Install, build and
+  # the release scripts run dependency code; none of it should hold the token that can write releases. So `build` reads
+  # only, and hands the four files and the notes to `draft`, which runs `gh` and GitHub's provenance attestation.
+  build:
+    name: Build the release files
+    needs: gate
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26.5.0'
+          # setup-node turns on a dependency cache from `packageManager` unless told not to.
+          package-manager-cache: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: node esbuild.config.mjs production
+
+      - name: Write the release files and notes
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          pnpm exec tsx scripts/release-files.ts "$TAG" release
+          pnpm exec tsx scripts/release-check.ts "$TAG" > release/notes.md
+          ls -l release
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release
+          path: release/
+          if-no-files-found: error
+
+  draft:
+    name: Draft the release
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # create the draft release and upload its three files
+      id-token: write # sign the provenance attestation
+      attestations: write # store it, so anyone can check `main.js` was built here, from this tag
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release
+          path: release
+
+      # `gh attestation verify main.js --repo <owner>/obsidian-orbis-reader` checks a downloaded copy against it.
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            release/main.js
+            release/manifest.json
+            release/styles.css
+            release/orbis-test-fixtures.zip
+
+      - name: Create the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        working-directory: release
+        run: |
+          set -euo pipefail
+          kind=()
+          case "$TAG" in *-beta.*) kind=(--prerelease) ;; esac
+          gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --draft "${kind[@]}" --verify-tag --title "$TAG" \
+            --notes-file notes.md main.js manifest.json styles.css orbis-test-fixtures.zip
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY"

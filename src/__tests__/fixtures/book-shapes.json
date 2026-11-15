@@ -1,0 +1,5951 @@
+{
+  "First-Open.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/cover.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-01.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-02.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-03.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-04.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-05.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-06.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-07.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-08.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-09.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-10.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-11.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-12.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Chapter One: The Weir",
+        "href": "OEBPS/chapter-01.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Two: Low Water",
+        "href": "OEBPS/chapter-02.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Three: The Tollkeeper",
+        "href": "OEBPS/chapter-03.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Four: A Letter from the Mill",
+        "href": "OEBPS/chapter-04.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Five: Market Day",
+        "href": "OEBPS/chapter-05.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Six: The Flood Gate",
+        "href": "OEBPS/chapter-06.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Seven: Night Crossing",
+        "href": "OEBPS/chapter-07.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Eight: The Survey",
+        "href": "OEBPS/chapter-08.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Nine: Two Lanterns",
+        "href": "OEBPS/chapter-09.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Ten: The Long Field",
+        "href": "OEBPS/chapter-10.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Eleven: Harvest Moon",
+        "href": "OEBPS/chapter-11.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Twelve: Home Again",
+        "href": "OEBPS/chapter-12.xhtml#ch"
+      }
+    ]
+  },
+  "annotation-workhorse.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/cover.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/text-0.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/text-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/text-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/text-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/text-4.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "ANNOTATION WORKHORSE: A SAMPLE BOOK",
+        "href": "OEBPS/text-0.xhtml#title"
+      },
+      {
+        "depth": 1,
+        "label": "ANNOTATION WORKHORSE",
+        "href": "OEBPS/text-0.xhtml#head"
+      },
+      {
+        "depth": 2,
+        "label": "A HOME BY THE WEIR",
+        "href": "OEBPS/text-0.xhtml#c1"
+      },
+      {
+        "depth": 2,
+        "label": "THE FIRST LANTERN",
+        "href": "OEBPS/text-0.xhtml#c2"
+      },
+      {
+        "depth": 2,
+        "label": "THE NIGHT FERRY",
+        "href": "OEBPS/text-0.xhtml#c3"
+      },
+      {
+        "depth": 2,
+        "label": "A QUARREL AT MARKET",
+        "href": "OEBPS/text-0.xhtml#c4"
+      },
+      {
+        "depth": 2,
+        "label": "THE SURVEYOR",
+        "href": "OEBPS/text-0.xhtml#c5"
+      },
+      {
+        "depth": 2,
+        "label": "MENDING THE NETS",
+        "href": "OEBPS/text-1.xhtml#c6"
+      },
+      {
+        "depth": 2,
+        "label": "THE LONG WINTER",
+        "href": "OEBPS/text-1.xhtml#c7"
+      },
+      {
+        "depth": 2,
+        "label": "A LETTER ARRIVES",
+        "href": "OEBPS/text-1.xhtml#c8"
+      },
+      {
+        "depth": 2,
+        "label": "THE BELL TOWER",
+        "href": "OEBPS/text-1.xhtml#c9"
+      },
+      {
+        "depth": 2,
+        "label": "SPRING TIDES",
+        "href": "OEBPS/text-1.xhtml#c10"
+      },
+      {
+        "depth": 2,
+        "label": "THE LOST LEDGER",
+        "href": "OEBPS/text-2.xhtml#c11"
+      },
+      {
+        "depth": 2,
+        "label": "A VISIT TO KETTLEBY",
+        "href": "OEBPS/text-2.xhtml#c12"
+      },
+      {
+        "depth": 2,
+        "label": "THE HARBOR WALL",
+        "href": "OEBPS/text-2.xhtml#c13"
+      },
+      {
+        "depth": 2,
+        "label": "THE ORCHARD GATE",
+        "href": "OEBPS/text-2.xhtml#c14"
+      },
+      {
+        "depth": 2,
+        "label": "A DAY OF RAIN",
+        "href": "OEBPS/text-2.xhtml#c15"
+      },
+      {
+        "depth": 2,
+        "label": "THE BOATHOUSE",
+        "href": "OEBPS/text-3.xhtml#c16"
+      },
+      {
+        "depth": 2,
+        "label": "FAIR WEATHER",
+        "href": "OEBPS/text-3.xhtml#c17"
+      },
+      {
+        "depth": 2,
+        "label": "THE NEW KEEPER",
+        "href": "OEBPS/text-3.xhtml#c18"
+      },
+      {
+        "depth": 2,
+        "label": "A SUPPER IN THE KITCHEN",
+        "href": "OEBPS/text-3.xhtml#c19"
+      },
+      {
+        "depth": 2,
+        "label": "THE FOOTBRIDGE",
+        "href": "OEBPS/text-3.xhtml#c20"
+      },
+      {
+        "depth": 2,
+        "label": "A STORM FROM THE EAST",
+        "href": "OEBPS/text-4.xhtml#c21"
+      },
+      {
+        "depth": 2,
+        "label": "THE MILL RACE",
+        "href": "OEBPS/text-4.xhtml#c22"
+      },
+      {
+        "depth": 2,
+        "label": "LAMPLIGHT",
+        "href": "OEBPS/text-4.xhtml#c23"
+      },
+      {
+        "depth": 2,
+        "label": "THE LAST FERRY",
+        "href": "OEBPS/text-4.xhtml#c24"
+      },
+      {
+        "depth": 2,
+        "label": "THE KEEPERS' RETURN",
+        "href": "OEBPS/text-4.xhtml#c25"
+      },
+      {
+        "depth": 2,
+        "label": "AFTERWORD",
+        "href": "OEBPS/text-4.xhtml#c26"
+      }
+    ]
+  },
+  "parts-and-chapters.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/cover.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/title.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/preface.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-1-chapter-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-1-chapter-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-1-chapter-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-1-chapter-4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-1-chapter-5.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-1-chapter-6.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-2-chapter-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-2-chapter-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-2-chapter-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-2-chapter-4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-2-chapter-5.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-3-chapter-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-3-chapter-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-3-chapter-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-3-chapter-4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-3-chapter-5.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-4-chapter-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-4-chapter-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-4-chapter-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-4-chapter-4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-5-chapter-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-5-chapter-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-5-chapter-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-5-chapter-4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-6-chapter-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-6-chapter-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-6-chapter-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-6-chapter-4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-6-chapter-5.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/epilogue.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/about.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "PARTS AND CHAPTERS",
+        "href": "OEBPS/title.xhtml#title"
+      },
+      {
+        "depth": 1,
+        "label": "A NOTE ON THE TEXT",
+        "href": "OEBPS/title.xhtml#note"
+      },
+      {
+        "depth": 1,
+        "label": "PREFACE",
+        "href": "OEBPS/preface.xhtml#preface"
+      },
+      {
+        "depth": 1,
+        "label": "PARTS AND CHAPTERS",
+        "href": "OEBPS/part-1.xhtml#half"
+      },
+      {
+        "depth": 1,
+        "label": "PART I",
+        "href": "OEBPS/part-1.xhtml#part"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER I",
+        "href": "OEBPS/part-1-chapter-1.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER II",
+        "href": "OEBPS/part-1-chapter-2.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER III",
+        "href": "OEBPS/part-1-chapter-3.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER IV",
+        "href": "OEBPS/part-1-chapter-4.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER V",
+        "href": "OEBPS/part-1-chapter-5.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER VI",
+        "href": "OEBPS/part-1-chapter-6.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "PART II",
+        "href": "OEBPS/part-2-chapter-1.xhtml#part"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER I",
+        "href": "OEBPS/part-2-chapter-1.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER II",
+        "href": "OEBPS/part-2-chapter-2.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER III",
+        "href": "OEBPS/part-2-chapter-3.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER IV",
+        "href": "OEBPS/part-2-chapter-4.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER V",
+        "href": "OEBPS/part-2-chapter-5.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "PART III",
+        "href": "OEBPS/part-3-chapter-1.xhtml#part"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER I",
+        "href": "OEBPS/part-3-chapter-1.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER II",
+        "href": "OEBPS/part-3-chapter-2.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER III",
+        "href": "OEBPS/part-3-chapter-3.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER IV",
+        "href": "OEBPS/part-3-chapter-4.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER V",
+        "href": "OEBPS/part-3-chapter-5.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "PART IV",
+        "href": "OEBPS/part-4-chapter-1.xhtml#part"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER I",
+        "href": "OEBPS/part-4-chapter-1.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER II",
+        "href": "OEBPS/part-4-chapter-2.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER III",
+        "href": "OEBPS/part-4-chapter-3.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER IV",
+        "href": "OEBPS/part-4-chapter-4.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "PART V",
+        "href": "OEBPS/part-5-chapter-1.xhtml#part"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER I",
+        "href": "OEBPS/part-5-chapter-1.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER II",
+        "href": "OEBPS/part-5-chapter-2.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER III",
+        "href": "OEBPS/part-5-chapter-3.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER IV",
+        "href": "OEBPS/part-5-chapter-4.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "PART VI",
+        "href": "OEBPS/part-6-chapter-1.xhtml#part"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER I",
+        "href": "OEBPS/part-6-chapter-1.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER II",
+        "href": "OEBPS/part-6-chapter-2.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER III",
+        "href": "OEBPS/part-6-chapter-3.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER IV",
+        "href": "OEBPS/part-6-chapter-4.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER V",
+        "href": "OEBPS/part-6-chapter-5.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "EPILOGUE",
+        "href": "OEBPS/epilogue.xhtml#epi"
+      },
+      {
+        "depth": 2,
+        "label": "I",
+        "href": "OEBPS/epilogue.xhtml#i"
+      },
+      {
+        "depth": 2,
+        "label": "II",
+        "href": "OEBPS/epilogue.xhtml#ii"
+      },
+      {
+        "depth": 1,
+        "label": "ABOUT THIS EDITION",
+        "href": "OEBPS/about.xhtml#about"
+      }
+    ]
+  },
+  "volumes.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/cover.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/text-0.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/text-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/text-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/text-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/text-4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/plate-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/plate-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/plate-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/plate-4.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "VOLUMES:",
+        "href": "OEBPS/text-0.xhtml#v1a"
+      },
+      {
+        "depth": 1,
+        "label": "VOLUMES.",
+        "href": "OEBPS/text-0.xhtml#v1b"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER I.",
+        "href": "OEBPS/text-0.xhtml#v1c1"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER II.",
+        "href": "OEBPS/text-0.xhtml#v1c2"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER III.",
+        "href": "OEBPS/text-0.xhtml#v1c3"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER IV.",
+        "href": "OEBPS/text-0.xhtml#v1c4"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER V.",
+        "href": "OEBPS/text-0.xhtml#v1c5"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER VI.",
+        "href": "OEBPS/text-1.xhtml#v1c6"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER VII.",
+        "href": "OEBPS/text-1.xhtml#v1c7"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER VIII.",
+        "href": "OEBPS/text-1.xhtml#v1c8"
+      },
+      {
+        "depth": 1,
+        "label": "VOLUMES:",
+        "href": "OEBPS/text-1.xhtml#v2a"
+      },
+      {
+        "depth": 1,
+        "label": "VOLUMES.",
+        "href": "OEBPS/text-1.xhtml#v2b"
+      },
+      {
+        "depth": 2,
+        "label": "VOL. II.",
+        "href": "OEBPS/text-1.xhtml#v2"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER I.",
+        "href": "OEBPS/text-1.xhtml#v2c1"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER II.",
+        "href": "OEBPS/text-1.xhtml#v2c2"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER III.",
+        "href": "OEBPS/text-2.xhtml#v2c3"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER IV.",
+        "href": "OEBPS/text-2.xhtml#v2c4"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER V.",
+        "href": "OEBPS/text-2.xhtml#v2c5"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER VI.",
+        "href": "OEBPS/text-2.xhtml#v2c6"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER VII.",
+        "href": "OEBPS/text-2.xhtml#v2c7"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER VIII.",
+        "href": "OEBPS/text-3.xhtml#v2c8"
+      },
+      {
+        "depth": 1,
+        "label": "VOLUMES:",
+        "href": "OEBPS/text-3.xhtml#v3a"
+      },
+      {
+        "depth": 1,
+        "label": "VOLUMES.",
+        "href": "OEBPS/text-3.xhtml#v3b"
+      },
+      {
+        "depth": 2,
+        "label": "VOL. III.",
+        "href": "OEBPS/text-3.xhtml#v3"
+      },
+      {
+        "depth": 2,
+        "label": "A VIEW OF THE MARKET CROSS",
+        "href": "OEBPS/text-3.xhtml#plate"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER I.",
+        "href": "OEBPS/text-3.xhtml#v3c1"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER II.",
+        "href": "OEBPS/text-3.xhtml#v3c2"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER III.",
+        "href": "OEBPS/text-3.xhtml#v3c3"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER IV.",
+        "href": "OEBPS/text-3.xhtml#v3c4"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER V.",
+        "href": "OEBPS/text-4.xhtml#v3c5"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER VI.",
+        "href": "OEBPS/text-4.xhtml#v3c6"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER VII.",
+        "href": "OEBPS/text-4.xhtml#v3c7"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER VIII.",
+        "href": "OEBPS/text-4.xhtml#v3c8"
+      },
+      {
+        "depth": 1,
+        "label": "ABOUT THIS EDITION",
+        "href": "OEBPS/text-4.xhtml#licence"
+      }
+    ]
+  },
+  "calibre-split.epub": {
+    "spine": [
+      {
+        "id": "titlepage.xhtml",
+        "linear": true
+      },
+      {
+        "id": "index_split_000.html",
+        "linear": true
+      },
+      {
+        "id": "index_split_001.html",
+        "linear": true
+      },
+      {
+        "id": "index_split_002.html",
+        "linear": true
+      },
+      {
+        "id": "index_split_003.html",
+        "linear": true
+      },
+      {
+        "id": "index_split_004.html",
+        "linear": true
+      },
+      {
+        "id": "index_split_005.html",
+        "linear": true
+      },
+      {
+        "id": "index_split_006.html",
+        "linear": true
+      },
+      {
+        "id": "index_split_007.html",
+        "linear": true
+      },
+      {
+        "id": "index_split_008.html",
+        "linear": true
+      },
+      {
+        "id": "index_split_009.html",
+        "linear": true
+      },
+      {
+        "id": "index_split_010.html",
+        "linear": true
+      },
+      {
+        "id": "index_split_011.html",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "CHAPTER I",
+        "href": "index_split_006.html"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER II.",
+        "href": "index_split_007.html"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER III",
+        "href": "index_split_008.html"
+      },
+      {
+        "depth": 1,
+        "label": "The mill in winter",
+        "href": "index_split_002.html#filepos3082"
+      },
+      {
+        "depth": 1,
+        "label": "INTRODUCTION",
+        "href": "index_split_003.html"
+      },
+      {
+        "depth": 1,
+        "label": "FOREWORD",
+        "href": "index_split_004.html"
+      },
+      {
+        "depth": 1,
+        "label": "APPENDIX A",
+        "href": "index_split_009.html"
+      },
+      {
+        "depth": 1,
+        "label": "APPENDIX B",
+        "href": "index_split_010.html"
+      },
+      {
+        "depth": 1,
+        "label": "APPENDIX C",
+        "href": "index_split_011.html"
+      }
+    ]
+  },
+  "running-header.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/front.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/days-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/days-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/days-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/days-4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/days-5.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/notes.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "[p3] PREFACE.",
+        "href": "OEBPS/front.xhtml#preface"
+      },
+      {
+        "depth": 1,
+        "label": "[p4] CONTENTS.",
+        "href": "OEBPS/front.xhtml#contents"
+      },
+      {
+        "depth": 2,
+        "label": "[p5] First Day. The Lamp",
+        "href": "OEBPS/days-1.xhtml#d0"
+      },
+      {
+        "depth": 1,
+        "label": "[p9] RUNNING HEADER.",
+        "href": "OEBPS/days-1.xhtml#h1"
+      },
+      {
+        "depth": 2,
+        "label": "[p9] Second Day. Waiting",
+        "href": "OEBPS/days-1.xhtml#d1"
+      },
+      {
+        "depth": 1,
+        "label": "[p13] RUNNING HEADER.",
+        "href": "OEBPS/days-1.xhtml#h2"
+      },
+      {
+        "depth": 2,
+        "label": "[p13] Third Day. The Open Door",
+        "href": "OEBPS/days-1.xhtml#d2"
+      },
+      {
+        "depth": 1,
+        "label": "[p17] RUNNING HEADER.",
+        "href": "OEBPS/days-1.xhtml#h3"
+      },
+      {
+        "depth": 2,
+        "label": "[p17] Fourth Day. Small Things",
+        "href": "OEBPS/days-1.xhtml#d3"
+      },
+      {
+        "depth": 1,
+        "label": "[p21] RUNNING HEADER.",
+        "href": "OEBPS/days-1.xhtml#h4"
+      },
+      {
+        "depth": 2,
+        "label": "[p21] Fifth Day. The Tide",
+        "href": "OEBPS/days-1.xhtml#d4"
+      },
+      {
+        "depth": 1,
+        "label": "[p25] RUNNING HEADER.",
+        "href": "OEBPS/days-1.xhtml#h5"
+      },
+      {
+        "depth": 2,
+        "label": "[p25] Sixth Day. Keeping Watch",
+        "href": "OEBPS/days-1.xhtml#d5"
+      },
+      {
+        "depth": 1,
+        "label": "[p29] RUNNING HEADER.",
+        "href": "OEBPS/days-1.xhtml#h6"
+      },
+      {
+        "depth": 2,
+        "label": "[p29] Seventh Day. Rest",
+        "href": "OEBPS/days-1.xhtml#d6"
+      },
+      {
+        "depth": 1,
+        "label": "[p33] RUNNING HEADER.",
+        "href": "OEBPS/days-2.xhtml#h7"
+      },
+      {
+        "depth": 2,
+        "label": "[p33] Eighth Day. The Lamp",
+        "href": "OEBPS/days-2.xhtml#d7"
+      },
+      {
+        "depth": 1,
+        "label": "[p37] RUNNING HEADER.",
+        "href": "OEBPS/days-2.xhtml#h8"
+      },
+      {
+        "depth": 2,
+        "label": "[p37] Ninth Day. Waiting",
+        "href": "OEBPS/days-2.xhtml#d8"
+      },
+      {
+        "depth": 1,
+        "label": "[p41] RUNNING HEADER.",
+        "href": "OEBPS/days-2.xhtml#h9"
+      },
+      {
+        "depth": 2,
+        "label": "[p41] Tenth Day. The Open Door",
+        "href": "OEBPS/days-2.xhtml#d9"
+      },
+      {
+        "depth": 1,
+        "label": "[p45] RUNNING HEADER.",
+        "href": "OEBPS/days-2.xhtml#h10"
+      },
+      {
+        "depth": 2,
+        "label": "[p45] Eleventh Day. Small Things",
+        "href": "OEBPS/days-2.xhtml#d10"
+      },
+      {
+        "depth": 1,
+        "label": "[p49] RUNNING HEADER.",
+        "href": "OEBPS/days-2.xhtml#h11"
+      },
+      {
+        "depth": 2,
+        "label": "[p49] Twelfth Day. The Tide",
+        "href": "OEBPS/days-2.xhtml#d11"
+      },
+      {
+        "depth": 1,
+        "label": "[p53] RUNNING HEADER.",
+        "href": "OEBPS/days-2.xhtml#h12"
+      },
+      {
+        "depth": 2,
+        "label": "[p53] Thirteenth Day. Keeping Watch",
+        "href": "OEBPS/days-2.xhtml#d12"
+      },
+      {
+        "depth": 1,
+        "label": "[p57] RUNNING HEADER.",
+        "href": "OEBPS/days-2.xhtml#h13"
+      },
+      {
+        "depth": 2,
+        "label": "[p57] Fourteenth Day. Rest",
+        "href": "OEBPS/days-2.xhtml#d13"
+      },
+      {
+        "depth": 1,
+        "label": "[p61] RUNNING HEADER.",
+        "href": "OEBPS/days-3.xhtml#h14"
+      },
+      {
+        "depth": 2,
+        "label": "[p61] Fifteenth Day. The Lamp",
+        "href": "OEBPS/days-3.xhtml#d14"
+      },
+      {
+        "depth": 1,
+        "label": "[p65] RUNNING HEADER.",
+        "href": "OEBPS/days-3.xhtml#h15"
+      },
+      {
+        "depth": 2,
+        "label": "[p65] Sixteenth Day. Waiting",
+        "href": "OEBPS/days-3.xhtml#d15"
+      },
+      {
+        "depth": 1,
+        "label": "[p69] RUNNING HEADER.",
+        "href": "OEBPS/days-3.xhtml#h16"
+      },
+      {
+        "depth": 2,
+        "label": "[p69] Seventeenth Day. The Open Door",
+        "href": "OEBPS/days-3.xhtml#d16"
+      },
+      {
+        "depth": 1,
+        "label": "[p73] RUNNING HEADER.",
+        "href": "OEBPS/days-3.xhtml#h17"
+      },
+      {
+        "depth": 2,
+        "label": "[p73] Eighteenth Day. Small Things",
+        "href": "OEBPS/days-3.xhtml#d17"
+      },
+      {
+        "depth": 1,
+        "label": "[p77] RUNNING HEADER.",
+        "href": "OEBPS/days-3.xhtml#h18"
+      },
+      {
+        "depth": 2,
+        "label": "[p77] Nineteenth Day. The Tide",
+        "href": "OEBPS/days-3.xhtml#d18"
+      },
+      {
+        "depth": 1,
+        "label": "[p81] RUNNING HEADER.",
+        "href": "OEBPS/days-3.xhtml#h19"
+      },
+      {
+        "depth": 2,
+        "label": "[p81] Twentieth Day. Keeping Watch",
+        "href": "OEBPS/days-3.xhtml#d19"
+      },
+      {
+        "depth": 1,
+        "label": "[p85] RUNNING HEADER.",
+        "href": "OEBPS/days-3.xhtml#h20"
+      },
+      {
+        "depth": 2,
+        "label": "[p85] Twenty-first Day. Rest",
+        "href": "OEBPS/days-3.xhtml#d20"
+      },
+      {
+        "depth": 1,
+        "label": "[p89] RUNNING HEADER.",
+        "href": "OEBPS/days-4.xhtml#h21"
+      },
+      {
+        "depth": 2,
+        "label": "[p89] Twenty-second Day. The Lamp",
+        "href": "OEBPS/days-4.xhtml#d21"
+      },
+      {
+        "depth": 1,
+        "label": "[p93] RUNNING HEADER.",
+        "href": "OEBPS/days-4.xhtml#h22"
+      },
+      {
+        "depth": 2,
+        "label": "[p93] Twenty-third Day. Waiting",
+        "href": "OEBPS/days-4.xhtml#d22"
+      },
+      {
+        "depth": 1,
+        "label": "[p97] RUNNING HEADER.",
+        "href": "OEBPS/days-4.xhtml#h23"
+      },
+      {
+        "depth": 2,
+        "label": "[p97] Twenty-fourth Day. The Open Door",
+        "href": "OEBPS/days-4.xhtml#d23"
+      },
+      {
+        "depth": 1,
+        "label": "[p101] RUNNING HEADER.",
+        "href": "OEBPS/days-4.xhtml#h24"
+      },
+      {
+        "depth": 2,
+        "label": "[p101] Twenty-fifth Day. Small Things",
+        "href": "OEBPS/days-4.xhtml#d24"
+      },
+      {
+        "depth": 1,
+        "label": "[p105] RUNNING HEADER.",
+        "href": "OEBPS/days-4.xhtml#h25"
+      },
+      {
+        "depth": 2,
+        "label": "[p105] Twenty-sixth Day. The Tide",
+        "href": "OEBPS/days-4.xhtml#d25"
+      },
+      {
+        "depth": 1,
+        "label": "[p109] RUNNING HEADER.",
+        "href": "OEBPS/days-4.xhtml#h26"
+      },
+      {
+        "depth": 2,
+        "label": "[p109] Twenty-seventh Day. Keeping Watch",
+        "href": "OEBPS/days-4.xhtml#d26"
+      },
+      {
+        "depth": 1,
+        "label": "[p113] RUNNING HEADER.",
+        "href": "OEBPS/days-4.xhtml#h27"
+      },
+      {
+        "depth": 2,
+        "label": "[p113] Twenty-eighth Day. Rest",
+        "href": "OEBPS/days-4.xhtml#d27"
+      },
+      {
+        "depth": 1,
+        "label": "[p117] RUNNING HEADER.",
+        "href": "OEBPS/days-5.xhtml#h28"
+      },
+      {
+        "depth": 2,
+        "label": "[p117] Twenty-ninth Day. The Lamp",
+        "href": "OEBPS/days-5.xhtml#d28"
+      },
+      {
+        "depth": 1,
+        "label": "[p121] RUNNING HEADER.",
+        "href": "OEBPS/days-5.xhtml#h29"
+      },
+      {
+        "depth": 2,
+        "label": "[p121] Thirtieth Day. Waiting",
+        "href": "OEBPS/days-5.xhtml#d29"
+      },
+      {
+        "depth": 1,
+        "label": "[p125] RUNNING HEADER.",
+        "href": "OEBPS/days-5.xhtml#h30"
+      },
+      {
+        "depth": 2,
+        "label": "[p125] Thirty-first Day. The Open Door",
+        "href": "OEBPS/days-5.xhtml#d30"
+      },
+      {
+        "depth": 1,
+        "label": "[p129] NOTES. Contents",
+        "href": "OEBPS/notes.xhtml#notes"
+      },
+      {
+        "depth": 2,
+        "label": "NOTE A.",
+        "href": "OEBPS/notes.xhtml#nA"
+      },
+      {
+        "depth": 3,
+        "label": "The Lamp",
+        "href": "OEBPS/notes.xhtml#sA"
+      },
+      {
+        "depth": 2,
+        "label": "NOTE B.",
+        "href": "OEBPS/notes.xhtml#nB"
+      },
+      {
+        "depth": 2,
+        "label": "NOTE C.",
+        "href": "OEBPS/notes.xhtml#nC"
+      },
+      {
+        "depth": 2,
+        "label": "NOTE D.",
+        "href": "OEBPS/notes.xhtml#nD"
+      },
+      {
+        "depth": 3,
+        "label": "Small Things",
+        "href": "OEBPS/notes.xhtml#sD"
+      },
+      {
+        "depth": 2,
+        "label": "NOTE E.",
+        "href": "OEBPS/notes.xhtml#nE"
+      },
+      {
+        "depth": 2,
+        "label": "NOTE F.",
+        "href": "OEBPS/notes.xhtml#nF"
+      },
+      {
+        "depth": 2,
+        "label": "NOTE G.",
+        "href": "OEBPS/notes.xhtml#nG"
+      },
+      {
+        "depth": 3,
+        "label": "Rest",
+        "href": "OEBPS/notes.xhtml#sG"
+      }
+    ]
+  },
+  "numbered-chapters.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/title.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/contents.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-5.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-6.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-7.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-8.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-9.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-10.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-11.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-12.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-13.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-14.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-15.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-16.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-17.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-18.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-19.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-20.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/notes.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/about.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Numbered Chapters",
+        "href": "OEBPS/title.xhtml#t"
+      },
+      {
+        "depth": 1,
+        "label": "Contents",
+        "href": "OEBPS/contents.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "1 The Lamplighter",
+        "href": "OEBPS/chapter-1.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "2 A Missing Key",
+        "href": "OEBPS/chapter-2.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "3 The Night Coach",
+        "href": "OEBPS/chapter-3.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "4 Questions at the Inn",
+        "href": "OEBPS/chapter-4.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "5 The Ledger",
+        "href": "OEBPS/chapter-5.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "6 A Second Visitor",
+        "href": "OEBPS/chapter-6.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "7 The Footprints",
+        "href": "OEBPS/chapter-7.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "8 An Alibi",
+        "href": "OEBPS/chapter-8.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "9 The Weir",
+        "href": "OEBPS/chapter-9.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "10 Market Gossip",
+        "href": "OEBPS/chapter-10.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "11 A Letter Burned",
+        "href": "OEBPS/chapter-11.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "12 The Flood",
+        "href": "OEBPS/chapter-12.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "13 The Flood (contd.)",
+        "href": "OEBPS/chapter-13.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "14 The Keeper Speaks",
+        "href": "OEBPS/chapter-14.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "15 A False Trail",
+        "href": "OEBPS/chapter-15.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "16 The Mill at Dawn",
+        "href": "OEBPS/chapter-16.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "17 Confession",
+        "href": "OEBPS/chapter-17.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "18 The Tollhouse Again",
+        "href": "OEBPS/chapter-18.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "19 Loose Ends",
+        "href": "OEBPS/chapter-19.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "20 Home",
+        "href": "OEBPS/chapter-20.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Transcriber's Notes",
+        "href": "OEBPS/notes.xhtml#n"
+      },
+      {
+        "depth": 1,
+        "label": "About This Edition",
+        "href": "OEBPS/about.xhtml#a"
+      }
+    ]
+  },
+  "converted-note.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/sect1.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Converted Note",
+        "href": "OEBPS/sect1.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect1.xhtml#h-1-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect1.xhtml#h-1-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect1.xhtml#h-1-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect1.xhtml#h-1-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect1.xhtml#h-1-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect1.xhtml#h-1-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect1.xhtml#h-1-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect1.xhtml#h-1-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect1.xhtml#h-1-9"
+      }
+    ]
+  },
+  "converted-folder.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/sect1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect5.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect6.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect7.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect8.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect9.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect10.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect11.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect12.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect13.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect14.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect15.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect16.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect17.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect18.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect19.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect20.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect21.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect22.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect23.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect24.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect25.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect26.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect27.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect28.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect29.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect30.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect31.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect32.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect33.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect34.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect35.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect36.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect37.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect38.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/sect39.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "001 Report 1",
+        "href": "OEBPS/sect1.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect1.xhtml#h-1-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect1.xhtml#h-1-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect1.xhtml#h-1-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect1.xhtml#h-1-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect1.xhtml#h-1-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect1.xhtml#h-1-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect1.xhtml#h-1-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect1.xhtml#h-1-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect1.xhtml#h-1-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect1.xhtml#h-1-10"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 11",
+        "href": "OEBPS/sect1.xhtml#h-1-11"
+      },
+      {
+        "depth": 1,
+        "label": "002 Visit 2",
+        "href": "OEBPS/sect2.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect2.xhtml#h-2-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect2.xhtml#h-2-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect2.xhtml#h-2-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect2.xhtml#h-2-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect2.xhtml#h-2-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect2.xhtml#h-2-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect2.xhtml#h-2-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect2.xhtml#h-2-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect2.xhtml#h-2-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect2.xhtml#h-2-10"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 11",
+        "href": "OEBPS/sect2.xhtml#h-2-11"
+      },
+      {
+        "depth": 1,
+        "label": "003 Report 3",
+        "href": "OEBPS/sect3.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect3.xhtml#h-3-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect3.xhtml#h-3-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect3.xhtml#h-3-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect3.xhtml#h-3-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect3.xhtml#h-3-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect3.xhtml#h-3-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect3.xhtml#h-3-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect3.xhtml#h-3-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect3.xhtml#h-3-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect3.xhtml#h-3-10"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 11",
+        "href": "OEBPS/sect3.xhtml#h-3-11"
+      },
+      {
+        "depth": 1,
+        "label": "004 Plan 4",
+        "href": "OEBPS/sect4.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect4.xhtml#h-4-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect4.xhtml#h-4-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect4.xhtml#h-4-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect4.xhtml#h-4-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect4.xhtml#h-4-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect4.xhtml#h-4-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect4.xhtml#h-4-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect4.xhtml#h-4-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect4.xhtml#h-4-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect4.xhtml#h-4-10"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 11",
+        "href": "OEBPS/sect4.xhtml#h-4-11"
+      },
+      {
+        "depth": 1,
+        "label": "005 Ledger 5",
+        "href": "OEBPS/sect5.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect5.xhtml#h-5-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect5.xhtml#h-5-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect5.xhtml#h-5-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect5.xhtml#h-5-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect5.xhtml#h-5-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect5.xhtml#h-5-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect5.xhtml#h-5-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect5.xhtml#h-5-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect5.xhtml#h-5-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect5.xhtml#h-5-10"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 11",
+        "href": "OEBPS/sect5.xhtml#h-5-11"
+      },
+      {
+        "depth": 1,
+        "label": "006 Survey 6",
+        "href": "OEBPS/sect6.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect6.xhtml#h-6-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect6.xhtml#h-6-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect6.xhtml#h-6-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect6.xhtml#h-6-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect6.xhtml#h-6-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect6.xhtml#h-6-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect6.xhtml#h-6-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect6.xhtml#h-6-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect6.xhtml#h-6-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect6.xhtml#h-6-10"
+      },
+      {
+        "depth": 1,
+        "label": "007 Field notes 7",
+        "href": "OEBPS/sect7.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect7.xhtml#h-7-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect7.xhtml#h-7-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect7.xhtml#h-7-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect7.xhtml#h-7-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect7.xhtml#h-7-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect7.xhtml#h-7-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect7.xhtml#h-7-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect7.xhtml#h-7-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect7.xhtml#h-7-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect7.xhtml#h-7-10"
+      },
+      {
+        "depth": 1,
+        "label": "008 Plan 8",
+        "href": "OEBPS/sect8.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect8.xhtml#h-8-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect8.xhtml#h-8-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect8.xhtml#h-8-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect8.xhtml#h-8-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect8.xhtml#h-8-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect8.xhtml#h-8-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect8.xhtml#h-8-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect8.xhtml#h-8-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect8.xhtml#h-8-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect8.xhtml#h-8-10"
+      },
+      {
+        "depth": 1,
+        "label": "009 Field notes 9",
+        "href": "OEBPS/sect9.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect9.xhtml#h-9-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect9.xhtml#h-9-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect9.xhtml#h-9-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect9.xhtml#h-9-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect9.xhtml#h-9-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect9.xhtml#h-9-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect9.xhtml#h-9-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect9.xhtml#h-9-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect9.xhtml#h-9-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect9.xhtml#h-9-10"
+      },
+      {
+        "depth": 1,
+        "label": "010 Report 10",
+        "href": "OEBPS/sect10.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect10.xhtml#h-10-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect10.xhtml#h-10-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect10.xhtml#h-10-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect10.xhtml#h-10-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect10.xhtml#h-10-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect10.xhtml#h-10-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect10.xhtml#h-10-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect10.xhtml#h-10-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect10.xhtml#h-10-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect10.xhtml#h-10-10"
+      },
+      {
+        "depth": 1,
+        "label": "011 Survey 11",
+        "href": "OEBPS/sect11.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect11.xhtml#h-11-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect11.xhtml#h-11-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect11.xhtml#h-11-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect11.xhtml#h-11-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect11.xhtml#h-11-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect11.xhtml#h-11-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect11.xhtml#h-11-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect11.xhtml#h-11-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect11.xhtml#h-11-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect11.xhtml#h-11-10"
+      },
+      {
+        "depth": 1,
+        "label": "012 Field notes 12",
+        "href": "OEBPS/sect12.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect12.xhtml#h-12-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect12.xhtml#h-12-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect12.xhtml#h-12-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect12.xhtml#h-12-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect12.xhtml#h-12-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect12.xhtml#h-12-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect12.xhtml#h-12-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect12.xhtml#h-12-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect12.xhtml#h-12-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect12.xhtml#h-12-10"
+      },
+      {
+        "depth": 1,
+        "label": "013 Plan 13",
+        "href": "OEBPS/sect13.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect13.xhtml#h-13-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect13.xhtml#h-13-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect13.xhtml#h-13-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect13.xhtml#h-13-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect13.xhtml#h-13-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect13.xhtml#h-13-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect13.xhtml#h-13-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect13.xhtml#h-13-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect13.xhtml#h-13-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect13.xhtml#h-13-10"
+      },
+      {
+        "depth": 1,
+        "label": "014 Field notes 14",
+        "href": "OEBPS/sect14.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect14.xhtml#h-14-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect14.xhtml#h-14-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect14.xhtml#h-14-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect14.xhtml#h-14-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect14.xhtml#h-14-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect14.xhtml#h-14-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect14.xhtml#h-14-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect14.xhtml#h-14-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect14.xhtml#h-14-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect14.xhtml#h-14-10"
+      },
+      {
+        "depth": 1,
+        "label": "015 Ledger 15",
+        "href": "OEBPS/sect15.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect15.xhtml#h-15-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect15.xhtml#h-15-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect15.xhtml#h-15-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect15.xhtml#h-15-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect15.xhtml#h-15-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect15.xhtml#h-15-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect15.xhtml#h-15-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect15.xhtml#h-15-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect15.xhtml#h-15-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect15.xhtml#h-15-10"
+      },
+      {
+        "depth": 1,
+        "label": "016 Visit 16",
+        "href": "OEBPS/sect16.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect16.xhtml#h-16-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect16.xhtml#h-16-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect16.xhtml#h-16-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect16.xhtml#h-16-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect16.xhtml#h-16-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect16.xhtml#h-16-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect16.xhtml#h-16-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect16.xhtml#h-16-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect16.xhtml#h-16-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect16.xhtml#h-16-10"
+      },
+      {
+        "depth": 1,
+        "label": "017 Report 17",
+        "href": "OEBPS/sect17.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect17.xhtml#h-17-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect17.xhtml#h-17-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect17.xhtml#h-17-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect17.xhtml#h-17-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect17.xhtml#h-17-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect17.xhtml#h-17-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect17.xhtml#h-17-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect17.xhtml#h-17-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect17.xhtml#h-17-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect17.xhtml#h-17-10"
+      },
+      {
+        "depth": 1,
+        "label": "018 Plan 18",
+        "href": "OEBPS/sect18.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect18.xhtml#h-18-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect18.xhtml#h-18-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect18.xhtml#h-18-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect18.xhtml#h-18-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect18.xhtml#h-18-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect18.xhtml#h-18-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect18.xhtml#h-18-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect18.xhtml#h-18-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect18.xhtml#h-18-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect18.xhtml#h-18-10"
+      },
+      {
+        "depth": 1,
+        "label": "019 Plan 19",
+        "href": "OEBPS/sect19.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect19.xhtml#h-19-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect19.xhtml#h-19-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect19.xhtml#h-19-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect19.xhtml#h-19-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect19.xhtml#h-19-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect19.xhtml#h-19-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect19.xhtml#h-19-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect19.xhtml#h-19-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect19.xhtml#h-19-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect19.xhtml#h-19-10"
+      },
+      {
+        "depth": 1,
+        "label": "020 Plan 20",
+        "href": "OEBPS/sect20.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect20.xhtml#h-20-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect20.xhtml#h-20-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect20.xhtml#h-20-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect20.xhtml#h-20-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect20.xhtml#h-20-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect20.xhtml#h-20-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect20.xhtml#h-20-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect20.xhtml#h-20-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect20.xhtml#h-20-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect20.xhtml#h-20-10"
+      },
+      {
+        "depth": 1,
+        "label": "021 Report 21",
+        "href": "OEBPS/sect21.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect21.xhtml#h-21-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect21.xhtml#h-21-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect21.xhtml#h-21-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect21.xhtml#h-21-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect21.xhtml#h-21-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect21.xhtml#h-21-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect21.xhtml#h-21-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect21.xhtml#h-21-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect21.xhtml#h-21-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect21.xhtml#h-21-10"
+      },
+      {
+        "depth": 1,
+        "label": "022 Field notes 22",
+        "href": "OEBPS/sect22.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect22.xhtml#h-22-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect22.xhtml#h-22-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect22.xhtml#h-22-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect22.xhtml#h-22-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect22.xhtml#h-22-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect22.xhtml#h-22-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect22.xhtml#h-22-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect22.xhtml#h-22-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect22.xhtml#h-22-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect22.xhtml#h-22-10"
+      },
+      {
+        "depth": 1,
+        "label": "023 Survey 23",
+        "href": "OEBPS/sect23.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect23.xhtml#h-23-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect23.xhtml#h-23-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect23.xhtml#h-23-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect23.xhtml#h-23-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect23.xhtml#h-23-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect23.xhtml#h-23-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect23.xhtml#h-23-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect23.xhtml#h-23-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect23.xhtml#h-23-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect23.xhtml#h-23-10"
+      },
+      {
+        "depth": 1,
+        "label": "024 Survey 24",
+        "href": "OEBPS/sect24.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect24.xhtml#h-24-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect24.xhtml#h-24-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect24.xhtml#h-24-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect24.xhtml#h-24-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect24.xhtml#h-24-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect24.xhtml#h-24-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect24.xhtml#h-24-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect24.xhtml#h-24-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect24.xhtml#h-24-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect24.xhtml#h-24-10"
+      },
+      {
+        "depth": 1,
+        "label": "025 Plan 25",
+        "href": "OEBPS/sect25.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect25.xhtml#h-25-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect25.xhtml#h-25-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect25.xhtml#h-25-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect25.xhtml#h-25-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect25.xhtml#h-25-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect25.xhtml#h-25-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect25.xhtml#h-25-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect25.xhtml#h-25-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect25.xhtml#h-25-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect25.xhtml#h-25-10"
+      },
+      {
+        "depth": 1,
+        "label": "026 Ledger 26",
+        "href": "OEBPS/sect26.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect26.xhtml#h-26-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect26.xhtml#h-26-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect26.xhtml#h-26-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect26.xhtml#h-26-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect26.xhtml#h-26-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect26.xhtml#h-26-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect26.xhtml#h-26-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect26.xhtml#h-26-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect26.xhtml#h-26-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect26.xhtml#h-26-10"
+      },
+      {
+        "depth": 1,
+        "label": "027 Plan 27",
+        "href": "OEBPS/sect27.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect27.xhtml#h-27-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect27.xhtml#h-27-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect27.xhtml#h-27-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect27.xhtml#h-27-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect27.xhtml#h-27-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect27.xhtml#h-27-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect27.xhtml#h-27-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect27.xhtml#h-27-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect27.xhtml#h-27-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect27.xhtml#h-27-10"
+      },
+      {
+        "depth": 1,
+        "label": "028 Visit 28",
+        "href": "OEBPS/sect28.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect28.xhtml#h-28-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect28.xhtml#h-28-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect28.xhtml#h-28-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect28.xhtml#h-28-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect28.xhtml#h-28-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect28.xhtml#h-28-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect28.xhtml#h-28-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect28.xhtml#h-28-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect28.xhtml#h-28-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect28.xhtml#h-28-10"
+      },
+      {
+        "depth": 1,
+        "label": "029 Report 29",
+        "href": "OEBPS/sect29.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect29.xhtml#h-29-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect29.xhtml#h-29-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect29.xhtml#h-29-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect29.xhtml#h-29-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect29.xhtml#h-29-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect29.xhtml#h-29-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect29.xhtml#h-29-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect29.xhtml#h-29-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect29.xhtml#h-29-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect29.xhtml#h-29-10"
+      },
+      {
+        "depth": 1,
+        "label": "030 Field notes 30",
+        "href": "OEBPS/sect30.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect30.xhtml#h-30-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect30.xhtml#h-30-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect30.xhtml#h-30-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect30.xhtml#h-30-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect30.xhtml#h-30-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect30.xhtml#h-30-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect30.xhtml#h-30-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect30.xhtml#h-30-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect30.xhtml#h-30-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect30.xhtml#h-30-10"
+      },
+      {
+        "depth": 1,
+        "label": "031 Ledger 31",
+        "href": "OEBPS/sect31.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect31.xhtml#h-31-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect31.xhtml#h-31-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect31.xhtml#h-31-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect31.xhtml#h-31-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect31.xhtml#h-31-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect31.xhtml#h-31-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect31.xhtml#h-31-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect31.xhtml#h-31-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect31.xhtml#h-31-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect31.xhtml#h-31-10"
+      },
+      {
+        "depth": 1,
+        "label": "032 Visit 32",
+        "href": "OEBPS/sect32.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect32.xhtml#h-32-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect32.xhtml#h-32-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect32.xhtml#h-32-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect32.xhtml#h-32-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect32.xhtml#h-32-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect32.xhtml#h-32-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect32.xhtml#h-32-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect32.xhtml#h-32-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect32.xhtml#h-32-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect32.xhtml#h-32-10"
+      },
+      {
+        "depth": 1,
+        "label": "033 Visit 33",
+        "href": "OEBPS/sect33.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect33.xhtml#h-33-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect33.xhtml#h-33-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect33.xhtml#h-33-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect33.xhtml#h-33-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect33.xhtml#h-33-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect33.xhtml#h-33-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect33.xhtml#h-33-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect33.xhtml#h-33-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect33.xhtml#h-33-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect33.xhtml#h-33-10"
+      },
+      {
+        "depth": 1,
+        "label": "034 Field notes 34",
+        "href": "OEBPS/sect34.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect34.xhtml#h-34-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect34.xhtml#h-34-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect34.xhtml#h-34-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect34.xhtml#h-34-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect34.xhtml#h-34-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect34.xhtml#h-34-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect34.xhtml#h-34-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect34.xhtml#h-34-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect34.xhtml#h-34-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect34.xhtml#h-34-10"
+      },
+      {
+        "depth": 1,
+        "label": "035 Plan 35",
+        "href": "OEBPS/sect35.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect35.xhtml#h-35-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect35.xhtml#h-35-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect35.xhtml#h-35-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect35.xhtml#h-35-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect35.xhtml#h-35-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect35.xhtml#h-35-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect35.xhtml#h-35-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect35.xhtml#h-35-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect35.xhtml#h-35-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect35.xhtml#h-35-10"
+      },
+      {
+        "depth": 1,
+        "label": "036 Field notes 36",
+        "href": "OEBPS/sect36.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect36.xhtml#h-36-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect36.xhtml#h-36-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect36.xhtml#h-36-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect36.xhtml#h-36-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect36.xhtml#h-36-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect36.xhtml#h-36-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect36.xhtml#h-36-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect36.xhtml#h-36-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect36.xhtml#h-36-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect36.xhtml#h-36-10"
+      },
+      {
+        "depth": 1,
+        "label": "037 Report 37",
+        "href": "OEBPS/sect37.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect37.xhtml#h-37-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect37.xhtml#h-37-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect37.xhtml#h-37-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect37.xhtml#h-37-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect37.xhtml#h-37-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect37.xhtml#h-37-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect37.xhtml#h-37-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect37.xhtml#h-37-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect37.xhtml#h-37-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect37.xhtml#h-37-10"
+      },
+      {
+        "depth": 1,
+        "label": "038 Plan 38",
+        "href": "OEBPS/sect38.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect38.xhtml#h-38-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect38.xhtml#h-38-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect38.xhtml#h-38-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect38.xhtml#h-38-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect38.xhtml#h-38-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect38.xhtml#h-38-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect38.xhtml#h-38-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect38.xhtml#h-38-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect38.xhtml#h-38-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect38.xhtml#h-38-10"
+      },
+      {
+        "depth": 1,
+        "label": "039 Visit 39",
+        "href": "OEBPS/sect39.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 1",
+        "href": "OEBPS/sect39.xhtml#h-39-1"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 2",
+        "href": "OEBPS/sect39.xhtml#h-39-2"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 3",
+        "href": "OEBPS/sect39.xhtml#h-39-3"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 4",
+        "href": "OEBPS/sect39.xhtml#h-39-4"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 5",
+        "href": "OEBPS/sect39.xhtml#h-39-5"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 6",
+        "href": "OEBPS/sect39.xhtml#h-39-6"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 7",
+        "href": "OEBPS/sect39.xhtml#h-39-7"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 8",
+        "href": "OEBPS/sect39.xhtml#h-39-8"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 9",
+        "href": "OEBPS/sect39.xhtml#h-39-9"
+      },
+      {
+        "depth": 2,
+        "label": "Heading 10",
+        "href": "OEBPS/sect39.xhtml#h-39-10"
+      }
+    ]
+  },
+  "long-chapter.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/cover.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-3.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Chapter One: The Lantern",
+        "href": "OEBPS/chapter-1.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Two: The Long Night",
+        "href": "OEBPS/chapter-2.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Three: Morning",
+        "href": "OEBPS/chapter-3.xhtml#c"
+      }
+    ]
+  },
+  "no-contents.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/part-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/part-4.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": []
+  },
+  "speech-sampler.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/cover.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/two-letters.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/initialisms.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/capitals-as-words.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/headings-in-capitals.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/plurals-and-dots.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/roman-numerals.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/web-addresses.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Two-Letter Capitals",
+        "href": "OEBPS/two-letters.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Initialisms",
+        "href": "OEBPS/initialisms.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Capitals Read as Words",
+        "href": "OEBPS/capitals-as-words.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Headings in Capitals",
+        "href": "OEBPS/headings-in-capitals.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Plurals, Possessives and Dots",
+        "href": "OEBPS/plurals-and-dots.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Roman Numerals",
+        "href": "OEBPS/roman-numerals.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Web and Email Addresses",
+        "href": "OEBPS/web-addresses.xhtml#c"
+      }
+    ]
+  },
+  "keyword-sizes.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/cover.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-5.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Paragraphs set small",
+        "href": "OEBPS/chapter-1.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Inline sizes",
+        "href": "OEBPS/chapter-2.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Shorthand and important",
+        "href": "OEBPS/chapter-3.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Relative sizes are left alone",
+        "href": "OEBPS/chapter-4.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Keywords that are not sizes",
+        "href": "OEBPS/chapter-5.xhtml#ch"
+      }
+    ]
+  },
+  "body-text-styles.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/cover.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-5.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Justified by the book",
+        "href": "OEBPS/chapter-1.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Centered and right-aligned lines",
+        "href": "OEBPS/chapter-2.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "A font in spans",
+        "href": "OEBPS/chapter-3.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "Code and symbols keep their font",
+        "href": "OEBPS/chapter-4.xhtml#ch"
+      },
+      {
+        "depth": 1,
+        "label": "One wrapper, many paragraphs",
+        "href": "OEBPS/chapter-5.xhtml#ch"
+      }
+    ]
+  },
+  "calibre-body-anchors.epub": {
+    "spine": [
+      {
+        "id": "titlepage.xhtml",
+        "linear": true
+      },
+      {
+        "id": "text/part0000.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0001_split_000.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0001_split_001.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0002.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0003.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0004.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0005.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0006.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0007.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0008_split_000.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0008_split_001.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0009.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0010.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0011.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0012.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0013.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0014.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0015.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0016.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0017.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0018.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0019_split_000.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0019_split_001.html",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Other Titles",
+        "href": "text/part0001_split_000.html#B1K00-5f1e0c9a7b3d4e2f8a6b1c0d9e8f7a6b"
+      },
+      {
+        "depth": 1,
+        "label": "Title Page",
+        "href": "text/part0002.html#C2K00-5f1e0c9a7b3d4e2f8a6b1c0d9e8f7a6b"
+      },
+      {
+        "depth": 1,
+        "label": "Contents",
+        "href": "text/part0003.html#D3K00-5f1e0c9a7b3d4e2f8a6b1c0d9e8f7a6b"
+      },
+      {
+        "depth": 1,
+        "label": "Prologue",
+        "href": "text/part0004.html#E4K00-5f1e0c9a7b3d4e2f8a6b1c0d9e8f7a6b"
+      },
+      {
+        "depth": 1,
+        "label": "Part One",
+        "href": "text/part0005.html#F5K00-5f1e0c9a7b3d4e2f8a6b1c0d9e8f7a6b"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 1",
+        "href": "text/part0006.html#G6K00-5f1e0c9a7b3d4e2f8a6b1c0d9e8f7a6b"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 2",
+        "href": "text/part0007.html#H7K00-5f1e0c9a7b3d4e2f8a6b1c0d9e8f7a6b"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 3",
+        "href": "text/part0008_split_000.html#I8K00-5f1e0c9a7b3d4e2f8a6b1c0d9e8f7a6b"
+      },
+      {
+        "depth": 1,
+        "label": "Part Two",
+        "href": "text/part0009.html#J9K00-5f1e0c9a7b3d4e2f8a6b1c0d9e8f7a6b"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 4",
+        "href": "text/part0010.html#K10K00-5f1e0c9a7b3d4e2f8a6b1c0d9e8f7a6b"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 5",
+        "href": "text/part0012.html#M12K00-5f1e0c9a7b3d4e2f8a6b1c0d9e8f7a6b"
+      },
+      {
+        "depth": 2,
+        "label": "Epilogue",
+        "href": "text/part0013.html#N13K00-5f1e0c9a7b3d4e2f8a6b1c0d9e8f7a6b"
+      },
+      {
+        "depth": 1,
+        "label": "Acknowledgments",
+        "href": "text/part0014.html#O14K00-5f1e0c9a7b3d4e2f8a6b1c0d9e8f7a6b"
+      },
+      {
+        "depth": 1,
+        "label": "About the Author",
+        "href": "text/part0015.html#P15K00-5f1e0c9a7b3d4e2f8a6b1c0d9e8f7a6b"
+      },
+      {
+        "depth": 1,
+        "label": "Excerpt",
+        "href": "text/part0016.html#Q16K00-5f1e0c9a7b3d4e2f8a6b1c0d9e8f7a6b"
+      }
+    ]
+  },
+  "omnibus.epub": {
+    "spine": [
+      {
+        "id": "titlepage.xhtml",
+        "linear": true
+      },
+      {
+        "id": "text/part0000.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0001.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0002.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0003.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0004.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0005.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0006.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0007.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0008.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0009.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0010.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0011.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0012.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0013.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0014.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0015.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0016.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0017.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0018.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0019.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0020.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0021.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0022.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0023.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0024.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0025.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0026.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0027.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0028.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0029.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0030.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0031.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0032.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0033.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0034.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0035.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0036.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0037.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0038.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0039.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0040.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0041.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0042.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0043.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0044.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0045.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0046.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0047.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0048.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0049.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0050.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0051.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0052.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0053.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0054.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0055.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0056.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0057.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0058.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0059.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0060.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0061.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0062.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0063.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0064.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0065.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0066.html",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Title Page",
+        "href": "text/part0000.html#p0"
+      },
+      {
+        "depth": 1,
+        "label": "Contents",
+        "href": "text/part0001.html#p1"
+      },
+      {
+        "depth": 1,
+        "label": "Also by the Author",
+        "href": "text/part0002.html#p2"
+      },
+      {
+        "depth": 1,
+        "label": "Novel One",
+        "href": "text/part0004.html#p4"
+      },
+      {
+        "depth": 2,
+        "label": "Title Page",
+        "href": "text/part0005.html#p5"
+      },
+      {
+        "depth": 2,
+        "label": "Copyright",
+        "href": "text/part0006.html#p6"
+      },
+      {
+        "depth": 2,
+        "label": "Book One: Beginnings",
+        "href": "text/part0007.html#p7"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 01",
+        "href": "text/part0008.html#p8"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 02",
+        "href": "text/part0009.html#p9"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 03",
+        "href": "text/part0010.html#p10"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 04",
+        "href": "text/part0012.html#p12"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 05",
+        "href": "text/part0013.html#p13"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 06",
+        "href": "text/part0014.html#p14"
+      },
+      {
+        "depth": 2,
+        "label": "Book Two: Crossings",
+        "href": "text/part0015.html#p15"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 07",
+        "href": "text/part0016.html#p16"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 08",
+        "href": "text/part0017.html#p17"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 09",
+        "href": "text/part0018.html#p18"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 10",
+        "href": "text/part0020.html#p20"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 11",
+        "href": "text/part0021.html#p21"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 12",
+        "href": "text/part0022.html#p22"
+      },
+      {
+        "depth": 2,
+        "label": "Glossary",
+        "href": "text/part0024.html#p24"
+      },
+      {
+        "depth": 1,
+        "label": "Novel Two",
+        "href": "text/part0025.html#p25"
+      },
+      {
+        "depth": 2,
+        "label": "Title Page",
+        "href": "text/part0026.html#p26"
+      },
+      {
+        "depth": 2,
+        "label": "Contents",
+        "href": "text/part0027.html#p27"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 1",
+        "href": "text/part0028.html#p28"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 2",
+        "href": "text/part0029.html#p29"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 3",
+        "href": "text/part0030.html#p30"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 4",
+        "href": "text/part0031.html#p31"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 5",
+        "href": "text/part0032.html#p32"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 6",
+        "href": "text/part0034.html#p34"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 7",
+        "href": "text/part0035.html#p35"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 8",
+        "href": "text/part0036.html#p36"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 9",
+        "href": "text/part0038.html#p38"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 10",
+        "href": "text/part0039.html#p39"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 11",
+        "href": "text/part0040.html#p40"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 12",
+        "href": "text/part0042.html#p42"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 13",
+        "href": "text/part0043.html#p43"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 14",
+        "href": "text/part0044.html#p44"
+      },
+      {
+        "depth": 2,
+        "label": "Epilogue",
+        "href": "text/part0045.html#p45"
+      },
+      {
+        "depth": 1,
+        "label": "Novel Three",
+        "href": "text/part0046.html#p46"
+      },
+      {
+        "depth": 2,
+        "label": "Title Page",
+        "href": "text/part0047.html#p47"
+      },
+      {
+        "depth": 2,
+        "label": "Introduction",
+        "href": "text/part0048.html#p48"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 1",
+        "href": "text/part0049.html#p49"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 2",
+        "href": "text/part0050.html#p50"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 3",
+        "href": "text/part0051.html#p51"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 4",
+        "href": "text/part0052.html#p52"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 5",
+        "href": "text/part0053.html#p53"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 6",
+        "href": "text/part0054.html#p54"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 7",
+        "href": "text/part0055.html#p55"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 8",
+        "href": "text/part0056.html#p56"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 9",
+        "href": "text/part0057.html#p57"
+      },
+      {
+        "depth": 2,
+        "label": "Chapter 10",
+        "href": "text/part0058.html#p58"
+      },
+      {
+        "depth": 2,
+        "label": "About the Author",
+        "href": "text/part0060.html#p60"
+      },
+      {
+        "depth": 1,
+        "label": "Reading Group Notes",
+        "href": "text/part0061.html#p61"
+      },
+      {
+        "depth": 2,
+        "label": "Questions",
+        "href": "text/part0062.html#p62"
+      },
+      {
+        "depth": 2,
+        "label": "Further Reading",
+        "href": "text/part0063.html#p63"
+      },
+      {
+        "depth": 1,
+        "label": "Acknowledgments",
+        "href": "text/part0064.html#p64"
+      },
+      {
+        "depth": 2,
+        "label": "To the Readers",
+        "href": "text/part0064.html#ack-1"
+      },
+      {
+        "depth": 2,
+        "label": "To the Printers",
+        "href": "text/part0064.html#ack-2"
+      }
+    ]
+  },
+  "gutenberg-style.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/wrap0000.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/4242424242424242424_90001-h-0.htm.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/4242424242424242424_90001-h-1.htm.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/4242424242424242424_90001-h-2.htm.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/4242424242424242424_90001-h-3.htm.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/4242424242424242424_90001-h-4.htm.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/4242424242424242424_90001-h-5.htm.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/4242424242424242424_90001-h-6.htm.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/4242424242424242424_90001-h-7.htm.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/4242424242424242424_90001-h-8.htm.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/4242424242424242424_90001-h-9.htm.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/4242424242424242424_90001-plate1big.png.id-1.wrap-0.html.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "GUTENBERG STYLE",
+        "href": "OEBPS/4242424242424242424_90001-h-0.htm.xhtml#pgepubid00000"
+      },
+      {
+        "depth": 1,
+        "label": "By Orbis Tester",
+        "href": "OEBPS/4242424242424242424_90001-h-0.htm.xhtml#pgepubid00001"
+      },
+      {
+        "depth": 1,
+        "label": "PREFACE",
+        "href": "OEBPS/4242424242424242424_90001-h-1.htm.xhtml#pgepubid00002"
+      },
+      {
+        "depth": 1,
+        "label": "GUTENBERG STYLE",
+        "href": "OEBPS/4242424242424242424_90001-h-2.htm.xhtml#pgepubid00003"
+      },
+      {
+        "depth": 1,
+        "label": "PART I",
+        "href": "OEBPS/4242424242424242424_90001-h-2.htm.xhtml#pgepubid00004"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER I",
+        "href": "OEBPS/4242424242424242424_90001-h-3.htm.xhtml#pgepubid00005"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER II",
+        "href": "OEBPS/4242424242424242424_90001-h-5.htm.xhtml#pgepubid00006"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER III",
+        "href": "OEBPS/4242424242424242424_90001-h-5.htm.xhtml#pgepubid00007"
+      },
+      {
+        "depth": 1,
+        "label": "PART II",
+        "href": "OEBPS/4242424242424242424_90001-h-6.htm.xhtml#pgepubid00008"
+      },
+      {
+        "depth": 1,
+        "label": "CHAPTER I",
+        "href": "OEBPS/4242424242424242424_90001-h-6.htm.xhtml#pgepubid00009"
+      },
+      {
+        "depth": 1,
+        "label": "EPILOGUE",
+        "href": "OEBPS/4242424242424242424_90001-h-7.htm.xhtml#pgepubid00011"
+      },
+      {
+        "depth": 2,
+        "label": "I",
+        "href": "OEBPS/4242424242424242424_90001-h-7.htm.xhtml#pgepubid00012"
+      },
+      {
+        "depth": 2,
+        "label": "II",
+        "href": "OEBPS/4242424242424242424_90001-h-7.htm.xhtml#pgepubid00013"
+      },
+      {
+        "depth": 1,
+        "label": "READINGS.",
+        "href": "OEBPS/4242424242424242424_90001-h-8.htm.xhtml#pgepubid00014"
+      },
+      {
+        "depth": 2,
+        "label": "[p11] First Day. Contents",
+        "href": "OEBPS/4242424242424242424_90001-h-8.htm.xhtml#d1"
+      },
+      {
+        "depth": 1,
+        "label": "GUTENBERG STYLE.",
+        "href": "OEBPS/4242424242424242424_90001-h-8.htm.xhtml#t1"
+      },
+      {
+        "depth": 2,
+        "label": "[p17] Second Day. Contents",
+        "href": "OEBPS/4242424242424242424_90001-h-8.htm.xhtml#d2"
+      },
+      {
+        "depth": 1,
+        "label": "GUTENBERG STYLE.",
+        "href": "OEBPS/4242424242424242424_90001-h-8.htm.xhtml#t2"
+      },
+      {
+        "depth": 2,
+        "label": "[p23] Third Day. Contents",
+        "href": "OEBPS/4242424242424242424_90001-h-8.htm.xhtml#d3"
+      },
+      {
+        "depth": 1,
+        "label": "GUTENBERG STYLE.",
+        "href": "OEBPS/4242424242424242424_90001-h-8.htm.xhtml#t3"
+      },
+      {
+        "depth": 1,
+        "label": "THE FULL PLACEHOLDER PRESS LICENSE",
+        "href": "OEBPS/4242424242424242424_90001-h-9.htm.xhtml#pg-footer-heading"
+      }
+    ]
+  },
+  "technical-book.epub": {
+    "spine": [
+      {
+        "id": "titlepage.xhtml",
+        "linear": true
+      },
+      {
+        "id": "text/part0000_split_000.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0000_split_001.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0000_split_002.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0000_split_003.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0001_split_000.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0001_split_001.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0001_split_002.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0001_split_003.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0001_split_004.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0002_split_000.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0002_split_001.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0002_split_002.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0002_split_003.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0002_split_004.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0003_split_000.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0003_split_001.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0003_split_002.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0003_split_003.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0003_split_004.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0004_split_000.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0004_split_001.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0004_split_002.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0004_split_003.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0004_split_004.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0005_split_000.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0005_split_001.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0005_split_002.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0005_split_003.html",
+        "linear": true
+      },
+      {
+        "id": "text/part0006.html",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Frontmatter",
+        "href": "text/part0000_split_000.html#fm-body"
+      },
+      {
+        "depth": 1,
+        "label": "1. First Steps",
+        "href": "text/part0001_split_000.html"
+      },
+      {
+        "depth": 1,
+        "label": "2. Core Concepts",
+        "href": "text/part0002_split_000.html"
+      },
+      {
+        "depth": 1,
+        "label": "3. Working with Services",
+        "href": "text/part0003_split_000.html"
+      },
+      {
+        "depth": 1,
+        "label": "4. Running a Server",
+        "href": "text/part0004_split_000.html"
+      },
+      {
+        "depth": 1,
+        "label": "5. Advanced Topics",
+        "href": "text/part0005_split_000.html"
+      },
+      {
+        "depth": 1,
+        "label": "Backmatter",
+        "href": "text/part0006.html"
+      }
+    ]
+  },
+  "endnotes.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/cover.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/contents.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/ch1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/ch2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/ch3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/notes.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/about.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Contents",
+        "href": "OEBPS/contents.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter One",
+        "href": "OEBPS/ch1.xhtml#cont_1"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Two",
+        "href": "OEBPS/ch2.xhtml#cont_2"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Three",
+        "href": "OEBPS/ch3.xhtml#cont_3"
+      },
+      {
+        "depth": 1,
+        "label": "Notes",
+        "href": "OEBPS/notes.xhtml#notes_top"
+      },
+      {
+        "depth": 1,
+        "label": "About the Author",
+        "href": "OEBPS/about.xhtml"
+      }
+    ]
+  },
+  "footnotes.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/cover.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/ch1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/ch2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/ch3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/ch4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/ch4b.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/afterword.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/nonlinear.xhtml",
+        "linear": false
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Chapter One",
+        "href": "OEBPS/ch1.xhtml#c1"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter One, Continued",
+        "href": "OEBPS/ch1.xhtml#c1b"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Two",
+        "href": "OEBPS/ch2.xhtml#c2"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Three",
+        "href": "OEBPS/ch3.xhtml#c3"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Four",
+        "href": "OEBPS/ch4.xhtml#c4"
+      },
+      {
+        "depth": 1,
+        "label": "Afterword",
+        "href": "OEBPS/afterword.xhtml#aw"
+      }
+    ]
+  },
+  "trilogy-parts.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/cover.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/title.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/contents.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n1-title.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n1-dedication.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n1-contents.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n1-p1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n1-c1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n1-c2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n1-c3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n1-p2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n1-c4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n1-c5.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n1-c6.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n1-p3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n1-c7.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n1-c8.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n1-c9.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n2-title.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n2-dedication.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n2-contents.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n2-p1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n2-c1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n2-c2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n2-c3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n2-p2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n2-c4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n2-c5.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n2-c6.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n2-p3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n2-c7.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n2-c8.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n2-c9.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-title.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-dedication.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-contents.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-p1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-c1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-c2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-c3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-p2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-c4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-c5.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-c6.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-p3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-c7.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-c8.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-c9.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/n3-epilogue.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/acknowledgments.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/about.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Title Page",
+        "href": "OEBPS/title.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Contents",
+        "href": "OEBPS/contents.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "The Lantern Road",
+        "href": "OEBPS/n1-title.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Dedication",
+        "href": "OEBPS/n1-dedication.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Contents",
+        "href": "OEBPS/n1-contents.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Part I: “The Lantern Road”",
+        "href": "OEBPS/n1-p1.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "1",
+        "href": "OEBPS/n1-c1.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "2",
+        "href": "OEBPS/n1-c2.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "3",
+        "href": "OEBPS/n1-c3.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Part II: “The Ferry Crossing”",
+        "href": "OEBPS/n1-p2.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "4",
+        "href": "OEBPS/n1-c4.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "5",
+        "href": "OEBPS/n1-c5.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "6",
+        "href": "OEBPS/n1-c6.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Part III: “The Long Field”",
+        "href": "OEBPS/n1-p3.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "7",
+        "href": "OEBPS/n1-c7.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "8",
+        "href": "OEBPS/n1-c8.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "9",
+        "href": "OEBPS/n1-c9.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "The Harbor Wall",
+        "href": "OEBPS/n2-title.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Dedication",
+        "href": "OEBPS/n2-dedication.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Contents",
+        "href": "OEBPS/n2-contents.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Part I: “The Tide Book”",
+        "href": "OEBPS/n2-p1.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "1",
+        "href": "OEBPS/n2-c1.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "2",
+        "href": "OEBPS/n2-c2.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "3",
+        "href": "OEBPS/n2-c3.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Part II: “The Bell Tower”",
+        "href": "OEBPS/n2-p2.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "4",
+        "href": "OEBPS/n2-c4.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "5",
+        "href": "OEBPS/n2-c5.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "6",
+        "href": "OEBPS/n2-c6.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Part III: “The Weir”",
+        "href": "OEBPS/n2-p3.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "7",
+        "href": "OEBPS/n2-c7.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "8",
+        "href": "OEBPS/n2-c8.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "9",
+        "href": "OEBPS/n2-c9.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "The Weir at Dusk",
+        "href": "OEBPS/n3-title.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Dedication",
+        "href": "OEBPS/n3-dedication.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Contents",
+        "href": "OEBPS/n3-contents.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Part I: “The Mill Race”",
+        "href": "OEBPS/n3-p1.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "1",
+        "href": "OEBPS/n3-c1.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "2",
+        "href": "OEBPS/n3-c2.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "3",
+        "href": "OEBPS/n3-c3.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Part II: “The Orchard”",
+        "href": "OEBPS/n3-p2.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "4",
+        "href": "OEBPS/n3-c4.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "5",
+        "href": "OEBPS/n3-c5.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "6",
+        "href": "OEBPS/n3-c6.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Part III: “The Last Lantern”",
+        "href": "OEBPS/n3-p3.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "7",
+        "href": "OEBPS/n3-c7.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "8",
+        "href": "OEBPS/n3-c8.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "9",
+        "href": "OEBPS/n3-c9.xhtml"
+      },
+      {
+        "depth": 2,
+        "label": "Epilogue",
+        "href": "OEBPS/n3-epilogue.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Acknowledgments",
+        "href": "OEBPS/acknowledgments.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "About the Author",
+        "href": "OEBPS/about.xhtml"
+      }
+    ]
+  },
+  "hostile-scripts.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/chapter1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter5.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter6.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Script execution checks",
+        "href": "OEBPS/chapter1.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "Markup hidden as text",
+        "href": "OEBPS/chapter3.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "An ordinary chapter",
+        "href": "OEBPS/chapter2.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "A chapter that must appear",
+        "href": "OEBPS/chapter4.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "A chapter with no doctype",
+        "href": "OEBPS/chapter5.xhtml"
+      },
+      {
+        "depth": 1,
+        "label": "A book cannot choose the page color",
+        "href": "OEBPS/chapter6.xhtml"
+      }
+    ]
+  }
+}

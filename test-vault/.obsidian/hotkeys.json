@@ -1,0 +1,60 @@
+{
+  "orbis-reader:orbis-go-to-next-chapter": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "ArrowRight"
+    }
+  ],
+  "orbis-reader:orbis-go-to-previous-chapter": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "ArrowLeft"
+    }
+  ],
+  "orbis-reader:orbis-select-sentence": [
+    {
+      "modifiers": [
+        "Alt"
+      ],
+      "key": "S"
+    }
+  ],
+  "orbis-reader:orbis-apply-mark-1": [
+    {
+      "modifiers": [
+        "Shift"
+      ],
+      "key": "1"
+    }
+  ],
+  "orbis-reader:orbis-apply-mark-2": [
+    {
+      "modifiers": [
+        "Shift"
+      ],
+      "key": "2"
+    }
+  ],
+  "orbis-reader:orbis-select-annotation": [
+    {
+      "modifiers": [
+        "Alt"
+      ],
+      "key": "N"
+    }
+  ],
+  "orbis-reader:orbis-select-previous-annotation": [
+    {
+      "modifiers": [
+        "Alt"
+      ],
+      "key": "M"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "lamejs",
+  "version": "1.2.1-orbis",
+  "description": "lamejs (zhuker/lamejs), vendored into Orbis Reader. See ORBIS-CHANGES.md.",
+  "license": "LGPL-2.0-or-later",
+  "main": "index.js",
+  "types": "index.d.ts"
+}
