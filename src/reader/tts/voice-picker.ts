@@ -48,6 +48,11 @@ export interface VoicePickerHost {
   /** Label shown directly above the dropdown, framing what selecting does (e.g. "Select live
    *  voice"). Optional — omitted where a surrounding Setting already names the control. */
   controlLabel?: string;
+  /**
+   * The Download button finished fetching `voice`, the one on screen. Optional: the live voice uses it to make the
+   * voice shown as the default a stored choice — downloading a voice is choosing it. See `liveVoicePicker`.
+   */
+  voiceDownloaded?(voice: string): void;
 }
 
 /**
@@ -281,6 +286,7 @@ export class VoicePicker {
       if (dl !== this.downloadEpoch) return;
       this.downloadingId = null;
       this.unbusyPreview();
+      this.host.voiceDownloaded?.(id); // before the redraw below, so a stored choice settles before the sample plays
       voiceReadinessChanged(); // the arrival this button exists to produce
       // A multi-speaker model's real speaker count is only readable once downloaded, so the whole picker redraws;
       // otherwise the button turns to Preview. Then the sample, which was the point of asking.

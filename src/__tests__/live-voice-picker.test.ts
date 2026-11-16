@@ -215,3 +215,30 @@ describe('liveVoicePicker — pass-throughs', () => {
     expect(harness().host.controlLabel).toBeTruthy();
   });
 });
+
+/**
+ * Setup suggests the default Orbis voice with nothing stored. Downloading it there left nothing stored, so the
+ * voice was on the device and shown as chosen while no choice existed — and look-up's Speak, reading the preference,
+ * fell back to a system voice. Downloading the voice on screen now stores it.
+ */
+describe('liveVoicePicker — a downloaded voice is the chosen voice', () => {
+  it('stores the default voice downloaded with nothing chosen', () => {
+    const h = harness();
+    h.host.voiceDownloaded?.(h.host.getVoice());
+    expect(h.patches).toEqual([{ source: 'orbis', orbisVoiceId: DEFAULT_ORBIS_VOICE_ID, orbisSid: 0 }]);
+    expect(h.pref()?.orbisVoiceId).toBe(DEFAULT_ORBIS_VOICE_ID);
+  });
+
+  it("stores a multi-speaker voice's speaker with it", () => {
+    const h = harness();
+    h.host.voiceDownloaded?.('en_US-libritts_r-medium#7');
+    expect(h.patches).toEqual([{ source: 'orbis', orbisVoiceId: 'en_US-libritts_r-medium', orbisSid: 7 }]);
+  });
+
+  // Storing it again would only run setPref's side effects (freeing the warm worker) as the sample starts.
+  it('leaves a stored Orbis choice alone', () => {
+    const h = harness({ source: 'orbis', orbisVoiceId: 'en_GB-alba-medium', orbisSid: 0 });
+    h.host.voiceDownloaded?.(h.host.getVoice());
+    expect(h.patches).toEqual([]);
+  });
+});

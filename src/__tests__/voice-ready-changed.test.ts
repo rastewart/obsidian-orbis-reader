@@ -59,6 +59,7 @@ function harness(ready: string[] = []) {
   // Subscribed the way every real surface is — the picker is told nothing about who is listening.
   const onReadyChanged = vi.fn();
   unsubscribe = onVoiceReadinessChanged(onReadyChanged);
+  const voiceDownloaded = vi.fn();
   const picker = new VoicePicker(
     container,
     {
@@ -67,10 +68,20 @@ function harness(ready: string[] = []) {
         voice = v;
       },
       pauseAudio: () => {},
+      voiceDownloaded,
     },
     { method: 'orbis', label: 'Orbis voices', provider }
   );
-  return { container, picker, onReadyChanged, finishDownload, downloads, readySet, voice: () => voice };
+  return {
+    container,
+    picker,
+    onReadyChanged,
+    voiceDownloaded,
+    finishDownload,
+    downloads,
+    readySet,
+    voice: () => voice,
+  };
 }
 
 /** Dropped after each test: the announcement is module-level, so a listener left behind would hear the next one. */
@@ -115,7 +126,7 @@ describe('VoicePicker — readiness is announced', () => {
   });
 
   it('downloads when Download is pressed, and reports the voice once it has arrived', async () => {
-    const { container, picker, onReadyChanged, finishDownload, downloads } = harness();
+    const { container, picker, onReadyChanged, voiceDownloaded, finishDownload, downloads } = harness();
     await picker.render();
     await settle();
 
@@ -125,10 +136,13 @@ describe('VoicePicker — readiness is announced', () => {
     // Started, not finished: this device still cannot speak, and saying otherwise would put a voice's name back on a
     // chip that has nothing to say it with.
     expect(onReadyChanged).not.toHaveBeenCalled();
+    expect(voiceDownloaded).not.toHaveBeenCalled();
 
     finishDownload();
     await settle();
     expect(onReadyChanged).toHaveBeenCalled();
+    // And the host is told which voice arrived, so the live voice can store it as the choice (`liveVoicePicker`).
+    expect(voiceDownloaded).toHaveBeenCalledWith('amy');
     expect(actionButton(container)?.textContent).toMatch(/preview/i);
   });
 

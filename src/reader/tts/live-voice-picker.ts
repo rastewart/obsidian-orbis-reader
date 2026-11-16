@@ -98,6 +98,20 @@ export function liveVoicePicker(deps: LiveVoicePickerDeps): { host: VoicePickerH
       const saved = Number.parseInt((deps.app.loadLocalStorage(sidKey(base)) as string | null) ?? '', 10);
       return Number.isFinite(saved) && saved >= 0 ? saved : 0;
     },
+    /**
+     * **Downloading the voice on screen chooses it.** With nothing stored, the picker shows the default Orbis voice,
+     * and pressing Download on it — as setup suggests — used to leave nothing stored: the voice was on the device and
+     * shown as chosen, but no choice existed. Stored now, so every surface reads the same answer from the preference.
+     *
+     * Only when nothing Orbis is stored: a stored Orbis choice is already the voice on screen, and storing it again
+     * would run `setPref`'s side effects — freeing the warm worker — for nothing, just as the sample starts.
+     */
+    voiceDownloaded: (v) => {
+      const pref = deps.getPref();
+      if (pref?.source === 'orbis' && pref.orbisVoiceId) return;
+      const { id, speaker } = splitPiperVoice(v);
+      deps.setPref({ source: 'orbis', orbisVoiceId: id, orbisSid: speaker });
+    },
   };
   return { host, methods };
 }
