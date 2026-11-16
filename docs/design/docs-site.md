@@ -49,12 +49,16 @@ repository's tree: a page compiled from outside it cannot find Vue in `node_modu
 
 **The guide's index is `README.md`, and the site's home page.** GitHub shows a folder's `README.md` below its file
 list, so the index keeps that name. `rewrites: { 'README.md': 'index.md' }` makes it the home page. A rewrite moves the
-page but not the links to it, so a markdown-it rule (`orbis-guide-links`) changes each page's `← User Guide` link from
-`README.md` to `index.md`. Without it, those 26 links lead nowhere on the site.
+page but not the links to it, so a markdown-it rule (`orbis-guide-links`) changes any link to `README.md` into one to
+`index.md`.
 
-**The index's one link above the guide goes to GitHub.** `→ Back to top-level docs` points at `../README.md`, which is
-not part of the site. The same rule sends it to `docs/README.md` on GitHub. That link works once the repository is
-public.
+**The navigation lines are GitHub's, not the site's.** Each page's breadcrumb, `← [User Guide](README.md)`, and the
+index's `→ [Back to top-level docs](../README.md)` are how a reader moves around the folders on GitHub. On the site the
+sidebar and the title already lead home, and the design documents the second line points up to are not part of the
+site. A second markdown-it rule (`orbis-drop-github-only-lines`) removes each paragraph that is exactly one of those two
+lines, so they stay in the files and only the site leaves them out. It matches the whole line, so a link to the index
+inside a sentence is kept — which is also why the breadcrumb must be written exactly as the
+[User Guide Writing Standard](user-guide-standard.md) gives it.
 
 **The sidebar is the index's own tables.** `sidebarFromIndex()` reads the index and makes a sidebar group from each
 `## Heading` above a table, and an entry from each `| [Title](page.md) |` row. A page added to the index's table is in
@@ -142,7 +146,7 @@ points at GitHub.
 6. **Turn on HTTPS.** Once GitHub has issued the certificate for the domain, select **Enforce HTTPS**. The certificate
    can take a while; the checkbox is unavailable until it is ready.
 7. **Check the live site.** The home page loads at `https://guide.orbisreader.com/`; a page opened directly loads, for example
-   `/listening`; search finds a word; the `← User Guide` links and the index's link to `docs/README.md` work; and a
+   `/listening`; search finds a word; no page shows the `← User Guide` or `Back to top-level docs` line; and a
    push that changes a guide page updates the site.
 
 ### After the site is live

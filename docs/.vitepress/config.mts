@@ -36,15 +36,32 @@ export default defineConfig({
   rewrites: { 'README.md': 'index.md' },
   markdown: {
     config(md) {
-      // `rewrites` moves the page but not the links to it: each page's "← User Guide" link says README.md. The index's
-      // one link above the guide, to docs/README.md, has no page on the site and goes to that file on GitHub.
+      // `rewrites` moves the page but not the links to it: a link to the index says README.md. The "← User Guide"
+      // lines are dropped below, so this is for any other link a page makes to the index.
       md.core.ruler.push('orbis-guide-links', (state) => {
         for (const block of state.tokens) {
           for (const token of block.children ?? []) {
             if (token.type !== 'link_open') continue;
             const href = token.attrGet('href') ?? '';
-            if (href === '../README.md') token.attrSet('href', `${REPO}/blob/main/docs/README.md`);
-            else if (/^(\.\/)?README\.md(#|$)/.test(href)) token.attrSet('href', href.replace('README.md', 'index.md'));
+            if (/^(\.\/)?README\.md(#|$)/.test(href)) token.attrSet('href', href.replace('README.md', 'index.md'));
+          }
+        }
+      });
+      // **The guide's navigation lines are for GitHub only.** On GitHub they are the way around the folders: each
+      // page's "← User Guide" back to the index, and the index's "Back to top-level docs" up to docs/README.md. On the
+      // site the sidebar and the title already lead home, and the design documents are not there to go up to — so the
+      // whole paragraph goes. Matched on the line's exact text, so a link to the index inside a sentence is untouched.
+      const GITHUB_ONLY_LINES = new Set(['← [User Guide](README.md)', '→ [Back to top-level docs](../README.md)']);
+      md.core.ruler.push('orbis-drop-github-only-lines', (state) => {
+        const tokens = state.tokens;
+        for (let i = tokens.length - 2; i > 0; i--) {
+          const inline = tokens[i];
+          if (
+            inline.type === 'inline' &&
+            GITHUB_ONLY_LINES.has(inline.content.trim()) &&
+            tokens[i - 1].type === 'paragraph_open'
+          ) {
+            tokens.splice(i - 1, 3);
           }
         }
       });
