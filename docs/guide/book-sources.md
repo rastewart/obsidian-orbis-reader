@@ -349,6 +349,8 @@ If a page shows *Nothing here*, the feed sent a page with no entries. Some categ
 
 If the **Browse book sources** button is not in the ribbon, Book sources is disabled on this device. Enable it on each device where you want it.
 
+If there are no buttons down the side of the window at all, Obsidian's ribbon is hidden. Go to **Settings → Interface** and enable **Show ribbon**. If the ribbon shows but the button is still missing, right-click or long-press the ribbon and select **Browse book sources**.
+
 ---
 
 ## See also

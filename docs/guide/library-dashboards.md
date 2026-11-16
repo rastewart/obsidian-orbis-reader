@@ -483,6 +483,8 @@ A property is listed when at least one title note has it. Check the property nam
 
 The library is disabled. Go to **Settings → Orbis Reader → Library dashboards** and enable **Enable the library**. You can also use the **Library dashboards** item on the **Setup** page.
 
+If there are no buttons down the side of the window at all, Obsidian's ribbon is hidden. Go to **Settings → Interface** and enable **Show ribbon**. If the ribbon shows but the button is still missing, right-click or long-press the ribbon and select **Open the library**.
+
 ---
 
 ## See also
