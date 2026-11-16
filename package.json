@@ -35,6 +35,7 @@
   },
   "keywords": ["ebook", "epub", "obsidian", "foliate", "orbis"],
   "author": "Rob Stewart",
+  "homepage": "https://guide.orbisreader.com/",
   "license": "MIT",
   "packageManager": "pnpm@12.18.0",
   "devDependencies": {

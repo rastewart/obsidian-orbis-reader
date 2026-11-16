@@ -628,6 +628,12 @@ const en = {
    */
   'setup.devices_desc': 'Name this device and choose what it shares with your other devices. {{caveat}}',
   'settings.version': 'Version {{version}}',
+  // The button on the version row. "User guide" because that is what the site calls itself; the tooltip says where it
+  // goes, since a button that leaves Obsidian for the browser should not surprise anyone.
+  'settings.guide': 'User guide',
+  'settings.guide_tooltip': 'Open the Orbis Reader user guide in your browser',
+  // Extra words settings search matches the row on, comma-separated: what someone who is stuck types.
+  'settings.guide_aliases': 'help, guide, user guide, documentation, docs, manual',
   'link_preview_popup.could_not_load_preview': 'Could not load preview.',
   'link_preview_popup.go': 'Go',
   // The check every link out of a book passes through — see `LinkCheck`. Facts in rows, never a verdict: each line

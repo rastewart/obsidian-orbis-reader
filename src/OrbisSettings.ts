@@ -38,6 +38,7 @@ import { displayStyleLabel } from './device-style';
 import { openDownloadedVoicesDialog } from './downloaded-voices-dialog';
 import { FieldModal, fieldPurpose } from './FieldModal';
 import { folderPickerRow } from './folder-picker';
+import { aboutRow } from './guide';
 import { t } from './i18n';
 import { TranslationKey } from './i18n/en';
 import { openLibrarySetupDialog } from './LibrarySetupModal';
@@ -529,11 +530,8 @@ export class OrbisSettings extends PluginSettingTab {
         items: this.deviceItems(),
       },
       // LAST, not first: nobody opens settings to read a version number, and at the top it would push the row a
-      // reader actually came for into second place.
-      {
-        name: this.plugin.manifest.name,
-        desc: t('settings.version', { version: this.plugin.manifest.version }),
-      },
+      // reader actually came for into second place. It also carries the guide's button — see `aboutRow`.
+      aboutRow(this.plugin.manifest.name, this.plugin.manifest.version),
     ];
   }
 

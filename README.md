@@ -14,7 +14,7 @@ An ebook reader for your [Obsidian](https://obsidian.md) vault. Read your books,
 - Browse, search and download books from Project Gutenberg (built in), your own Calibre server and other OPDS-compatible sources.
 - Turn any note, web clipping or folder of notes into a book you can read, annotate and listen to.
 
-**Learn more:** [Book Sources](docs/guide/book-sources.md) · [Format Support](docs/guide/format-support.md) · [Read in Orbis Reader](docs/guide/read-in-orbis-reader.md) · [Notes to EPUB](docs/guide/notes-to-epub.md)
+**Learn more:** [Book Sources](https://guide.orbisreader.com/book-sources) · [Format Support](https://guide.orbisreader.com/format-support) · [Read in Orbis Reader](https://guide.orbisreader.com/read-in-orbis-reader) · [Notes to EPUB](https://guide.orbisreader.com/notes-to-epub)
 
 ### Organize: build a library from notes in your vault
 
@@ -23,7 +23,7 @@ An ebook reader for your [Obsidian](https://obsidian.md) vault. Read your books,
 - Track each book's reading status, your rating and when you finished it.
 - Design dashboards that show your title notes as lists, covers or tables, using filters you create.
 
-**Learn more:** [Library Dashboards](docs/guide/library-dashboards.md)
+**Learn more:** [Library Dashboards](https://guide.orbisreader.com/library-dashboards)
 
 ### Read: make the reader your own
 
@@ -34,14 +34,14 @@ An ebook reader for your [Obsidian](https://obsidian.md) vault. Read your books,
 - See your progress, the time left and your reading speed.
 - Pick up right where you left off in every book.
 
-**Learn more:** [Reading a Book](docs/guide/reading-a-book.md) · [Display Settings](docs/guide/display-settings.md) · [Reading Progress](docs/guide/reading-progress.md)
+**Learn more:** [Reading a Book](https://guide.orbisreader.com/reading-a-book) · [Display Settings](https://guide.orbisreader.com/display-settings) · [Reading Progress](https://guide.orbisreader.com/reading-progress)
 
 ### Explore: understand as you read
 
 - Select any word or phrase to look it up in offline dictionaries, find it in your vault or search for it on the web.
 - Search the book's text and your annotations.
 
-**Learn more:** [Look-up](docs/guide/look-up.md) · [Search](docs/guide/search.md)
+**Learn more:** [Look-up](https://guide.orbisreader.com/look-up) · [Search](https://guide.orbisreader.com/search)
 
 ### Listen: hear any book read aloud with text-to-speech
 
@@ -52,7 +52,7 @@ An ebook reader for your [Obsidian](https://obsidian.md) vault. Read your books,
 - Combine recordings and live voices in a mix, so you can give different parts of a book their own voices.
 - Teach voices how to pronounce names and terms.
 
-**Learn more:** [Listening](docs/guide/listening.md)
+**Learn more:** [Listening](https://guide.orbisreader.com/listening)
 
 ### Annotate: capture what matters to you, and why
 
@@ -60,7 +60,7 @@ An ebook reader for your [Obsidian](https://obsidian.md) vault. Read your books,
 - Give each annotation a mark that says what it means to you, such as *Key point*, *Question* or *Follow up*. Each mark has its own highlighter color, underline or other treatment, and badge.
 - Create presets of marks for different kinds of books, such as one for fiction and one for research, and choose which preset each book uses.
 
-**Learn more:** [Marks and Notes](docs/guide/marks-and-notes.md) · [Annotations and Presets](docs/guide/annotations-and-presets.md)
+**Learn more:** [Marks and Notes](https://guide.orbisreader.com/marks-and-notes) · [Annotations and Presets](https://guide.orbisreader.com/annotations-and-presets)
 
 ### Connect: make your reading part of your knowledge base
 
@@ -69,14 +69,14 @@ An ebook reader for your [Obsidian](https://obsidian.md) vault. Read your books,
 - Link to any passage from any note, and see every note that links to the book.
 - Convert a book's text to Markdown that you can search and link to.
 
-**Learn more:** [Reading Records](docs/guide/reading-records.md) · [Generate Notes](docs/guide/generate-notes.md) · [Deep Links](docs/guide/deep-links.md) · [Save as Markdown](docs/guide/save-as-markdown.md)
+**Learn more:** [Reading Records](https://guide.orbisreader.com/reading-records) · [Generate Notes](https://guide.orbisreader.com/generate-notes) · [Deep Links](https://guide.orbisreader.com/deep-links) · [Save as Markdown](https://guide.orbisreader.com/save-as-markdown)
 
 ### Share: take your books and annotations anywhere
 
 - Save a book as a PDF with your marks and notes, or save a PDF digest with just your annotations.
 - Save a book as Markdown or your notes as an EPUB, to read in other apps or send to others.
 
-**Learn more:** [Exporting and Converting](docs/guide/exporting-and-converting.md) · [Save as PDF](docs/guide/save-as-pdf.md) · [Save Annotations as PDF](docs/guide/save-annotations-as-pdf.md) · [Save as Markdown](docs/guide/save-as-markdown.md) · [Notes to EPUB](docs/guide/notes-to-epub.md)
+**Learn more:** [Exporting and Converting](https://guide.orbisreader.com/exporting-and-converting) · [Save as PDF](https://guide.orbisreader.com/save-as-pdf) · [Save Annotations as PDF](https://guide.orbisreader.com/save-annotations-as-pdf) · [Save as Markdown](https://guide.orbisreader.com/save-as-markdown) · [Notes to EPUB](https://guide.orbisreader.com/notes-to-epub)
 
 ### Foundations: your choices, your devices, your data
 
@@ -85,7 +85,7 @@ An ebook reader for your [Obsidian](https://obsidian.md) vault. Read your books,
 - **Your sync:** Keep using the vault sync you already have, such as Obsidian Sync, to continue on another device where you left off, with your styles, presets, dashboards and pronunciations already there.
 - **Your data:** Keep everything private: no telemetry, voices and dictionaries that work offline, book files that are never changed, and your data in plain files in your vault.
 
-**Learn more:** [Getting Started](docs/guide/getting-started.md) · [Sync and Devices](docs/guide/sync-and-devices.md) · [The .orbis File](docs/guide/orbis-file.md) · [Settings Reference](docs/guide/settings-reference.md) · [Command Reference](docs/guide/command-reference.md)
+**Learn more:** [Getting Started](https://guide.orbisreader.com/getting-started) · [Sync and Devices](https://guide.orbisreader.com/sync-and-devices) · [The .orbis File](https://guide.orbisreader.com/orbis-file) · [Settings Reference](https://guide.orbisreader.com/settings-reference) · [Command Reference](https://guide.orbisreader.com/command-reference)
 
 ---
 
@@ -97,7 +97,7 @@ An ebook reader for your [Obsidian](https://obsidian.md) vault. Read your books,
 
 ![The same page saved as a PDF and opened in Obsidian, with each mark drawn where it was made and a note shown as a PDF comment beside its passage](docs/images/screenshot-06-annotations-pdf-desktop.png)
 
-*The same page after [Save as PDF](docs/guide/save-as-pdf.md), with your marks drawn where you made them and your notes as PDF comments.*
+*The same page after [Save as PDF](https://guide.orbisreader.com/save-as-pdf), with your marks drawn where you made them and your notes as PDF comments.*
 
 <p>
 <img src="docs/images/screenshot-03-listening-tablet.jpg" alt="Listening on a tablet in Focus mode: the sentence being read is highlighted, with the listening bar above the text" height="360">
@@ -115,11 +115,11 @@ An ebook reader for your [Obsidian](https://obsidian.md) vault. Read your books,
 
 ## User guide
 
-The [User Guide](docs/guide/README.md) explains every feature step by step.
+The [User Guide](https://guide.orbisreader.com/) explains every feature step by step.
 
-- **New to Orbis?** Start with [Getting Started](docs/guide/getting-started.md).
-- **Looking for a setting or a command?** See the [Settings Reference](docs/guide/settings-reference.md) and the [Command Reference](docs/guide/command-reference.md).
-- **Something not working?** See [Troubleshooting](docs/guide/troubleshooting.md).
+- **New to Orbis?** Start with [Getting Started](https://guide.orbisreader.com/getting-started).
+- **Looking for a setting or a command?** See the [Settings Reference](https://guide.orbisreader.com/settings-reference) and the [Command Reference](https://guide.orbisreader.com/command-reference).
+- **Something not working?** See [Troubleshooting](https://guide.orbisreader.com/troubleshooting).
 
 ---
 
@@ -160,7 +160,7 @@ The [User Guide](docs/guide/README.md) explains every feature step by step.
 3. Use the toolbar at the top of the reader to open the Navigator (contents, search, annotations, linked vault notes and stats), bookmark a page, listen, and change the display style
 4. To turn on optional features, such as book sources, look-up dictionaries, the library, reading records and listening voices, go to **Settings → Orbis Reader → Setup**. The **Welcome to Orbis Reader** dialog takes you there the first time Orbis runs on a device
 
-See [Getting Started](docs/guide/getting-started.md) for a full walkthrough.
+See [Getting Started](https://guide.orbisreader.com/getting-started) for a full walkthrough.
 
 ---
 
@@ -172,7 +172,7 @@ Orbis never changes your book files. It keeps each book's data in a `!orbis-data
 - A reading-location file for each device, so each device keeps its own place
 - Recordings, in an `audio/` folder, if you record the book
 
-The `.orbis` and location files are plain JSON that you can inspect, back up or sync. Selecting a `.orbis` file opens the book's reading data: its cover, reading activity on each device, contents, annotations and the notes that link to the book. See [The .orbis File](docs/guide/orbis-file.md).
+The `.orbis` and location files are plain JSON that you can inspect, back up or sync. Selecting a `.orbis` file opens the book's reading data: its cover, reading activity on each device, contents, annotations and the notes that link to the book. See [The .orbis File](https://guide.orbisreader.com/orbis-file).
 
 ---
 
@@ -196,7 +196,7 @@ Web look-ups and links in books open in your web browser, but only when you sele
 
 Orbis Reader implements ARIA roles, keyboard navigation, and semantic focus management for its interface components (menus, sidebars, toolbars).
 
-**Screen readers**: Orbis Reader hasn't been tested with screen readers or other assistive technology, and some of them may have trouble reading a book's text. However, the plugin can read books aloud; see [Listening](docs/guide/listening.md).
+**Screen readers**: Orbis Reader hasn't been tested with screen readers or other assistive technology, and some of them may have trouble reading a book's text. However, the plugin can read books aloud; see [Listening](https://guide.orbisreader.com/listening).
 
 ---
 

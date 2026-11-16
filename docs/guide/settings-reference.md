@@ -30,7 +30,7 @@ The results include the matching Orbis Reader settings.
 
 ## Settings pages
 
-The Orbis Reader settings open on a list of ten pages. Each row describes what its page contains. The last row shows the version of the plugin.
+The Orbis Reader settings open on a list of ten pages. Each row describes what its page contains. The last row shows the version of the plugin. Its **User guide** button opens this guide in your browser.
 
 | Page | What it contains |
 |---|---|

@@ -110,14 +110,14 @@ that nothing else on this page tracks.
 
 ### 5.9 Documentation site
 
-The user guide builds as a VitePress site (`pnpm docs:build`, in the gate). It goes live after the repository is
-public, not before; the steps are in [Documentation site](docs-site.md#going-live).
+The user guide builds as a VitePress site (`pnpm docs:build`, in the gate) and is live at
+<https://guide.orbisreader.com/>; how it was set up is in [Documentation site](docs-site.md#going-live).
 
-- [ ] Register the domain, verify it for the `rastewart` account, and point the `guide` subdomain at GitHub
-- [ ] Add the publishing workflow, turn Pages on with the custom domain, and enforce HTTPS
-- [ ] Name the site as the repository's website and in `package.json`'s `homepage`
-- [ ] Point the README's **Learn more** links and *User guide* section at the site
-- [ ] Add a Help link inside Orbis Reader that opens the site
+- [x] Register the domain, verify it for the `rastewart` account, and point the `guide` subdomain at GitHub
+- [x] Add the publishing workflow, turn Pages on with the custom domain, and enforce HTTPS
+- [x] Name the site as the repository's website and in `package.json`'s `homepage`
+- [x] Point the README's **Learn more** links and *User guide* section at the site
+- [x] Add a Help link inside Orbis Reader that opens the site
 
 ---
 
