@@ -9,3 +9,8 @@ overrides:
   # VitePress 1.6.4 asks for Vite 5, whose development server has advisories fixed only in 6.4.4 and later (and
   # brings esbuild 0.21, GHSA-67mh-4wv8-2f99). The docs site builds and serves the same on Vite 6.
   vite@5: ^6.4.4
+  # Two dev-tool advisories fixed only in a new major (GHSA-238p-pmpm-9mq7, GHSA-g3hv-75wg-m249). KaTeX comes in
+  # through markdownlint's math syntax and is never asked to render; minimatch through ESLint, on our own globs.
+  # Neither ships. Forced to the fixed versions so the gate runs on them rather than carrying the alerts.
+  'katex@<0.18.2': ^0.18.2
+  'minimatch@>=7.0.0 <11.0.1': ^11.0.1
