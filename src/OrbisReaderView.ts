@@ -150,7 +150,7 @@ import {
 import { type GenProgress } from './reader/tts/recording-generator';
 import { mixLiveVoiceFor, mixLiveVoiceOnDevice, mixVoiceOnDevice } from './reader/tts/recording-library';
 import { type FinishedRun, RecordingRun } from './reader/tts/recording-run';
-import { type ResolvedLiveVoice, type SpeakOnceDeps, speakOnce } from './reader/tts/speak-once';
+import { type ResolvedLiveVoice, resolveDeviceLiveVoice, type SpeakOnceDeps, speakOnce } from './reader/tts/speak-once';
 import type { TtsEngineId } from './reader/tts/TtsEngine';
 import { getReadingUnits } from './reader/tts/tts-blocks';
 import { orbisVoiceOrDefault } from './reader/tts/voice-catalog';
@@ -2748,10 +2748,6 @@ export class OrbisReaderView
   resolvedSystemVoiceURI(): string | undefined {
     return this.plugin.getDeviceVoicePref()?.systemVoiceURI;
   }
-  /** The device's live voice as a single resolved value, for one-shot speech (the lookup popup's
-   *  Speak button). Same source precedence as TtsController.resolveSource() — stored preference,
-   *  else system when available — but deliberately ignores a mix chapter's live override: speaking
-   *  a selection is a device action, not part of the book's per-chapter voice assignment. */
   /** Deps for a one-shot utterance. `applyDictionary` off speaks the text verbatim, which is what
    *  auditioning a respelling needs. */
   private speakOnceDeps(applyDictionary: boolean): SpeakOnceDeps {
@@ -2764,12 +2760,14 @@ export class OrbisReaderView
       askForVoice: () => askForLiveVoice(this.app, this.plugin), // the live voice: the full prompt
     };
   }
+  /**
+   * The device's live voice for one-shot speech (look-up's Speak, an unpinned chapter preview). Ignores a mix
+   * chapter's override: speaking a selection is a device action. **The shared rule, not a copy:** a copy here kept
+   * "no preference means a system voice" after the rule changed, so Speak used a Windows voice while Listening said
+   * Amy. See `live-voice-default.test.ts`.
+   */
   resolvedLiveVoice(): ResolvedLiveVoice {
-    const pref = this.plugin.getDeviceVoicePref();
-    const systemOk = WebSpeechEngine.isSupported();
-    const useSystem = pref?.source === 'system' ? systemOk : pref?.source !== 'orbis' && systemOk;
-    if (useSystem) return { source: 'system', uri: this.resolvedSystemVoiceURI() };
-    return { source: 'orbis', ...this.resolvedOrbisVoice() };
+    return resolveDeviceLiveVoice(this.plugin.getDeviceVoicePref(), WebSpeechEngine.isSupported());
   }
   /** Persist the current listening position (sentence being read) as the book's last-read
    *  location. Only needed in the full-screen player where the reader isn't paging, so no
