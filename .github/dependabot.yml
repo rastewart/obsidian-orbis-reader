@@ -1,0 +1,20 @@
+# Keeps the GitHub Actions pins current. Every action in .github/workflows is pinned to a full commit SHA, which never
+# moves by itself; Dependabot proposes the new SHA and its version comment together, once a month, in one pull request.
+#
+# **npm is deliberately not here.** Dependencies are exact pins updated by hand each quarter, and security advisories
+# arrive as Dependabot alerts either way — see docs/design/dependency-security.md.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    # A new release must have been out a week before it is proposed, so a bad one has time to be withdrawn.
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ['*']
+    commit-message:
+      prefix: 'Actions:'
+    labels: [dependencies]

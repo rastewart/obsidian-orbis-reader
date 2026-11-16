@@ -1,0 +1,96 @@
+name: Bug report
+description: Something in Orbis Reader doesn't work the way the user guide says it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem. The details below let it be reproduced and fixed.
+
+        Before you start, check the [Troubleshooting](https://guide.orbisreader.com/troubleshooting) page, and search the [existing issues](https://github.com/rastewart/obsidian-orbis-reader/issues?q=is%3Aissue) in case it's already reported.
+
+        **A security problem?** Don't open an issue. [Report it privately](https://github.com/rastewart/obsidian-orbis-reader/security/advisories/new) instead.
+
+  - type: textarea
+    id: build
+    attributes:
+      label: Orbis Reader build
+      description: In Obsidian, run **About Orbis Reader** from the command palette, select **Copy**, and paste here.
+      placeholder: |
+        Version: 0.1.0
+        Build: …
+        Commit: …
+      render: text
+    validations:
+      required: true
+
+  - type: input
+    id: obsidian
+    attributes:
+      label: Obsidian version
+      description: In Obsidian, **Settings → General** shows the version.
+      placeholder: '1.15.1'
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device and operating system
+      placeholder: Windows 11, macOS 26, iPadOS 26, Android 15…
+    validations:
+      required: true
+
+  - type: dropdown
+    id: format
+    attributes:
+      label: Book format
+      description: The format of the book the problem happens with.
+      options:
+        - EPUB
+        - MOBI
+        - AZW3
+        - FB2
+        - CBZ
+        - Not about a particular book
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: Where the book came from
+      description: For example a store, Project Gutenberg, Calibre, or converted from your notes with Orbis Reader.
+      placeholder: Project Gutenberg
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead. Steps that make it happen again help the most. A screenshot helps too.
+      placeholder: |
+        1. Open …
+        2. Select …
+        Expected: …
+        What happened: …
+    validations:
+      required: true
+
+  - type: textarea
+    id: debug-log
+    attributes:
+      label: Debug log
+      description: |
+        If you can: run **Toggle debug log** from the command palette, repeat what went wrong, and copy the log here.
+        If the problem freezes or closes Obsidian, run **Toggle writing the debug log to a note** first. The log is then saved as a note you can read after restarting.
+      render: text
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I checked the Troubleshooting page and searched the existing issues.
+          required: true
+        - label: Any book I attached is one I have the right to share.
+          required: false

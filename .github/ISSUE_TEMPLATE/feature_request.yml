@@ -1,0 +1,41 @@
+name: Feature request
+description: Something you're trying to do that Orbis Reader makes hard or doesn't support.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion. Describe what you're trying to do and where Orbis Reader gets in the way, rather than only the control you'd like. That leaves room for the best way to solve it.
+
+        Some requests already have a decision behind them, recorded in the [roadmap](https://github.com/rastewart/obsidian-orbis-reader/blob/main/docs/design/roadmap.md). Search the [existing issues](https://github.com/rastewart/obsidian-orbis-reader/issues?q=is%3Aissue) too.
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: What you're trying to do
+      description: The task or outcome, in your own words.
+      placeholder: When I finish a book, I want to …
+    validations:
+      required: true
+
+  - type: textarea
+    id: obstacle
+    attributes:
+      label: Where Orbis Reader gets in the way
+      description: What happens now, and why it doesn't work for you.
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What you've tried
+      description: Settings, commands or workarounds you've tried, and ideas for how it could work.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the existing issues and the user guide.
+          required: true
