@@ -16,14 +16,12 @@ Orbis Reader needs Obsidian 1.14.4 or later. It is not listed in the Obsidian co
 
 BRAT (Beta Reviewers Auto-update Tester, by tfthacker) is a community plugin that installs plugins from their repository. BRAT also installs each new release of Orbis Reader when Obsidian starts.
 
-BRAT installs plugins from GitHub. Orbis Reader is not yet published on GitHub, so until it is, [install Orbis Reader by hand](#install-orbis-reader-by-hand).
-
 1. Go to **Settings → Community plugins**.
 2. If **Restricted mode** is enabled, disable it.
 3. Select **Browse** and search for **BRAT**.
 4. Select **Install**, then select **Enable**.
 5. Open the command palette (`Ctrl/Cmd+P`) and run BRAT's **Add a beta plugin for testing** command.
-6. Paste the address of the Orbis Reader repository and confirm.
+6. Paste the address of the Orbis Reader repository, `https://github.com/rastewart/obsidian-orbis-reader`, and confirm.
 7. When BRAT prompts you, enable Orbis Reader.
 
 To check for an update immediately, use the button on BRAT's settings page. BRAT's settings page lists every plugin that BRAT manages. To stay on one version, add Orbis Reader in BRAT at a release tag. BRAT then does not update it.
@@ -34,7 +32,7 @@ Orbis Reader sometimes publishes a beta, which is a version for testing before i
 
 ## Install Orbis Reader by hand
 
-1. Download the three files of the latest release: `main.js`, `manifest.json` and `styles.css`.
+1. Go to the [Orbis Reader releases](https://github.com/rastewart/obsidian-orbis-reader/releases) and download the three files of the newest release: `main.js`, `manifest.json` and `styles.css`. The release named **Dictionaries** contains the dictionaries for Look-up, not the plugin.
 2. In your vault, create the folder `.obsidian/plugins/orbis-reader/`.
 3. Copy the three files into that folder.
 4. In Obsidian, go to **Settings → Community plugins**.

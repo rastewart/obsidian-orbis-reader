@@ -139,17 +139,31 @@ The [User Guide](https://guide.orbisreader.com/) explains every feature step by 
 
 ## Installation
 
-### Community plugin store (pending review)
+Orbis Reader is not in Obsidian's community plugin store yet. It will be submitted once testing is finished. Until then, install it with BRAT or by hand.
+
+### With BRAT (recommended)
+
+BRAT is a community plugin that installs plugins from GitHub and keeps them up to date.
+
+1. In Obsidian: **Settings → Community plugins → Browse**, search for **BRAT**, then select **Install** and **Enable**
+2. Run BRAT's **Add a beta plugin for testing** command from the command palette
+3. Enter `https://github.com/rastewart/obsidian-orbis-reader`, confirm, and enable Orbis Reader when BRAT prompts you
+
+BRAT installs each new version when Obsidian starts, betas included. See [Getting Started](https://guide.orbisreader.com/getting-started#install-orbis-reader-with-brat) for how to stay on one version.
+
+### Manual install
+
+1. From the [releases](https://github.com/rastewart/obsidian-orbis-reader/releases), download `main.js`, `manifest.json`, and `styles.css` from the newest Orbis Reader release (the **Dictionaries** release contains Look-up's dictionaries, not the plugin)
+2. Copy them to `<your-vault>/.obsidian/plugins/orbis-reader/`
+3. In Obsidian: **Settings → Community plugins** — enable Orbis Reader
+
+### Community plugin store (not yet listed)
+
+Once Orbis Reader is listed:
 
 1. In Obsidian: **Settings → Community plugins → Browse**
 2. Search for **Orbis Reader**
 3. Select **Install**, then **Enable**
-
-### Manual install
-
-1. Download `main.js`, `manifest.json`, and `styles.css` from the [latest release](https://github.com/rastewart/obsidian-orbis-reader/releases/latest)
-2. Copy them to `<your-vault>/.obsidian/plugins/orbis-reader/`
-3. In Obsidian: **Settings → Community plugins** — enable Orbis Reader
 
 ---
 
