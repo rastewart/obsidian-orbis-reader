@@ -335,6 +335,8 @@ Messages about a feed use the word "source".
 | *The source refused the username or password.* | The sign-in failed. The username or password is wrong, or the account ended. Enter them again for the feed in **Settings → Orbis Reader → Book sources** |
 | *The source refused that request.* | The feed blocked a request that had no username or password, usually to protect against bots. The **↗** button opens the page on the feed's website |
 | *The source says there is nothing at that address.* | The address is wrong, or the feed removed that page |
+| *The source isn't available right now. It may be down for maintenance. Try again later.* | The source's server is down, busy or under maintenance. Project Gutenberg shows this during its maintenance. Try again later |
+| *The source asked Orbis Reader to slow down. Try again in a few minutes.* | The source received too many requests in a short time. Wait a few minutes, then try again |
 | *The source answered with an error.* | The server failed, or it redirected the request more than three times. Try again later |
 | *The source answered with something that is not an OPDS feed.* | The address responded, but not with an OPDS feed. Make sure that the address is the OPDS address, not the website's home page |
 | *That looks like an OPDS 2.0 feed, which Orbis Reader cannot read yet.* | The feed uses OPDS 2.0. Orbis Reader reads OPDS 1.x. Most feeds also publish OPDS 1.x |

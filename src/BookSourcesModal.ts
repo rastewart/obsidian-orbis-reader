@@ -59,6 +59,8 @@ const FAILURE_MESSAGES: Record<SourceFailure, Parameters<typeof t>[0]> = {
   unauthorized: 'sources.failed_unauthorized',
   forbidden: 'sources.failed_forbidden',
   'not-found': 'sources.failed_not_found',
+  unavailable: 'sources.failed_unavailable',
+  'rate-limited': 'sources.failed_rate_limited',
   'server-error': 'sources.failed_server',
   'too-large': 'sources.failed_too_large',
   unreadable: 'sources.failed_unreadable',

@@ -194,7 +194,16 @@ describe('reasonFor', () => {
     expect(reasonFor(404, false)).toBe('not-found');
     expect(reasonFor(410, false)).toBe('not-found');
     expect(reasonFor(500, false)).toBe('server-error');
-    expect(reasonFor(503, true)).toBe('server-error');
+    expect(reasonFor(501, true)).toBe('server-error');
+  });
+
+  // Gutenberg answers 503 with a "Temporarily Down for Maintenance" page: a source that is down, worth trying later.
+  it('tells a source that is down or busy from one that is broken', () => {
+    for (const status of [502, 503, 504]) {
+      expect(reasonFor(status, false)).toBe('unavailable');
+      expect(reasonFor(status, true)).toBe('unavailable');
+    }
+    expect(reasonFor(429, false)).toBe('rate-limited');
   });
 });
 

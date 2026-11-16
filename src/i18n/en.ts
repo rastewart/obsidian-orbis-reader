@@ -980,6 +980,10 @@ const en = {
     'The source refused that request. Some sources block what they publish — the ↗ button opens this page on their website.',
   'sources.open_in_browser': 'Open this page on the source’s website',
   'sources.failed_not_found': 'The source says there is nothing at that address.',
+  // A source that is down or busy rather than broken: each says what to do next, which the generic error cannot.
+  'sources.failed_unavailable':
+    'The source isn’t available right now. It may be down for maintenance. Try again later.',
+  'sources.failed_rate_limited': 'The source asked Orbis Reader to slow down. Try again in a few minutes.',
   'sources.failed_server': 'The source answered with an error.',
   'sources.failed_too_large': 'The source sent more than Orbis Reader will read in one go.',
   'sources.failed_unreadable': 'The source answered with something that is not an OPDS feed.',

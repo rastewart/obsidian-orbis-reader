@@ -75,6 +75,10 @@ export type SourceFailure =
   | 'unauthorized'
   | 'forbidden'
   | 'not-found'
+  /** 502, 503 or 504: the server is down, overloaded or under maintenance — worth trying again later. */
+  | 'unavailable'
+  /** 429: the source asked for fewer requests. */
+  | 'rate-limited'
   | 'server-error'
   | 'too-large'
   | 'unreadable'
@@ -223,11 +227,18 @@ export function sameOrigin(target: string, against: string): boolean {
  * password on a public catalog nobody has an account for, and sends a reader to fix a setting that was never wrong.
  *
  * With credentials attached, 403 does mean what 401 means — a server that has seen who you are and said no.
+ *
+ * **A source that is down is not a source that is broken.** 502, 503 and 504 are a gateway or a server saying it
+ * cannot answer right now — Gutenberg answers 503 with a "Temporarily Down for Maintenance" page — so the reader is
+ * told it is worth trying again later. 429 is the source asking for fewer requests, which is a different next step:
+ * wait a few minutes. Every other status keeps the generic message.
  */
 export function reasonFor(status: number, hadAuth: boolean): SourceFailure {
   if (status === 401) return hadAuth ? 'unauthorized' : 'requires-authentication';
   if (status === 403) return hadAuth ? 'unauthorized' : 'forbidden';
   if (status === 404 || status === 410) return 'not-found';
+  if (status === 502 || status === 503 || status === 504) return 'unavailable';
+  if (status === 429) return 'rate-limited';
   return 'server-error';
 }
 
