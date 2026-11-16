@@ -48,6 +48,17 @@ describe('readLinkAddress', () => {
     expect(readLinkAddress('java\nscript:void(0)').kind).toBe('script');
   });
 
+  it('refuses the other schemes that exist to carry code, however they are spelled', () => {
+    // A data: page is a whole document with its own scripts; vbscript: is a script link by another name.
+    expect(readLinkAddress('data:text/html,<script>alert(1)</script>').kind).toBe('script');
+    expect(readLinkAddress('DATA:text/html;base64,PHNjcmlwdD4=').kind).toBe('script');
+    expect(readLinkAddress('  data:text/plain,hello').kind).toBe('script');
+    expect(readLinkAddress('da\tta:text/html,x').kind).toBe('script');
+    expect(readLinkAddress('vbscript:msgbox(1)').kind).toBe('script');
+    expect(readLinkAddress('VBScript:msgbox(1)').kind).toBe('script');
+    expect(readLinkAddress('vb\nscript:msgbox(1)').kind).toBe('script');
+  });
+
   it('names the host a web link goes to', () => {
     expect(readLinkAddress('https://example.com/page?q=1')).toMatchObject({ kind: 'web', host: 'example.com' });
     expect(readLinkAddress('HTTP://EXAMPLE.COM/')).toMatchObject({ kind: 'web', host: 'example.com' });

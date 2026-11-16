@@ -211,7 +211,11 @@ them.
 
 **A `javascript:` link is refused, with a notice.** `hardenBookDoc` removes the address when the page loads and marks
 the link (`SCRIPT_LINK_ATTR`), so `LinkCheck.watch` can say why selecting it does nothing; `readLinkAddress` refuses
-one that arrives anyway.
+one that arrives anyway. **`vbscript:` and `data:` links are refused the same way** by `readLinkAddress`, with the
+same notice: each exists to carry code (a `data:text/html` address is a whole page with its own scripts), and no book
+has a use for one. The guard leaves `data:` addresses alone elsewhere, since pictures, media and fonts use them; only a
+link is refused. Found by CodeQL's first scan of the public repository (2026-11-16), which noted that the scheme check
+covered `javascript:` alone.
 
 What happens after **Open** belongs to Obsidian and the system, and differs by platform. Measured 2026-10-25 with
 `fixtures/link-checks.epub`:

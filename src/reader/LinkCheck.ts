@@ -149,7 +149,7 @@ export class LinkCheck {
   }
 
   private refuseScript(): void {
-    this.debug('link check — refused a javascript: link');
+    this.debug('link check — refused a script link (javascript:, vbscript: or data:)');
     new Notice(t('notices.script_links_not_opened'));
   }
 

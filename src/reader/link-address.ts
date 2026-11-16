@@ -13,7 +13,10 @@
 export type LinkKind =
   /** `obsidian://orbis-nav` — another book of a converted set, opened directly. See `OrbisReaderView.openBookLink`. */
   | 'book'
-  /** `javascript:` — refused outright. No book has a use for one, and it would run in Obsidian's window. */
+  /**
+   * `javascript:`, `vbscript:` and `data:` — refused outright. Each exists to carry code (a `data:text/html` page is
+   * a document with its own scripts), no book has a use for one, and a script link would run in Obsidian's window.
+   */
   | 'script'
   | 'web'
   | 'email'
@@ -41,6 +44,8 @@ export function readLinkAddress(raw: string): LinkAddress {
   }
   switch (url.protocol) {
     case 'javascript:':
+    case 'vbscript:':
+    case 'data:':
       return { kind: 'script', url };
     case 'http:':
     case 'https:':
