@@ -105,7 +105,7 @@ when a stable VitePress asks for a fixed Vite itself.
 **GitHub Pages, from this repository.** A workflow builds the site and hands it to Pages, so no second repository or
 publishing branch is needed. Pages on a public repository costs nothing.
 
-**A domain of its own.** The site is meant to be at `docs.orbisreader.com`; the domain `orbisreader.com` is
+**A domain of its own.** The site is meant to be at `guide.orbisreader.com`; the domain `orbisreader.com` is
 registered. A subdomain points at GitHub with one `CNAME` record.
 
 **Public with the repository, not before it.** The repository is `rastewart/obsidian-orbis-reader`, on a personal
@@ -124,7 +124,7 @@ points at GitHub.
    repository's), select **Add a domain** and enter the domain (`orbisreader.com`). GitHub gives a TXT
    record to add at `_github-pages-challenge-rastewart.<domain>`. Add it at the DNS provider, wait for it to appear,
    and select **Verify**. Verifying the domain also covers its subdomains.
-3. **Point the subdomain at GitHub.** At the DNS provider, add a `CNAME` record from `docs` to `rastewart.github.io`
+3. **Point the subdomain at GitHub.** At the DNS provider, add a `CNAME` record from `guide` to `rastewart.github.io`
    (the account's address, with no repository name).
 4. **Add the publishing workflow,** `.github/workflows/docs.yml`:
    - **Runs** on a push to `main` that changes `docs/guide/**`, `docs/.vitepress/**`, `package.json` or
@@ -137,21 +137,21 @@ points at GitHub.
    - **Every action is pinned by full commit SHA** with its version in a comment, like the other workflows, and
      `pnpm lint:workflows` passes.
 5. **Turn Pages on for the repository.** In the repository's **Settings → Pages**, set **Source** to **GitHub
-   Actions**, and enter `docs.<domain>` as the **Custom domain**. With a workflow as the source, GitHub keeps the
+   Actions**, and enter `guide.orbisreader.com` as the **Custom domain**. With a workflow as the source, GitHub keeps the
    domain in the settings, and no `CNAME` file goes in the repository. Push the workflow or run it by hand.
 6. **Turn on HTTPS.** Once GitHub has issued the certificate for the domain, select **Enforce HTTPS**. The certificate
    can take a while; the checkbox is unavailable until it is ready.
-7. **Check the live site.** The home page loads at `https://docs.<domain>/`; a page opened directly loads, for example
+7. **Check the live site.** The home page loads at `https://guide.orbisreader.com/`; a page opened directly loads, for example
    `/listening`; search finds a word; the `← User Guide` links and the index's link to `docs/README.md` work; and a
    push that changes a guide page updates the site.
 
 ### After the site is live
 
 - **Name the site as the repository's website:** the repository's **About** settings, or
-  `gh repo edit --homepage https://docs.<domain>/`. Set `homepage` in `package.json` to the same address.
+  `gh repo edit --homepage https://guide.orbisreader.com/`. Set `homepage` in `package.json` to the same address.
 - **Point the README at the site.** The README's **Learn more** links and its *User guide* section go to the site's
   pages instead of the Markdown files. Each page keeps its name, without `.md`: `docs/guide/listening.md` is
-  `https://docs.<domain>/listening`.
+  `https://guide.orbisreader.com/listening`.
 - **Add a Help link inside Orbis Reader** that opens the site. Where it goes and what it says are design questions for
   then: a string through `t()`, the product's wording, and the plugin's settings conventions.
 - [Roadmap §5.8](roadmap.md#58-manifest--versioning) still has `authorUrl` to decide. The site is one candidate for it.

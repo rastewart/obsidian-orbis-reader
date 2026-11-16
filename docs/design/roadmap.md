@@ -113,7 +113,7 @@ that nothing else on this page tracks.
 The user guide builds as a VitePress site (`pnpm docs:build`, in the gate). It goes live after the repository is
 public, not before; the steps are in [Documentation site](docs-site.md#going-live).
 
-- [ ] Register the domain, verify it for the `rastewart` account, and point the `docs` subdomain at GitHub
+- [ ] Register the domain, verify it for the `rastewart` account, and point the `guide` subdomain at GitHub
 - [ ] Add the publishing workflow, turn Pages on with the custom domain, and enforce HTTPS
 - [ ] Name the site as the repository's website and in `package.json`'s `homepage`
 - [ ] Point the README's **Learn more** links and *User guide* section at the site
