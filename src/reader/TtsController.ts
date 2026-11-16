@@ -3559,6 +3559,8 @@ export class TtsController {
     this.playIconEl = null;
     this.playerEl = null;
     this.playerCoverEl = null;
+    this.playerCoverFallbackEl = null;
+    this.coverLoadedForFile = null; // else a player rebuilt for the SAME book skips its (hidden) cover — see loadCover
     this.playerTitleEl = null;
     this.playerAuthorEl = null;
     this.playerPlayBtn = null;

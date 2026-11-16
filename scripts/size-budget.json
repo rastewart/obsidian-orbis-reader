@@ -17,7 +17,7 @@
   "src/pdf-writer.ts": 991,
   "src/reader/AnnotationController.ts": 2717,
   "src/reader/SearchController.ts": 1243,
-  "src/reader/TtsController.ts": 3583,
+  "src/reader/TtsController.ts": 3585,
   "src/reader/export-format.ts": 914,
   "src/reader/tts/recording.ts": 1225,
   "src/settings.ts": 1434,
