@@ -20,13 +20,23 @@ BRAT (Beta Reviewers Auto-update Tester, by tfthacker) is a community plugin tha
 2. If **Restricted mode** is enabled, disable it.
 3. Select **Browse** and search for **BRAT**.
 4. Select **Install**, then select **Enable**.
-5. Open the command palette (`Ctrl/Cmd+P`) and run BRAT's **Add a beta plugin for testing** command.
-6. Paste the address of the Orbis Reader repository, `https://github.com/rastewart/obsidian-orbis-reader`, and confirm.
-7. When BRAT prompts you, enable Orbis Reader.
+5. Go to **Settings → BRAT**.
+6. Next to **Beta plugin list**, select the **+** button.
+7. In the **Repository** box, enter the address of the Orbis Reader repository: `https://github.com/rastewart/obsidian-orbis-reader`.
+8. Select **Select a version**, and select the version. To get each new version when it comes out, select **Latest version**. To stay on one version, select a release, such as `0.1.0-beta.4`. Do not select **dictionaries**: that release has the dictionaries for Look-up, not the plugin.
+9. Make sure that **Enable after installing the plugin** is selected.
+10. Select **Add plugin**.
 
-To check for an update immediately, use the button on BRAT's settings page. BRAT's settings page lists every plugin that BRAT manages. To stay on one version, add Orbis Reader in BRAT at a release tag. BRAT then does not update it.
+You can also start at step 7 from the command palette (`Ctrl/Cmd+P`): run BRAT's **Add a beta plugin for testing** command.
 
-Orbis Reader sometimes publishes a beta, which is a version for testing before it is released. A beta's version number ends in `-beta` and a number, such as `0.2.0-beta.1`. When BRAT installs the latest version of Orbis Reader, it installs betas too, and then the full release when it comes out. To get full releases only, add Orbis Reader at a release tag, and change the tag on BRAT's settings page when a new release comes out. The community plugin store never offers a beta.
+The **Beta plugin list** on BRAT's settings page lists every plugin that BRAT manages. Orbis Reader is listed as `rastewart/obsidian-orbis-reader`. Next to it:
+
+- To check for an update immediately, select the update button (two curved arrows).
+- To change the version, select the edit button (pencil), and select the version in the **Change plugin version** dialog.
+
+If you selected one release, BRAT does not update Orbis Reader.
+
+Orbis Reader sometimes publishes a beta, which is a version for testing before it is released. A beta's version number ends in `-beta` and a number, such as `0.2.0-beta.1`. When BRAT installs the latest version of Orbis Reader, it installs betas too, and then the full release when it comes out. To get full releases only, select a full release in step 8, and select the new release on BRAT's settings page when it comes out. The community plugin store never offers a beta.
 
 ---
 

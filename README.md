@@ -146,8 +146,8 @@ Orbis Reader is not in Obsidian's community plugin store yet. It will be submitt
 BRAT is a community plugin that installs plugins from GitHub and keeps them up to date.
 
 1. In Obsidian: **Settings → Community plugins → Browse**, search for **BRAT**, then select **Install** and **Enable**
-2. Run BRAT's **Add a beta plugin for testing** command from the command palette
-3. Enter `https://github.com/rastewart/obsidian-orbis-reader`, confirm, and enable Orbis Reader when BRAT prompts you
+2. Go to **Settings → BRAT** and select the **+** next to **Beta plugin list**
+3. Enter `https://github.com/rastewart/obsidian-orbis-reader` as the repository, select **Latest version** (not **dictionaries**, which is Look-up's dictionaries), keep **Enable after installing the plugin** selected, and select **Add plugin**
 
 BRAT installs each new version when Obsidian starts, betas included. See [Getting Started](https://guide.orbisreader.com/getting-started#install-orbis-reader-with-brat) for how to stay on one version.
 

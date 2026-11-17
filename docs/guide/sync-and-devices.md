@@ -23,6 +23,41 @@ Orbis Reader writes its files to your vault. A sync tool copies the vault files 
 
 If you use Obsidian on one device only, you do not need the settings on the **Devices** page. No other feature of Orbis Reader requires them.
 
+### Files that your sync tool must copy
+
+Orbis Reader keeps your books and its data in ordinary files in the vault. None of them are hidden files. Your sync tool must copy all of these file types:
+
+| Files | Examples |
+|---|---|
+| Books | `.epub`, `.mobi`, `.azw3`, `.fb2`, `.cbz` |
+| Each book's data, in its `!orbis-data` folder | The `.orbis` file, and the `.json` files for annotations and reading locations |
+| Configuration files, if you share them | The `.json` files in `!orbis-data/sync` |
+| Notes | Title notes, reading records and generated notes (`.md`), and the `.base` files for reading records |
+| Other files that you make | Cover images, recordings (`.mp3`) and PDF files |
+
+If your sync tool does not copy a book or its `!orbis-data` folder, the book is missing on your other devices, or opens there without your annotations and reading location.
+
+The Files pane does not show every one of these files. Obsidian shows only the file types that Obsidian or an enabled plugin can open, so the `.json` files are not in the Files pane. They are still in your vault, and your sync tool still sees them.
+
+### Obsidian Sync
+
+By default, Obsidian Sync does not copy books or the `.json` files that Orbis Reader writes, because Obsidian does not open these file types.
+
+1. Go to **Settings → Sync**.
+2. Under **Selective sync**, enable **Sync all other types**.
+3. To sync cover images, recordings and PDF files, make sure that **Sync images**, **Sync audio** and **Sync PDFs** are enabled.
+4. Do these steps on each device.
+
+If **Sync all other types** is disabled, your notes sync, but your books and their annotations do not.
+
+Under **Vault configuration sync**, **Installed community plugins** syncs the plugin's settings file (`data.json`) with the plugin. If you enable it, see [Syncing the plugin's settings file](#syncing-the-plugins-settings-file).
+
+### Self-hosted LiveSync, iCloud and Syncthing
+
+These sync tools copy every file type, so you do not need to add file types. Orbis Reader's files are not hidden files, so you do not need the LiveSync settings for hidden files either. Those settings are for the `.obsidian` folder, which contains the plugin's settings file (`data.json`).
+
+If you make your sync tool ignore some files or folders, do not ignore the book files or the `!orbis-data` folders.
+
 ---
 
 ## Devices and device IDs
@@ -316,7 +351,7 @@ These settings are in **Settings → Orbis Reader → Devices**.
 
 ### Changes from another device do not show
 
-1. Make sure that a sync tool copies your vault. Look for the other device's files in your vault. If they are not there, the problem is in the sync tool.
+1. Make sure that a sync tool copies your vault. Look for the other device's files in your vault. If they are not there, the problem is in the sync tool. With Obsidian Sync, make sure that **Sync all other types** is enabled. See [Files that your sync tool must copy](#files-that-your-sync-tool-must-copy).
 2. Make sure that the settings are enabled on both devices. These settings are not shared, so you must enable them on each device. Syncing your `.obsidian` folder does not enable them.
 3. Switch to another app, then back to Obsidian. Orbis Reader reads new files when you return to the window.
 4. For a reading location, close the book and open it again.
