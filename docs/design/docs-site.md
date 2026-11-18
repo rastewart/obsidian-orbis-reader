@@ -157,4 +157,5 @@ points at GitHub.
   `https://guide.orbisreader.com/listening`.
 - **Add a Help link inside Orbis Reader** that opens the site. Where it goes and what it says are design questions for
   then: a string through `t()`, the product's wording, and the plugin's settings conventions.
-- [Roadmap §5.8](roadmap.md#58-manifest--versioning) still has `authorUrl` to decide. The site is one candidate for it.
+- `authorUrl` in `manifest.json` is the author's GitHub profile, not the site: it links to the author, and the
+  repository already names the site as its website.

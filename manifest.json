@@ -5,5 +5,6 @@
   "minAppVersion": "1.14.4",
   "description": "Read, listen to and annotate ebooks in your vault, and make your reading part of your knowledge base.",
   "author": "Rob Stewart",
+  "authorUrl": "https://github.com/rastewart",
   "isDesktopOnly": false
 }

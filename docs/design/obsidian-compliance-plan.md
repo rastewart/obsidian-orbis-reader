@@ -190,7 +190,8 @@ for submission.
 
 Optional, like `fundingUrl`. Not needed for submission.
 
-- [ ] Add `"authorUrl": "https://..."` to `manifest.json`, if wanted
+- [x] `"authorUrl": "https://github.com/rastewart"` in `manifest.json` (2026-11-18): it links to the author, so the
+      GitHub profile rather than the guide, which the repository already names as its website
 
 ### 4.5 Confirm `styles.css` in release assets
 

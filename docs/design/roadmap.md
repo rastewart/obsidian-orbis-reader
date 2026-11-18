@@ -112,8 +112,8 @@ each, are in [Obsidian compliance §8.5](obsidian-compliance-plan.md#85-develope
 
 ### 5.8 Manifest & versioning
 
-- [ ] Optional: `authorUrl` and `fundingUrl` in `manifest.json`. Obsidian's Manifest reference makes both optional
-      (checked 2026-11-18), so they wait on wanting a website or a donation link on the listing
+- [ ] Optional: `fundingUrl` in `manifest.json`, only if donations are to be accepted; the submission requirements
+      say to leave it out otherwise (checked 2026-11-18)
 
 ---
 
