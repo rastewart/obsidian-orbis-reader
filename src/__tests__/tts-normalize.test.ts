@@ -41,6 +41,35 @@ describe('normalizeForSpeech', () => {
   });
 });
 
+describe('normalizeForSpeech — a numeral on its own', () => {
+  it('reads a heading that is only a numeral as a number, the lone I included', () => {
+    // A chapter heading with no heading word, <h3>I</h3>, was read "eye".
+    expect(normalizeForSpeech('I')).toBe('1');
+    expect(normalizeForSpeech('II')).toBe('2');
+    expect(normalizeForSpeech('XIV')).toBe('14');
+    expect(normalizeForSpeech('L')).toBe('50');
+  });
+
+  it('keeps a period or colon after it, and ignores surrounding space', () => {
+    expect(normalizeForSpeech('I.')).toBe('1.');
+    expect(normalizeForSpeech('IV.')).toBe('4.');
+    expect(normalizeForSpeech('  XII:  ')).toBe('12:');
+  });
+
+  it('leaves the numeral alone when anything else is there', () => {
+    expect(normalizeForSpeech('I said.')).toBe('I said.');
+    expect(normalizeForSpeech('“I.”')).toBe('“I.”');
+    expect(normalizeForSpeech('I?')).toBe('I?');
+    expect(normalizeForSpeech('I, too')).toBe('I, too');
+  });
+
+  it('leaves lower case, malformed numerals and other letters alone', () => {
+    expect(normalizeForSpeech('i')).toBe('i');
+    expect(normalizeForSpeech('IIII')).toBe('IIII');
+    expect(normalizeForSpeech('A')).toBe('A');
+  });
+});
+
 describe('normalizeForSpeech — acronyms vs ALL-CAPS words', () => {
   const said = (s: string) => normalizeForSpeech(s);
 

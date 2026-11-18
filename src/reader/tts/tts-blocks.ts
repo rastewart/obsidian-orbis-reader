@@ -172,6 +172,16 @@ const IT_OPENING_RE = /(^|[.!?]\s+)(["'“‘([]*)IT(?=\s+(?:was|is|had|turned|w
 const CAPS_TOKEN_RE = /\b[A-Z][A-Z'’]*[A-Z](?:['’]?s)?\b/g;
 
 /**
+ * Text that is a Roman numeral and nothing else, with at most a period or colon after it: a chapter heading with no
+ * heading word before it, as many books set their chapters (`<h3>I</h3>`). Read
+ * as it was, the engine said "eye" for I and "roman two" for II. A reading unit never spans two blocks, so a unit
+ * this short is a heading or a line on its own, or a sentence that is only a numeral, as in a list numbered
+ * "I. … II. …" — a number every time. The lone I is included, since in a unit of its own it is not the pronoun.
+ * Capitals only: a lone "i" or "v" is more likely a list marker or a letter than a chapter.
+ */
+const LONE_NUMERAL_RE = /^\s*([IVXLCDM]+)([.:]?)\s*$/;
+
+/**
  * Normalize text for the TTS engine (not for display or highlighting — ranges are untouched).
  * Converts a Roman numeral to its digits when it follows a heading word ("Chapter I" →
  * "Chapter 1", "Part IV" → "Part 4"), so espeak-ng doesn't read "Chapter I" as "chapter eye"
@@ -184,6 +194,10 @@ const CAPS_TOKEN_RE = /\b[A-Z][A-Z'’]*[A-Z](?:['’]?s)?\b/g;
  * resyncs at the next sentence boundary.
  */
 export function normalizeForSpeech(text: string, pronouncer?: Pronouncer | null): string {
+  // A numeral with nothing else to say is a number, never a letter — see LONE_NUMERAL_RE.
+  const lone = LONE_NUMERAL_RE.exec(text);
+  const n = lone ? romanToArabic(lone[1]) : null;
+  if (lone && n !== null) text = `${n}${lone[2]}`;
   // Links first, so a URL's own content never reaches the rules below — a path can hold an ALL-CAPS
   // run or a roman-numeral-looking token, and none of it is going to be spoken anyway.
   // Runs of capitals next, while a run can still be told from a lone word in capitals — see lowerCapitalRuns.
