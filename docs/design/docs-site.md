@@ -4,8 +4,7 @@
 
 The user guide in `docs/guide` is also a website, built by [VitePress](https://vitepress.dev) and meant for GitHub
 Pages under a domain of its own. This page covers how the guide becomes the site, what in the repository does it, and
-the steps that put it online. The site goes live with the public repository and not before it: what is left to do is
-tracked in [Roadmap §5.9](roadmap.md#59-documentation-site).
+the steps that put it online. The site is live at <https://guide.orbisreader.com/>.
 
 ---
 

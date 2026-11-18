@@ -16,8 +16,8 @@ per-requirement detail behind §5.
 
 | | |
 |---|---|
-| **Blocking release** | The GitHub release workflow, with `styles.css` among its assets (§5.7); the dictionaries moved to their own release (§5.7); `authorUrl` / `fundingUrl` (§5.8); the version-bump procedure (§5.6); the Obsidian pre-release scanner, submission and announcement (§5.7) |
-| **Documentation** | The end-user guide (§4) — every page exists; what is left is read-throughs, not gaps. The guide as a website (§5.9), which goes live after the repository is public |
+| **Blocking release** | The stable `0.1.0` release, submission through the Community directory and its automated review (§5.7) |
+| **Documentation** | The end-user guide (§4) — every page exists; what is left is read-throughs, not gaps |
 | **Development environment** | Two cross-platform items (§4b): the CLI reload off Windows, and CI on Ubuntu |
 | **Not scheduled** | The [backlog](#backlog--ideas-unscheduled) |
 | **Deferred by choice** | Translations (§6), and the deferrals kept under §8.1, §8.2, §8.4, §8.5 and §8.14 |
@@ -87,37 +87,33 @@ that nothing else on this page tracks.
       [Feature Development Guide](feature-development-guide.md): `pnpm bump <version>` changes the four files at
       once, and the release workflow refuses a tag they disagree with (2026-10-27)
 
-### 5.7 Release infrastructure
+### 5.7 Release and submission
 
-- [ ] `.github/workflows/release.yml` is written: a version tag (no `v`) pushed to GitHub checks the
-      files, runs the gate and creates a **draft** release with `main.js`, `manifest.json` and `styles.css`. What is
-      left is its first run, kept as a draft and deleted
-- [ ] Host the two look-up dictionary assets on the `dictionaries` release. The workflow that builds and uploads
-      them is written (`.github/workflows/dictionaries.yml`, run by hand from main) and `HOST` in
-      `dictionary-sources.ts` names the release; what is left is its first run once the repository is public, and a
-      download on a device off the home network
-- [ ] Give the GitHub repository address in the guide's BRAT installation steps, and remove the sentence that says
-      Orbis Reader is not yet published on GitHub (`docs/guide/getting-started.md`). Part of the GitHub migration
-- [ ] Run Obsidian pre-release scanner; resolve any "Required" violations
-- [ ] Submit via `community.obsidian.md` developer dashboard
+Submission is through the Community directory at community.obsidian.md, not a pull request to
+`obsidianmd/obsidian-releases`. Its review is automatic. The policies it holds Orbis to, and where Orbis stands on
+each, are in [Obsidian compliance §8.5](obsidian-compliance-plan.md#85-developer-policies).
+
+- [ ] Release `0.1.0` from main, as *Publishing* in [Feature Development Guide](feature-development-guide.md) says.
+      Bring the date and notes of CHANGELOG.md's `0.1.0` section up to date first: they are the release's notes.
+      Publish it with **Set as the latest release** ticked, which also takes that title from the `dictionaries`
+      release. The directory reads `manifest.json` at the head of main and installs the release tagged with its
+      version, so this release must exist before the plugin is added
+- [ ] On community.obsidian.md, sign in with the Obsidian account, link the GitHub account (it proves the
+      repository is ours), and add the plugin
+- [ ] Resolve every error the automated review reports. Each fix ships as a new release (`0.1.1` and on); the plugin
+      cannot be installed from Obsidian until no errors remain. The likeliest is the desktop-only Node and Electron
+      use, which the submission requirements tie to `isDesktopOnly: true`; what uses it, and the way out, are in
+      [Obsidian compliance §8.6](obsidian-compliance-plan.md#86-submission-requirements-for-plugins)
 - [ ] Optional: listing screenshots in the listing editor, sized as
       [Obsidian compliance §7.4](obsidian-compliance-plan.md#74-screenshots) says
-- [ ] Announce in Obsidian forum (Share & Showcase) and Discord (#updates)
+- [ ] Once listed: replace the README's *Community plugin store (not yet listed)* section and Getting Started's
+      sentence that Orbis Reader is not listed yet, and announce in the Obsidian forum (Share & Showcase) and on
+      Discord (#updates)
 
 ### 5.8 Manifest & versioning
 
-- [ ] Add `authorUrl` and `fundingUrl` to `manifest.json` (decide funding platform first)
-
-### 5.9 Documentation site
-
-The user guide builds as a VitePress site (`pnpm docs:build`, in the gate) and is live at
-<https://guide.orbisreader.com/>; how it was set up is in [Documentation site](docs-site.md#going-live).
-
-- [x] Register the domain, verify it for the `rastewart` account, and point the `guide` subdomain at GitHub
-- [x] Add the publishing workflow, turn Pages on with the custom domain, and enforce HTTPS
-- [x] Name the site as the repository's website and in `package.json`'s `homepage`
-- [x] Point the README's **Learn more** links and *User guide* section at the site
-- [x] Add a Help link inside Orbis Reader that opens the site
+- [ ] Optional: `authorUrl` and `fundingUrl` in `manifest.json`. Obsidian's Manifest reference makes both optional
+      (checked 2026-11-18), so they wait on wanting a website or a donation link on the listing
 
 ---
 

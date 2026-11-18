@@ -192,17 +192,26 @@ The `.orbis` and location files are plain JSON that you can inspect, back up or 
 
 ## Network use
 
-Orbis Reader has no accounts, ads or telemetry, and it never sends your books, notes or reading data anywhere. It connects to the internet only for the features below, and nothing is downloaded until you ask for it. Dictionaries, voices and fonts are saved on your device, so those features work offline after their first download.
+Orbis Reader has no accounts, ads or telemetry, and it never sends your books, notes or reading data anywhere, unless you set up a speech server to record with (below). It connects to the internet only for the features below, and nothing is downloaded until you ask for it. Dictionaries, voices and fonts are saved on your device, so those features work offline after their first download.
 
 | Feature | Connects to | What for |
 |---|---|---|
 | Book sources | Project Gutenberg (`gutenberg.org`) and any OPDS catalog you add, such as your own Calibre server | Browsing, searching and downloading books |
 | Look-up dictionaries | GitHub, from this repository's releases | Downloading Webster's 1913 and Open English WordNet |
 | Orbis voices | Hugging Face (`huggingface.co`), `cdnjs.cloudflare.com` and `cdn.jsdelivr.net` | Downloading the speech engine and the voices you choose to your device |
+| Recording with a speech server (off until you set it up) | The Kokoro or OpenAI-compatible server address you enter, such as one on your own computer | Sending the text being recorded, a sentence at a time, and getting the audio back. Recording on your device, the default, sends nothing |
 | Expanded character set for PDFs | `cdn.jsdelivr.net` | Downloading the DejaVu fonts |
 | Download test fixtures (a developer command) | GitHub, from this repository's releases | Downloading the test books and notes for the test plans |
 
 Web look-ups and links in books open in your web browser, but only when you select them. When you select a link in a book, you are prompted to confirm that you want to visit it before it opens. System voices come from your operating system, which may use online services of its own.
+
+---
+
+## Files outside your vault
+
+Orbis Reader reads and writes files in your vault only, with one exception that you choose each time. On a computer, Save as PDF, Save annotations as PDF, Save as Markdown, Generate notes and Notes to EPUB have an **Export…** button. It opens your system's save dialog, so that you can save the file wherever you pick: to send it to someone, or to open it in another app. Orbis Reader writes only that one file, and only after you select **Save**.
+
+On a phone or tablet, the same dialogs have **Share…** instead. The file goes to your device's share sheet from Orbis Reader's plugin folder, and nothing is written outside the vault.
 
 ---
 

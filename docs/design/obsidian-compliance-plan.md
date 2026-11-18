@@ -3,7 +3,11 @@
 ← [Design Docs](README.md)
 
 What Obsidian's automated review and its community-plugin guidance require, and what Orbis does about each.
-Source: `docs/local/obsidian-plug-in-best-practices.md` (June 2026).
+Sources: `docs/local/obsidian-plug-in-best-practices.md` (June 2026), and Obsidian's developer docs, checked
+2026-11-18: [Submit your plugin](https://docs.obsidian.md/Plugins/Releasing/Submit+your+plugin),
+[Plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines),
+[Manifest](https://docs.obsidian.md/Reference/Manifest) and
+[Developer policies](https://docs.obsidian.md/community-directory/developer-policies).
 
 **This is the detail behind [Roadmap §5](roadmap.md#phase-5-pre-submission), not a second status board.** The
 roadmap says whether the pre-submission work is done; this says exactly which API, which file and why. Tick an
@@ -158,7 +162,7 @@ book rename/delete — internal data, not user notes.
 
 Required for the community plugin directory.
 
-- [x] Create `versions.json` in repo root — `{ "0.1.0": "1.13.1" }`, matching `minAppVersion`
+- [x] Create `versions.json` in repo root — `{ "0.1.0": "1.14.4" }`, matching `minAppVersion`
 - [x] Update on every version bump going forward — `release-metadata.test.ts` fails if the current version is
       missing or its floor disagrees with the manifest, because the plugin's own `validate-manifest` rule cannot
       fire on a `.json` file (it keys off `physicalFilename` but is registered under `**/*.{ts,js}` globs; checked
@@ -176,16 +180,29 @@ Must start with an action verb. Max 250 characters, ends with a period, no emoji
 
 ### 4.3 Add `fundingUrl` to `manifest.json`
 
-- [ ] Decide on funding platform (GitHub Sponsors, Ko-fi, etc.)
+Optional: the Manifest reference lists `fundingUrl` as optional, a URL or an object of labelled URLs. Not needed
+for submission.
+
+- [ ] Decide on funding platform (GitHub Sponsors, Ko-fi, etc.), if any
 - [ ] Add `"fundingUrl": "https://..."` to `manifest.json`
 
 ### 4.4 Add `authorUrl` to `manifest.json`
 
-- [ ] Add `"authorUrl": "https://..."` to `manifest.json`
+Optional, like `fundingUrl`. Not needed for submission.
+
+- [ ] Add `"authorUrl": "https://..."` to `manifest.json`, if wanted
 
 ### 4.5 Confirm `styles.css` in release assets
 
-- [ ] Add `styles.css` to the GitHub Actions release workflow (Phase 8)
+- [x] `release.yml` uploads `styles.css` with `main.js` and `manifest.json` (2026-10-27)
+
+### 4.6 Name and ID
+
+The Manifest reference's rules: an ID of lowercase letters and hyphens that does not end with `plugin` or contain
+`obsidian`, and a name in Basic Latin that has no "Obsidian" and no "Plugin" and is unique.
+
+- [x] `orbis-reader` and "Orbis Reader" meet them, and neither is in `community-plugins.json`'s 10,569 plugins
+      (checked 2026-11-18)
 
 ---
 
@@ -232,15 +249,19 @@ each with its own `dispose()` for cleanup.
 
 `isDesktopOnly: false` in the manifest, so the plugin must work on Obsidian mobile.
 
-- [ ] Test on iOS or Android (Obsidian mobile)
-- [ ] Check for Node.js/Electron API usage that breaks on mobile
-- [ ] Fix mobile-specific issues or set `isDesktopOnly: true`
+- [x] Test on iOS or Android (Obsidian mobile) — every test plan ran on Android, the iPhone and the iPad
+      (2026-09-29 to 2026-10-09)
+- [x] Check for Node.js/Electron API usage that breaks on mobile — the desktop-only routes, such as the save dialog
+      in `outside-vault.ts`, are looked up when asked for, and a device without them shows no button
+- [x] Fix mobile-specific issues or set `isDesktopOnly: true` — `isDesktopOnly` stays `false` (2026-10-10)
 
 ### 7.2 Large vault testing
 
-- [ ] Test with a vault containing 1000+ notes and 20+ epub files
-- [ ] Profile `onload()`, vault event handlers, and backlinks scanning
-- [ ] Debounce or optimize any slow handlers
+- [x] Test with a vault of about ten thousand files, against a small one, on the Mac and Android (2026-10-10)
+- [x] Profile `onload()`, vault event handlers, and backlinks scanning — from the debug log's timing lines; nothing
+      grows faster than the vault, and the foreground stays under 100 ms on the Mac
+- [x] Debounce or optimize any slow handlers — the sync scan listed its folder once per type; it now looks once per
+      scan and reads its files in batches
 
 ### 7.3 Sentence case audit
 
@@ -266,7 +287,7 @@ release assets.
 
 - [x] README screenshots under **Screenshots**: the reader on a computer, listening on a tablet, and the audio player
       on a phone, with the overview picture at the top (`docs/images/`)
-- [ ] Optional, at submission (§8.4): listing screenshots in the listing editor — up to 5 desktop images at
+- [ ] Optional, at submission (§8.3): listing screenshots in the listing editor — up to 5 desktop images at
       1200 × 800 and up to 5 mobile images at 900 × 1600, JPEG, PNG or WebP, up to 5 MB each. The README's
       images are other sizes, so these are captured or cropped for it
 
@@ -283,35 +304,72 @@ Import `moment` from `'obsidian'`, not from npm.
 
 ### 8.1 GitHub Actions release workflow
 
-No release workflow exists yet. CI workflow exists at `.github/workflows/ci.yml`.
-
-- [ ] Create `.github/workflows/release.yml`:
-  - Trigger: `push` to tags matching `[0-9]+.[0-9]+.[0-9]+`
-  - Steps: checkout → install → build → create GitHub Release →
-    upload `main.js`, `manifest.json`, `styles.css`
-- [ ] Ensure tag format has no `v` prefix (Obsidian requirement)
+- [x] `.github/workflows/release.yml`: a pushed tag of `x.y.z` or `x.y.z-beta.N` is checked against the plugin's
+      files (`scripts/release-check.ts`), the whole gate runs on the tagged commit, a job that can only read builds,
+      and a job that runs only `gh` and the provenance attestation drafts the release with `main.js`,
+      `manifest.json`, `styles.css` and `orbis-test-fixtures.zip`. First run `0.1.0-beta.1` (2026-11-15); four betas
+      so far
+- [x] No `v` prefix: the workflow triggers only on tags without one, and the release check refuses a stable tag
+      that differs from `manifest.json`'s version
 
 ### 8.2 Version bump process
 
-- [ ] Document the manual version bump process:
-  1. Update version in `manifest.json`
-  2. Update version in `package.json`
-  3. Add entry to `versions.json`
-  4. Add entry to `CHANGELOG.md`
-  5. Commit, tag (no `v` prefix), push tag
+- [x] `pnpm bump <version>` changes `manifest.json`, `package.json`, `versions.json` and `CHANGELOG.md` together;
+      the procedure, betas included, is *Publishing* in [Feature Development Guide](feature-development-guide.md)
+      (2026-10-27)
 
-### 8.3 Pre-release scan
+### 8.3 Submission and review
 
-- [ ] Sign in to `community.obsidian.md` and connect GitHub account
-- [ ] Run preview scan on release branch/tag before publishing
-- [ ] Address any "Required" violations before creating the GitHub release
+The Submit your plugin page (2026-11-18): submission is through the Community directory, not a pull request to
+`obsidianmd/obsidian-releases`. The directory reads `manifest.json` at the head of the default branch and installs
+the GitHub release whose tag equals its version, with `main.js`, `manifest.json` and `styles.css` attached. Review is
+automatic; the directory shows guidance for each error, a fix ships as a new release with a higher version, and the
+plugin cannot be installed from Obsidian until no errors remain. Scanner results are under *Manage your plugin*.
 
-### 8.4 Initial submission
-
-- [ ] Submit via `community.obsidian.md` developer dashboard
-- [ ] Set pricing label: **Free**
+- [ ] Publish the stable `0.1.0` release, with **Set as the latest release** ticked (Roadmap §5.7)
+- [ ] Sign in to community.obsidian.md with the Obsidian account, link the GitHub account, which proves the
+      repository is ours, and add the plugin
+- [ ] Resolve every error the review reports, each in a new release
+- [ ] Set the pricing label to **Free**, if the listing editor asks for one
 - [ ] Optional: listing screenshots (§7.4)
 - [ ] Announce in Obsidian forum (Share & Showcase) and Discord (#updates)
+
+### 8.4 Before submission: Obsidian's lint
+
+- [x] `pnpm lint:obsidian` (eslint-plugin-obsidianmd's recommended set) finds nothing in the code that ships; 4
+      warnings remain in tests (2026-11-18)
+
+### 8.5 Developer policies
+
+[Developer policies](https://docs.obsidian.md/community-directory/developer-policies), checked 2026-11-18. They apply
+to plugins listed in the Community directory.
+
+| Policy | Where Orbis stands |
+|---|---|
+| No code obfuscated to hide its purpose | `main.js` is minified by esbuild, as most plugins are, and not obfuscated; the source is public |
+| No ads loaded over the internet, and none outside the plugin's own interface | None |
+| No client-side telemetry | None. The README's *Network use* says so |
+| Must not install or update itself or its dependencies | Orbis never updates itself. Listening fetches the ONNX Runtime and espeak phonemizer WASM, the phonemizer's data and the voice models on first use, at the reader's request: fixed versions, with each WASM checked against a pinned digest on download and on every load (`asset-integrity.ts`). The JavaScript that runs them is bundled in `main.js`. Be ready to explain this if the review asks |
+| README explains each remote service used, and why | The README's *Network use* table lists every host the shipping code reaches (checked against `src` 2026-11-18), and the speech server a reader can set up to record with, which receives the text it records |
+| README explains any access to files outside the vault | The README's *Files outside your vault*: on a computer, the five exports' **Export…** button saves one file where the reader picks in the system save dialog (`outside-vault.ts`); a phone or tablet shares the file and writes nothing outside the vault |
+| README discloses payment, accounts, static ads or server-side telemetry | None of them apply |
+| A LICENSE file, the plugin's licence stated, and dependencies' licences complied with | `LICENSE` (MIT), `NOTICES`, `licenses/`, and the README's *License* section |
+| No use of "Obsidian" that suggests a first-party plugin | The name and ID do not use it |
+| Forks need the original author's approval | Not a fork. foliate-js, lamejs and the piper phonemizer's JavaScript are vendored libraries, credited in `NOTICES` |
+
+### 8.6 Submission requirements for plugins
+
+[Submission requirements for plugins](https://docs.obsidian.md/community-directory/submission-requirements-for-plugins),
+checked 2026-11-18. It extends the developer policies with six rules for plugins.
+
+| Requirement | Where Orbis stands |
+|---|---|
+| `fundingUrl` only if donations are accepted; otherwise remove it | Not in the manifest (§4.3) |
+| `minAppVersion` is the oldest Obsidian the plugin works with | `1.14.4`, with `versions.json` to match (§4.1) |
+| Description: short, an action statement first, not "This is a plugin", at most 250 characters, ends with a period, no emoji, acronyms and trademarks capitalized | Met (§4.2) |
+| A plugin that uses Node.js or Electron APIs, such as `fs`, `crypto` or `os`, must set `isDesktopOnly` to `true` | **Review risk.** `isDesktopOnly` is `false`, and three files reach Node or Electron through `window.require`, only when `Platform.isDesktopApp`: `outside-vault.ts` (Electron's save dialog and `fs`, to save an export outside the vault), `sources/hop-request.ts` (Electron's `net`, to check each redirect of a book download) and `share-probe.ts` (a developer probe). A phone or tablet never calls them, and each has a fallback when they are missing. If the review flags them, the choice is to drop those routes on the desktop, not to make Orbis desktop-only |
+| Command IDs do not include the plugin ID, which Obsidian adds | No command ID contains `orbis-reader`; they start with `orbis-` (checked 2026-11-18) |
+| All sample code removed | None left: no `MyPlugin`, `SampleSettingTab` or `SampleModal` in `src` |
 
 ---
 
