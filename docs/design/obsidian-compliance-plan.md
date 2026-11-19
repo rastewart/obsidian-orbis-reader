@@ -330,8 +330,9 @@ plugin cannot be installed from Obsidian until no errors remain. Scanner results
 - [x] Publish the stable `0.1.0` release, with **Set as the latest release** ticked (Roadmap §5.7) (2026-11-18)
 - [x] Sign in to community.obsidian.md with the Obsidian account, link the GitHub account, which proves the
       repository is ours, and add the plugin (2026-11-18)
-- [ ] Resolve every error the review reports, each in a new release. The review of `0.1.0` (2026-11-18):
-  - **21 errors, all in vendored foliate-js:** two regex lookbehinds, which stop `main.js` loading on iOS before 16.4;
+- [x] Resolve every error the review reports, each in a new release (2026-11-19). The review of `0.1.2` has no
+      errors, and its build verification reproduced the release's `main.js` byte for byte. How it got there:
+  - **The review of `0.1.0` (2026-11-18): 21 errors, all in vendored foliate-js:** two regex lookbehinds, which stop `main.js` loading on iOS before 16.4;
     16 fixed inline styles; an `innerHTML`; a user-agent check; and a directive comment with no reason. `0.1.1` fixes
     each in the code (foliate patches 31 to 35, in `src/vendor/foliate-js/ORBIS-CHANGES.md`): an `obsidianmd/*`
     rule cannot be turned off with a directive.
@@ -346,7 +347,9 @@ plugin cannot be installed from Obsidian until no errors remain. Scanner results
     embedded the time of the build, so no rebuild could match. `0.1.1` stamped the commit's time and commit,
     which still needed git, and the review of `0.1.1` reported the same warning. From `0.1.2` the bundle holds only a
     hash of its source, so any checkout of the commit builds the same file ([Debug System](debug-system.md#build-stamp)).
+    The review of `0.1.2` passed it.
   - **A recommendation:** the release's fourth file, `orbis-test-fixtures.zip`, is one Obsidian does not download.
+- [x] Publish the entry (2026-11-19): <https://community.obsidian.md/plugins/orbis-reader>
 - [ ] Set the pricing label to **Free**, if the listing editor asks for one
 - [ ] Optional: listing screenshots (§7.4)
 - [ ] Announce in Obsidian forum (Share & Showcase) and Discord (#updates)

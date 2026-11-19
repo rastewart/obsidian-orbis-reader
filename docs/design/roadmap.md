@@ -16,7 +16,7 @@ per-requirement detail behind §5.
 
 | | |
 |---|---|
-| **Blocking release** | The Community directory's automated review: `0.1.1` fixes the errors it found in `0.1.0` (§5.7) |
+| **Blocking release** | Nothing: Orbis Reader is listed in the Community directory (2026-11-19). The announcement is left (§5.7) |
 | **Documentation** | The end-user guide (§4) — every page exists; what is left is read-throughs, not gaps |
 | **Development environment** | Two cross-platform items (§4b): the CLI reload off Windows, and CI on Ubuntu |
 | **Not scheduled** | The [backlog](#backlog--ideas-unscheduled) |
@@ -97,16 +97,18 @@ each, are in [Obsidian compliance §8.5](obsidian-compliance-plan.md#85-develope
       with **Set as the latest release** ticked (2026-11-18)
 - [x] On community.obsidian.md, sign in with the Obsidian account, link the GitHub account (it proves the
       repository is ours), and add the plugin (2026-11-18)
-- [ ] Resolve every error the automated review reports. Each fix ships as a new release (`0.1.1` and on); the plugin
-      cannot be installed from Obsidian until no errors remain. The review of `0.1.0` reported 21 errors, all in
-      vendored foliate-js; `0.1.1` fixes them (foliate patches 31 to 35, in `src/vendor/foliate-js/ORBIS-CHANGES.md`).
-      What remains is to see the review of `0.1.1` come back with none. The desktop-only Node and Electron use was a
-      warning, not an error: see [Obsidian compliance §8.6](obsidian-compliance-plan.md#86-submission-requirements-for-plugins)
+- [x] Resolve every error the automated review reports (2026-11-19). The review of `0.1.0` reported 21 errors, all in
+      vendored foliate-js, and `0.1.1` fixed them (foliate patches 31 to 35); the review of `0.1.1` reported 9 more,
+      `style.x = ''`, and `0.1.2` fixed those (patch 36) and made the build reproducible. The review of `0.1.2` has no
+      errors, and its build verification reproduced the release's `main.js` byte for byte. What is left are warnings,
+      among them the desktop-only Node and Electron use: see
+      [Obsidian compliance §8.3](obsidian-compliance-plan.md#83-submission-and-review)
+- [x] Publish the entry in the directory (2026-11-19): <https://community.obsidian.md/plugins/orbis-reader>
 - [ ] Optional: listing screenshots in the listing editor, sized as
       [Obsidian compliance §7.4](obsidian-compliance-plan.md#74-screenshots) says
-- [ ] Once listed: replace the README's *Community plugin store (not yet listed)* section and Getting Started's
-      sentence that Orbis Reader is not listed yet, and announce in the Obsidian forum (Share & Showcase) and on
-      Discord (#updates)
+- [x] Once listed: the README and Getting Started install from the community plugins first, and keep BRAT for betas
+      (2026-11-19)
+- [ ] Announce in the Obsidian forum (Share & Showcase) and on Discord (#updates)
 
 ### 5.8 Manifest & versioning
 

@@ -8,13 +8,24 @@
 
 Orbis Reader is an Obsidian plugin for reading books in your vault. It opens EPUB, MOBI, AZW3, CBZ and FB2 files. To see what works with each format, and which books it cannot open, see [Format Support](format-support.md).
 
-Orbis Reader needs Obsidian 1.14.4 or later. It is not listed in the Obsidian community plugin directory yet; a search in Obsidian will not find it.
+Orbis Reader needs Obsidian 1.14.4 or later.
+
+---
+
+## Install Orbis Reader
+
+1. Go to **Settings → Community plugins**.
+2. If **Restricted mode** is enabled, disable it.
+3. Select **Browse** and search for **Orbis Reader**.
+4. Select **Install**, then select **Enable**.
+
+Obsidian offers each new release of Orbis Reader as an update in **Settings → Community plugins**. You can also see Orbis Reader in the [Obsidian community plugin directory](https://community.obsidian.md/plugins/orbis-reader).
 
 ---
 
 ## Install Orbis Reader with BRAT
 
-BRAT (Beta Reviewers Auto-update Tester, by tfthacker) is a community plugin that installs plugins from their repository. BRAT also installs each new release of Orbis Reader when Obsidian starts.
+To test betas before they are released, install Orbis Reader with BRAT instead of from the community plugins. BRAT (Beta Reviewers Auto-update Tester, by tfthacker) is a community plugin that installs plugins from their repository. BRAT also installs each new release of Orbis Reader when Obsidian starts.
 
 1. Go to **Settings → Community plugins**.
 2. If **Restricted mode** is enabled, disable it.
