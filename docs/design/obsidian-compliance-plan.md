@@ -338,7 +338,8 @@ plugin cannot be installed from Obsidian until no errors remain. Scanner results
   - **The review of `0.1.1` (2026-11-19): 9 errors,** the `style.x = ''` lines patch 34 used to clear a style. The
     directory runs `no-static-styles-assignment` as it was up to 0.4, which counts `''` as a fixed value; from 0.5 the
     rule lets it through. Patch 36 clears them with `removeProperty`, and `pnpm lint:obsidian` checks for the older
-    reading (§8.4). A branch can be reviewed before a release (**Review branch** on the plugin's page).
+    reading (§8.4). `main` can be reviewed before a release (**Review branch** on the plugin's page), which is step 4 of the order of a
+    release in the [Feature Development Guide](feature-development-guide.md#the-order-of-a-release).
   - **Warnings,** which do not block: Node's `fs` (the computer's **Export…**, §8.6), `createEl` preferred to
     `document.createElement`, and the `no-unsafe-*` family in vendored code.
   - **Build verification:** the directory rebuilds the release and compares it with the attached `main.js`. `0.1.0`
