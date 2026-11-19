@@ -4,7 +4,17 @@ All notable changes to Orbis Reader are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis Reader uses [Semantic Versioning](https://semver.org/).
 
+<!-- Each release has its own Added, Changed, Fixed and Removed, so a heading may repeat under different releases. -->
+<!-- markdownlint-configure-file { "MD024": { "siblings_only": true } } -->
+
 ---
+
+## [0.1.2] — 2026-11-19
+
+### Changed
+
+- The About dialog shows a build ID in place of the build time and commit. The same release always shows the same ID.
+- Small changes to the book renderer for the review of the Obsidian Community directory. Books look and work as before.
 
 ## [0.1.1] — 2026-11-19
 
