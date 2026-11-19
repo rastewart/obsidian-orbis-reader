@@ -18,8 +18,8 @@ Every build is stamped so a debug session is never ambiguous about *which* artif
 
 **Injection.** `esbuild.config.mjs` computes two values at build time and passes them through esbuild's `define`:
 
-- `BUILD_TIME` — `new Date().toISOString()` to the second (UTC).
-- `BUILD_COMMIT` — `git rev-parse --short HEAD`, plus a `-dirty` suffix when `git status --porcelain` is non-empty (uncommitted changes — the usual state while iterating).
+- `BUILD_TIME` — to the second (UTC): the commit's time (`git show -s --format=%cI HEAD`) when the build inputs are committed, and the time of the build when they have uncommitted changes or there is no git. So two builds of one commit are the same `main.js`, byte for byte, which the Community directory checks: it rebuilds a release from its tag and compares the result with the attached `main.js`.
+- `BUILD_COMMIT` — `git rev-parse --short HEAD`, plus a `-dirty` suffix when `git status --porcelain` is non-empty for the build inputs (`src`, `styles.css`, `manifest.json`, `esbuild.config.mjs`) — the usual state while iterating.
 
 `src/build-info.ts` reads them behind a `typeof` guard so vitest and `pnpm dev` (which don't run the production `define`) fall back to `'dev'` instead of throwing on the undeclared global. `buildLabel()` joins them:
 
@@ -27,7 +27,7 @@ Every build is stamped so a debug session is never ambiguous about *which* artif
 Orbis build 2026-07-11T13:13:57Z · a1b2c3d-dirty
 ```
 
-> **Watch-mode caveat:** `define` is evaluated once when `pnpm dev` starts, so `BUILD_TIME` won't refresh on every hot rebuild. The production `build` (which `deploy.sh` runs) re-stamps fresh each time, so the deployed/tested artifact is always accurate.
+> **Watch-mode caveat:** `define` is evaluated once when `pnpm dev` starts, so `BUILD_TIME` won't refresh on every hot rebuild. The production `build` (which `deploy.sh` runs) re-stamps each time, so the deployed/tested artifact is always accurate.
 >
 > **`-dirty` needs a clean tree to mean anything:** the flag reads `git status`, so untracked noise (`.DS_Store`, stray files) keeps it permanently dirty. Gitignoring that noise keeps the flag a real signal.
 

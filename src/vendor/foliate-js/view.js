@@ -155,37 +155,9 @@ export const makeBook = async file => {
     return book
 }
 
-class CursorAutohider {
-    #timeout
-    #el
-    #check
-    #state
-    constructor(el, check, state = {}) {
-        this.#el = el
-        this.#check = check
-        this.#state = state
-        if (this.#state.hidden) this.hide()
-        this.#el.addEventListener('mousemove', ({ screenX, screenY }) => {
-            // check if it actually moved
-            if (screenX === this.#state.x && screenY === this.#state.y) return
-            this.#state.x = screenX, this.#state.y = screenY
-            this.show()
-            if (this.#timeout) clearTimeout(this.#timeout)
-            if (check()) this.#timeout = setTimeout(this.hide.bind(this), 1000)
-        }, false)
-    }
-    cloneFor(el) {
-        return new CursorAutohider(el, this.#check, this.#state)
-    }
-    hide() {
-        this.#el.style.cursor = 'none'
-        this.#state.hidden = true
-    }
-    show() {
-        this.#el.style.removeProperty('cursor')
-        this.#state.hidden = false
-    }
-}
+// ORBIS patch 35 — upstream's CursorAutohider is removed. It hid the pointer after a second without moving, only with
+// the `autohide-cursor` attribute, which Orbis never sets, and listened to every mouse move over the reader and each
+// chapter to do it. See ORBIS-CHANGES.md.
 
 class History extends EventTarget {
     #arr = []
@@ -251,8 +223,6 @@ export class View extends HTMLElement {
     #searchResults = new Map()
     #searchDraw
     #searchDrawOptions
-    #cursorAutohider = new CursorAutohider(this, () =>
-        this.hasAttribute('autohide-cursor'))
     isFixedLayout = false
     lastLocation
     history = new History()
@@ -376,7 +346,6 @@ export class View extends HTMLElement {
             doc.documentElement.dir ||= this.language.direction ?? ''
 
         this.#handleLinks(doc, index)
-        this.#cursorAutohider.cloneFor(doc.documentElement)
 
         this.#emit('load', { doc, index })
     }

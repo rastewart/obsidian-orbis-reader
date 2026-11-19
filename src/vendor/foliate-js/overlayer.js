@@ -1,3 +1,6 @@
+// ORBIS patch 33 — see #zoom.
+import { Platform } from 'obsidian'
+
 const createSVGElement = tag =>
     document.createElementNS('http://www.w3.org/2000/svg', tag)
 
@@ -49,7 +52,9 @@ export class Overlayer {
     }
     get #zoom() {
         // Safari does not zoom the client rects, while Chrome, Edge and Firefox does
-        if (/^((?!chrome|android).)*AppleWebKit/i.test(navigator.userAgent) && !window.chrome) {
+        // ORBIS patch 33 — Obsidian's Platform names the one place it runs on WebKit, the iPhone and iPad app, which
+        // upstream picked out from the user agent: every other Obsidian is Chromium. See ORBIS-CHANGES.md.
+        if (Platform.isIosApp) {
             return window.getComputedStyle(this.#doc.body).zoom || 1.0
         }
         return 1.0
@@ -191,8 +196,9 @@ export class Overlayer {
         const { color = 'red', padding = 0 } = options
         const g = createSVGElement('g')
         g.setAttribute('fill', color)
-        g.style.opacity = 'var(--overlayer-highlight-opacity, .3)'
-        g.style.mixBlendMode = 'var(--overlayer-highlight-blend-mode, normal)'
+        // ORBIS patch 34 — the opacity and blend mode upstream set inline are the class's, in the paginator's
+        // stylesheet, the only place an overlay is drawn. See ORBIS-CHANGES.md.
+        g.setAttribute('class', 'foliate-highlight')
         for (const { left, top, height, width } of rects) {
             const el = createSVGElement('rect')
             el.setAttribute('x', left - padding)

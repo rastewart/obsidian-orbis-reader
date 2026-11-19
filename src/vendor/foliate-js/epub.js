@@ -670,7 +670,8 @@ const WebCryptoSHA1 = async str => {
 const deobfuscators = (sha1 = WebCryptoSHA1) => ({
     'http://www.idpf.org/2008/embedding': {
         key: opf => sha1(getIdentifier(opf)
-            // eslint-disable-next-line no-control-regex
+            // ORBIS patch 34 — the reason added to upstream's directive.
+            // eslint-disable-next-line no-control-regex -- the key is the identifier less XML's four whitespace characters, as the font obfuscation spec says
             .replaceAll(/[\u0020\u0009\u000d\u000a]/g, '')),
         decode: (key, blob) => deobfuscate(key, 1040, blob),
     },

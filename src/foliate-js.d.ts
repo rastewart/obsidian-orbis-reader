@@ -22,6 +22,8 @@ declare module 'foliate-js/mobi.js' {
     constructor(options: { unzlib: (data: Uint8Array) => Uint8Array });
     open(file: Blob): Promise<{ getCover?(): Promise<Blob | undefined>; metadata?: MobiMetadata }>;
   }
+  /** A metadata field or contents label with its character references decoded, as text. ORBIS patch 32. */
+  export function unescapeHTML(str: string | undefined | null): string;
 }
 
 declare module 'foliate-js/epub.js' {
@@ -36,9 +38,19 @@ declare module 'foliate-js/epub.js' {
 }
 
 declare module 'foliate-js/paginator.js' {
-  /** A number before `vw` / `vh`, as the paginator rewrites them. ORBIS patch 26. */
-  export const VIEWPORT_WIDTH: RegExp;
-  export const VIEWPORT_HEIGHT: RegExp;
+  /**
+   * A number before `vw` / `vh`, as the paginator rewrites them (ORBIS patches 26 and 31). Used as
+   * `css.replace(VIEWPORT_WIDTH, fn)`, where `fn` gets the match, the number, the offset and the string, or a string
+   * to put in place of each match as it is (no `$` patterns).
+   */
+  type ViewportPattern = {
+    [Symbol.replace](
+      css: string,
+      replace: string | ((match: string, number: string, offset: number, css: string) => string)
+    ): string;
+  };
+  export const VIEWPORT_WIDTH: ViewportPattern;
+  export const VIEWPORT_HEIGHT: ViewportPattern;
 }
 
 declare module 'foliate-js/overlayer.js' {

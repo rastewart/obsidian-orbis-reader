@@ -10,8 +10,12 @@ import process from 'process';
 // which artifact it is (About box + debug-log header). Note: in `pnpm dev` watch
 // mode `define` is evaluated once at watch start, so BUILD_TIME won't refresh on
 // every hot rebuild — but the production `build` (which deploy.sh runs) re-stamps
-// fresh each time, so deployed/tested builds are always accurate.
-const gitCommit = () => {
+// each time, so deployed/tested builds are always accurate.
+//
+// BUILD_TIME is the commit's time when the build inputs are committed, and the time of the build only when they have
+// uncommitted changes (or there is no git). So building one commit twice gives the same main.js, byte for byte: the
+// Community directory rebuilds a release from its tag and compares the result with the main.js attached to it.
+const gitStamp = () => {
   try {
     const opts = { stdio: ['ignore', 'pipe', 'ignore'] };
     const sha = execSync('git rev-parse --short HEAD', opts).toString().trim();
@@ -22,13 +26,15 @@ const gitCommit = () => {
     // src/ + esbuild config build main.js, styles.css and manifest.json ship with it.
     const scope = 'src styles.css manifest.json esbuild.config.mjs';
     const dirty = execSync(`git status --porcelain -- ${scope}`, opts).toString().trim().length > 0;
-    return sha + (dirty ? '-dirty' : '');
+    const committed = new Date(execSync('git show -s --format=%cI HEAD', opts).toString().trim());
+    return { commit: sha + (dirty ? '-dirty' : ''), time: dirty ? new Date() : committed };
   } catch {
-    return 'nogit';
+    return { commit: 'nogit', time: new Date() };
   }
 };
-const BUILD_TIME = new Date().toISOString().replace(/\.\d+Z$/, 'Z'); // to the second, UTC
-const BUILD_COMMIT = gitCommit();
+const stamp = gitStamp();
+const BUILD_TIME = stamp.time.toISOString().replace(/\.\d+Z$/, 'Z'); // to the second, UTC
+const BUILD_COMMIT = stamp.commit;
 
 // foliate-js is vendored in src/vendor/foliate-js. Its Orbis patches, which used to be applied here at build time, are
 // edits in that folder now; src/vendor/foliate-js/ORBIS-CHANGES.md explains each one. That includes a plugin reload:

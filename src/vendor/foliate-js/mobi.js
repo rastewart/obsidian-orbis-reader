@@ -1,8 +1,16 @@
-const unescapeHTML = str => {
+// ORBIS patch 32 — character references decoded by an inert parser, not through `innerHTML`. Upstream set the text as
+// a <textarea>'s HTML and read its value. Here it is parsed as the text of a document's body with each `<` written
+// as `&lt;`, so no element can come of it either, and the result is the same: in both, `&` and NUL are the only
+// other characters that mean anything, and NUL becomes U+FFFD in a textarea but is dropped from a body's text, so it
+// is replaced first. Text with neither, and no CR (which both make a line feed), is returned as it is.
+// See ORBIS-CHANGES.md.
+let textParser
+export const unescapeHTML = str => {
     if (!str) return ''
-    const textarea = document.createElement('textarea')
-    textarea.innerHTML = str
-    return textarea.value
+    if (!str.includes('&') && !str.includes('\r') && !str.includes('\0')) return str
+    textParser ??= new DOMParser()
+    const html = str.replaceAll('<', '&lt;').replaceAll('\0', '�')
+    return textParser.parseFromString(`<!doctype html><body>${html}`, 'text/html').body.textContent ?? ''
 }
 
 const MIME = {

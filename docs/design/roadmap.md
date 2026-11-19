@@ -16,7 +16,7 @@ per-requirement detail behind §5.
 
 | | |
 |---|---|
-| **Blocking release** | The stable `0.1.0` release, submission through the Community directory and its automated review (§5.7) |
+| **Blocking release** | The Community directory's automated review: `0.1.1` fixes the errors it found in `0.1.0` (§5.7) |
 | **Documentation** | The end-user guide (§4) — every page exists; what is left is read-throughs, not gaps |
 | **Development environment** | Two cross-platform items (§4b): the CLI reload off Windows, and CI on Ubuntu |
 | **Not scheduled** | The [backlog](#backlog--ideas-unscheduled) |
@@ -93,17 +93,15 @@ Submission is through the Community directory at community.obsidian.md, not a pu
 `obsidianmd/obsidian-releases`. Its review is automatic. The policies it holds Orbis to, and where Orbis stands on
 each, are in [Obsidian compliance §8.5](obsidian-compliance-plan.md#85-developer-policies).
 
-- [ ] Release `0.1.0` from main, as *Publishing* in [Feature Development Guide](feature-development-guide.md) says.
-      Bring the date and notes of CHANGELOG.md's `0.1.0` section up to date first: they are the release's notes.
-      Publish it with **Set as the latest release** ticked, which also takes that title from the `dictionaries`
-      release. The directory reads `manifest.json` at the head of main and installs the release tagged with its
-      version, so this release must exist before the plugin is added
-- [ ] On community.obsidian.md, sign in with the Obsidian account, link the GitHub account (it proves the
-      repository is ours), and add the plugin
+- [x] Release `0.1.0` from main, as *Publishing* in [Feature Development Guide](feature-development-guide.md) says,
+      with **Set as the latest release** ticked (2026-11-18)
+- [x] On community.obsidian.md, sign in with the Obsidian account, link the GitHub account (it proves the
+      repository is ours), and add the plugin (2026-11-18)
 - [ ] Resolve every error the automated review reports. Each fix ships as a new release (`0.1.1` and on); the plugin
-      cannot be installed from Obsidian until no errors remain. The likeliest is the desktop-only Node and Electron
-      use, which the submission requirements tie to `isDesktopOnly: true`; what uses it, and the way out, are in
-      [Obsidian compliance §8.6](obsidian-compliance-plan.md#86-submission-requirements-for-plugins)
+      cannot be installed from Obsidian until no errors remain. The review of `0.1.0` reported 21 errors, all in
+      vendored foliate-js; `0.1.1` fixes them (foliate patches 31 to 35, in `src/vendor/foliate-js/ORBIS-CHANGES.md`).
+      What remains is to see the review of `0.1.1` come back with none. The desktop-only Node and Electron use was a
+      warning, not an error: see [Obsidian compliance §8.6](obsidian-compliance-plan.md#86-submission-requirements-for-plugins)
 - [ ] Optional: listing screenshots in the listing editor, sized as
       [Obsidian compliance §7.4](obsidian-compliance-plan.md#74-screenshots) says
 - [ ] Once listed: replace the README's *Community plugin store (not yet listed)* section and Getting Started's

@@ -85,7 +85,7 @@ patches 6 and 7 say so.
 
 Patches 1 to 5 used to be string replacements applied at build time by a plugin in `esbuild.config.mjs`. They are
 ordinary edits now, each marked in the source with `// ORBIS patch N`. What follows is the plugin's own explanation,
-moved here unchanged. Patches 6 and 7 came with the upstream merge and follow after it; patches 8 to 30 after them.
+moved here unchanged. Patches 6 and 7 came with the upstream merge and follow after it; patches 8 to 35 after them.
 
 Five patches to Foliate. The first two fix mobile annotation navigation landing one page short of the target;
 the third stops the column gutter taking its size from the side-margin setting; the last two keep one bad
@@ -409,7 +409,8 @@ The paginator rewrites `vw` and `vh` with `VIEWPORT_WIDTH` and `VIEWPORT_HEIGHT`
 digits between `\d*` and `\d+` in every way from every start: 4,000 digits in a stylesheet comment took 9 s in V8 and
 in JavaScriptCore. They match the same numbers at the same places: `\d*\.?\d+` and the
 new alternation describe the same numbers, and a match preceded by a digit could always have started one earlier, so
-the leftmost one never is. Same checks as patch 25, no difference; a megabyte of digits takes 3 ms in V8.
+the leftmost one never is. Same checks as patch 25, no difference; a megabyte of digits takes 3 ms in V8. Patch 31
+does the same without the lookbehind.
 
 ### Patch 27
 
@@ -479,6 +480,71 @@ crowded-index and tag-table cases each fail without the patch.
 `book.resolveHref` and `book.getTOCFragment` (fb2.js) escape the fragment with `CSS.escape` before putting it in an
 attribute selector. The fragment is the book's, and a quote in it made `querySelector` throw, so that link or contents
 entry went nowhere.
+
+### Patches 31 to 35: the Community directory's review
+
+The Obsidian Community directory scans every file in the repository with Obsidian's lint rules, and its review of
+0.1.0 reported 21 errors, all in this folder. `pnpm lint:obsidian` now runs those rules here too (see
+`scripts/check-obsidian.ts`), and fails on any of their errors. An `obsidianmd/*` rule cannot be turned off with a
+directive comment, so each change below is to the code.
+
+### Patch 31
+
+**No regex lookbehind**, which iOS and iPadOS before 16.4 cannot parse: a lookbehind anywhere in `main.js` is a syntax
+error there, and the plugin does not load at all. Two were in paginator.js, both in the stylesheet rewrite:
+- **`-epub-` prefixes** were removed with `/(?<=[{\s;])-epub-/gi`. Now `/([{\s;])-epub-/gi` matches the character
+  before the prefix too and puts it back (`'$1'`). The character before one match cannot be part of another, since a
+  match ends in `-`, so the same prefixes go.
+- **`VIEWPORT_WIDTH` and `VIEWPORT_HEIGHT`** (patch 26) began with `(?<!\d)`, so that a search never started inside a
+  run of digits. Each is now `/(\d+(?:\.\d+)?|\.\d+)vw|\d+/gi` (and `vh`) behind an object with `Symbol.replace`, so
+  `css.replace(VIEWPORT_WIDTH, fn)` still works. A run of digits that no match starts is taken whole by the last
+  branch and given back unchanged, so the search moves past it, as the lookbehind made it. `fn` sees only the real
+  matches, with the same arguments. `foliate-css-patterns.test.ts` checks it against upstream's pattern as before,
+  with cases of matches next to each other added. A megabyte of the worst inputs takes from 8 to 300 ms in V8.
+
+### Patch 32
+
+**`unescapeHTML` (mobi.js) decodes character references without `innerHTML`.** It reads the title, author, publisher,
+description, subjects and rights, and every contents label. Upstream set the text as a `<textarea>`'s HTML and read its
+value back. It is now parsed by a `DOMParser` as the text of a document's body, each `<` written as `&lt;`. Neither way
+can make an element. They give the same text:
+- in a textarea's text and in a body's, `&` is the only other character that means anything, and it is decoded the
+  same way in both;
+- NUL becomes U+FFFD in a textarea but is dropped from a body's text, so it is replaced with U+FFFD first;
+- both turn CR and CR LF into a line feed.
+
+Text with no `&`, CR or NUL comes back as it is, without parsing. `mobi-unescape.test.ts` keeps upstream's textarea as
+the reference and compares the two on crafted cases and 5,000 random strings.
+
+### Patch 33
+
+**`Overlayer`'s zoom check uses `Platform.isIosApp`** (overlayer.js), not the user agent. WebKit does not zoom a
+range's client rects, so the overlay reads the zoom itself there. Upstream found WebKit from the user agent; in
+Obsidian the one WebKit app is the iPhone and iPad app, and every other is Chromium, so `Platform.isIosApp` picks out
+the same devices. overlayer.js imports `Platform` from `obsidian` for this, the only file here that does.
+
+### Patch 34
+
+**Fixed inline styles moved to the paginator's stylesheet, or cleared.** Each change gives the same computed style:
+- **The chapter frame is shown and hidden with its `hidden` attribute** (paginator.js `View`), not
+  `display: block` and `none`. Nothing else sets the frame's display, and as an item of the view's flex box it is a
+  block either way.
+- **`expand()` clears the values it set to a fixed one:** the view's padding and the overlay's margin (no padding or
+  margin), the frame's and view's size across (100%, now from the stylesheet), and the overlay's top and left (0,
+  now from the stylesheet). `#top`'s padding in scrolled flow is cleared the same way: the stylesheet gives it none.
+- **A highlight's opacity and blend mode** (`Overlayer.highlight`) come from the class `foliate-highlight`, in the
+  paginator's stylesheet, with the same two custom properties. The paginator is the only renderer with an overlay.
+- **The hidden page of a portrait spread** (fixed-layout.js) is set to `display: none` in the same assignment that
+  shows the others, as the frame's display already was.
+
+The epub.js directive that allows control characters in the font deobfuscation key's pattern now says why, as the
+directive rules require.
+
+### Patch 35
+
+**`CursorAutohider` is removed** (view.js). It hid the pointer after a second without moving, only when the view has
+the `autohide-cursor` attribute, which Orbis never sets, and it listened to every mouse move over the reader and each
+chapter to do so.
 
 ## Patched at runtime, not here
 

@@ -103,6 +103,9 @@ describe('VIEWPORT_WIDTH and VIEWPORT_HEIGHT (ORBIS patch 26)', () => {
     '12.vw 3VW 4Vh',
     'calc(100vw - 2em)',
     '5vwvw',
+    '1vw2vw',
+    '1.5vw.5vw3vh',
+    '12.34.56vh 007vw',
   ];
   it.each(CASES)('find what upstream found in %j', (css) => {
     expect(matchesOf(VIEWPORT_WIDTH, css)).toBe(matchesOf(UPSTREAM_VW, css));

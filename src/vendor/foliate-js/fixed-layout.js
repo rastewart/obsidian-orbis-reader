@@ -148,17 +148,16 @@ export class FixedLayout extends HTMLElement {
                 transformOrigin: 'top left',
                 display: blank ? 'none' : 'block',
             })
+            // ORBIS patch 34 — the page of a spread that portrait does not show is hidden in the same assignment that
+            // shows the others, as the frame's display is above, not set to `block` and then to `none`.
             Object.assign(element.style, {
                 width: `${(width ?? blankWidth) * scale}px`,
                 height: `${(height ?? blankHeight) * scale}px`,
                 overflow: 'hidden',
-                display: 'block',
+                display: portrait && frame !== target ? 'none' : 'block',
                 flexShrink: '0',
                 marginBlock: 'auto',
             })
-            if (portrait && frame !== target) {
-                element.style.display = 'none'
-            }
         }
         if (this.#center) {
             transform(this.#center)

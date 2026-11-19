@@ -327,18 +327,32 @@ the GitHub release whose tag equals its version, with `main.js`, `manifest.json`
 automatic; the directory shows guidance for each error, a fix ships as a new release with a higher version, and the
 plugin cannot be installed from Obsidian until no errors remain. Scanner results are under *Manage your plugin*.
 
-- [ ] Publish the stable `0.1.0` release, with **Set as the latest release** ticked (Roadmap §5.7)
-- [ ] Sign in to community.obsidian.md with the Obsidian account, link the GitHub account, which proves the
-      repository is ours, and add the plugin
-- [ ] Resolve every error the review reports, each in a new release
+- [x] Publish the stable `0.1.0` release, with **Set as the latest release** ticked (Roadmap §5.7) (2026-11-18)
+- [x] Sign in to community.obsidian.md with the Obsidian account, link the GitHub account, which proves the
+      repository is ours, and add the plugin (2026-11-18)
+- [ ] Resolve every error the review reports, each in a new release. The review of `0.1.0` (2026-11-18):
+  - **21 errors, all in vendored foliate-js:** two regex lookbehinds, which stop `main.js` loading on iOS before 16.4;
+    16 fixed inline styles; an `innerHTML`; a user-agent check; and a directive comment with no reason. `0.1.1` fixes
+    each in the code (foliate patches 31 to 35, in `src/vendor/foliate-js/ORBIS-CHANGES.md`): an `obsidianmd/*`
+    rule cannot be turned off with a directive.
+  - **Warnings,** which do not block: Node's `fs` (the computer's **Export…**, §8.6), `createEl` preferred to
+    `document.createElement`, and the `no-unsafe-*` family in vendored code.
+  - **Build verification:** the directory rebuilds the release and compares it with the attached `main.js`. `0.1.0`
+    embedded the time of the build, so no rebuild could match. From `0.1.1` a committed build is stamped with the
+    commit's time, and two builds of one commit are the same file ([Debug System](debug-system.md#build-stamp)).
+  - **A recommendation:** the release's fourth file, `orbis-test-fixtures.zip`, is one Obsidian does not download.
 - [ ] Set the pricing label to **Free**, if the listing editor asks for one
 - [ ] Optional: listing screenshots (§7.4)
 - [ ] Announce in Obsidian forum (Share & Showcase) and Discord (#updates)
 
 ### 8.4 Before submission: Obsidian's lint
 
-- [x] `pnpm lint:obsidian` (eslint-plugin-obsidianmd's recommended set) finds nothing in the code that ships; 4
+- [x] `pnpm lint:obsidian` (eslint-plugin-obsidianmd's recommended set) finds nothing in the code that ships; 5
       warnings remain in tests (2026-11-18)
+- [x] `pnpm lint:obsidian` also lints the vendored libraries (`src/vendor/**/*.js`), which `eslint.config.mjs` leaves
+      out, and fails on an error from the rules the directory reports there: `obsidianmd/*`, `no-unsanitized/*` and
+      `eslint-comments/*`. The `console` calls in lamejs and the piper phonemizer, which the directory's review did not
+      report, are allowed (2026-11-18)
 
 ### 8.5 Developer policies
 

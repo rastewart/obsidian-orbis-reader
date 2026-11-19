@@ -192,9 +192,20 @@ const getDirection = doc => {
 // ORBIS patch 26 — a number before `vw` or `vh`. Upstream's /(\d*\.?\d+)vw/gi can split a run of digits between
 // `\d*` and `\d+` in every way, from every start: 4,000 digits in a stylesheet comment took 9 s in V8 and in
 // JavaScriptCore. These match the same numbers ({d+, d*.d+} is {d+, d+.d+, .d+}) at the same places: a match
-// preceded by a digit could always have started one earlier, so the leftmost one never is. See ORBIS-CHANGES.md.
-export const VIEWPORT_WIDTH = /(?<!\d)(\d+(?:\.\d+)?|\.\d+)vw/gi
-export const VIEWPORT_HEIGHT = /(?<!\d)(\d+(?:\.\d+)?|\.\d+)vh/gi
+// preceded by a digit could always have started one earlier, so the leftmost one never is.
+// ORBIS patch 31 — no lookbehind, which iOS before 16.4 cannot parse. A run of digits that no match starts is taken
+// whole by the last branch and given back unchanged, so the search never starts again inside it, as `(?<!\d)` made
+// sure. Each is used as `css.replace(VIEWPORT_WIDTH, fn)`, and `fn` sees only the matches. See ORBIS-CHANGES.md.
+const viewportUnit = unit => {
+    const pattern = new RegExp(`(\\d+(?:\\.\\d+)?|\\.\\d+)${unit}|\\d+`, 'gi')
+    return {
+        [Symbol.replace]: (str, replace) => str.replace(pattern, (match, number, ...rest) =>
+            number === undefined ? match
+            : typeof replace === 'function' ? replace(match, number, ...rest) : replace),
+    }
+}
+export const VIEWPORT_WIDTH = viewportUnit('vw')
+export const VIEWPORT_HEIGHT = viewportUnit('vh')
 
 const makeMarginals = (length, part) => Array.from({ length }, () => {
     const div = document.createElement('div')
@@ -236,12 +247,13 @@ class View {
             justifyContent: 'center',
             alignItems: 'center',
         })
+        // ORBIS patch 34 — hidden by its `hidden` attribute, not an inline `display: none`; see load().
         Object.assign(this.#iframe.style, {
             overflow: 'hidden',
             border: '0',
-            display: 'none',
             width: '100%', height: '100%',
         })
+        this.#iframe.hidden = true
         // `allow-scripts` is needed for events because of WebKit bug
         // https://bugs.webkit.org/show_bug.cgi?id=218086
         this.#iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts')
@@ -260,19 +272,22 @@ class View {
                 const doc = this.document
                 afterLoad?.(doc)
 
+                // ORBIS patch 34 — shown and hidden with its `hidden` attribute, where upstream set `display` to
+                // `block` and `none`. Nothing else styles the frame's display, and as an item of the view's flex box
+                // it is laid out as a block either way. See ORBIS-CHANGES.md.
                 // it needs to be visible for Firefox to get computed style
-                this.#iframe.style.display = 'block'
+                this.#iframe.hidden = false
                 const { vertical, rtl } = getDirection(doc)
                 // ORBIS patch 22 — the book's background is not read, nor taken off its body: the page color is the
                 // reader's, painted on both sides of the frame. See #replaceBackground and ORBIS-CHANGES.md.
-                this.#iframe.style.display = 'none'
+                this.#iframe.hidden = true
 
                 this.#vertical = vertical
                 this.#rtl = rtl
 
                 this.#contentRange.selectNodeContents(doc.body)
                 const layout = beforeRender?.({ vertical, rtl })
-                this.#iframe.style.display = 'block'
+                this.#iframe.hidden = false
                 this.render(layout)
                 this.#observer.observe(doc.body)
 
@@ -381,6 +396,9 @@ class View {
     }
     expand() {
         const { documentElement } = this.document
+        // ORBIS patch 34 — where upstream set a fixed value, the inline value is cleared and the shadow stylesheet's
+        // takes over, which is the same: no padding or margin, 100% across, and the overlay at the view's top left
+        // corner. See ORBIS-CHANGES.md.
         if (this.#column) {
             const side = this.#vertical ? 'height' : 'width'
             const otherSide = this.#vertical ? 'width' : 'height'
@@ -393,16 +411,16 @@ class View {
             const contentSize = contentStart + contentRect[side]
             const pageCount = Math.ceil(contentSize / this.#size)
             const expandedSize = pageCount * this.#size
-            this.#element.style.padding = '0'
+            this.#element.style.padding = ''
             this.#iframe.style[side] = `${expandedSize}px`
             this.#element.style[side] = `${expandedSize + this.#size * 2}px`
-            this.#iframe.style[otherSide] = '100%'
-            this.#element.style[otherSide] = '100%'
+            this.#iframe.style[otherSide] = ''
+            this.#element.style[otherSide] = ''
             documentElement.style[side] = `${this.#size}px`
             if (this.#overlayer) {
-                this.#overlayer.element.style.margin = '0'
-                this.#overlayer.element.style.left = this.#vertical ? '0' : `${this.#size}px`
-                this.#overlayer.element.style.top = this.#vertical ? `${this.#size}px` : '0'
+                this.#overlayer.element.style.margin = ''
+                this.#overlayer.element.style.left = this.#vertical ? '' : `${this.#size}px`
+                this.#overlayer.element.style.top = this.#vertical ? `${this.#size}px` : ''
                 this.#overlayer.element.style[side] = `${expandedSize}px`
                 this.#overlayer.redraw()
             }
@@ -416,12 +434,12 @@ class View {
             this.#element.style.padding = padding
             this.#iframe.style[side] = `${expandedSize}px`
             this.#element.style[side] = `${expandedSize}px`
-            this.#iframe.style[otherSide] = '100%'
-            this.#element.style[otherSide] = '100%'
+            this.#iframe.style[otherSide] = ''
+            this.#element.style[otherSide] = ''
             if (this.#overlayer) {
                 this.#overlayer.element.style.margin = padding
-                this.#overlayer.element.style.left = '0'
-                this.#overlayer.element.style.top = '0'
+                this.#overlayer.element.style.left = ''
+                this.#overlayer.element.style.top = ''
                 this.#overlayer.element.style[side] = `${expandedSize}px`
                 this.#overlayer.redraw()
             }
@@ -564,6 +582,20 @@ export class Paginator extends HTMLElement {
             font-size: .75em;
             opacity: .6;
         }
+        /* ORBIS patch 34 — what a view, its frame and its overlay go back to when expand() clears an inline value,
+           and the look of a highlight (Overlayer.highlight), which upstream set inline. */
+        #container > div, #container > div > iframe {
+            width: 100%;
+            height: 100%;
+        }
+        #container > div > svg {
+            top: 0;
+            left: 0;
+        }
+        .foliate-highlight {
+            opacity: var(--overlayer-highlight-opacity, .3);
+            mix-blend-mode: var(--overlayer-highlight-blend-mode, normal);
+        }
         </style>
         <div id="top">
             <div id="background" part="filter"></div>
@@ -678,7 +710,8 @@ export class Paginator extends HTMLElement {
             // ORBIS patch 5 — a stylesheet that is not a string passes through untouched. See ORBIS-CHANGES.md.
             detail.data = Promise.resolve(detail.data).then(data => typeof data !== 'string' ? data : data
                 // unprefix as most of the props are (only) supported unprefixed
-                .replace(/(?<=[{\s;])-epub-/gi, '')
+                // ORBIS patch 31 — the character before `-epub-` is matched and put back, not looked behind for.
+                .replace(/([{\s;])-epub-/gi, '$1')
                 // replace vw and vh as they cause problems with layout
                 // ORBIS patch 26 — patterns that cannot split a run of digits two ways; see VIEWPORT_WIDTH.
                 .replace(VIEWPORT_WIDTH, (_, d) => parseFloat(d) * w / 100 + 'px')
@@ -775,7 +808,8 @@ export class Paginator extends HTMLElement {
         if (flow === 'scrolled') {
             // FIXME: vertical-rl only, not -lr
             this.setAttribute('dir', vertical ? 'rtl' : 'ltr')
-            this.#top.style.padding = '0'
+            // ORBIS patch 34 — cleared, not set to 0: the stylesheet gives #top no padding, and nothing else sets one.
+            this.#top.style.padding = ''
             const columnWidth = maxInlineSize
 
             this.heads = null
