@@ -6,6 +6,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 ---
 
+## [0.1.1] — 2026-11-19
+
+### Fixed
+
+- On iPhone and iPad with iOS or iPadOS earlier than 16.4, Orbis Reader could not load: two patterns it uses on a book's styles were written in a way those versions cannot read.
+
+### Changed
+
+- Small changes to the book renderer for the review of the Obsidian Community directory. Books look and work as before.
+
 ## [0.1.0] — 2026-11-18
 
 The first release of Orbis Reader, an ebook reader for your vault on computers, tablets and phones. It needs Obsidian 1.14.4 or later.
