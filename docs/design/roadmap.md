@@ -203,6 +203,31 @@ See [Read in Orbis Reader](read-in-orbis-reader.md).
 
 **Deferred:** choosing an annotation preset per book made this way.
 
+### 8.15 After 0.1.1
+
+Found while testing `0.1.1-beta.1` (2026-11-19). Each waits until `0.1.1` ships.
+
+- [ ] **Swipe to turn pages in a CBZ book.** foliate's fixed-layout renderer (`fixed-layout.js`), which shows CBZ books
+      and fixed-layout EPUBs, has no touch handling: the paginator's swipe code (`paginator.js`) is its own. Turn the
+      page on a horizontal swipe over the page, in the book's reading direction, so a right-to-left manga turns the way
+      it reads. A swipe must not also be taken as the tap that opens the page in the image viewer. Then take out the
+      guide's note that swiping does not turn a CBZ page (Getting Started, Reading a Book's *Turn pages*, and Format
+      Support's table and *CBZ* section), and add a `mobile` CBZ swipe check to the Reading a Book test plan
+- [ ] **A MOBI fixture with character references.** A Calibre-built MOBI or AZW3 whose title, author and a chapter
+      name hold an `&` and accented letters, such as *Café & Co.*, so opening it goes through `unescapeHTML`'s decoding
+      (foliate patch 32). None of the three MOBI and AZW3 fixtures has one. Add it to `test-vault/fixtures/README.md`
+      and a check to a test plan
+- [ ] **A page number on each sample CBZ page.** Pages 2 to 6 of `sample-comic.cbz` are the same image
+      (`sampleComic` in `scripts/fixtures/books.ts`), so a page turn cannot be seen. Draw each page's number large in
+      its middle, then `pnpm build:fixtures`
+- [ ] **Two-column layout decides one page or two in a CBZ book.** foliate's fixed-layout renderer shows a two-page
+      spread whenever the reading area is wider than it is tall (`fixed-layout.js`, `#render`), and the setting does
+      not reach it: Orbis sets `max-column-count`, which only the paginator reads, and a CBZ file says nothing about
+      spreads. With the setting on, keep today's spreads, which match what Display Settings says the setting does for
+      text; with it off, show one page at any size. That needs an Orbis patch to `fixed-layout.js` for a single-page
+      mode, set from `applyRenderer` for fixed-layout books. A fixed-layout EPUB follows it too, unless the book asks
+      for spreads itself. Add a line on it to Format Support's *CBZ* section
+
 ---
 
 ## Backlog / ideas (unscheduled)

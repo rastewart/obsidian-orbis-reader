@@ -36,7 +36,7 @@ EPUB, MOBI, AZW3 and FB2 contain text. CBZ contains only images: each page is a 
 | Feature | EPUB, MOBI, AZW3, FB2 | CBZ |
 |---|---|---|
 | **Read the book** | ✓ | ✓ |
-| **Turn pages, use the table of contents** | ✓ | ✓ |
+| **Turn pages, use the table of contents** | ✓ | ✓, but not by swiping |
 | **Reading progress and locations** | ✓ | ✓, by page |
 | **Deep links** | ✓ | ✓ |
 | **Select an image to zoom in** | ✓ | ✓, the page itself |
@@ -70,7 +70,7 @@ An FB2 book is one XML file. It works like the other text formats.
 
 ### CBZ
 
-Turning pages, reading progress and deep links work as they do in other formats. The other features need text, which a CBZ book does not have. See [Text formats and image formats](#text-formats-and-image-formats).
+Reading progress and deep links work as they do in other formats. You turn pages as in other formats, except that swiping does not turn a CBZ page: select the edge of the page or use the keyboard. The other features need text, which a CBZ book does not have. See [Text formats and image formats](#text-formats-and-image-formats).
 
 The cover of a CBZ book is the first image in the file. This is almost always the cover.
 

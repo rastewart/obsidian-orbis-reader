@@ -123,7 +123,7 @@ The appearance controls at the top of the page change the reader theme and the f
 
 ## Your first book
 
-- To turn a page, select the left or right edge of the page. On a touch screen, you can also swipe.
+- To turn a page, select the left or right edge of the page. On a touch screen, you can also swipe, except in a CBZ book.
 - To see the book's contents, select the **Navigator** button (☰) on the toolbar. The Navigator also has tabs for search, your annotations and the book's stats.
 
 For the toolbar, page turns, the Navigator, going to a location, going back and Focus mode, see [Reading a Book](reading-a-book.md).
