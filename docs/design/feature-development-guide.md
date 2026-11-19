@@ -168,6 +168,27 @@ Work through these in order. Items marked **C only** are typically only needed f
 
 ## Phase 6 — Release Checklist
 
+### The order of a release
+Every release goes through these steps in order. A problem found at a step goes back to step 1 with the fix.
+1. **The gate, locally.** `pnpm lint:obsidian` also lints the vendored code with the rules the Community directory
+   reports, and checks for a literal assigned to a style as the directory reads that rule, so most of what its review
+   would find is found here
+2. **A branch, pushed, with a draft pull request to `main`.** CI runs on `main` and on pull requests to it, not on
+   other branches
+3. **The directory's review of the branch.** On the plugin's page at community.obsidian.md, **Review branch** scans
+   it without a release. Repeat until it reports no errors. Build verification compares a rebuild with a released
+   `main.js`, so it can only be confirmed after a release (step 7); before that, a copy of the tree with no `.git`,
+   built in another folder, must give a `main.js` identical to the one built here
+4. **Merge to `main`.** The release workflow refuses a tag that is not on `main`, a beta's included
+5. **Betas from `main`** (*Publishing a beta*, below), tested on each kind of device. Quit and restart Obsidian
+   after updating: a plugin reload keeps the earlier build's reader. Check that the beta's `main.js` is byte-identical
+   to a local build of the same commit. A fix is the next `-beta.N`
+6. **The release** (*Version bump*, *CHANGELOG* and *Publishing*, below). The CHANGELOG section is the release's
+   notes, so it is agreed before it is committed
+7. **The directory's review of the release.** **Check for new releases** on the plugin's page, and confirm that the
+   review, build verification included, reports no errors. Then, while the entry is a draft, **Publish** it, and do
+   the steps for a new listing in Roadmap §5.7
+
 ### Version bump
 - [ ] Determine semver level:
   - **Patch** (1.0.x) — bug fixes and internal changes with no user-visible behavior change

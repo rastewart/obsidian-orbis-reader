@@ -30,13 +30,13 @@ src/
   goto-parser.ts        — Go-to input parsing (location number vs. percent)
   display-commands.ts   — pure display-setting step helpers (font/line-height/brightness/margins)
   display-menu.ts       — the Display Style menu UI
-  build-info.ts         — build stamp (BUILD_TIME / BUILD_COMMIT); see Debug System doc
+  build-info.ts         — build ID (BUILD_ID, a hash of the source); see Debug System doc
   foliate-patches.ts    — browser patches foliate-js needs in Obsidian; all removed on unload
   runtime-patch.ts      — wrapMethod / wrapSetter: a patch that comes off without removing another plugin's
   foliate-js.d.ts       — TypeScript ambient declarations for foliate-js modules
   NotesDiffModal.ts     — FileDiffModal and PerChapterMergeModal (notes merge UI)
   BookExportModal.ts    — BookExportModal (export options UI)
-  AboutDialog.ts        — the `Orbis: About` dialog (version + build stamp)
+  AboutDialog.ts        — the `Orbis: About` dialog (version + build ID)
   ui-utils.ts           — createOrbisPopup shared dialog scaffolding; see Dialog System doc
   i18n/                 — t() framework and en.ts locale; see Localization doc
   __mocks__/obsidian.ts — empty stubs for the `obsidian` module used in vitest
@@ -128,7 +128,7 @@ They fall into three groups, and the grouping is a rule about `checkCallback` ra
 **Global** (no active epub required):
 - `orbis-toggle-link-preview` — toggles `linkPreviewEnabled` in plugin settings
 - `orbis-switch-display-style` — opens `SwitchStyleModal`
-- `orbis-about` — opens the About dialog (version + build stamp)
+- `orbis-about` — opens the About dialog (version + build ID)
 - `orbis-open-book` — opens the active `.epub` file in a split leaf
 
 **Reader** (use `checkCallback`; return `false` when no `OrbisReaderView` is active):

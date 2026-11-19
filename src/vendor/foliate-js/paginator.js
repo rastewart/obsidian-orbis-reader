@@ -396,9 +396,10 @@ class View {
     }
     expand() {
         const { documentElement } = this.document
-        // ORBIS patch 34 — where upstream set a fixed value, the inline value is cleared and the shadow stylesheet's
+        // ORBIS patch 34 — where upstream set a fixed value, the inline value is removed and the shadow stylesheet's
         // takes over, which is the same: no padding or margin, 100% across, and the overlay at the view's top left
-        // corner. See ORBIS-CHANGES.md.
+        // corner. Removed with removeProperty, not by assigning '': the directory's lint takes that for a fixed value
+        // too (ORBIS patch 36). See ORBIS-CHANGES.md.
         if (this.#column) {
             const side = this.#vertical ? 'height' : 'width'
             const otherSide = this.#vertical ? 'width' : 'height'
@@ -411,16 +412,22 @@ class View {
             const contentSize = contentStart + contentRect[side]
             const pageCount = Math.ceil(contentSize / this.#size)
             const expandedSize = pageCount * this.#size
-            this.#element.style.padding = ''
+            this.#element.style.removeProperty('padding')
             this.#iframe.style[side] = `${expandedSize}px`
             this.#element.style[side] = `${expandedSize + this.#size * 2}px`
-            this.#iframe.style[otherSide] = ''
-            this.#element.style[otherSide] = ''
+            this.#iframe.style.removeProperty(otherSide)
+            this.#element.style.removeProperty(otherSide)
             documentElement.style[side] = `${this.#size}px`
             if (this.#overlayer) {
-                this.#overlayer.element.style.margin = ''
-                this.#overlayer.element.style.left = this.#vertical ? '' : `${this.#size}px`
-                this.#overlayer.element.style.top = this.#vertical ? `${this.#size}px` : ''
+                const { style } = this.#overlayer.element
+                style.removeProperty('margin')
+                if (this.#vertical) {
+                    style.removeProperty('left')
+                    style.top = `${this.#size}px`
+                } else {
+                    style.left = `${this.#size}px`
+                    style.removeProperty('top')
+                }
                 this.#overlayer.element.style[side] = `${expandedSize}px`
                 this.#overlayer.redraw()
             }
@@ -434,12 +441,12 @@ class View {
             this.#element.style.padding = padding
             this.#iframe.style[side] = `${expandedSize}px`
             this.#element.style[side] = `${expandedSize}px`
-            this.#iframe.style[otherSide] = ''
-            this.#element.style[otherSide] = ''
+            this.#iframe.style.removeProperty(otherSide)
+            this.#element.style.removeProperty(otherSide)
             if (this.#overlayer) {
                 this.#overlayer.element.style.margin = padding
-                this.#overlayer.element.style.left = ''
-                this.#overlayer.element.style.top = ''
+                this.#overlayer.element.style.removeProperty('left')
+                this.#overlayer.element.style.removeProperty('top')
                 this.#overlayer.element.style[side] = `${expandedSize}px`
                 this.#overlayer.redraw()
             }
@@ -809,7 +816,7 @@ export class Paginator extends HTMLElement {
             // FIXME: vertical-rl only, not -lr
             this.setAttribute('dir', vertical ? 'rtl' : 'ltr')
             // ORBIS patch 34 — cleared, not set to 0: the stylesheet gives #top no padding, and nothing else sets one.
-            this.#top.style.padding = ''
+            this.#top.style.removeProperty('padding')
             const columnWidth = maxInlineSize
 
             this.heads = null

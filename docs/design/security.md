@@ -416,7 +416,7 @@ and foliate's two pre-built bundles their SHA-256s.
 writing the notes run dependency code in a job that can only read; a second job, which runs `gh` and nothing of the
 repository's, drafts the release, and GitHub's build provenance ties each of its three files to the tagged commit and
 the workflow that built it (`gh attestation verify main.js --repo <owner>/obsidian-orbis-reader`). The dictionaries
-workflow is split the same way. A release is not byte-reproducible: the build stamps its time into `main.js`.
+workflow is split the same way. A release is byte-reproducible: the bundle holds a hash of its source and nothing from git or the clock, so the same commit builds the same `main.js` ([Debug System](debug-system.md#build-stamp)).
 
 ---
 

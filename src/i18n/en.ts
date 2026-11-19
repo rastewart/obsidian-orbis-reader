@@ -2623,7 +2623,6 @@ const en = {
   'about.title': 'About Orbis Reader',
   'about.version': 'Version',
   'about.build': 'Build',
-  'about.commit': 'Commit',
   'about.copy': 'Copy',
   'about.copied': 'Build info copied to clipboard',
   'command_palette.open_book': 'Open book',

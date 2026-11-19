@@ -173,7 +173,7 @@ describe('reportStaleRenderer', () => {
     stampRenderer(ThisView);
     expect((ThisView as unknown as Record<symbol, unknown>)[BUILT_BY]).toBeUndefined();
     stampRenderer(EarlierView);
-    expect((EarlierView as unknown as Record<symbol, unknown>)[BUILT_BY]).toBe('dev'); // BUILD_TIME outside a build
+    expect((EarlierView as unknown as Record<symbol, unknown>)[BUILT_BY]).toBe('dev'); // BUILD_ID outside a build
   });
 
   // Turning the plugin off and on: the same code, so nothing to restart for.

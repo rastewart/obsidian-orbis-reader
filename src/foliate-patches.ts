@@ -11,7 +11,7 @@
 // without taking another plugin's with it.
 
 import { type App, Notice } from 'obsidian';
-import { BUILD_TIME } from './build-info';
+import { BUILD_ID } from './build-info';
 import { t } from './i18n';
 import {
   type PreparedChapter,
@@ -69,7 +69,7 @@ type Stamped = CustomElementConstructor & { [BUILT_BY]?: string };
  * is first read, so even a load that never opens a book leaves its mark for the next one to read.
  */
 export function stampRenderer(current: CustomElementConstructor | undefined): void {
-  if (current && customElements.get('foliate-view') === current) (current as Stamped)[BUILT_BY] = BUILD_TIME;
+  if (current && customElements.get('foliate-view') === current) (current as Stamped)[BUILT_BY] = BUILD_ID;
 }
 
 /**
@@ -88,11 +88,11 @@ export function reportStaleRenderer(current: CustomElementConstructor | undefine
   const registered: Stamped | undefined = customElements.get('foliate-view');
   if (!registered || !current || registered === current) return;
   const builtBy = registered[BUILT_BY];
-  if (builtBy === BUILD_TIME) {
-    log(`foliate-view is from an earlier load of this same build (${BUILD_TIME}) — nothing to restart for`);
+  if (builtBy === BUILD_ID) {
+    log(`foliate-view is from an earlier load of this same build (${BUILD_ID}) — nothing to restart for`);
     return;
   }
-  log(`foliate-view is from build ${builtBy ?? 'unknown'}, this is ${BUILD_TIME} — restart Obsidian to load this one`);
+  log(`foliate-view is from build ${builtBy ?? 'unknown'}, this is ${BUILD_ID} — restart Obsidian to load this one`);
   if (staleRendererReported) return;
   staleRendererReported = true;
   new Notice(t('notices.restart_to_finish_update'));

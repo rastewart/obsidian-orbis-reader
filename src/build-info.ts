@@ -1,17 +1,16 @@
-// Build stamp injected by esbuild `define` at build time (see esbuild.config.mjs).
+// Build ID injected by esbuild `define` at build time (see esbuild.config.mjs).
 // The `typeof` guard means vitest and `pnpm dev` — which don't run the production
 // define — fall back to 'dev' instead of throwing on the undeclared identifier
 // (`typeof <undeclared>` is the one reference that never throws in JS).
-declare const __ORBIS_BUILD_TIME__: string;
-declare const __ORBIS_BUILD_COMMIT__: string;
+declare const __ORBIS_BUILD_ID__: string;
 
-/** UTC timestamp (to the second) when this artifact was built, or 'dev'. */
-export const BUILD_TIME: string = typeof __ORBIS_BUILD_TIME__ !== 'undefined' ? __ORBIS_BUILD_TIME__ : 'dev';
+/**
+ * A hash of the files this artifact was built from (12 hex digits), or 'dev'. The same source always gives the same
+ * ID, and any change to it a new one, so it tells two builds apart without a commit or a time in the bundle.
+ */
+export const BUILD_ID: string = typeof __ORBIS_BUILD_ID__ !== 'undefined' ? __ORBIS_BUILD_ID__ : 'dev';
 
-/** Short git commit this artifact was built from (with `-dirty` if uncommitted), or 'dev'. */
-export const BUILD_COMMIT: string = typeof __ORBIS_BUILD_COMMIT__ !== 'undefined' ? __ORBIS_BUILD_COMMIT__ : 'dev';
-
-/** One-line build label for the debug-log header, e.g. "Orbis build 2026-07-11T01:40:56Z · a1b2c3d-dirty". */
+/** One-line build label for the debug-log header, e.g. "Orbis build 3f2a9c1d0e4b". */
 export function buildLabel(): string {
-  return `Orbis build ${BUILD_TIME} · ${BUILD_COMMIT}`;
+  return `Orbis build ${BUILD_ID}`;
 }

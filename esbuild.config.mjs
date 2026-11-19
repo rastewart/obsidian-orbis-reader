@@ -1,40 +1,38 @@
 // Node's own list, not the `builtin-modules` package: it has shipped in `node:module` for years, and the
 // package is on the plugin lint's banned-dependency list for exactly that reason.
+import { createHash } from 'node:crypto';
 import { builtinModules as builtins } from 'node:module';
-import { execSync } from 'child_process';
+import path from 'node:path';
 import esbuild from 'esbuild';
 import fs from 'fs';
 import process from 'process';
 
-// Build stamp injected via `define` below so a running build can report exactly
-// which artifact it is (About box + debug-log header). Note: in `pnpm dev` watch
-// mode `define` is evaluated once at watch start, so BUILD_TIME won't refresh on
-// every hot rebuild — but the production `build` (which deploy.sh runs) re-stamps
-// each time, so deployed/tested builds are always accurate.
+// The build ID, injected via `define` below so a running build can say which one it is (About box, debug-log header,
+// and the stale-renderer check in foliate-patches.ts). It is a hash of the files the build is made from, and of
+// nothing else: not git, not the clock, not the machine. So the same source builds the same main.js, byte for byte,
+// wherever it is built. The Community directory rebuilds each release, perhaps from a checkout with no git history,
+// and compares the result with the main.js attached to it; a commit or a time in the bundle made that fail.
 //
-// BUILD_TIME is the commit's time when the build inputs are committed, and the time of the build only when they have
-// uncommitted changes (or there is no git). So building one commit twice gives the same main.js, byte for byte: the
-// Community directory rebuilds a release from its tag and compares the result with the main.js attached to it.
-const gitStamp = () => {
-  try {
-    const opts = { stdio: ['ignore', 'pipe', 'ignore'] };
-    const sha = execSync('git rev-parse --short HEAD', opts).toString().trim();
-    // "-dirty" only when the plugin's own build inputs have uncommitted changes.
-    // Scoped to these paths (not the whole repo) so untracked noise — .DS_Store,
-    // exported test files, .claude/ settings — doesn't permanently flag every
-    // build dirty. These four are what actually determine the deployed plugin:
-    // src/ + esbuild config build main.js, styles.css and manifest.json ship with it.
-    const scope = 'src styles.css manifest.json esbuild.config.mjs';
-    const dirty = execSync(`git status --porcelain -- ${scope}`, opts).toString().trim().length > 0;
-    const committed = new Date(execSync('git show -s --format=%cI HEAD', opts).toString().trim());
-    return { commit: sha + (dirty ? '-dirty' : ''), time: dirty ? new Date() : committed };
-  } catch {
-    return { commit: 'nogit', time: new Date() };
-  }
+// package.json and pnpm-lock.yaml are left out: an install may rewrite them, and they change the bundle only through
+// the packages they install. Note: in `pnpm dev` watch mode `define` is evaluated once at watch start, so the ID won't
+// refresh on every hot rebuild — but the production `build` (which deploy.sh runs) computes it each time.
+const BUILD_INPUTS = ['src', 'styles.css', 'manifest.json', 'esbuild.config.mjs', 'tsconfig.json'];
+/** Under src, what is not built into main.js: the tests and the Obsidian mock. */
+const NOT_BUILT = new Set(['src/__tests__', 'src/__mocks__']);
+const inputFiles = (p) => {
+  if (NOT_BUILT.has(p) || path.basename(p) === 'node_modules') return [];
+  if (!fs.statSync(p).isDirectory()) return [p];
+  return fs.readdirSync(p).flatMap((name) => inputFiles(`${p}/${name}`));
 };
-const stamp = gitStamp();
-const BUILD_TIME = stamp.time.toISOString().replace(/\.\d+Z$/, 'Z'); // to the second, UTC
-const BUILD_COMMIT = stamp.commit;
+const buildId = () => {
+  const hash = createHash('sha256');
+  // Sorted by code unit, so the order is the same on every platform and in every locale.
+  for (const file of BUILD_INPUTS.flatMap(inputFiles).sort()) {
+    hash.update(file).update('\0').update(fs.readFileSync(file)).update('\0');
+  }
+  return hash.digest('hex').slice(0, 12);
+};
+const BUILD_ID = buildId();
 
 // foliate-js is vendored in src/vendor/foliate-js. Its Orbis patches, which used to be applied here at build time, are
 // edits in that folder now; src/vendor/foliate-js/ORBIS-CHANGES.md explains each one. That includes a plugin reload:
@@ -88,8 +86,7 @@ await esbuild
     // since we're in a bundled CJS context where it has no meaning.
     define: {
       'import.meta.url': JSON.stringify(''),
-      __ORBIS_BUILD_TIME__: JSON.stringify(BUILD_TIME),
-      __ORBIS_BUILD_COMMIT__: JSON.stringify(BUILD_COMMIT),
+      __ORBIS_BUILD_ID__: JSON.stringify(BUILD_ID),
       __PIPER_WORKER_SRC__: JSON.stringify(PIPER_WORKER_SRC),
     },
   })

@@ -85,7 +85,7 @@ patches 6 and 7 say so.
 
 Patches 1 to 5 used to be string replacements applied at build time by a plugin in `esbuild.config.mjs`. They are
 ordinary edits now, each marked in the source with `// ORBIS patch N`. What follows is the plugin's own explanation,
-moved here unchanged. Patches 6 and 7 came with the upstream merge and follow after it; patches 8 to 35 after them.
+moved here unchanged. Patches 6 and 7 came with the upstream merge and follow after it; patches 8 to 36 after them.
 
 Five patches to Foliate. The first two fix mobile annotation navigation landing one page short of the target;
 the third stops the column gutter taking its size from the side-margin setting; the last two keep one bad
@@ -481,7 +481,7 @@ crowded-index and tag-table cases each fail without the patch.
 attribute selector. The fragment is the book's, and a quote in it made `querySelector` throw, so that link or contents
 entry went nowhere.
 
-### Patches 31 to 35: the Community directory's review
+### Patches 31 to 36: the Community directory's review
 
 The Obsidian Community directory scans every file in the repository with Obsidian's lint rules, and its review of
 0.1.0 reported 21 errors, all in this folder. `pnpm lint:obsidian` now runs those rules here too (see
@@ -529,7 +529,7 @@ the same devices. overlayer.js imports `Platform` from `obsidian` for this, the 
 - **The chapter frame is shown and hidden with its `hidden` attribute** (paginator.js `View`), not
   `display: block` and `none`. Nothing else sets the frame's display, and as an item of the view's flex box it is a
   block either way.
-- **`expand()` clears the values it set to a fixed one:** the view's padding and the overlay's margin (no padding or
+- **`expand()` clears the values it set to a fixed one** (with `removeProperty`, patch 36): the view's padding and the overlay's margin (no padding or
   margin), the frame's and view's size across (100%, now from the stylesheet), and the overlay's top and left (0,
   now from the stylesheet). `#top`'s padding in scrolled flow is cleared the same way: the stylesheet gives it none.
 - **A highlight's opacity and blend mode** (`Overlayer.highlight`) come from the class `foliate-highlight`, in the
@@ -545,6 +545,15 @@ directive rules require.
 **`CursorAutohider` is removed** (view.js). It hid the pointer after a second without moving, only when the view has
 the `autohide-cursor` attribute, which Orbis never sets, and it listened to every mouse move over the reader and each
 chapter to do so.
+
+### Patch 36
+
+**The values patch 34 clears are removed with `style.removeProperty()`**, not by assigning `''`, which does the same.
+The review of 0.1.1 reported the nine `= ''` lines in `expand()` and the scrolled flow: the directory runs
+`no-static-styles-assignment` as it was up to eslint-plugin-obsidianmd 0.4, which takes any literal for a fixed value,
+`''` included. In the column layout, the overlay's `left` and `top` are each either removed or set to the page size,
+by an `if` on the writing mode rather than a `?:` with `''` on one side. `pnpm lint:obsidian` now checks the shipping
+and vendored code for a literal assigned to a style, as the directory reads the rule.
 
 ## Patched at runtime, not here
 

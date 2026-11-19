@@ -1,11 +1,11 @@
 import { Notice } from 'obsidian';
-import { BUILD_COMMIT, BUILD_TIME } from './build-info';
+import { BUILD_ID } from './build-info';
 import { t } from './i18n';
 import { createOrbisPopup, type OrbisPopupHost } from './ui-utils';
 
 /**
- * Small "About" popup showing the plugin version and the build stamp (time +
- * commit), so there's no ambiguity about which build is being tested. Built on
+ * Small "About" popup showing the plugin version and the build ID, so there's
+ * no ambiguity about which build is being tested. Built on
  * the shared `createOrbisPopup` scaffolding like the other Orbis dialogs —
  * tap-outside / Escape to dismiss, plus explicit Copy and Close buttons.
  */
@@ -19,8 +19,7 @@ export function openAboutDialog(host: OrbisPopupHost, version: string): void {
 
   const rows: Array<[string, string]> = [
     [t('about.version'), version],
-    [t('about.build'), BUILD_TIME],
-    [t('about.commit'), BUILD_COMMIT],
+    [t('about.build'), BUILD_ID],
   ];
 
   const body = popupEl.createDiv({ cls: 'orbis-about-body' });

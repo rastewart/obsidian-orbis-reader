@@ -45,7 +45,7 @@ You can run these commands when no book is open, except where the table gives a 
 | Manage annotation presets… | Opens the **Marks manager** on the **Presets** tab |
 | Show pronunciation glossary… | Opens the **Pronunciation glossary** dialog |
 | Browse book sources | Opens the list of your OPDS feeds. Available when Book sources is enabled on this device |
-| About Orbis Reader | Opens the **About Orbis Reader** dialog, which shows the version, build and commit |
+| About Orbis Reader | Opens the **About Orbis Reader** dialog, which shows the version and the build |
 
 Link preview works for links to other places in the book, in every book format. A link to a website or another URL shows **Open this link?** instead, whether Link preview is on or off. See [Links that leave the book](reading-a-book.md#links-that-leave-the-book).
 

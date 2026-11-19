@@ -16,10 +16,17 @@
 // repository, though, and reports an error from Obsidian's own rules (`obsidianmd/*`), the HTML-injection rules
 // (`no-unsanitized/*`) and the directive-comment rules (`eslint-comments/*`) wherever it is. So the vendored
 // JavaScript is linted with the same recommended set, only errors from those three are kept, and any one fails this.
+//
+// **Last, any literal assigned to a style, the way the directory's review reads `no-static-styles-assignment`.** From
+// eslint-plugin-obsidianmd 0.5, the rule lets an assignment of `''` or `null` through, since it clears a style. The
+// review of 0.1.1 reported `el.style.padding = ''` all the same: it runs the rule as it was up to 0.4, which flags
+// every literal. So the code that ships and the vendored code are checked for that too. To clear a style, use
+// `style.removeProperty('padding')`, which no version flags.
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ESLint } from 'eslint';
+import { ESLint, type Rule } from 'eslint';
 import obsidianmd from 'eslint-plugin-obsidianmd';
+import tseslint from 'typescript-eslint';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(SCRIPT_DIR, '..');
@@ -79,8 +86,78 @@ async function main(): Promise<void> {
   report('Tests and mocks', tally(results.filter((r) => NOT_SHIPPED.test(rel(r)))));
 
   const vendorErrors = await lintVendor(rel);
+  const literalStyles = await lintLiteralStyles(rel);
 
-  process.exitCode = results.some((r) => r.errorCount > 0) || vendorErrors > 0 ? 1 : 0;
+  process.exitCode = results.some((r) => r.errorCount > 0) || vendorErrors > 0 || literalStyles > 0 ? 1 : 0;
+}
+
+/** `el.style.x = <any literal>` or `el.style[x] = <any literal>`, `''` and `null` included: the rule as it was to 0.4. */
+const literalStyleRule: Rule.RuleModule = {
+  meta: {
+    type: 'problem',
+    schema: [],
+    messages: {
+      literal:
+        "A literal assigned to a style, which the directory's review reports even when it is '' — clear a style with " +
+        "style.removeProperty('…'), or give the fixed value a CSS class",
+    },
+  },
+  create: (context) => ({
+    AssignmentExpression(node) {
+      const { left, right } = node;
+      if (right.type !== 'Literal' || left.type !== 'MemberExpression') return;
+      const owner = left.object;
+      if (
+        owner.type === 'MemberExpression' &&
+        !owner.computed &&
+        owner.property.type === 'Identifier' &&
+        owner.property.name === 'style'
+      )
+        context.report({ node, messageId: 'literal' });
+    },
+  }),
+};
+
+/** Checks the code that ships and the vendored code for literal style assignments. Returns how many there are. */
+async function lintLiteralStyles(rel: (r: ESLint.LintResult) => string): Promise<number> {
+  const eslint = new ESLint({
+    cwd: ROOT,
+    overrideConfigFile: true,
+    overrideConfig: [
+      { ignores: ['src/__tests__/**', 'src/__mocks__/**'] },
+      { files: ['src/**/*.ts'], languageOptions: { parser: tseslint.parser } },
+      {
+        files: ['src/**/*.{ts,js}'],
+        linterOptions: { reportUnusedDisableDirectives: 'off' },
+        plugins: { orbis: { rules: { 'literal-style': literalStyleRule } } },
+        rules: { 'orbis/literal-style': 'error' },
+      },
+    ],
+  });
+  const kept = (await eslint.lintFiles(['src']))
+    .map((r) => {
+      const messages = r.messages.filter((m) => m.ruleId === 'orbis/literal-style' || m.fatal);
+      return {
+        ...r,
+        messages,
+        errorCount: messages.length,
+        fatalErrorCount: 0,
+        warningCount: 0,
+        fixableErrorCount: 0,
+        fixableWarningCount: 0,
+      };
+    })
+    .filter((r) => r.messages.length > 0);
+  const errors = kept.reduce((n, r) => n + r.errorCount, 0);
+
+  console.log("\nLiteral style assignments, as the directory's review reads them (shipping and vendored code):");
+  if (errors === 0) {
+    console.log('  0 errors');
+    return 0;
+  }
+  console.log(await (await eslint.loadFormatter('stylish')).format(kept));
+  for (const r of kept) console.log(`  ${rel(r)}: ${r.errorCount}`);
+  return errors;
 }
 
 /** Lints the vendored JavaScript and prints the errors the directory would report. Returns how many there are. */

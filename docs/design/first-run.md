@@ -143,7 +143,7 @@ What is already decided:
   silently, and nothing is shown. A bugfix does not earn a dialog.
 - **A curated table, not `CHANGELOG.md`.** The changelog is not shipped — only `main.js`, `manifest.json` and
   `styles.css` reach a vault — so it would have to be embedded at build time. The precedent exists
-  (`__ORBIS_BUILD_TIME__` / `__ORBIS_BUILD_COMMIT__` behind `src/build-info.ts`, which the About dialog reads), but
+  (`__ORBIS_BUILD_ID__` behind `src/build-info.ts`, which the About dialog reads), but
   release notes for a reader are three lines about what is new, not a changelog for a maintainer.
 - **No link out.** There is no public repository to link to yet, and documentation hosting is still open in
   `settings.md`.

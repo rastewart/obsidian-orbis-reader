@@ -335,11 +335,16 @@ plugin cannot be installed from Obsidian until no errors remain. Scanner results
     16 fixed inline styles; an `innerHTML`; a user-agent check; and a directive comment with no reason. `0.1.1` fixes
     each in the code (foliate patches 31 to 35, in `src/vendor/foliate-js/ORBIS-CHANGES.md`): an `obsidianmd/*`
     rule cannot be turned off with a directive.
+  - **The review of `0.1.1` (2026-11-19): 9 errors,** the `style.x = ''` lines patch 34 used to clear a style. The
+    directory runs `no-static-styles-assignment` as it was up to 0.4, which counts `''` as a fixed value; from 0.5 the
+    rule lets it through. Patch 36 clears them with `removeProperty`, and `pnpm lint:obsidian` checks for the older
+    reading (§8.4). A branch can be reviewed before a release (**Review branch** on the plugin's page).
   - **Warnings,** which do not block: Node's `fs` (the computer's **Export…**, §8.6), `createEl` preferred to
     `document.createElement`, and the `no-unsafe-*` family in vendored code.
   - **Build verification:** the directory rebuilds the release and compares it with the attached `main.js`. `0.1.0`
-    embedded the time of the build, so no rebuild could match. From `0.1.1` a committed build is stamped with the
-    commit's time, and two builds of one commit are the same file ([Debug System](debug-system.md#build-stamp)).
+    embedded the time of the build, so no rebuild could match. `0.1.1` stamped the commit's time and commit,
+    which still needed git, and the review of `0.1.1` reported the same warning. From `0.1.2` the bundle holds only a
+    hash of its source, so any checkout of the commit builds the same file ([Debug System](debug-system.md#build-stamp)).
   - **A recommendation:** the release's fourth file, `orbis-test-fixtures.zip`, is one Obsidian does not download.
 - [ ] Set the pricing label to **Free**, if the listing editor asks for one
 - [ ] Optional: listing screenshots (§7.4)
@@ -353,6 +358,8 @@ plugin cannot be installed from Obsidian until no errors remain. Scanner results
       out, and fails on an error from the rules the directory reports there: `obsidianmd/*`, `no-unsanitized/*` and
       `eslint-comments/*`. The `console` calls in lamejs and the piper phonemizer, which the directory's review did not
       report, are allowed (2026-11-18)
+- [x] `pnpm lint:obsidian` also fails on a literal assigned to a style, `''` and `null` included, in the code that
+      ships and the vendored code: the directory's reading of `no-static-styles-assignment` (2026-11-19)
 
 ### 8.5 Developer policies
 

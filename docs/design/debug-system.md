@@ -16,20 +16,21 @@ Key design constraints: no debug flags in plugin settings; filtering happens ins
 
 Every build is stamped so a debug session is never ambiguous about *which* artifact produced it — on a device, the log is the only way to tell whether the new build is the one running.
 
-**Injection.** `esbuild.config.mjs` computes two values at build time and passes them through esbuild's `define`:
+**Injection.** `esbuild.config.mjs` computes one value at build time and passes it through esbuild's `define`:
 
-- `BUILD_TIME` — to the second (UTC): the commit's time (`git show -s --format=%cI HEAD`) when the build inputs are committed, and the time of the build when they have uncommitted changes or there is no git. So two builds of one commit are the same `main.js`, byte for byte, which the Community directory checks: it rebuilds a release from its tag and compares the result with the attached `main.js`.
-- `BUILD_COMMIT` — `git rev-parse --short HEAD`, plus a `-dirty` suffix when `git status --porcelain` is non-empty for the build inputs (`src`, `styles.css`, `manifest.json`, `esbuild.config.mjs`) — the usual state while iterating.
+- `BUILD_ID` — the first 12 hex digits of a SHA-256 over the files the build is made from: everything under `src` but the tests and the Obsidian mock, and `styles.css`, `manifest.json`, `esbuild.config.mjs` and `tsconfig.json`, each by its path and contents, in path order. Any edit gives a new ID, and the same source the same one.
 
-`src/build-info.ts` reads them behind a `typeof` guard so vitest and `pnpm dev` (which don't run the production `define`) fall back to `'dev'` instead of throwing on the undeclared global. `buildLabel()` joins them:
+**Nothing in the bundle comes from git, the clock or the machine.** The Community directory rebuilds each release and compares the result with the attached `main.js`, perhaps from a checkout with no git history. Until 0.1.2 the stamp was the build's time and commit: in 0.1.0 the time of the build, so no rebuild could match; in 0.1.1 the commit's time, which still needed git, and a checkout without it read `nogit` and the current time. `package.json` and `pnpm-lock.yaml` are not hashed, since an install may rewrite them; they change the bundle only through the packages they install, so a dependency update alone keeps the ID.
+
+`src/build-info.ts` reads it behind a `typeof` guard so vitest and `pnpm dev` (which don't run the production `define`) fall back to `'dev'` instead of throwing on the undeclared global. `buildLabel()` names it:
 
 ```
-Orbis build 2026-07-11T13:13:57Z · a1b2c3d-dirty
+Orbis build 3f2a9c1d0e4b
 ```
 
-> **Watch-mode caveat:** `define` is evaluated once when `pnpm dev` starts, so `BUILD_TIME` won't refresh on every hot rebuild. The production `build` (which `deploy.sh` runs) re-stamps each time, so the deployed/tested artifact is always accurate.
+> **Watch-mode caveat:** `define` is evaluated once when `pnpm dev` starts, so `BUILD_ID` won't refresh on every hot rebuild. The production `build` (which `deploy.sh` runs) computes it each time, so the deployed/tested artifact is always accurate.
 >
-> **`-dirty` needs a clean tree to mean anything:** the flag reads `git status`, so untracked noise (`.DS_Store`, stray files) keeps it permanently dirty. Gitignoring that noise keeps the flag a real signal.
+> **The ID names the source, not a commit.** To find which commit a build came from, build a candidate commit and compare IDs; a release's ID is in the About dialog of the plugin it installs.
 
 **Two surfaces read the stamp:**
 
