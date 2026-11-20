@@ -240,6 +240,8 @@ These settings are in **Settings → Orbis Reader → Appearance**. They are sav
 
 **Two-column layout** usually shows two columns on a computer, or on a tablet or phone turned sideways. In other conditions it can be enabled while the page shows one column. In Scrolled mode, the page always has one column and the setting is hidden. When you go back to Paged mode, the setting is as you left it.
 
+In a CBZ book or a fixed-layout EPUB, where each page is a picture, **Two-column layout** shows two pages side by side when the reading area is wider than it is tall. When it is turned off, you see one page at a time at any size.
+
 **Left** text alignment gives a ragged right edge. **Justified** aligns the text to both margins. With either value, text that the book centers or right-aligns keeps its alignment, such as title lines, verse and signatures.
 
 The **Reader theme manager** is in **Settings → Orbis Reader → Appearance → Reader theme manager**.

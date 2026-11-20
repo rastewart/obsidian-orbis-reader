@@ -91,6 +91,9 @@ const GLYPHS: Record<string, string> = {
   "'": '..#.. ..#.. .#... ..... ..... ..... .....',
   '(': '...#. ..#.. .#... .#... .#... ..#.. ...#.',
   ')': '.#... ..#.. ...#. ...#. ...#. ..#.. .#...',
+  // For `cafe-and-co.epub`'s title, CAFÉ & CO.
+  '&': '.##.. #..#. #.#.. .#... #.#.# #..#. .##.#',
+  É: '...#. ##### #.... ####. #.... #.... #####',
 };
 
 /** A line of text, centered across the image, its top at `y` (a fraction of the height), each font pixel `scale` px. */

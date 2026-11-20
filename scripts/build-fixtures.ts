@@ -77,6 +77,9 @@ const NOTES: Record<
  * - `parts-and-chapters.azw3` — from `parts-and-chapters.epub`, output AZW3 (KF8).
  * - `technical-book.azw3` — from `technical-book.epub`, output AZW3 (KF8): the Kindle book with a picture inside a
  *   chapter, for the exports' pictures (`kindle-resources.ts`).
+ * - `cafe-and-co.mobi` — from `cafe-and-co.epub`, output MOBI with *MOBI file type: both*: an `&` and accented
+ *   letters in the title, author and contents. It opens as KF8, whose contents labels go through `unescapeHTML` as
+ *   well as its title and author.
  *
  * Calibre keeps each source's title and author, so a title note for one is written from its source — the MOBI has one
  * of its own, and the AZW3 is listed on its source's note (see NOTES). Its cover is not the source's, which says EPUB.
@@ -90,6 +93,7 @@ const CONVERTED: { file: string; from: string }[] = [
   { file: 'annotation-workhorse.mobi', from: 'annotation-workhorse.epub' },
   { file: 'parts-and-chapters.azw3', from: 'parts-and-chapters.epub' },
   { file: 'technical-book.azw3', from: 'technical-book.epub' },
+  { file: 'cafe-and-co.mobi', from: 'cafe-and-co.epub' },
 ];
 
 /** Write the Calibre sources as well — see CONVERTED. */

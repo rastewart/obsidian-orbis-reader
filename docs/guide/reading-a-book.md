@@ -69,7 +69,7 @@ When you select a toolbar button, the keyboard focus goes back to the book, and 
 ## Turn pages
 
 - To turn a page, select the left or right edge of the page. The ‹ and › arrows show where to select.
-- On a touch screen, you can also swipe. In a CBZ book, swiping does not turn the page: select the edge of the page instead.
+- On a touch screen, you can also swipe.
 - On a keyboard, press the left or right arrow, Space, Page Up or Page Down.
 
 To read the book as one long scroll, see [Paged mode and Scrolled mode](#paged-mode-and-scrolled-mode).

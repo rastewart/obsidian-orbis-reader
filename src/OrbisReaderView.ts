@@ -109,6 +109,7 @@ import { NavSuppressor } from './reader/NavSuppressor';
 import { NotesExporter } from './reader/NotesExporter';
 import { watchBookChanges } from './reader/orbis-file-watch';
 import type { PanelsHost } from './reader/PanelsHost';
+import { keepPictureAspect } from './reader/picture-aspect';
 import type { AudioBookmarkTarget, ReaderContext } from './reader/ReaderContext';
 import { ReaderDom } from './reader/ReaderDom';
 import { ReaderPanels } from './reader/ReaderPanels';
@@ -4238,6 +4239,7 @@ export class OrbisReaderView
         // `scaleKeywordSizes`.
         scaleKeywordSizes(doc);
         tagBodyText(doc);
+        keepPictureAspect(doc, (msg) => this.addDebugEntry(msg, 'display'));
         this.applyDocStyles(doc);
         this.annot.setupHighlightUI(doc, sIdx);
         this.linkPreview.setup(doc, sIdx);

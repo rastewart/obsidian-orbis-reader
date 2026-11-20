@@ -41,9 +41,13 @@ Every step carries one tag.
 
 - [ ] `each` Open `annotation-workhorse.mobi`, `parts-and-chapters.azw3` and `parts-and-chapters.fb2` in turn. Each renders, turns pages, and has a contents list on the Navigator's **Contents** tab.
 
+- [ ] `once` Open `cafe-and-co.mobi`. The Navigator's **Contents** tab lists **Crème Brûlée & Coffee**, **Señora Muñoz’s Table**, **Smørrebrød & Søren** and **Œuvres & Hors-d’œuvre**. Add the book to the Library: it is **Café & Co.**, by **Zoë Lefèvre & Søren Ågård**. Nowhere does `&amp;` show, or a letter as two odd characters such as `Ã©`.
+
 - [ ] `desktop` Open `technical-book.epub` and, on the **Contents** tab, go to **Records and Fields**, which holds a ruled table. Open any other note in a second tab and switch between the two tabs several times. Obsidian stays responsive, and the book comes back on the same page. A table with borders in a hidden book used to freeze Obsidian on the switch.
 
-- [ ] `once` Open `sample-comic.cbz`. The pages are images and turn like any book's. Pressing on a page selects no text, and no marks bar appears.
+- [ ] `once` Open `sample-comic.cbz`. The pages are images and turn like any book's, and pages 2 to 6 each show their number large in the middle.
+
+- [ ] `desktop` In `sample-comic.cbz`, in a pane wider than tall, turn **Two-column layout** on: pages 2 and 3 show side by side. Turn it off: one page shows, at once, without reopening the book, and each page turn moves one page, 2 to 3 to 4. Make the pane narrow and tall: one page shows either way. Pressing on a page selects no text, and no marks bar appears.
 
 ---
 ## Turning pages
@@ -53,6 +57,10 @@ Use `annotation-workhorse.epub` from here on.
 - [ ] `each` Select the right edge of the page: it turns forward. Select the left edge: it turns back.
 
 - [ ] `mobile` Swipe left and right. The page turns with the swipe, in both directions.
+
+- [ ] `mobile` Open `sample-comic.cbz` and swipe left and right, with long swipes and short, quick flicks. The page turns with the swipe, in both directions, one page per swipe, and the image viewer does not open. Tap a page: the image viewer opens.
+
+- [ ] `desktop` Open `technical-book.epub` at its cover with **Two-column layout** off, in a pane much wider than tall. The cover keeps its shape, centred, and is not stretched across the page.
 
 - [ ] `each` Turn **Show page arrows** off in **Settings → Orbis Reader → Reading behavior**. The ‹ and › disappear from the open book at once, and on the Mac they stay hidden with the pointer over them. Select where each one was: the right edge still turns forward and the left edge back. Turn it back on: they return.
 

@@ -209,26 +209,33 @@ See [Read in Orbis Reader](read-in-orbis-reader.md).
 
 Found while testing `0.1.1-beta.1` (2026-11-19). Each waits until `0.1.1` ships.
 
-- [ ] **Swipe to turn pages in a CBZ book.** foliate's fixed-layout renderer (`fixed-layout.js`), which shows CBZ books
-      and fixed-layout EPUBs, has no touch handling: the paginator's swipe code (`paginator.js`) is its own. Turn the
-      page on a horizontal swipe over the page, in the book's reading direction, so a right-to-left manga turns the way
-      it reads. A swipe must not also be taken as the tap that opens the page in the image viewer. Then take out the
-      guide's note that swiping does not turn a CBZ page (Getting Started, Reading a Book's *Turn pages*, and Format
-      Support's table and *CBZ* section), and add a `mobile` CBZ swipe check to the Reading a Book test plan
-- [ ] **A MOBI fixture with character references.** A Calibre-built MOBI or AZW3 whose title, author and a chapter
-      name hold an `&` and accented letters, such as *Café & Co.*, so opening it goes through `unescapeHTML`'s decoding
-      (foliate patch 32). None of the three MOBI and AZW3 fixtures has one. Add it to `test-vault/fixtures/README.md`
-      and a check to a test plan
-- [ ] **A page number on each sample CBZ page.** Pages 2 to 6 of `sample-comic.cbz` are the same image
-      (`sampleComic` in `scripts/fixtures/books.ts`), so a page turn cannot be seen. Draw each page's number large in
-      its middle, then `pnpm build:fixtures`
-- [ ] **Two-column layout decides one page or two in a CBZ book.** foliate's fixed-layout renderer shows a two-page
-      spread whenever the reading area is wider than it is tall (`fixed-layout.js`, `#render`), and the setting does
-      not reach it: Orbis sets `max-column-count`, which only the paginator reads, and a CBZ file says nothing about
-      spreads. With the setting on, keep today's spreads, which match what Display Settings says the setting does for
-      text; with it off, show one page at any size. That needs an Orbis patch to `fixed-layout.js` for a single-page
-      mode, set from `applyRenderer` for fixed-layout books. A fixed-layout EPUB follows it too, unless the book asks
-      for spreads itself. Add a line on it to Format Support's *CBZ* section
+- [x] **Swipe to turn pages in a CBZ book.** foliate's fixed-layout renderer (`fixed-layout.js`), which shows CBZ books
+      and fixed-layout EPUBs, had no touch handling: the paginator's swipe code (`paginator.js`) is its own. Done as
+      foliate patch 37: a horizontal swipe turns the page in the book's reading direction, and the click a short flick
+      can end in is swallowed, so it neither opens the image viewer nor turns the page twice. The guide's notes that
+      swiping does not turn a CBZ page are gone, and the Reading a Book test plan has a `mobile` CBZ swipe check
+- [x] **Pictures keep their shape.** In one column across a wide pane, a Calibre-made cover was stretched sideways to
+      fill the page: Calibre draws it as a page-sized SVG with `preserveAspectRatio="none"`. Each section as it loads now
+      has `none` changed to `xMidYMid meet` on an SVG that holds an `<image>`, and on an `<image>` itself
+      (`reader/picture-aspect.ts`). An SVG with no picture in it, such as the stretched background in
+      `contrast-checks.epub`, is left as drawn. An `<img>` already kept its shape: foliate gives each `object-fit:
+      contain`. The Reading a Book test plan has a `desktop` check with `technical-book.epub`'s cover
+- [x] **A MOBI fixture with character references.** `cafe-and-co.mobi`, Calibre's conversion of `cafe-and-co.epub`
+      with *MOBI file type: both*: *Café & Co.* by Zoë Lefèvre & Søren Ågård, its four chapter names with an `&` or
+      accented letters, so opening it goes through `unescapeHTML`'s decoding (foliate patch 32) for the title, the
+      author and, in the KF8 part foliate opens, the contents. Calibre writes the `&` bare, so the fixture checks that
+      real text comes through unchanged; decoding `&amp;` stays `mobi-unescape.test.ts`'s. `mobi-characters.test.ts`
+      opens it, and the Reading a Book test plan has a check
+- [x] **A page number on each sample CBZ page.** Pages 2 to 6 of `sample-comic.cbz` were the same image
+      (`sampleComic` in `scripts/fixtures/books.ts`), so a page turn could not be seen. Each now shows its number large
+      in its middle
+- [x] **Two-column layout decides one page or two in a CBZ book.** foliate's fixed-layout renderer showed a two-page
+      spread whenever the reading area was wider than tall (`fixed-layout.js`, `#render`), and the setting did not
+      reach it: Orbis sets `max-column-count`, which only the paginator read. Done as foliate patch 38: the renderer
+      observes `max-column-count`, and at 1 shows one page at a time at any size. With the setting on, today's spreads
+      stay, the book's `rendition:spread` included. A fixed-layout EPUB follows the setting too, even one that asks
+      for spreads: turning two columns off is the reader asking for one page. `applyRenderer` needed no change. Format
+      Support's *CBZ* section and Display Settings say so
 
 ---
 

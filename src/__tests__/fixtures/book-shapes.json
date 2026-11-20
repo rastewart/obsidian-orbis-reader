@@ -4116,6 +4116,52 @@
       }
     ]
   },
+  "cafe-and-co.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/cover.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-4.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Crème Brûlée & Coffee",
+        "href": "OEBPS/chapter-1.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Señora Muñoz’s Table",
+        "href": "OEBPS/chapter-2.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Smørrebrød & Søren",
+        "href": "OEBPS/chapter-3.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Œuvres & Hors-d’œuvre",
+        "href": "OEBPS/chapter-4.xhtml#c"
+      }
+    ]
+  },
   "keyword-sizes.epub": {
     "spine": [
       {

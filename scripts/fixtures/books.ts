@@ -822,7 +822,8 @@ export function fb2Sample(): Built {
 
 /**
  * A comic: six page images, the first one landscape, and no metadata at all — so its title is its file name and its
- * cover is the first page.
+ * cover is the first page. Pages 2 to 6 each carry their number, large, in the middle, so a page turn — by a swipe,
+ * the page edges or the keyboard — shows which page it landed on, and a two-page spread shows which two.
  */
 export function sampleComic(): Built {
   const at = { mtime: Date.UTC(1980, 6, 1, 12) };
@@ -847,7 +848,10 @@ export function sampleComic(): Built {
           { from: 0.05, to: 0.32, color: [200, 210, 225] },
           { from: 0.36, to: 0.63, color: [225, 210, 200] },
           { from: 0.67, to: 0.95, color: [210, 225, 205] },
-        ]
+        ],
+        12,
+        // 7 font pixels of 30: 210px tall, centred on the page's 900.
+        [{ text: String(n), y: 0.5 - 105 / 900, scale: 30, color: [60, 60, 70] }]
       ),
       at,
     ];
@@ -1077,6 +1081,44 @@ export function speechSampler(): Built {
   );
 }
 
+/**
+ * Character references in a Kindle book's metadata and contents: the source of `cafe-and-co.mobi`.
+ *
+ * **The one fixture whose title is not its file name in words.** Its title, its author and its chapter names hold an
+ * `&` and accented letters, so opening the MOBI goes through `unescapeHTML`'s decoding (foliate patch 32) — the title
+ * and author from the MOBI's header, and the contents labels from its KF8 part. A file name with an `&` or an accent
+ * is a nuisance on every platform, so the file is `cafe-and-co` and the book is *Café & Co.* Opened, the title bar,
+ * the Library and the contents must read `Café & Co.` and `Crème Brûlée & Coffee`, never `&amp;` or `CafÃ©`.
+ */
+export function cafeAndCo(): Built {
+  const p = proseFrom(1401);
+  const TITLE = 'Café & Co.';
+  const names = ['Crème Brûlée & Coffee', 'Señora Muñoz’s Table', 'Smørrebrød & Søren', 'Œuvres & Hors-d’œuvre'];
+  const files: EpubFile[] = [css(), ...coverFiles(5, TITLE)];
+  const nav: NavEntry[] = [];
+  names.forEach((name, i) => {
+    const path = `chapter-${i + 1}.xhtml`;
+    const opening = `At the café on the Rue de l’Église, Zoë ordered the crème brûlée & a café au lait.`;
+    files.push(page(path, name, `<h2 id="c">${esc(name)}</h2>\n${ps([opening, ...p.paragraphsOf(2500)])}`));
+    nav.push({ label: name, href: `${path}#c` });
+  });
+  return epub(
+    'cafe-and-co.epub',
+    {
+      version: 3,
+      opfDir: 'OEBPS',
+      title: TITLE,
+      creators: [{ name: 'Zoë Lefèvre & Søren Ågård', fileAs: 'Lefèvre, Zoë & Ågård, Søren' }],
+      identifier: 'urn:orbis-fixture:cafe-and-co',
+      files,
+      spine: files.filter((f) => f.path.endsWith('.xhtml')).map((f) => ({ path: f.path })),
+      nav,
+      coverImage: 'cover.png',
+    },
+    5
+  );
+}
+
 /** Every fixture, in the order `book-shapes.json` lists them. */
 export const ALL = [
   firstOpen,
@@ -1094,4 +1136,5 @@ export const ALL = [
   longChapter,
   noContents,
   speechSampler,
+  cafeAndCo,
 ];

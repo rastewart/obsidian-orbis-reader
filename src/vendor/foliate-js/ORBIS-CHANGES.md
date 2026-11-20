@@ -85,7 +85,7 @@ patches 6 and 7 say so.
 
 Patches 1 to 5 used to be string replacements applied at build time by a plugin in `esbuild.config.mjs`. They are
 ordinary edits now, each marked in the source with `// ORBIS patch N`. What follows is the plugin's own explanation,
-moved here unchanged. Patches 6 and 7 came with the upstream merge and follow after it; patches 8 to 36 after them.
+moved here unchanged. Patches 6 and 7 came with the upstream merge and follow after it; patches 8 to 38 after them.
 
 Five patches to Foliate. The first two fix mobile annotation navigation landing one page short of the target;
 the third stops the column gutter taking its size from the side-margin setting; the last two keep one bad
@@ -554,6 +554,33 @@ The review of 0.1.1 reported the nine `= ''` lines in `expand()` and the scrolle
 `''` included. In the column layout, the overlay's `left` and `top` are each either removed or set to the page size,
 by an `if` on the writing mode rather than a `?:` with `''` on one side. `pnpm lint:obsidian` now checks the shipping
 and vendored code for a literal assigned to a style, as the directory reads the rule.
+
+### Patch 37
+
+**A swipe turns the page in the fixed-layout renderer** (fixed-layout.js), which CBZ comics and fixed-layout EPUBs
+use. Upstream gave it no touch handling at all, so on a phone or tablet only the page buttons turned its pages. A touch
+on a page goes to that page's own document, so each frame gets the listeners as it loads, and the element gets them
+too, for the margins around the pages.
+
+A one-finger swipe that moves further across than up or down turns the page when it covers 40px, or 10px at a flick
+(0.3 px/ms). The finger moving left brings in what is to the right: the next page in a left-to-right book, the
+previous one in a right-to-left book. As in the paginator, `touchmove` is cancelled so the browser neither scrolls nor
+bounces, and nothing turns while text is selected or the screen is pinch-zoomed. A page zoomed past the pane (the
+`zoom` attribute, which Orbis does not set) pans as before, and turns only from the edge it was already at when the
+swipe began.
+
+A swipe that turns the page swallows a click that follows it within half a second. A flick of a few pixels can still
+end in a click, which would open the picture in Orbis's image viewer, or turn the page again at its edge.
+`fxl-swipe.test.ts` checks each of these.
+
+### Patch 38
+
+**`max-column-count` decides one page or two in the fixed-layout renderer** (fixed-layout.js). Upstream showed a
+two-page spread whenever the pane was wider than tall, and the attribute, which Orbis sets from **Two-column layout**
+for every book, was read only by the paginator. At `1` the renderer now always shows one page at a time, in the mode
+it already had for a pane taller than wide: one page of the spread shows, and a page turn goes to the other page
+before the next spread. At `2`, or with no attribute, it is as before, the book's own `rendition:spread` included.
+The attribute is observed, so changing the setting changes an open book at once. `fxl-one-page.test.ts` checks it.
 
 ## Patched at runtime, not here
 

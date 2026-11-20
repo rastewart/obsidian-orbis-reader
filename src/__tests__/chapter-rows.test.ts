@@ -97,8 +97,8 @@ function pdfRows(shape: Shape): { key: string; label: string; unlisted: boolean 
 const books = Object.entries(shapes as Record<string, Shape>);
 
 describe('the chapter list every export picks from', () => {
-  it('has all twenty-two books to compare', () => {
-    expect(books.length).toBe(22);
+  it('has all twenty-three books to compare', () => {
+    expect(books.length).toBe(23);
   });
 
   for (const [name, shape] of books) {

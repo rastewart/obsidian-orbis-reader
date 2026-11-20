@@ -1,6 +1,6 @@
 # Test fixtures
 
-Every book here is generated. None is a real book, and no real title, author or passage appears in any of them: the prose is invented, the author is the invented Orbis Tester, and each book's title is its file name in words. Each book also says what it is: its publisher is *Orbis Reader test fixtures*, its description says it was made to test Orbis Reader and is not a real book, and its cover reads ORBIS READER TEST BOOK (`scripts/fixtures/marker.ts`). The books reproduce the structures real books have — how a contents page is shaped, which files it reaches, where notes live — because those are what the code is written against.
+Every book here is generated. None is a real book, and no real title, author or passage appears in any of them: the prose is invented, the author is the invented Orbis Tester, and each book's title is its file name in words. The one exception is `cafe-and-co`, whose title and author, *Café & Co.* by the invented Zoë Lefèvre & Søren Ågård, are there for their `&` and accented letters. Each book also says what it is: its publisher is *Orbis Reader test fixtures*, its description says it was made to test Orbis Reader and is not a real book, and its cover reads ORBIS READER TEST BOOK (`scripts/fixtures/marker.ts`). The books reproduce the structures real books have — how a contents page is shaped, which files it reaches, where notes live — because those are what the code is written against.
 
 ## Rebuilding
 
@@ -14,17 +14,18 @@ Three books have builders of their own: `hostile-scripts.epub` (`pnpm build:host
 
 ## The Kindle files
 
-Nothing in JavaScript writes MOBI or AZW3, so three books are converted with Calibre's `ebook-convert` and committed as they came out:
+Nothing in JavaScript writes MOBI or AZW3, so four books are converted with Calibre's `ebook-convert` and committed as they came out:
 
 | File | Convert | Command, in `test-vault/fixtures` |
 |---|---|---|
 | `annotation-workhorse.mobi` | `annotation-workhorse-convert-to-mobi.epub` | `ebook-convert annotation-workhorse-convert-to-mobi.epub annotation-workhorse.mobi --mobi-file-type old` — a MOBI 6 file with no KF8 part |
 | `parts-and-chapters.azw3` | `parts-and-chapters-convert-to-azw3.epub` | `ebook-convert parts-and-chapters-convert-to-azw3.epub parts-and-chapters.azw3` |
 | `technical-book.azw3` | `technical-book-convert-to-azw3.epub` | `ebook-convert technical-book-convert-to-azw3.epub technical-book.azw3 --pubdate "0101-01-01T00:00:00+00:00"` |
+| `cafe-and-co.mobi` | `cafe-and-co-convert-to-mobi.epub` | `ebook-convert cafe-and-co-convert-to-mobi.epub cafe-and-co.mobi --mobi-file-type both --pubdate "0101-01-01T00:00:00+00:00"` — a MOBI 6 and a KF8 part; foliate opens the KF8 |
 
 `pnpm build:fixtures --calibre-sources` writes the EPUBs to convert: each is its book with a cover naming the target format. Convert each, check the result, and delete the `-convert-to-` EPUBs. Convert again whenever a source book's text, title or metadata changes.
 
-The technical book has no publication date, and `--pubdate` keeps it that way: Calibre's command line otherwise stamps the day of the conversion, which the Library would then show. The value is Calibre's own "undefined", as its desktop app writes it.
+The technical book and *Café & Co.* have no publication date, and `--pubdate` keeps it that way: Calibre's command line otherwise stamps the day of the conversion, which the Library would then show. The value is Calibre's own "undefined", as its desktop app writes it.
 
 ## The books
 
@@ -39,7 +40,8 @@ The technical book has no publication date, and `--pubdate` keeps it that way: C
 | `numbered-chapters.epub` | `N Name` chapters, one per file, and a `(contd.)` pair |
 | `converted-note.epub`, `converted-folder.epub` | Made by Orbis's own converter from notes: one note, and a folder of 39 |
 | `fb2-sample.fb2` | An FB2 with a series and a maker's nickname |
-| `sample-comic.cbz` | A comic with no metadata and a landscape first page |
+| `sample-comic.cbz` | A comic with no metadata and a landscape first page; pages 2 to 6 show their number large, so a page turn shows where it landed |
+| `cafe-and-co.epub`, `.mobi` | *Café & Co.*: an `&` and accented letters in the title, author and contents, so the MOBI's metadata and contents go through foliate's character-reference decoding |
 | `long-chapter.epub` | Listening: a 79-minute chapter divided into three tracks, between two chapters of three minutes to record |
 | `no-contents.epub` | Listening: four files of text, no headings and an empty contents, so each file is a track of the book |
 | `speech-sampler.epub` | Listening: one chapter for each way the text is rewritten before a voice reads it — capitals, initialisms, headings in capitals, dotted forms, Roman numerals, web and email addresses — for hearing how each is read |
