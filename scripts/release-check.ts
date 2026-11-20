@@ -10,24 +10,15 @@
 //
 // A beta tag (`0.2.0-beta.1`) asks none of the version files, since main keeps the last stable version while a beta is
 // out (see `isBetaTag`). It must lead up to a version at least main's that is not tagged yet, and CHANGELOG.md must
-// have that version's section, filled in, usually headed `## [0.2.0] — Unreleased`: its notes are a line saying what a
-// beta is, then that section, so whoever installs it with BRAT sees what is in it.
+// have that version's section, filled in, usually headed `## [0.2.0] — Unreleased`: that section is its notes, so
+// whoever installs it with BRAT sees what is in it.
 // The tags are read from git: the workflow's check job has the whole history, while the build job, which calls this
 // only for the notes, has just the one tag it is building.
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {
-  betaBase,
-  betaNotes,
-  betaProblem,
-  changelogSection,
-  isBetaTag,
-  isVersion,
-  notesProblem,
-  UNRELEASED,
-} from './release-lib';
+import { betaBase, betaProblem, changelogSection, isBetaTag, isVersion, notesProblem, UNRELEASED } from './release-lib';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (name: string) => readFileSync(path.join(ROOT, name), 'utf8');
@@ -57,7 +48,7 @@ function betaProblems(): [string[], string] {
   const problems = [betaProblem(tag, manifest.version, tags), notesProblem(section, base)].filter(
     (p): p is string => !!p
   );
-  return [problems, betaNotes(tag, section ?? '')];
+  return [problems, section ?? ''];
 }
 
 const [problems, notes] = isBetaTag(tag)

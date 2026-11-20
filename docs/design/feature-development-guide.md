@@ -243,7 +243,7 @@ reads `manifest.json` from main and offers the release tagged with its version, 
       `git push origin 0.2.0-beta.1`. The workflow refuses a beta of a version lower than `manifest.json`'s or one
       already tagged; `0.1.0-beta.1` is accepted while main says `0.1.0` and `0.1.0` is not tagged yet
 - [ ] The workflow writes the beta's version into the released `manifest.json` only, and drafts the release as a
-      **pre-release**, its notes a line saying it is a beta and then the `Unreleased` section. Check the attestation
+      **pre-release**, with the `Unreleased` section as its notes. Check the attestation
       as for a stable release, and publish the draft with **Set as a pre-release** still ticked
 - [ ] BRAT installs a beta for anyone tracking the latest version, so every BRAT user gets it unless they added Orbis
       Reader at a release tag. BRAT orders `0.2.0-beta.1` below `0.2.0`, so testers move to the stable release when it

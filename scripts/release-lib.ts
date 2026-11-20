@@ -46,17 +46,6 @@ export function betaProblem(tag: string, manifestVersion: string, tags: readonly
   return null;
 }
 
-/**
- * A beta's notes: a line saying what a beta is, then what is in it — the CHANGELOG.md section of the version it leads
- * up to, as the stable release's notes will be. BRAT shows them to whoever installs it.
- *
- * Main keeps the last stable version while a beta is out, so that section is written by hand before the first beta,
- * headed `## [0.2.0] — Unreleased` (see `UNRELEASED`), and grows with each beta. `pnpm bump` dates it.
- */
-export function betaNotes(tag: string, section: string): string {
-  return `A beta of ${betaBase(tag)}, for testing before it is released. BRAT installs it; the community plugin store does not offer it.\n\n${section}`;
-}
-
 /** Negative, zero or positive, as `a` is lower than, equal to or higher than `b`. Both must pass `isVersion`. */
 export function compareVersions(a: string, b: string): number {
   const pa = a.split('.').map(Number);

@@ -10,7 +10,7 @@ name: Release
 # CHANGELOG.md section as its notes and is published with "Set as the latest release" ticked: a draft cannot be marked
 # latest, and the `dictionaries` release holds that title until a plugin release takes it. A beta is drafted as a
 # pre-release, which GitHub never marks latest, with the CHANGELOG.md section of the version it leads up to as its
-# notes under a line saying it is a beta, so whoever installs it with BRAT sees what is in it.
+# notes, so whoever installs it with BRAT sees what is in it.
 #
 # **Nothing is built from a tag the files disagree with** (`scripts/release-check.ts`). Every tag must be on main. A
 # stable tag is three numbers with no `v` (Obsidian's form), equal to `manifest.json`'s version, listed in

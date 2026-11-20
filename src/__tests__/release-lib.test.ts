@@ -6,7 +6,6 @@
 import { describe, expect, it } from 'vitest';
 import {
   betaBase,
-  betaNotes,
   betaProblem,
   changelogSection,
   compareVersions,
@@ -115,12 +114,6 @@ describe('betas', () => {
   it("refuses a beta below main's version, or of a version already released", () => {
     expect(betaProblem('0.1.0-beta.1', '0.2.0', [])).toMatch(/lower than manifest.json's 0.2.0/);
     expect(betaProblem('0.1.0-beta.1', '0.1.0', ['0.1.0'])).toMatch(/already tagged/);
-  });
-
-  it('has notes naming the version it leads up to, then what is in it', () => {
-    const notes = betaNotes('0.2.0-beta.1', '### Added\n\n- A swipe.');
-    expect(notes).toMatch(/^A beta of 0\.2\.0,/);
-    expect(notes.endsWith('\n\n### Added\n\n- A swipe.')).toBe(true);
   });
 
   it("reads what is in it from its version's Unreleased section, which the bump then dates, text kept", () => {
