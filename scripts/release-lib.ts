@@ -46,9 +46,15 @@ export function betaProblem(tag: string, manifestVersion: string, tags: readonly
   return null;
 }
 
-/** The notes a beta's draft starts with. Edited on GitHub before it is published, if there is more to say. */
-export function betaNotes(tag: string): string {
-  return `A beta of ${betaBase(tag)}, for testing before it is released. BRAT installs it; the community plugin store does not offer it.`;
+/**
+ * A beta's notes: a line saying what a beta is, then what is in it — the CHANGELOG.md section of the version it leads
+ * up to, as the stable release's notes will be. BRAT shows them to whoever installs it.
+ *
+ * Main keeps the last stable version while a beta is out, so that section is written by hand before the first beta,
+ * headed `## [0.2.0] — Unreleased` (see `UNRELEASED`), and grows with each beta. `pnpm bump` dates it.
+ */
+export function betaNotes(tag: string, section: string): string {
+  return `A beta of ${betaBase(tag)}, for testing before it is released. BRAT installs it; the community plugin store does not offer it.\n\n${section}`;
 }
 
 /** Negative, zero or positive, as `a` is lower than, equal to or higher than `b`. Both must pass `isVersion`. */
@@ -95,8 +101,16 @@ function heading(version: string, date: string): string {
   return `## [${version}] — ${date}`;
 }
 
-/** CHANGELOG.md with a section for `version` added above the newest one. */
+/** What a section's heading says in place of a date until `pnpm bump` dates it: `## [0.2.0] — Unreleased`. */
+export const UNRELEASED = 'Unreleased';
+
+/**
+ * CHANGELOG.md with a section for `version` added above the newest one — or, when the betas already wrote one headed
+ * `Unreleased`, that section dated and its text kept.
+ */
 export function withChangelogSection(md: string, version: string, date: string): string {
+  const unreleased = `${heading(version, UNRELEASED)}\n`;
+  if (md.includes(unreleased)) return md.replace(unreleased, `${heading(version, date)}\n`);
   if (changelogSection(md, version) !== null) throw new Error(`CHANGELOG.md already has a section for ${version}.`);
   const first = md.search(/^## \[/m);
   if (first < 0) throw new Error('CHANGELOG.md has no version section to add this one above.');

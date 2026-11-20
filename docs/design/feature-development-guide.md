@@ -204,7 +204,8 @@ that changes `main.js` goes through a new beta before the directory sees it agai
 ### CHANGELOG
 - [ ] Replace the placeholder in the new section with entries under `Added`, `Changed`, `Fixed` or `Removed`. The
       release workflow refuses a section that still holds the placeholder, and the section becomes the release's
-      notes on GitHub.
+      notes on GitHub. After betas, the section is already written, headed `Unreleased`: `pnpm bump` dates it and adds
+      no placeholder, so check it still says everything the release does.
 - [ ] For a capability: one paragraph describing what it does and how to use it
 - [ ] For an enhancement: one or two sentences describing what changed
 - [ ] If the release goes out on a later day than the bump, change the section's date to match
@@ -232,13 +233,18 @@ A beta is a release for testing before the stable one, installed through BRAT. T
 reads `manifest.json` from main and offers the release tagged with its version, in `x.y.z` form only.
 - [ ] Do **not** run `pnpm bump`. Main keeps the last stable version while a beta is out, or the store would offer the
       beta's version to everyone
+- [ ] Write what is in it in `CHANGELOG.md`, in a section for the version it leads up to headed
+      `## [0.2.0] — Unreleased`, with `Added`, `Changed`, `Fixed` or `Removed` as for a release. That section is the
+      beta's notes, so it is agreed before it is committed, and whoever installs the beta with BRAT sees it. The
+      workflow refuses a beta without it. Each later beta adds to the same section, and `pnpm bump` dates it for the
+      release, keeping its text
 - [ ] Run the whole gate, commit and push to `main`, and wait for CI to pass
 - [ ] Tag the commit with the version it leads up to and `-beta.N`: `git tag -a 0.2.0-beta.1 -m "0.2.0-beta.1"`, then
       `git push origin 0.2.0-beta.1`. The workflow refuses a beta of a version lower than `manifest.json`'s or one
       already tagged; `0.1.0-beta.1` is accepted while main says `0.1.0` and `0.1.0` is not tagged yet
 - [ ] The workflow writes the beta's version into the released `manifest.json` only, and drafts the release as a
-      **pre-release**, with a one-line note to edit if there is more to say. Check the attestation as for a stable
-      release, and publish the draft with **Set as a pre-release** still ticked
+      **pre-release**, its notes a line saying it is a beta and then the `Unreleased` section. Check the attestation
+      as for a stable release, and publish the draft with **Set as a pre-release** still ticked
 - [ ] BRAT installs a beta for anyone tracking the latest version, so every BRAT user gets it unless they added Orbis
       Reader at a release tag. BRAT orders `0.2.0-beta.1` below `0.2.0`, so testers move to the stable release when it
       comes

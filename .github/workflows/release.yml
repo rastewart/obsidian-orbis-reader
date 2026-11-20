@@ -9,12 +9,14 @@ name: Release
 # fixtures (dev)* command. It is reviewed on GitHub and published by hand. A stable release has the version's
 # CHANGELOG.md section as its notes and is published with "Set as the latest release" ticked: a draft cannot be marked
 # latest, and the `dictionaries` release holds that title until a plugin release takes it. A beta is drafted as a
-# pre-release, which GitHub never marks latest.
+# pre-release, which GitHub never marks latest, with the CHANGELOG.md section of the version it leads up to as its
+# notes under a line saying it is a beta, so whoever installs it with BRAT sees what is in it.
 #
 # **Nothing is built from a tag the files disagree with** (`scripts/release-check.ts`). Every tag must be on main. A
 # stable tag is three numbers with no `v` (Obsidian's form), equal to `manifest.json`'s version, listed in
 # `versions.json` at the manifest's floor, with a filled-in CHANGELOG.md section. A beta tag adds `-beta.N` and leads up
-# to a version at least `manifest.json`'s that is not tagged yet; main's files keep the last stable version, because
+# to a version at least `manifest.json`'s that is not tagged yet, with a filled-in CHANGELOG.md section for that
+# version, usually headed `Unreleased` until `pnpm bump` dates it; main's files keep the last stable version, because
 # Obsidian's store reads them, and the beta's version goes only into the released `manifest.json`. Then the whole gate
 # runs on the tagged commit (`ci.yml`), and only then is anything built — in a job that can only read. The job that
 # can write runs `gh` and GitHub's build provenance attestation, nothing of the repository's.

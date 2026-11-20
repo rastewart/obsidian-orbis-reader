@@ -9,6 +9,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 ---
 
+## [0.1.3] — Unreleased
+
+### Added
+
+- On a touch screen, a swipe turns the page in a CBZ book and in a fixed-layout EPUB. In a right-to-left book, such as manga, it turns in the book's own direction.
+
+### Changed
+
+- In a CBZ book or a fixed-layout EPUB, **Two-column layout** decides whether you see two pages side by side or one page at a time. Before, two pages showed whenever the reading area was wider than it is tall, with the setting on or off.
+
+### Fixed
+
+- A book's cover, and any other picture drawn the same way, is no longer stretched out of shape when one column fills a wide pane. This happened with covers made by Calibre.
+
 ## [0.1.2] — 2026-11-19
 
 ### Changed

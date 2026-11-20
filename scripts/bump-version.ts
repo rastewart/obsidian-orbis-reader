@@ -6,7 +6,8 @@
 // Changes four files: the `version` in `manifest.json` and `package.json`, a new `versions.json` entry at the
 // manifest's `minAppVersion`, and a dated `CHANGELOG.md` section holding a placeholder. Fill in that section before
 // tagging — the release workflow refuses a placeholder — and see the release checklist in
-// `docs/design/feature-development-guide.md` for the rest.
+// `docs/design/feature-development-guide.md` for the rest. When the betas already wrote the section, headed
+// `## [0.2.0] — Unreleased`, it is dated instead, its text kept.
 //
 // **One command, because the four drift apart by hand.** `release-metadata.test.ts` catches the first three
 // disagreeing, but only after the fact; this makes them agree in the first place.

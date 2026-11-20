@@ -15,6 +15,7 @@ import {
   NOTES_PLACEHOLDER,
   notesProblem,
   TEST_FIXTURES_ZIP,
+  UNRELEASED,
   withChangelogSection,
   withVersion,
   withVersionEntry,
@@ -116,8 +117,20 @@ describe('betas', () => {
     expect(betaProblem('0.1.0-beta.1', '0.1.0', ['0.1.0'])).toMatch(/already tagged/);
   });
 
-  it('starts its notes by naming the version it leads up to', () => {
-    expect(betaNotes('0.2.0-beta.1')).toMatch(/^A beta of 0\.2\.0,/);
+  it('has notes naming the version it leads up to, then what is in it', () => {
+    const notes = betaNotes('0.2.0-beta.1', '### Added\n\n- A swipe.');
+    expect(notes).toMatch(/^A beta of 0\.2\.0,/);
+    expect(notes.endsWith('\n\n### Added\n\n- A swipe.')).toBe(true);
+  });
+
+  it("reads what is in it from its version's Unreleased section, which the bump then dates, text kept", () => {
+    const md = CHANGELOG.replace('## [0.1.0]', `## [0.2.0] — ${UNRELEASED}\n\n### Added\n\n- A swipe.\n\n## [0.1.0]`);
+    expect(changelogSection(md, '0.2.0')).toBe('### Added\n\n- A swipe.');
+    const bumped = withChangelogSection(md, '0.2.0', '2026-12-01');
+    expect(bumped).toContain('## [0.2.0] — 2026-12-01\n');
+    expect(bumped).not.toContain(UNRELEASED);
+    expect(changelogSection(bumped, '0.2.0')).toBe('### Added\n\n- A swipe.');
+    expect(bumped.match(/## \[0\.2\.0\]/g)).toHaveLength(1);
   });
 
   it('names the test fixtures zip as the plugin fetches it', () => {
