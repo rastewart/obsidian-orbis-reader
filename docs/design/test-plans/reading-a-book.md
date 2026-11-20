@@ -61,6 +61,7 @@ Use `annotation-workhorse.epub` from here on.
 - [ ] `mobile` Open `sample-comic.cbz` and swipe left and right, with long swipes and short, quick flicks. The page turns with the swipe, in both directions, one page per swipe, and the image viewer does not open. Tap a page: the image viewer opens.
 
 - [ ] `desktop` Open `technical-book.epub` at its cover with **Two-column layout** off, in a pane much wider than tall. The cover keeps its shape, centred, and is not stretched across the page.
+- [ ] `desktop` Close `technical-book.epub` while its cover shows, and open it again, with **Two-column layout** on and then off. The cover is where it belongs from the first moment: centred in one column, in the left column of two. It is not shifted sideways until a page turn.
 
 - [ ] `each` Turn **Show page arrows** off in **Settings → Orbis Reader → Reading behavior**. The ‹ and › disappear from the open book at once, and on the Mac they stay hidden with the pointer over them. Select where each one was: the right edge still turns forward and the left edge back. Turn it back on: they return.
 

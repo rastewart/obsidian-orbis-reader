@@ -85,7 +85,7 @@ patches 6 and 7 say so.
 
 Patches 1 to 5 used to be string replacements applied at build time by a plugin in `esbuild.config.mjs`. They are
 ordinary edits now, each marked in the source with `// ORBIS patch N`. What follows is the plugin's own explanation,
-moved here unchanged. Patches 6 and 7 came with the upstream merge and follow after it; patches 8 to 38 after them.
+moved here unchanged. Patches 6 and 7 came with the upstream merge and follow after it; patches 8 to 39 after them.
 
 Five patches to Foliate. The first two fix mobile annotation navigation landing one page short of the target;
 the third stops the column gutter taking its size from the side-margin setting; the last two keep one bad
@@ -581,6 +581,17 @@ for every book, was read only by the paginator. At `1` the renderer now always s
 it already had for a pane taller than wide: one page of the spread shows, and a page turn goes to the other page
 before the next spread. At `2`, or with no attribute, it is as before, the book's own `rendition:spread` included.
 The attribute is observed, so changing the setting changes an open book at once. `fxl-one-page.test.ts` checks it.
+
+### Patch 39
+
+**A book reopened at its cover keeps its place when the pane settles** (paginator.js). The paginator finds its place
+again after a resize by the boxes of its anchor, and did nothing when the anchor had none. A range around a picture
+alone has none: `getVisibleRange` gives one for a cover page, from the start of the cover's `<div>` to a point inside
+its SVG `<image>`, holding no text and no whole element, and Orbis saves it as the reading location. A book reopened
+there was placed at the pane's first width, and when the pane settled at its own width a moment later the page stayed
+where it was, the cover shifted by the difference, until a page turn gave the paginator a new anchor. `anchorRects`
+now places a range with no boxes by the element it starts at, or, when that is not an element, by the element it starts
+in. `paginator-anchor-rects.test.ts` checks it.
 
 ## Patched at runtime, not here
 

@@ -51,6 +51,11 @@ declare module 'foliate-js/paginator.js' {
   };
   export const VIEWPORT_WIDTH: ViewportPattern;
   export const VIEWPORT_HEIGHT: ViewportPattern;
+  /**
+   * The boxes the paginator places an anchor by: its own, or, for a range that has none, those of the node it starts
+   * at or the element it starts in. Undefined for a fraction. ORBIS patch 39.
+   */
+  export function anchorRects(anchor: unknown): DOMRectList | DOMRect[] | undefined;
 }
 
 declare module 'foliate-js/overlayer.js' {

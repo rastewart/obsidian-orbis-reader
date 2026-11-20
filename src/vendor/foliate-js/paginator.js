@@ -55,6 +55,19 @@ const uncollapse = range => {
     return range
 }
 
+// ORBIS patch 39 — the boxes an anchor is placed by: its own, or, for a range that has none, those of the node it
+// starts at, else the element it starts in. A range around a picture alone, such as getVisibleRange gives for a cover
+// page, holds no text and no whole element, so it has no boxes, and the reader could not find its place again after a
+// resize. See ORBIS-CHANGES.md.
+export const anchorRects = anchor => {
+    const rects = anchor?.getClientRects?.()
+    if (!rects || rects.length || !anchor.startContainer) return rects
+    const { startContainer: node, startOffset } = anchor
+    const first = node.nodeType === 1 ? node.childNodes[startOffset] : null
+    if (first?.nodeType === 1 && first.getClientRects().length) return first.getClientRects()
+    return (node.nodeType === 1 ? node : node.parentElement)?.getClientRects() ?? rects
+}
+
 const makeRange = (doc, node, start, end = start) => {
     const range = doc.createRange()
     range.setStart(node, start)
@@ -1043,7 +1056,8 @@ export class Paginator extends HTMLElement {
     }
     async #scrollToAnchor(anchor, reason = 'anchor') {
         this.#anchor = anchor
-        const rects = uncollapse(anchor)?.getClientRects?.()
+        // ORBIS patch 39 — a range with no boxes is placed by where it starts. See anchorRects and ORBIS-CHANGES.md.
+        const rects = anchorRects(uncollapse(anchor))
         // if anchor is an element or a range
         if (rects) {
             // when the start of the range is immediately after a hyphen in the

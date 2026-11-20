@@ -22,6 +22,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 ### Fixed
 
 - A book's cover, and any other picture drawn the same way, is no longer stretched out of shape when one column fills a wide pane. This happened with covers made by Calibre.
+- A book opened at its cover no longer shows the cover pushed sideways, sometimes almost off the page, until you turn a page.
 
 ## [0.1.2] — 2026-11-19
 
