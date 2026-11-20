@@ -64,11 +64,11 @@ relink against your own copy.
 -------------------------------------------------------------------------------
 
 foliate-js (https://github.com/johnfactotum/foliate-js)
-Version: upstream commit 78914aef4466eb960965702401634c2cb348e9b1 (2026-05-01) plus changes — vendored in
-src/vendor/foliate-js
+Version: upstream commit 78914aef4466eb960965702401634c2cb348e9b1 (2026-05-01) plus changes — from
+Orbis Reader's fork, https://github.com/rastewart/foliate-js (branch orbis)
 The reader engine: parses and paginates EPUB, MOBI/AZW3, FB2 and CBZ books.
-Orbis Reader has modified it; every change is listed in
-src/vendor/foliate-js/ORBIS-CHANGES.md.
+Orbis Reader has modified it; every change is listed in the fork's
+ORBIS-CHANGES.md.
 
 MIT License
 

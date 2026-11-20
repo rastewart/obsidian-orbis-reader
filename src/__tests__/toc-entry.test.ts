@@ -1,9 +1,9 @@
 // An annotation is filed under the heading its passage is in, not under the last heading on the page — run against
 // foliate's own TOCProgress, which is where the page's answer comes from.
 
+import { TOCProgress } from 'foliate-js/progress.js';
 import { describe, expect, it } from 'vitest';
 import { tocEntryAt } from '../reader/toc-entry';
-import { TOCProgress } from '../vendor/foliate-js/progress.js';
 
 type TocItem = { label?: string; href?: string };
 

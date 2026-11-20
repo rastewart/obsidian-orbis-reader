@@ -1,5 +1,5 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": { "allowJs": true, "checkJs": false, "noEmit": true },
-  "include": ["src/vendor/**/*.js"]
+  "include": ["src/vendor/**/*.js", "node_modules/foliate-js/*.js", "node_modules/foliate-js/vendor/*.js"]
 }

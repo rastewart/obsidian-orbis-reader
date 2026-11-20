@@ -10,6 +10,26 @@ import {
   stampRenderer,
 } from '../foliate-patches';
 
+/**
+ * The fork's files Orbis builds in: those `view.js` reaches. The fork keeps upstream's others (`reader.js`, `pdf.js`,
+ * `quote-image.js` and more) for merging, but Orbis never loads them, so the patch checks below skip them.
+ */
+const SHIPPED = [
+  'comic-book.js',
+  'epub.js',
+  'epubcfi.js',
+  'fb2.js',
+  'fixed-layout.js',
+  'mobi.js',
+  'overlayer.js',
+  'paginator.js',
+  'progress.js',
+  'search.js',
+  'text-walker.js',
+  'tts.js',
+  'view.js',
+];
+
 const notices = vi.hoisted(() => [] as unknown[]);
 vi.mock('obsidian', async (load) => ({
   ...(await load<object>()),
@@ -112,8 +132,8 @@ describe('ORBIS patch 21', () => {
   // A plugin reload reads the vendored files again; an unguarded `define` would throw and stop the plugin loading.
   it('guards every custom element definition in the vendored foliate code', () => {
     const fs = process.getBuiltinModule('node:fs');
-    const dir = 'src/vendor/foliate-js';
-    for (const file of fs.readdirSync(dir).filter((f: string) => f.endsWith('.js'))) {
+    const dir = 'node_modules/foliate-js';
+    for (const file of SHIPPED) {
       const source = fs.readFileSync(`${dir}/${file}`, 'utf8');
       for (const m of source.matchAll(/customElements\.define\('([^']+)'/g)) {
         const line = source.slice(source.lastIndexOf('\n', m.index) + 1, source.indexOf('\n', m.index));
@@ -150,8 +170,8 @@ describe('ORBIS patch 22', () => {
    */
   it('copies no background from a book into the page, and clears none', () => {
     const fs = process.getBuiltinModule('node:fs');
-    const dir = 'src/vendor/foliate-js';
-    for (const file of fs.readdirSync(dir).filter((f: string) => f.endsWith('.js'))) {
+    const dir = 'node_modules/foliate-js';
+    for (const file of SHIPPED) {
       const source = fs.readFileSync(`${dir}/${file}`, 'utf8');
       expect(source, file).not.toMatch(/\.style\.background\s*=/);
       expect(source, file).not.toMatch(/docBackground/);

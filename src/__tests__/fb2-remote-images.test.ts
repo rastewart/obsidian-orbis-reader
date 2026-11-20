@@ -3,8 +3,8 @@
 // own window, which no book CSP governs, so a book could send a request anywhere, a LAN address included (ORBIS
 // patch 20).
 
+import { makeFB2 } from 'foliate-js/fb2.js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { makeFB2 } from '../vendor/foliate-js/fb2.js';
 
 const PIXEL = 'R0lGODlhAQABAAAAACw=';
 

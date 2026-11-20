@@ -34,8 +34,33 @@ const ROOT = path.resolve(SCRIPT_DIR, '..');
 /** Tests and the Obsidian mock they run against — everything else under `src` is in `main.js`. */
 const NOT_SHIPPED = /^src\/(__tests__|__mocks__)\//;
 
-/** The vendored libraries' JavaScript, with `tsconfig.vendor.json` giving the type-aware rules a program. */
-const VENDOR_FILES = 'src/vendor/**/*.js';
+/**
+ * The files of Orbis's foliate-js fork that are built into main.js: those `view.js` reaches. The fork keeps upstream's
+ * other files for merging, but Orbis never loads them.
+ */
+const FOLIATE_FILES = [
+  'comic-book',
+  'epub',
+  'epubcfi',
+  'fb2',
+  'fixed-layout',
+  'mobi',
+  'overlayer',
+  'paginator',
+  'progress',
+  'search',
+  'text-walker',
+  'tts',
+  'view',
+  'vendor/fflate',
+  'vendor/zip',
+].map((name) => `node_modules/foliate-js/${name}.js`);
+
+/**
+ * The third-party JavaScript Orbis builds in: the vendored libraries, and the foliate-js fork, which is installed as a
+ * package but is Orbis's to keep clean. `tsconfig.vendor.json` gives the type-aware rules a program.
+ */
+const VENDOR_FILES = ['src/vendor/**/*.js', ...FOLIATE_FILES];
 
 /** The rules whose errors the Community directory's review reports in vendored code. */
 const DIRECTORY_RULES = /^(obsidianmd|no-unsanitized|eslint-comments)\//;
@@ -122,19 +147,23 @@ const literalStyleRule: Rule.RuleModule = {
 async function lintLiteralStyles(rel: (r: ESLint.LintResult) => string): Promise<number> {
   const eslint = new ESLint({
     cwd: ROOT,
+    // ESLint skips node_modules unless told not to, and the foliate fork is installed there.
+    ignore: false,
     overrideConfigFile: true,
     overrideConfig: [
       { ignores: ['src/__tests__/**', 'src/__mocks__/**'] },
       { files: ['src/**/*.ts'], languageOptions: { parser: tseslint.parser } },
       {
-        files: ['src/**/*.{ts,js}'],
+        files: ['src/**/*.{ts,js}', ...FOLIATE_FILES],
         linterOptions: { reportUnusedDisableDirectives: 'off' },
         plugins: { orbis: { rules: { 'literal-style': literalStyleRule } } },
         rules: { 'orbis/literal-style': 'error' },
       },
     ],
   });
-  const kept = (await eslint.lintFiles(['src']))
+  const kept = (await eslint.lintFiles(['src', ...FOLIATE_FILES]))
+    // `ignore: false` turns off the `ignores` above as well, so the tests and mocks are left out here.
+    .filter((r) => !NOT_SHIPPED.test(rel(r)))
     .map((r) => {
       const messages = r.messages.filter((m) => m.ruleId === 'orbis/literal-style' || m.fatal);
       return {
@@ -164,16 +193,18 @@ async function lintLiteralStyles(rel: (r: ESLint.LintResult) => string): Promise
 async function lintVendor(rel: (r: ESLint.LintResult) => string): Promise<number> {
   const eslint = new ESLint({
     cwd: ROOT,
+    // ESLint skips node_modules unless told not to, and the foliate fork is installed there.
+    ignore: false,
     overrideConfigFile: true,
     overrideConfig: [
       ...obsidianmd.configs.recommended,
       {
-        files: [VENDOR_FILES],
+        files: VENDOR_FILES,
         languageOptions: { parserOptions: { project: './tsconfig.vendor.json', tsconfigRootDir: ROOT } },
       },
     ],
   });
-  const kept = (await eslint.lintFiles([VENDOR_FILES]))
+  const kept = (await eslint.lintFiles(VENDOR_FILES))
     .map((r) => {
       const consoleAllowed = CONSOLE_NOT_REPORTED.has(rel(r));
       const messages = r.messages.filter(
@@ -196,7 +227,7 @@ async function lintVendor(rel: (r: ESLint.LintResult) => string): Promise<number
     .filter((r) => r.messages.length > 0);
   const errors = kept.reduce((n, r) => n + r.errorCount, 0);
 
-  console.log(`\nVendored libraries (${VENDOR_FILES}), the directory's rules only:`);
+  console.log("\nVendored libraries and the foliate-js fork, the directory's rules only:");
   if (errors === 0) {
     console.log('  0 errors');
     return 0;

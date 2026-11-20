@@ -83,6 +83,12 @@ declare module 'foliate-js/overlayer.js' {
     static squiggly: DrawFn;
     static outline: DrawFn;
   }
+  /** A range cut into pieces whose boxes can be measured one by one (ORBIS patch 15). */
+  export function splitRangeForRects(range: Range): Range[];
+}
+
+declare module 'foliate-js/fixed-layout.js' {
+  // Imported for its side effect only: it defines the <foliate-fxl> element.
 }
 
 declare module 'foliate-js/epubcfi.js' {
@@ -124,4 +130,20 @@ declare module 'foliate-js/progress.js' {
       pageFraction?: number
     ): { fraction: number; startFraction: number; location: { current: number; next: number; total: number } };
   }
+
+  /** Which contents entry a place in the book is under. Untyped in foliate; the tests say what they expect back. */
+  export class TOCProgress {
+    init(options: {
+      toc: ReadonlyArray<{ label: string; href: string; subitems?: unknown[] }>;
+      ids: readonly string[];
+      splitHref: (href: string) => unknown[];
+      getFragment: (doc: Document, id: string) => Node | null;
+    }): Promise<void>;
+    getProgress(index: number, range: Range): unknown;
+  }
+}
+
+declare module 'foliate-js/fb2.js' {
+  /** An FB2 book from its file. Untyped in foliate; the tests say which of its members they use. */
+  export function makeFB2(blob: Blob): Promise<unknown>;
 }

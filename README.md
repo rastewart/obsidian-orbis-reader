@@ -251,8 +251,8 @@ particular, recorded (pre-generated) audio is encoded to MP3 using
 [LAME MP3 encoder](https://lame.sourceforge.net), under the LGPL-3.0 (full
 license texts in [`licenses/`](licenses/)). It is vendored, unmodified, in
 [`src/vendor/lamejs`](src/vendor/lamejs), and stays under the LGPL there. The
-reader engine, [foliate-js](https://github.com/johnfactotum/foliate-js) (MIT), is
-vendored with Orbis's changes in [`src/vendor/foliate-js`](src/vendor/foliate-js).
+reader engine, [foliate-js](https://github.com/johnfactotum/foliate-js) (MIT), comes
+with Orbis's changes from [Orbis's fork of it](https://github.com/rastewart/foliate-js).
 
 Word look-up can download two offline dictionaries, neither of them bundled.
 **Webster's Revised Unabridged Dictionary (1913)** is in the public domain.

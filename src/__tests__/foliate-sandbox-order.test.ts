@@ -13,7 +13,7 @@ declare const process: { getBuiltinModule(id: 'node:fs'): { readFileSync(p: stri
 describe('foliate frame builders', () => {
   for (const file of ['paginator.js', 'fixed-layout.js']) {
     it(`${file} sets part="filter" before sandbox`, () => {
-      const src = process.getBuiltinModule('node:fs').readFileSync(`src/vendor/foliate-js/${file}`, 'utf8');
+      const src = process.getBuiltinModule('node:fs').readFileSync(`node_modules/foliate-js/${file}`, 'utf8');
       const part = src.search(/setAttribute\('part', 'filter'\)/);
       const sandbox = src.search(/setAttribute\('sandbox', /);
       expect(part).toBeGreaterThan(-1);

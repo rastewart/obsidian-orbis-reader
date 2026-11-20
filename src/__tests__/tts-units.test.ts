@@ -1,8 +1,6 @@
+import { splitRangeForRects } from 'foliate-js/overlayer.js';
 import { describe, expect, it } from 'vitest';
 import { getReadingUnits, unitIndexForAnchor } from '../reader/tts/tts-blocks';
-import { splitRangeForRects as untypedSplit } from '../vendor/foliate-js/overlayer.js';
-
-const splitRangeForRects = untypedSplit as (range: Range) => Range[];
 
 /** Pretty-printed section XHTML, exactly as a converted note (and most real EPUBs) is laid out:
  *  a newline text node after every close tag. The whitespace is the whole point of these tests. */

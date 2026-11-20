@@ -66,7 +66,7 @@ describe('findLink', () => {
   });
 
   it('is what foliate’s click handler asks, not a[href]', () => {
-    const source = process.getBuiltinModule('node:fs').readFileSync('src/vendor/foliate-js/view.js', 'utf8');
+    const source = process.getBuiltinModule('node:fs').readFileSync('node_modules/foliate-js/view.js', 'utf8');
     expect(source).toContain('const link = findLink(e.target)');
     expect(source).not.toContain("closest('a[href]')");
   });

@@ -18,7 +18,7 @@ declare const process: {
 
 const MOBI_URL = process
   .getBuiltinModule('node:url')
-  .pathToFileURL(process.getBuiltinModule('node:path').resolve(process.cwd(), 'src/vendor/foliate-js/mobi.js')).href;
+  .pathToFileURL(process.getBuiltinModule('node:path').resolve(process.cwd(), 'node_modules/foliate-js/mobi.js')).href;
 
 /** In the worker: read the crafted records with `getIndexData` or `huffcdic`, and report the result or the error. */
 const WORKER = `

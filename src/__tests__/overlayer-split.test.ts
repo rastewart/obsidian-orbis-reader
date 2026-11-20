@@ -1,10 +1,8 @@
 // A passage selection across several blocks is drawn on every one of them — the heading and the list items as well as
 // the paragraphs. Run against foliate's own split, which decides what the overlayer measures (ORBIS patch 15).
 
+import { splitRangeForRects } from 'foliate-js/overlayer.js';
 import { describe, expect, it } from 'vitest';
-import { splitRangeForRects as untypedSplit } from '../vendor/foliate-js/overlayer.js';
-
-const splitRangeForRects = untypedSplit as (range: Range) => Range[];
 
 function setBody(html: string): void {
   const parsed = new DOMParser().parseFromString(html, 'text/html');

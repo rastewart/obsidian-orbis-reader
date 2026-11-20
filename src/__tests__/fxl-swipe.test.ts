@@ -12,7 +12,7 @@ beforeAll(async () => {
     unobserve() {}
     disconnect() {}
   } as unknown as typeof ResizeObserver;
-  await import('../vendor/foliate-js/fixed-layout.js');
+  await import('foliate-js/fixed-layout.js');
 });
 
 /** A renderer whose page turns are counted rather than made. */

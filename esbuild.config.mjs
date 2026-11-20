@@ -16,7 +16,17 @@ import process from 'process';
 // package.json and pnpm-lock.yaml are left out: an install may rewrite them, and they change the bundle only through
 // the packages they install. Note: in `pnpm dev` watch mode `define` is evaluated once at watch start, so the ID won't
 // refresh on every hot rebuild — but the production `build` (which deploy.sh runs) computes it each time.
-const BUILD_INPUTS = ['src', 'styles.css', 'manifest.json', 'esbuild.config.mjs', 'tsconfig.json'];
+//
+// foliate-js is the exception to that: it is Orbis's own fork (rastewart/foliate-js, pinned to a commit in
+// package.json), so a change to it is a change to Orbis, and its installed files are hashed with the source.
+const BUILD_INPUTS = [
+  'src',
+  'node_modules/foliate-js',
+  'styles.css',
+  'manifest.json',
+  'esbuild.config.mjs',
+  'tsconfig.json',
+];
 /** Under src, what is not built into main.js: the tests and the Obsidian mock. */
 const NOT_BUILT = new Set(['src/__tests__', 'src/__mocks__']);
 const inputFiles = (p) => {
@@ -34,8 +44,8 @@ const buildId = () => {
 };
 const BUILD_ID = buildId();
 
-// foliate-js is vendored in src/vendor/foliate-js. Its Orbis patches, which used to be applied here at build time, are
-// edits in that folder now; src/vendor/foliate-js/ORBIS-CHANGES.md explains each one. That includes a plugin reload:
+// foliate-js comes from Orbis's fork, rastewart/foliate-js. Its Orbis patches, which used to be applied here at build
+// time, are edits in the fork now; its ORBIS-CHANGES.md explains each one. That includes a plugin reload:
 // foliate's three custom elements check before they define (ORBIS patch 21), so nothing here wraps
 // `customElements.define` for the whole window.
 
