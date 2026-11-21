@@ -1125,14 +1125,12 @@ export class AnnotationController {
       picker.style.background = fc ? fc.bg : '';
       picker.style.filter = fc ? fc.filter : '';
       picker.style.border = fc ? '1px solid rgba(128,128,128,.35)' : '';
-      // Flatten the icon buttons onto the picker's book-colored background. Their injected
-      // `background:none` lacks !important so Obsidian's default <button> background wins —
-      // invisible against the normal dark picker, but a dark box on a light book. Inline
-      // beats the stylesheet. Swatches are untouched (they carry their own colors).
+      // The icon buttons take the book's text color. They are already flat: `.orbis-note-btn` clears Obsidian's
+      // default <button> fill and border with a rule that must win (styles.css), and keeps its hover fill, so no
+      // background or border is set here — an inline one would beat that hover. Swatches are untouched (they carry
+      // their own colors).
       for (const btn of [copyTextBtn, noteBtn, copyLinkBtn, lookupBtn, deleteBtn]) {
         btn.style.color = fc ? fc.fg : '';
-        btn.style.background = fc ? 'transparent' : '';
-        btn.style.border = fc ? 'none' : '';
       }
       // The mark-name label belongs to this bar, so it follows it into the book's palette rather than
       // staying a dark chrome pill floating over a light page. It is a CHILD of the picker, so it is already
@@ -1911,7 +1909,7 @@ export class AnnotationController {
         attr: { 'aria-label': t('annotation_picker.copy_text') },
       });
       setSvgIcon(copyTextBtn, COPY_TEXT_ICON);
-      Object.assign(copyTextBtn.style, { background: 'transparent', border: 'none', boxShadow: 'none' });
+      // Flat from `.orbis-note-btn` (styles.css), hover fill included; an inline background would beat that hover.
       copyTextBtn.addEventListener('mousedown', (e) => e.preventDefault());
       copyTextBtn.addEventListener('click', () => {
         this.hideHighlightDrawer();
@@ -2011,9 +2009,6 @@ export class AnnotationController {
         justifyContent: 'center',
         marginLeft: '4px',
         padding: '0',
-        background: 'transparent',
-        border: 'none',
-        boxShadow: 'none',
       });
       copyLinkBtn.addEventListener('mousedown', (e) => e.preventDefault());
       copyLinkBtn.addEventListener('click', () => {

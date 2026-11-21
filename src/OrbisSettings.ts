@@ -3927,6 +3927,7 @@ export class OrbisSettings extends PluginSettingTab {
      * push the row's name into a sliver.
      */
     setting.controlEl.addClass('orbis-folder-line');
+    setting.settingEl.addClass('orbis-line-row'); // see `.orbis-line-row` in styles.css
   }
 
   /**
@@ -4363,6 +4364,7 @@ export class OrbisSettings extends PluginSettingTab {
           });
           // A field, not a toggle: it needs room to show what is in it — see `.orbis-text-line`.
           setting.controlEl.addClass('orbis-text-line');
+          setting.settingEl.addClass('orbis-line-row');
         },
       },
       {
@@ -4384,6 +4386,7 @@ export class OrbisSettings extends PluginSettingTab {
             txt.inputEl.addEventListener('focus', () => txt.inputEl.select());
           });
           setting.controlEl.addClass('orbis-text-line');
+          setting.settingEl.addClass('orbis-line-row');
         },
       },
       {

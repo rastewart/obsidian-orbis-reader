@@ -38,6 +38,7 @@ import { removeFoliatePatches } from './foliate-patches';
 import { initI18n, t } from './i18n';
 import type { TranslationKey } from './i18n/en';
 import { LibraryView, openLibraryView, refreshLibraryViews, VIEW_TYPE_ORBIS_LIBRARY } from './LibraryView';
+import { installLabelFocusRing } from './label-focus-ring';
 import { coversFolderFor, refreshCover } from './library/cataloging';
 import { rulesFromLegacyCollection } from './library/collection';
 import { writeConvertedTitleNote } from './library/converted';
@@ -1954,6 +1955,8 @@ export default class OrbisReaderPlugin extends Plugin {
 
     // Orbis's tooltips, as far from their controls as this device's pointer needs — see `tooltip-gap.ts`.
     if (!Platform.isMobile) installTooltipGap(this);
+    // The keyboard ring on a labeled checkbox or radio row — see `label-focus-ring.ts`.
+    installLabelFocusRing(this);
     this.registerView(VIEW_TYPE_ORBIS, (leaf: WorkspaceLeaf) => new OrbisReaderView(leaf, this));
     this.registerExtensions([...BOOK_EXTENSIONS], VIEW_TYPE_ORBIS);
 

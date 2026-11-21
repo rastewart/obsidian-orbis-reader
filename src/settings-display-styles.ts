@@ -177,6 +177,7 @@ export class DisplayStylesPage {
             type: 'number',
             cls: 'orbis-num-input-sm orbis-num-input-2',
           });
+          setting.controlEl.addClass('orbis-has-num-field'); // hides the slider's own value; see styles.css
           num.min = String(OBSIDIAN_TOOLTIP_GAP);
           num.max = String(TOOLTIP_GAP_MAX);
           num.value = String(deviceSetting('tooltipGap'));
@@ -584,6 +585,7 @@ export class DisplayStylesPage {
     if (o.step) num.step = o.step;
     num.value = o.decimals ? stored.toFixed(o.decimals) : String(stored);
     num.addClass('orbis-num-input-sm');
+    setting.controlEl.addClass('orbis-has-num-field'); // hides the slider's own value; see styles.css
     setting.controlEl.createSpan({ text: o.unit, cls: 'orbis-unit-suffix' });
     bindRealTimeSliderInput(num, slider.sliderEl, o.min, o.max, shown, dispatch, scale, unscale);
     /**

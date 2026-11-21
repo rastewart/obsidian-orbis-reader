@@ -56,6 +56,9 @@ jobs:
       - name: Obsidian lint
         run: pnpm lint:obsidian
 
+      - name: CSS lint (the Community directory's)
+        run: pnpm lint:css
+
       - name: Markdownlint
         run: pnpm lint:md
 

@@ -171,7 +171,7 @@ discards everything** — Done commits to the draft, OK commits the draft.
   would cost four full rows.
 - **Icon pinned left, label centered in the remainder.** Centering icon and label as one group puts each icon at a
   different offset, and the column reads as ragged.
-- **`height: auto !important` on `.is-mobile`.** Obsidian's mobile button styling pins a height, so without it
+- **`height: auto` on `.is-mobile`, in a rule that must win (`:not(#orbis#important)`).** Obsidian's mobile button styling pins a height, so without it
   `padding-block` cannot grow the box — it only shrinks the content area, squeezing two lines against the borders.
   If one property is ignored while others on the same selector work, the selector is fine and the box cannot grow.
 

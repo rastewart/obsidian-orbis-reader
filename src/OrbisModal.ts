@@ -552,7 +552,11 @@ export abstract class OrbisModal extends Modal {
    * Created on first use and reused, so a dialog that rebuilds its body does not grow a second one.
    */
   protected footer(): HTMLElement {
-    this.footerEl ??= this.modalEl.createDiv({ cls: 'orbis-dialog-footer' });
+    if (!this.footerEl) {
+      this.footerEl = this.modalEl.createDiv({ cls: 'orbis-dialog-footer' });
+      // What styles.css selects the dialog by while it has a footer (`.orbis-has-footer`).
+      this.modalEl.addClass('orbis-has-footer');
+    }
     return this.footerEl;
   }
 

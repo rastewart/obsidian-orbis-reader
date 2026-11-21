@@ -4145,7 +4145,9 @@ export class OrbisReaderView
   }
 
   private createFoliateView(): FoliateViewEl {
-    const view = this.filterWrapperEl!.createEl('foliate-view'); // see the tag map in reader/foliate-view.ts
+    // See the tag map in reader/foliate-view.ts. The class is what styles.css selects it by: a selector on the
+    // tag name is one the Community directory's CSS lint does not know.
+    const view = this.filterWrapperEl!.createEl('foliate-view', { cls: 'orbis-foliate-view' });
     this.foliateView = view;
     this.annot.noteIcons.applyVisibility(); // set right offset and column visibility
     this.applyHostBg();

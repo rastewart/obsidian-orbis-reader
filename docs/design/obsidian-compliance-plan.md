@@ -370,6 +370,10 @@ plugin cannot be installed from Obsidian until no errors remain. Scanner results
       from the foliate-js fork, which `eslint.config.mjs` leaves out, and fails on an error from the rules the directory reports there: `obsidianmd/*`, `no-unsanitized/*` and
       `eslint-comments/*`. The `console` calls in lamejs and the piper phonemizer, which the directory's review did not
       report, are allowed (2026-11-18)
+- [x] `pnpm lint:css` runs the directory's CSS lint as its review bot does: the `SCANNER_STYLELINT_CONFIG` of
+      obsidianmd/obsidian-workflows, with the stylelint versions it pins, and CI runs it. `styles.css` has no findings:
+      rules that must win over Obsidian's carry `:not(#orbis#important)` in place of `!important`, and the `:has()`
+      selectors became classes the code sets (2026-11-21)
 - [x] `pnpm lint:obsidian` also fails on a literal assigned to a style, `''` and `null` included, in the code that
       ships and the vendored code: the directory's reading of `no-static-styles-assignment` (2026-11-19)
 

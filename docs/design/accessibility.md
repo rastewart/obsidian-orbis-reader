@@ -103,7 +103,8 @@ surfaces.
 
 **Where our CSS strips Obsidian's ring, we owe one back.** Obsidian rings a focused button with
 `box-shadow: 0 0 0 3px var(--background-modifier-border-focus)`, and many of our classes set
-`box-shadow: none !important` — necessary, since Obsidian's default button fill and shadow otherwise fight the flat
+`box-shadow: none` in rules that must win over Obsidian's (`:not(#orbis#important)`, see the top of `styles.css`) —
+necessary, since Obsidian's default button fill and shadow otherwise fight the flat
 icon buttons and pill tabs these are; `.orbis-ctrl-btn` alone is every tab strip, the toolbar, and half the buttons in
 the annotation manager. Those classes are listed by name in one place in `styles.css`, with the theme's ring. Listed
 rather than
@@ -195,7 +196,7 @@ nothing. "Close" is not what a reader wants offered on arrival, and Escape alrea
    `data-orbis-focus` keyed by identity rather than position.
 2. **Is every checkbox and radio wrapped in a `<label>` with its text?** This is a standard, not a preference: the
    words beside the box are the same control as the box, so clicking them toggles it and the focus ring goes round the
-   pair (`label:has(input:focus-visible)`). A `div` there is a 16px target with dead words next to it. Two rows
+   pair (`label-focus-ring.ts` gives the label `is-focus-visible` while its input has keyboard focus). A `div` there is a 16px target with dead words next to it. Two rows
    cannot be labels because the row also holds buttons (the glossary's, the EPUB chapter list's); there the box keeps
    its own ring and the text is not a target.
 3. **Does every control show a ring?** Check for a class that strips `box-shadow` (that is Obsidian's ring — see

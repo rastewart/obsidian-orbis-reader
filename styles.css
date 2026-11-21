@@ -1,4 +1,22 @@
 /* ─────────────────────────────────────────────────────────────────────────────
+   Rules that must win: `:not(#orbis#important)`
+   ─────────────────────────────────────────────────────────────────────────────
+   Obsidian styles every button, input and dialog itself, often with selectors a
+   plugin's class cannot outrank (`.is-mobile button`, `.modal button`), and
+   themes add their own. Where Orbis's look has to win, the rule carries
+   `:not(#orbis#important)` on the element it styles, before any `::before` or
+   `::after`. No element has both of those ids, so it matches everything; what it
+   adds is the weight of two IDs, more than any selector in Obsidian's stylesheet
+   or in this one (`#orbis-picker` is the only ID here). Two such rules decide
+   between themselves as they otherwise would, by their own selectors and then by
+   order.
+
+   It does what `!important` did here until 0.1.4, and the Community directory's
+   CSS lint reports every `!important`. One thing it cannot do: an inline style
+   beats it, so a value set from code is set from code (`setCssStyles`), not
+   fought from here. */
+
+/* ─────────────────────────────────────────────────────────────────────────────
    Orbis UI type scale
    ─────────────────────────────────────────────────────────────────────────────
    Every font-size in the plugin's chrome (toolbars, bars, dialogs, settings,
@@ -255,12 +273,12 @@ body {
   outline: none;
 }
 
-foliate-view {
+.orbis-foliate-view {
   position: absolute;
   inset: 0;
   display: block;
 }
-.is-mobile foliate-view {
+.is-mobile .orbis-foliate-view {
   top: 12px;
 }
 
@@ -289,12 +307,9 @@ foliate-view {
   right: 3px;
   width: 28px;
   height: 28px;
-  background-color: transparent !important;
   background: transparent;
   -webkit-appearance: none;
   appearance: none;
-  border: none !important;
-  box-shadow: none !important;
   border-radius: 50%;
   cursor: var(--cursor);
   display: flex;
@@ -307,6 +322,12 @@ foliate-view {
   opacity: 0.7;
 }
 
+.orbis-note-icon:not(#orbis#important) {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
+
 .orbis-note-icon.is-on-page {
   right: auto;
 }
@@ -317,20 +338,20 @@ foliate-view {
 }
 
 .orbis-ctrl-btn.is-active {
-  background: var(--interactive-accent) !important;
-  color: var(--text-on-accent, #fff) !important;
   font-weight: bold;
 }
 
+.orbis-ctrl-btn.is-active:not(#orbis#important) {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent, #fff);
+}
+
 /* Toolbar control buttons — flat (no border/background/shadow), Brave-toolbar style. Focus mode
-   re-declares background+border+color with !important on its own selectors, so it is unaffected. */
+   re-declares background+border+color with `:not(#orbis#important)` on its own selectors, so it is unaffected. */
 .orbis-ctrl-btn {
-  /* !important beats Obsidian's default `button:not(.clickable-icon)` (gray fill + input-shadow,
-     scoped under .theme-dark so it out-specifies a bare class). Focus mode's own !important
+  /* `:not(#orbis#important)` beats Obsidian's default `button:not(.clickable-icon)` (gray fill + input-shadow,
+     scoped under .theme-dark so it out-specifies a bare class). Focus mode's own `:not(#orbis#important)`
      overrides are more specific, so they still win there. */
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
   -webkit-appearance: none;
   appearance: none;
   border-radius: 4px;
@@ -343,12 +364,19 @@ foliate-view {
   margin-right: 2px;
   white-space: nowrap;
 }
+.orbis-ctrl-btn:not(#orbis#important) {
+  background: none;
+  border: none;
+  box-shadow: none;
+}
 
 /* Hover fill only on real-cursor devices — touch would leave a stuck highlight. */
 @media (hover: hover) and (pointer: fine) {
   .orbis-ctrl-btn:hover {
-    background: var(--background-modifier-hover) !important;
     color: var(--text-normal);
+  }
+  .orbis-ctrl-btn:hover:not(#orbis#important) {
+    background: var(--background-modifier-hover);
   }
 }
 
@@ -367,10 +395,12 @@ foliate-view {
    Nothing else is declared on purpose. Size, padding and disabled dimming come from Obsidian, so these stay
    consistent with the footer buttons under any theme and any UI font scale. */
 .orbis-cmd-btn {
-  /* !important for the reason `.orbis-mark-actions button` carries it: themes set their own radius on buttons. */
-  border-radius: 4px !important;
+  /* `:not(#orbis#important)` for the reason `.orbis-mark-actions button` carries it: themes set their own radius on buttons. */
   flex-shrink: 0;
   white-space: nowrap;
+}
+.orbis-cmd-btn:not(#orbis#important) {
+  border-radius: 4px;
 }
 
 /* Mobile (esp. Android) gives buttons a tall touch height (--input-height); with the flat accent
@@ -378,11 +408,14 @@ foliate-view {
    active pill is as compact as desktop/iPad. */
 .is-mobile .orbis-ctrl-btn,
 .is-mobile .orbis-drawer-btn {
-  min-height: 0 !important;
-  height: auto !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+.is-mobile .orbis-ctrl-btn:not(#orbis#important),
+.is-mobile .orbis-drawer-btn:not(#orbis#important) {
+  min-height: 0;
+  height: auto;
 }
 
 .orbis-display-tab-btn {
@@ -482,10 +515,7 @@ foliate-view {
 }
 
 .orbis-drawer-btn {
-  /* Flat, matching .orbis-ctrl-btn — !important beats Obsidian's default button chrome. */
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
+  /* Flat, matching .orbis-ctrl-btn — `:not(#orbis#important)` beats Obsidian's default button chrome. */
   -webkit-appearance: none;
   appearance: none;
   color: var(--text-normal);
@@ -494,14 +524,22 @@ foliate-view {
   cursor: var(--cursor);
   white-space: nowrap;
 }
+
+.orbis-drawer-btn:not(#orbis#important) {
+  background: none;
+  border: none;
+  box-shadow: none;
+}
 @media (hover: hover) and (pointer: fine) {
-  .orbis-drawer-btn:hover {
-    background: var(--background-modifier-hover) !important;
+  .orbis-drawer-btn:hover:not(#orbis#important) {
+    background: var(--background-modifier-hover);
   }
 }
 .orbis-drawer-btn.is-active {
-  background: var(--interactive-accent) !important;
   color: var(--text-on-accent);
+}
+.orbis-drawer-btn.is-active:not(#orbis#important) {
+  background: var(--interactive-accent);
 }
 .orbis-menu-overlay {
   position: absolute;
@@ -533,24 +571,27 @@ foliate-view {
 
 .orbis-panel-tab {
   flex: 1;
-  min-width: 0 !important;
-  /* !important clears Obsidian's default button fill + box-shadow (which out-specify a bare class);
+  /* `:not(#orbis#important)` clears Obsidian's default button fill + box-shadow (which out-specify a bare class);
      border-bottom stays for the active-tab underline. */
-  background: none !important;
   border: none;
-  box-shadow: none !important;
   /* radius:0 keeps the active underline straight — Obsidian's default button radius curves the
      border-bottom up at the corners (the "smile" arc). */
-  border-radius: 0 !important;
   -webkit-appearance: none;
   appearance: none;
   border-bottom: 2px solid transparent;
   cursor: var(--cursor);
-  padding: 10px 0 !important;
   color: var(--text-muted);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.orbis-panel-tab:not(#orbis#important) {
+  min-width: 0;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 10px 0;
 }
 
 .orbis-panel-tab:hover {
@@ -564,9 +605,6 @@ foliate-view {
 
 /* TOC toggle button in toolbar */
 .orbis-toc-btn {
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
   -webkit-appearance: none;
   appearance: none;
   cursor: var(--cursor);
@@ -578,12 +616,19 @@ foliate-view {
   color: var(--text-muted);
   flex-shrink: 0;
 }
+.orbis-toc-btn:not(#orbis#important) {
+  background: none;
+  border: none;
+  box-shadow: none;
+}
 
 /* Match the flat .orbis-ctrl-btn hover (this button sits alongside them in the toolbar). */
 @media (hover: hover) and (pointer: fine) {
   .orbis-toc-btn:hover {
-    background: var(--background-modifier-hover) !important;
     color: var(--text-normal);
+  }
+  .orbis-toc-btn:hover:not(#orbis#important) {
+    background: var(--background-modifier-hover);
   }
 }
 
@@ -646,12 +691,9 @@ foliate-view {
   text-align: left;
   padding: 6px 12px;
   border: none;
-  /* !important + radius:0 + appearance reset beat Obsidian's default button fill and mobile
+  /* `:not(#orbis#important)` + radius:0 + appearance reset beat Obsidian's default button fill and mobile
      pill-radius (which would turn each row into a big oval); the bottom divider is kept as the row
      separator. */
-  background: none !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
   -webkit-appearance: none;
   appearance: none;
   border-bottom: 1px solid var(--background-modifier-border);
@@ -665,20 +707,29 @@ foliate-view {
   touch-action: manipulation;
 }
 
+.orbis-toc-item:not(#orbis#important) {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
 .orbis-toc-item--sub {
   font-size: var(--orbis-font-12);
   font-weight: normal;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .orbis-toc-item:hover {
-    background: var(--background-modifier-hover) !important;
+  .orbis-toc-item:hover:not(#orbis#important) {
+    background: var(--background-modifier-hover);
   }
 }
 
 .orbis-toc-item.is-active {
   color: var(--interactive-accent);
-  background: var(--background-modifier-hover) !important;
+}
+
+.orbis-toc-item.is-active:not(#orbis#important) {
+  background: var(--background-modifier-hover);
 }
 
 /* Floating back/forward buttons — appear after following an internal link.
@@ -700,19 +751,27 @@ foliate-view {
   border-radius: 4px;
   cursor: var(--cursor);
   font-size: var(--orbis-font-12);
-  background: var(--orbis-host-bg, var(--background-secondary)) !important;
   /* Match the current book theme's text color (not Obsidian's own
      --text-normal) so the arrow stays legible against the book-colored
      background above — e.g. sepia's dark-brown text, not a pale UI gray.
-     !important for the same reason as background above: community themes
+     `:not(#orbis#important)` for the same reason as background above: community themes
      often set their own `color` on generic `button` elements. */
-  color: var(--orbis-host-fg, var(--text-normal)) !important;
+}
+
+.orbis-back:not(#orbis#important),
+.orbis-forward:not(#orbis#important) {
+  background: var(--orbis-host-bg, var(--background-secondary));
+  color: var(--orbis-host-fg, var(--text-normal));
 }
 
 .orbis-back:hover,
 .orbis-forward:hover {
   border-color: var(--text-muted);
-  color: var(--orbis-host-fg, var(--text-normal)) !important;
+}
+
+.orbis-back:hover:not(#orbis#important),
+.orbis-forward:hover:not(#orbis#important) {
+  color: var(--orbis-host-fg, var(--text-normal));
 }
 
 /* **A second-level bar and the floating pair cannot share the top of the reader.** The pair sits at
@@ -887,11 +946,8 @@ foliate-view {
   text-align: left;
   padding: 5px 12px 5px 20px;
   border: none;
-  /* Flat list rows — !important + radius:0 + appearance reset beat Obsidian's default button fill
+  /* Flat list rows — `:not(#orbis#important)` + radius:0 + appearance reset beat Obsidian's default button fill
      and mobile pill-radius (which would turn each result into an oval); bottom divider is the separator. */
-  background: none !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
   -webkit-appearance: none;
   appearance: none;
   border-bottom: 1px solid var(--background-modifier-border);
@@ -901,16 +957,24 @@ foliate-view {
   line-height: 1.4;
   touch-action: manipulation;
 }
+.orbis-search-result:not(#orbis#important) {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+}
 
 @media (hover: hover) and (pointer: fine) {
-  .orbis-search-result:hover {
-    background: var(--background-modifier-hover) !important;
+  .orbis-search-result:hover:not(#orbis#important) {
+    background: var(--background-modifier-hover);
   }
 }
 
 .orbis-search-result.is-active {
   color: var(--interactive-accent);
-  background: var(--background-modifier-hover) !important;
+}
+
+.orbis-search-result.is-active:not(#orbis#important) {
+  background: var(--background-modifier-hover);
 }
 
 /* Advanced-search result kind indicator (annotation matches). Book hits have no badge. */
@@ -1056,13 +1120,15 @@ foliate-view {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px !important;
-  height: 18px !important;
-  min-width: 0 !important;
-  padding: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
   color: var(--text-muted);
+}
+.orbis-adv-mark-x:not(#orbis#important) {
+  width: 18px;
+  height: 18px;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
 }
 .orbis-adv-mark-hint {
   color: var(--text-muted);
@@ -1095,26 +1161,28 @@ foliate-view {
   max-height: 26vh;
 }
 .orbis-adv-mark-row {
-  display: flex !important;
   align-items: center;
   gap: 8px;
-  width: 100% !important;
-  padding: 8px 10px !important;
   text-align: left;
-  background: var(--background-modifier-form-field) !important;
-  border: 1px solid transparent !important;
 }
-.orbis-adv-mark-row.is-active {
-  border-color: var(--interactive-accent) !important;
+.orbis-adv-mark-row:not(#orbis#important) {
+  display: flex;
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--background-modifier-form-field);
+  border: 1px solid transparent;
+}
+.orbis-adv-mark-row.is-active:not(#orbis#important) {
+  border-color: var(--interactive-accent);
 }
 /* **An inset SHADOW, not an outline.** These rows are the full width of a list that scrolls, and a scroller clips at
    its own padding edge — `overflow-y: auto` makes the X axis clip too — so a ring drawn outside the row loses its left
    and right sides. An inset outline offset is not enough either: the row's own border box reaches the scroller's
    edge, so there is nothing for even an inset outline to be drawn on. `box-shadow: inset` is painted INSIDE the
    padding box, which cannot be clipped by an ancestor at all. */
-.orbis-adv-mark-row:focus-visible {
-  outline: none !important;
-  box-shadow: inset 0 0 0 2px var(--background-modifier-border-focus) !important;
+.orbis-adv-mark-row:focus-visible:not(#orbis#important) {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--background-modifier-border-focus);
 }
 .orbis-adv-mark-count {
   color: var(--text-muted);
@@ -1190,29 +1258,31 @@ foliate-view {
   flex: 1 1 auto;
   align-items: center;
   text-align: center;
-  /* Both pinned with !important because Obsidian's mobile button styling spreads these two words to the top
+  /* Both pinned with `:not(#orbis#important)` because Obsidian's mobile button styling spreads these two words to the top
      and bottom of the box and inflates their line boxes. Padding alone cannot fix that: the words are not
      overflowing the padding, they are pushed apart INSIDE it. `justify-content`
      centers them as a group; the per-span line-height stops the leading doing it again. */
-  justify-content: center !important;
   gap: 2px;
 }
-.orbis-adv-scope-grid .orbis-adv-scope-label-lines > span {
-  line-height: 1.2 !important;
+.orbis-adv-scope-grid .orbis-adv-scope-label-lines:not(#orbis#important) {
+  justify-content: center;
 }
-/* !important, because Obsidian's `.is-mobile button` rules override class-based padding and line-height —
+.orbis-adv-scope-grid .orbis-adv-scope-label-lines > span:not(#orbis#important) {
+  line-height: 1.2;
+}
+/* `:not(#orbis#important)`, because Obsidian's `.is-mobile button` rules override class-based padding and line-height —
    the same trap as the mark swatches. Without these the two lines sit against the top and bottom borders
    with a large gap between them: the padding is replaced and the line-height inflated. */
 /* `height: auto` is the one that matters.
    Obsidian's mobile button styling pins a HEIGHT. With the box height fixed, `padding-block` cannot grow the
    button — it only shrinks the content area, which squeezes the two lines against the borders and looks like
    padding being ignored. */
-.is-mobile .orbis-adv-scope-grid .orbis-adv-scope-toggle {
-  height: auto !important;
-  min-height: 0 !important;
+.is-mobile .orbis-adv-scope-grid .orbis-adv-scope-toggle:not(#orbis#important) {
+  height: auto;
+  min-height: 0;
   /* Modest, because the box can grow: with the height unpinned, padding and the mobile line-height compound,
      and 16px here would make buttons over twice the height they need. */
-  padding-block: 8px !important;
+  padding-block: 8px;
 }
 /* WRAPS, rather than truncating. `white-space: nowrap` here would turn "Passage selections" into
    "Passage selec…" on a phone — every scope label is two words and none of them fit two-up on a narrow
@@ -1245,10 +1315,10 @@ foliate-view {
    "Server (Kokoro / OpenAI-compatible)" breaks to three lines and would spill through the top and bottom
    borders — the words are not overflowing their padding, the box refuses to contain them. The same
    trap, and the same cure, as the search scope grid a few hundred lines up. */
-.is-mobile .orbis-voice-method-toggle {
-  height: auto !important;
-  min-height: 0 !important;
-  padding-block: 8px !important;
+.is-mobile .orbis-voice-method-toggle:not(#orbis#important) {
+  height: auto;
+  min-height: 0;
+  padding-block: 8px;
 }
 /* Multi-speaker "Voice #N" stepper. */
 .orbis-voice-speaker-row {
@@ -1295,9 +1365,12 @@ body > .tooltip {
   align-items: center;
   justify-content: center;
   cursor: var(--cursor);
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
+}
+
+.orbis-color-swatch:not(#orbis#important) {
+  background: none;
+  border: none;
+  box-shadow: none;
 }
 .orbis-color-swatch:disabled {
   cursor: default;
@@ -1362,7 +1435,7 @@ body > .tooltip {
 }
 /* **Every button we took Obsidian's focus ring away from gets one back.**
    Obsidian rings a focused button with `box-shadow: 0 0 0 3px var(--background-modifier-border-focus)`, and two dozen
-   of our classes set `box-shadow: none !important` — necessary, since Obsidian's default button fill and shadow
+   of our classes set `box-shadow: none` on rules that must win — necessary, since Obsidian's default button fill and shadow
    otherwise fight the flat icon buttons and pill tabs these are. The side effect would be invisible focus across most
    of the chrome: `.orbis-ctrl-btn` alone is every tab strip, the reader's toolbar, and half the buttons in the
    annotation manager.
@@ -1397,7 +1470,7 @@ body > .tooltip {
   outline: 2px solid var(--background-modifier-border-focus);
   outline-offset: -2px;
 }
-/* A cover tile sets its drop shadow `!important`, and that is the same `box-shadow` Obsidian rings a focused button
+/* A cover tile sets its drop shadow `:not(#orbis#important)`, and that is the same `box-shadow` Obsidian rings a focused button
    with — so the shadow would win permanently and Tab would move an invisible cursor across the shelf. The keyboard
    lint cannot see whether a ring is VISIBLE.
 
@@ -1519,12 +1592,9 @@ body > .tooltip {
 #orbis-picker .orbis-picker-copy-text {
   display: inline-flex;
 }
-/* !important beats Obsidian's default button fill and shadow (see the .orbis-ctrl-btn note). */
+/* `:not(#orbis#important)` beats Obsidian's default button fill and shadow (see the .orbis-ctrl-btn note). */
 .orbis-note-btn {
   color: var(--text-muted);
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
   font-size: var(--orbis-font-14);
   cursor: var(--cursor);
   padding: 2px 5px;
@@ -1532,9 +1602,16 @@ body > .tooltip {
   line-height: 1;
   border-radius: 4px;
 }
+.orbis-note-btn:not(#orbis#important) {
+  background: none;
+  border: none;
+  box-shadow: none;
+}
 .orbis-note-btn:hover {
-  background: var(--background-modifier-hover) !important;
   color: var(--text-normal);
+}
+.orbis-note-btn:hover:not(#orbis#important) {
+  background: var(--background-modifier-hover);
 }
 /* The tapped annotation's mark name. Absolutely positioned BELOW the bar and out of its flow, so a name of
    any length neither widens the toolbar nor has to be truncated to fit it — the two problems with keeping it
@@ -1583,24 +1660,26 @@ body > .tooltip {
   overflow-x: hidden;
 }
 .orbis-mark-pick-row {
-  display: flex !important;
   align-items: center;
   /* Obsidian centers button content; a list of rows has to read as a column, left edge aligned. */
-  justify-content: flex-start !important;
   gap: 10px;
-  width: 100% !important;
-  min-height: 44px !important;
-  height: auto !important;
-  padding: 6px 8px !important;
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  border-radius: 4px !important;
   text-align: left;
   cursor: var(--cursor);
 }
-.orbis-mark-pick-row.is-current {
-  background: var(--background-modifier-hover) !important;
+.orbis-mark-pick-row:not(#orbis#important) {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 44px;
+  height: auto;
+  padding: 6px 8px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 4px;
+}
+.orbis-mark-pick-row.is-current:not(#orbis#important) {
+  background: var(--background-modifier-hover);
 }
 /* **The focus ring goes inside these rows, not around them.** A row is the full width of a list that clips
    horizontally on purpose (`overflow-x: hidden` above, so one over-wide row cannot grow a scrollbar), so a ring drawn
@@ -1848,8 +1927,8 @@ body > .tooltip {
    scroll. On Android the keyboard leaves the pinned reader taller than the area Obsidian gives it, the area grows a
    5px scrollbar that takes real width, and the page narrows from 287px to 282px and re-flows to different text —
    measured. Nothing in a pinned reader needs scrolling: the book scrolls inside its own host. */
-.view-content.orbis-heights-locked {
-  overflow: hidden !important;
+.view-content.orbis-heights-locked:not(#orbis#important) {
+  overflow: hidden;
 }
 
 /* In focus mode, match the book theme instead of Obsidian's surface color (the
@@ -1861,24 +1940,24 @@ body > .tooltip {
   /* Align the bar's × (close) with the focus-mode exit button on the right edge. */
   padding-right: calc(env(safe-area-inset-right, 0px) + 14px);
 }
-.orbis-focus-mode .orbis-search-bar .orbis-ctrl-btn,
-.orbis-focus-mode .orbis-search-bar .orbis-search-go {
-  background: var(--orbis-host-bg, var(--background-secondary)) !important;
-  border: 1px solid var(--background-modifier-border) !important;
-  color: var(--orbis-host-fg, var(--text-muted)) !important;
+.orbis-focus-mode .orbis-search-bar .orbis-ctrl-btn:not(#orbis#important),
+.orbis-focus-mode .orbis-search-bar .orbis-search-go:not(#orbis#important) {
+  background: var(--orbis-host-bg, var(--background-secondary));
+  border: 1px solid var(--background-modifier-border);
+  color: var(--orbis-host-fg, var(--text-muted));
 }
-.orbis-focus-mode .orbis-search-count {
-  color: var(--orbis-host-fg, var(--text-muted)) !important;
+.orbis-focus-mode .orbis-search-count:not(#orbis#important) {
+  color: var(--orbis-host-fg, var(--text-muted));
 }
 /* The whole frame, not only its color. The width and style would otherwise come from Obsidian's own field styling,
    which outranks `.orbis-search-input` — a 1px border on the desktop, none at rest on a phone or tablet, where the
    field showed its frame only once selected. */
-.orbis-focus-mode .orbis-search-input,
-.orbis-focus-mode .orbis-search-input:hover,
-.orbis-focus-mode .orbis-search-input:focus {
-  background: var(--orbis-host-bg, var(--background-primary)) !important;
-  color: var(--orbis-host-fg, var(--text-normal)) !important;
-  border: 1px solid var(--orbis-host-fg, var(--background-modifier-border)) !important;
+.orbis-focus-mode .orbis-search-input:not(#orbis#important),
+.orbis-focus-mode .orbis-search-input:hover:not(#orbis#important),
+.orbis-focus-mode .orbis-search-input:focus:not(#orbis#important) {
+  background: var(--orbis-host-bg, var(--background-primary));
+  color: var(--orbis-host-fg, var(--text-normal));
+  border: 1px solid var(--orbis-host-fg, var(--background-modifier-border));
 }
 
 /* Side navigation arrows */
@@ -1887,11 +1966,8 @@ body > .tooltip {
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
-  background: transparent !important;
-  border: none !important;
   /* Obsidian's `button:not(.clickable-icon)` gives every button `--input-shadow`, which on Windows draws a frame
      round the arrow — and, with Show page arrows off, an empty one where the arrow was. */
-  box-shadow: none !important;
   outline: none;
   cursor: var(--cursor);
   font-size: var(--orbis-font-42);
@@ -1900,22 +1976,29 @@ body > .tooltip {
   /* Touch devices: keep at a consistently visible opacity — no hover effect.
      On iOS/iPadOS :hover is applied and then immediately dropped after each
      tap, so the arrow would flash between 0.60 and 0.25 (reads as vanishing).
-     The book's text color, faded: Obsidian's button text color disappears into a dark theme's page. !important
+     The book's text color, faded: Obsidian's button text color disappears into a dark theme's page. `:not(#orbis#important)`
      because Obsidian's `button:not(.clickable-icon)` sets `color` and outranks one class. */
-  color: color-mix(in srgb, var(--orbis-host-fg, var(--text-normal)) 40%, transparent) !important;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+}
+.orbis-nav:not(#orbis#important) {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: color-mix(in srgb, var(--orbis-host-fg, var(--text-normal)) 40%, transparent);
 }
 
 /* Hover dimming only for real-cursor (mouse/trackpad) devices. */
 @media (hover: hover) and (pointer: fine) {
   .orbis-nav {
-    color: color-mix(in srgb, var(--orbis-host-fg, var(--text-normal)) 25%, transparent) !important;
     transition: color 0.15s;
   }
-  .orbis-nav:hover {
-    background: transparent !important;
-    color: color-mix(in srgb, var(--orbis-host-fg, var(--text-normal)) 60%, transparent) !important;
+  .orbis-nav:not(#orbis#important) {
+    color: color-mix(in srgb, var(--orbis-host-fg, var(--text-normal)) 25%, transparent);
+  }
+  .orbis-nav:hover:not(#orbis#important) {
+    background: transparent;
+    color: color-mix(in srgb, var(--orbis-host-fg, var(--text-normal)) 60%, transparent);
   }
 }
 
@@ -1931,9 +2014,9 @@ body > .tooltip {
 
 /* **Show page arrows** off: the glyph goes, the button stays. The text keeps the button its size, so the edge of the
    page still turns it from the same place. Beats the hover rule above by one class. */
-.orbis-nav.orbis-nav-hidden,
-.orbis-nav.orbis-nav-hidden:hover {
-  color: transparent !important;
+.orbis-nav.orbis-nav-hidden:not(#orbis#important),
+.orbis-nav.orbis-nav-hidden:hover:not(#orbis#important) {
+  color: transparent;
 }
 
 /* Stats pane */
@@ -2285,12 +2368,14 @@ body > .tooltip {
   margin-right: 48px;
 }
 /* A glyph inside a text button — the Settings launcher for a dialog that wears the same mark. Buttons use
-   14px (titles use 16px), and `display` needs !important because Obsidian's `.is-mobile button` rules beat a
+   14px (titles use 16px), and `display` needs `:not(#orbis#important)` because Obsidian's `.is-mobile button` rules beat a
    plugin's class selectors. */
 .orbis-btn-with-icon {
-  display: inline-flex !important;
   align-items: center;
   gap: 6px;
+}
+.orbis-btn-with-icon:not(#orbis#important) {
+  display: inline-flex;
 }
 .orbis-btn-icon {
   display: inline-flex;
@@ -2331,11 +2416,11 @@ body > .tooltip {
    choosing a different one per surface is the thing that goes wrong.
 
    `--radius-m` rather than the phone-sized corner radius, for the same "look like one dialog" reason.
-   !important on both because Obsidian's mobile rules are more specific than a plugin can outrank by class
+   `:not(#orbis#important)` on both because Obsidian's mobile rules are more specific than a plugin can outrank by class
    alone — the same reason the heading is not on `.modal-title`. */
-.modal.orbis-modal {
-  background: var(--background-primary) !important;
-  border-radius: var(--radius-m, 6px) !important;
+.modal.orbis-modal:not(#orbis#important) {
+  background: var(--background-primary);
+  border-radius: var(--radius-m, 6px);
 }
 
 /* The heading and the × stay put while the body scrolls.
@@ -2372,7 +2457,7 @@ body > .tooltip {
    and it paints an opaque background, over exactly the strip the last child's ring needs. Collapsed, the chapter
    fold is that last child; open, `.orbis-epub-fold[open]`'s own margin lifts it clear. Real room here instead of
    borrowed. */
-.modal.orbis-modal:has(> .orbis-dialog-footer) > .modal-content {
+.modal.orbis-modal.orbis-has-footer > .modal-content {
   padding-bottom: 8px;
   margin-bottom: 0;
 }
@@ -2394,11 +2479,11 @@ body > .tooltip {
 
 /* Match the popups' own padding (16px desktop, 10px mobile), which is what puts the heading at the top of
    the dialog rather than a phone-sized gap below it. */
-.modal.orbis-modal {
-  padding-top: 16px !important;
+.modal.orbis-modal:not(#orbis#important) {
+  padding-top: 16px;
 }
-.is-mobile .modal.orbis-modal {
-  padding-top: 10px !important;
+.is-mobile .modal.orbis-modal:not(#orbis#important) {
+  padding-top: 10px;
 }
 
 /* Compact settings-launched modals (New folder, Style name). These are plain
@@ -2422,12 +2507,12 @@ body > .tooltip {
 .modal.orbis-compact-modal .orbis-dialog-title {
   margin-top: 0;
 }
-.modal.orbis-compact-modal .setting-item {
-  padding: 8px 0 !important;
-  border-top: none !important;
+.modal.orbis-compact-modal .setting-item:not(#orbis#important) {
+  padding: 8px 0;
+  border-top: none;
 }
-.modal.orbis-compact-modal .setting-item:first-of-type {
-  padding-top: 0 !important;
+.modal.orbis-compact-modal .setting-item:first-of-type:not(#orbis#important) {
+  padding-top: 0;
 }
 .modal.orbis-compact-modal .orbis-folder-preview {
   margin: 4px 0 8px;
@@ -2449,13 +2534,15 @@ body > .tooltip {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* !important: these are plain <button> elements, not Obsidian's own
+  /* `:not(#orbis#important)`: these are plain <button> elements, not Obsidian's own
      .modal-close-button (which Modal strips down to a bare icon automatically) —
      without it, Obsidian's default button chrome (background, border, shadow)
      wins here and shows as a gray box behind the icon. */
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
+}
+.orbis-popup-close-btn:not(#orbis#important) {
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 .orbis-popup-close-btn svg {
   width: 18px;
@@ -2466,20 +2553,20 @@ body > .tooltip {
    against a pinned `right`, so growing it grows it inward and moves the glyph 9px further from the dialog's edge at
    the same time. The × itself does not change size, so the heading beside it still looks its own weight.
    Kept off desktop, where a pointer does not miss a 26px target and the extra box would only overhang content. */
-.is-mobile .orbis-popup-close-btn {
+.is-mobile .orbis-popup-close-btn:not(#orbis#important) {
   /* **Stated, not padded.** Obsidian's mobile rules pin a bare <button>'s dimensions, so padding is absorbed
      instead of growing the box. `.orbis-image-viewer-close`, `.orbis-mark-actions button` and five more rules in
-     this file carry `width` + `min-width: 0 !important` for the same wall. 18px of glyph centered in 44px leaves
+     this file carry `width` + `min-width: 0 `:not(#orbis#important)`` for the same wall. 18px of glyph centered in 44px leaves
      13px around it. */
-  width: 44px !important;
-  height: 44px !important;
-  min-width: 0 !important;
-  padding: 0 !important;
+  width: 44px;
+  height: 44px;
+  min-width: 0;
+  padding: 0;
   /* **The corners have to be square to be tappable.** Obsidian's mobile button styling rounds this to a circle —
      invisible while the background is transparent. WebKit clips hit-testing to the rounded shape, so a 44px circle
      is a 39px square's worth of target with the dead part at the corner a thumb arrives from. The three
      declarations above strip the rest of that chrome; this is the piece that is never visible. */
-  border-radius: 0 !important;
+  border-radius: 0;
 }
 
 /* NotesDiffModal.ts */
@@ -2739,20 +2826,22 @@ body > .tooltip {
 
    Obsidian gives a settings row's buttons `width: 100%` on a PHONE and not on a tablet, so the same dialog would wear
    two different footers depending on the screen. The tablet's is the one to keep: a pair of pills at the end of the row
-   reads as a decision, where two full-width bars read as two separate screens' worth of choice. `!important` because
+   reads as a decision, where two full-width bars read as two separate screens' worth of choice. `:not(#orbis#important)` because
    the host's rule is more specific than any selector we can write without it. */
-.is-phone .orbis-dialog-bar .setting-item-control button:not(.clickable-icon) {
-  width: auto !important;
-  max-width: none !important;
+.is-phone .orbis-dialog-bar .setting-item-control button:not(.clickable-icon):not(#orbis#important) {
+  width: auto;
+  max-width: none;
 }
 .is-phone .orbis-dialog-bar .setting-item-control {
-  width: auto !important;
   flex-grow: 0;
   justify-content: flex-end;
   gap: 8px;
   /* Pushed to the END of the row. An actions row has no name, so its info column is empty and collapses — which
      would leave the buttons sitting at the left once they stop filling the width. */
   margin-left: auto;
+}
+.is-phone .orbis-dialog-bar .setting-item-control:not(#orbis#important) {
+  width: auto;
 }
 /* One mutually exclusive answer with a sentence under it — see `choiceGroup`. The row is also used for a lone checkbox
    with a description, which wants the same shape. */
@@ -3065,14 +3154,16 @@ input.orbis-readonly-field:hover {
 }
 /* Focus mode: match the book theme (the bar sits over the book, not the toolbar). */
 .orbis-focus-mode .orbis-secondary-bar {
-  background: var(--orbis-host-bg, var(--background-primary)) !important;
   border-bottom-color: transparent;
 }
-.orbis-focus-mode .orbis-secondary-bar .orbis-ctrl-btn,
-.orbis-focus-mode .orbis-secondary-bar .orbis-search-go {
-  background: var(--orbis-host-bg, var(--background-secondary)) !important;
-  border: 1px solid var(--background-modifier-border) !important;
-  color: var(--orbis-host-fg, var(--text-muted)) !important;
+.orbis-focus-mode .orbis-secondary-bar:not(#orbis#important) {
+  background: var(--orbis-host-bg, var(--background-primary));
+}
+.orbis-focus-mode .orbis-secondary-bar .orbis-ctrl-btn:not(#orbis#important),
+.orbis-focus-mode .orbis-secondary-bar .orbis-search-go:not(#orbis#important) {
+  background: var(--orbis-host-bg, var(--background-secondary));
+  border: 1px solid var(--background-modifier-border);
+  color: var(--orbis-host-fg, var(--text-muted));
 }
 
 .orbis-goto-bar {
@@ -3101,19 +3192,19 @@ input.orbis-readonly-field:hover {
 }
 /* Bar chrome + close-× theming come from .orbis-secondary-bar; only the Go To
    content colors (label, hint) need adding here. */
-.orbis-focus-mode .orbis-goto-bar-label,
-.orbis-focus-mode .orbis-goto-bar-hint {
-  color: var(--orbis-host-fg, var(--text-muted)) !important;
+.orbis-focus-mode .orbis-goto-bar-label:not(#orbis#important),
+.orbis-focus-mode .orbis-goto-bar-hint:not(#orbis#important) {
+  color: var(--orbis-host-fg, var(--text-muted));
 }
 /* Theme the input to the book too (same as .orbis-focus-mode .orbis-search-input),
-   including :hover/:focus with !important so Obsidian's generic input styles can't
+   including :hover/:focus with `:not(#orbis#important)` so Obsidian's generic input styles can't
    win on those states. */
-.orbis-focus-mode .orbis-goto-bar-input,
-.orbis-focus-mode .orbis-goto-bar-input:hover,
-.orbis-focus-mode .orbis-goto-bar-input:focus {
-  background: var(--orbis-host-bg, var(--background-primary)) !important;
-  color: var(--orbis-host-fg, var(--text-normal)) !important;
-  border: 1px solid var(--orbis-host-fg, var(--background-modifier-border)) !important; /* the whole frame — see the search field */
+.orbis-focus-mode .orbis-goto-bar-input:not(#orbis#important),
+.orbis-focus-mode .orbis-goto-bar-input:hover:not(#orbis#important),
+.orbis-focus-mode .orbis-goto-bar-input:focus:not(#orbis#important) {
+  background: var(--orbis-host-bg, var(--background-primary));
+  color: var(--orbis-host-fg, var(--text-normal));
+  border: 1px solid var(--orbis-host-fg, var(--background-modifier-border)); /* the whole frame — see the search field */
 }
 /* ── Read-aloud (TTS) control bar ─────────────────────────────────────────
    A secondary bar sharing the top overlay slot with search + Go To. */
@@ -3213,11 +3304,8 @@ input.orbis-readonly-field:hover {
   padding: 0 8px;
   border-radius: 6px;
   /* Flat like the other toolbar buttons — no fill/border/shadow (a hover fill provides feedback).
-     !important beats Obsidian's default themed `button:not(.clickable-icon)` styling, same as
+     `:not(#orbis#important)` beats Obsidian's default themed `button:not(.clickable-icon)` styling, same as
      .orbis-ctrl-btn. Focus mode re-adds a book-themed pill (more specific rule below). */
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
   -webkit-appearance: none;
   appearance: none;
   color: var(--text-normal);
@@ -3229,20 +3317,25 @@ input.orbis-readonly-field:hover {
      it is here so that the next thing given a `flex-grow` in here does not float in the middle of its own box. */
   text-align: left;
 }
+.orbis-tts-voice-chip:not(#orbis#important) {
+  background: none;
+  border: none;
+  box-shadow: none;
+}
 /* In the compact bar the chip scales with the transport so it doesn't become the tallest child and
    re-inflate the bar. Scoped to the bar: the full player keeps the roomier 34px chip above. */
 .orbis-tts-bar .orbis-tts-voice-chip {
   height: 28px;
 }
 /* Mobile gives buttons a tall --input-height; pin the chip to its content height like .orbis-ctrl-btn.
-   The !important also restores the 34px touch size over the desktop bar rule just above. */
-.is-mobile .orbis-tts-voice-chip {
-  min-height: 0 !important;
-  height: 34px !important;
+   The `:not(#orbis#important)` also restores the 34px touch size over the desktop bar rule just above. */
+.is-mobile .orbis-tts-voice-chip:not(#orbis#important) {
+  min-height: 0;
+  height: 34px;
 }
 @media (hover: hover) and (pointer: fine) {
-  .orbis-tts-voice-chip:hover {
-    background: var(--background-modifier-hover) !important;
+  .orbis-tts-voice-chip:hover:not(#orbis#important) {
+    background: var(--background-modifier-hover);
   }
 }
 /* The two halves of the chip: the voice, then where it came from.
@@ -3362,14 +3455,16 @@ input.orbis-readonly-field:hover {
 }
 /* Focus mode: match the book theme like the search / Go To bars. */
 .orbis-focus-mode .orbis-tts-bar {
-  background: var(--orbis-host-bg, var(--background-primary)) !important;
   border-bottom-color: transparent;
   padding-right: calc(env(safe-area-inset-right, 0px) + 14px);
 }
-.orbis-focus-mode .orbis-tts-bar .orbis-ctrl-btn {
-  background: var(--orbis-host-bg, var(--background-secondary)) !important;
-  border: 1px solid var(--background-modifier-border) !important;
-  color: var(--orbis-host-fg, var(--text-muted)) !important;
+.orbis-focus-mode .orbis-tts-bar:not(#orbis#important) {
+  background: var(--orbis-host-bg, var(--background-primary));
+}
+.orbis-focus-mode .orbis-tts-bar .orbis-ctrl-btn:not(#orbis#important) {
+  background: var(--orbis-host-bg, var(--background-secondary));
+  border: 1px solid var(--background-modifier-border);
+  color: var(--orbis-host-fg, var(--text-muted));
 }
 
 /* ── Full-screen "now playing" recording player (real-time listen mode) ─────── */
@@ -3417,34 +3512,34 @@ input.orbis-readonly-field:hover {
   filter: brightness(0.7);
 }
 /* Hide the focus-mode chrome outside the player while pocketed — the progress chip (bottom) and
-   the exit-focus ✕ (top-right; already inert while locked). !important beats the chip's own
+   the exit-focus ✕ (top-right; already inert while locked). `:not(#orbis#important)` beats the chip's own
    display: block. */
-body.orbis-listen-locked .orbis-focus-progress,
-body.orbis-listen-locked .orbis-focus-exit-btn {
-  display: none !important;
+body.orbis-listen-locked .orbis-focus-progress:not(#orbis#important),
+body.orbis-listen-locked .orbis-focus-exit-btn:not(#orbis#important) {
+  display: none;
 }
 /* While an image is open, the focus-mode chrome steps aside. Its ✕ is in the same corner as the viewer's own and
    at z-index 100002, so without this a tap meant to close the image left focus mode — closing the image is the
    nearer intent, and focus mode is still there behind it. */
-body.orbis-image-open .orbis-focus-topbar,
-body.orbis-image-open .orbis-focus-progress {
-  display: none !important;
+body.orbis-image-open .orbis-focus-topbar:not(#orbis#important),
+body.orbis-image-open .orbis-focus-progress:not(#orbis#important) {
+  display: none;
 }
 /* The history ← / → share the viewer's top-right corner and covered its Copy button. By the same body class, not the
    `orbis-force-hidden` the full player toggles on the buttons themselves: two overlays toggling one class would let
    the first to close show the buttons over the other. Matched wherever focus mode has moved them. */
-body.orbis-image-open .orbis-history-nav {
-  display: none !important;
+body.orbis-image-open .orbis-history-nav:not(#orbis#important) {
+  display: none;
 }
 /* Hide the bottom progress chip whenever the full-screen player is up (the player has its own
    scrubber + times); the exit-focus ✕ stays so the user can leave. */
-body.orbis-listen-fullplayer .orbis-focus-progress {
-  display: none !important;
+body.orbis-listen-fullplayer .orbis-focus-progress:not(#orbis#important) {
+  display: none;
 }
 /* Pocket mode hides everything that can be pressed, and this opens a dialog — the same reasoning as the focus
    chrome above. The recording carries on regardless; the chip comes back when the controls do. */
-body.orbis-listen-locked .orbis-recording-chip {
-  display: none !important;
+body.orbis-listen-locked .orbis-recording-chip:not(#orbis#important) {
+  display: none;
 }
 .orbis-tts-player.orbis-locked .orbis-tts-player-transport,
 .orbis-tts-player.orbis-locked .orbis-tts-player-collapse,
@@ -3454,8 +3549,8 @@ body.orbis-listen-locked .orbis-recording-chip {
 /* The floating history back/forward buttons paint over the full-screen player (they live in a
    higher stacking context); hide them whenever the player is up so they can't overlap it or be
    tapped while pocket-locked. Class is set on the nav itself (it's re-parented in focus mode). */
-.orbis-history-nav.orbis-force-hidden {
-  display: none !important;
+.orbis-history-nav.orbis-force-hidden:not(#orbis#important) {
+  display: none;
 }
 .orbis-tts-player.orbis-locked .orbis-tts-progress-track {
   pointer-events: none; /* progress still moves, but can't be scrubbed */
@@ -3586,26 +3681,30 @@ body.orbis-listen-locked .orbis-recording-chip {
   gap: 6px;
   padding: 4px 10px;
   border-radius: 6px;
-  /* !important beats Obsidian's default themed button fill/shadow, and `.is-mobile button`'s
+  /* `:not(#orbis#important)` beats Obsidian's default themed button fill/shadow, and `.is-mobile button`'s
      pill radius + tall --input-height (same reasoning as .orbis-ctrl-btn). */
-  background: var(--background-modifier-hover) !important;
-  border: none !important;
-  box-shadow: none !important;
-  min-height: 0 !important;
-  height: auto !important;
   -webkit-appearance: none;
   appearance: none;
   color: var(--text-normal);
   font-size: var(--orbis-font-12);
   cursor: var(--cursor);
 }
+.orbis-lookup-speak:not(#orbis#important) {
+  background: var(--background-modifier-hover);
+  border: none;
+  box-shadow: none;
+  min-height: 0;
+  height: auto;
+}
 .orbis-lookup-speak:disabled {
   opacity: 0.6;
   cursor: default;
 }
 .orbis-lookup-speak.is-active {
-  background: var(--interactive-accent) !important;
   color: var(--text-on-accent);
+}
+.orbis-lookup-speak.is-active:not(#orbis#important) {
+  background: var(--interactive-accent);
 }
 /* A respelling exists for this word. Tinted rather than filled: it's a state indicator, not the
    active-playback state that .is-active marks on Speak. */
@@ -3890,17 +3989,19 @@ body.orbis-listen-locked .orbis-recording-chip {
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  /* !important beats Obsidian's default button fill + box-shadow. Focus mode's own
+  /* `:not(#orbis#important)` beats Obsidian's default button fill + box-shadow. Focus mode's own
      .orbis-focus-mode .orbis-tts-player-action override is more specific, so it still wins there. */
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
   -webkit-appearance: none;
   appearance: none;
   color: inherit;
   font-size: 0.8em;
   cursor: var(--cursor);
   white-space: nowrap;
+}
+.orbis-tts-player-action:not(#orbis#important) {
+  background: none;
+  border: none;
+  box-shadow: none;
 }
 .orbis-tts-player-action:hover {
   color: var(--interactive-accent);
@@ -3930,12 +4031,14 @@ body.orbis-listen-locked .orbis-recording-chip {
   align-items: center;
 }
 .orbis-tts-speed-slider {
-  /* The slider takes the row; the field and its × keep their own width. !important beats Obsidian's global
+  /* The slider takes the row; the field and its × keep their own width. `:not(#orbis#important)` beats Obsidian's global
      input[type=range] width. */
   flex: 1 1 auto;
-  width: auto !important;
   min-width: 0;
   accent-color: var(--interactive-accent);
+}
+.orbis-tts-speed-slider:not(#orbis#important) {
+  width: auto;
 }
 
 /* Focus mode: the player matches the book (like the other focus-mode controls) instead of
@@ -3947,45 +4050,45 @@ body.orbis-listen-locked .orbis-recording-chip {
   color: var(--orbis-host-fg, var(--text-normal));
 }
 /* Secondary controls match the exit-focus button: book background + border + book text.
-   !important beats the .orbis-ctrl-btn base and community-theme button styling. */
-.orbis-focus-mode .orbis-tts-player-collapse,
-.orbis-focus-mode .orbis-tts-player-lock,
-.orbis-focus-mode .orbis-tts-player-skip,
-.orbis-focus-mode .orbis-tts-player-chapter,
-.orbis-focus-mode .orbis-tts-player-action {
-  background: var(--orbis-host-bg, var(--background-secondary)) !important;
-  border: 1px solid var(--background-modifier-border) !important;
-  color: var(--orbis-host-fg, var(--text-muted)) !important;
+   `:not(#orbis#important)` beats the .orbis-ctrl-btn base and community-theme button styling. */
+.orbis-focus-mode .orbis-tts-player-collapse:not(#orbis#important),
+.orbis-focus-mode .orbis-tts-player-lock:not(#orbis#important),
+.orbis-focus-mode .orbis-tts-player-skip:not(#orbis#important),
+.orbis-focus-mode .orbis-tts-player-chapter:not(#orbis#important),
+.orbis-focus-mode .orbis-tts-player-action:not(#orbis#important) {
+  background: var(--orbis-host-bg, var(--background-secondary));
+  border: 1px solid var(--background-modifier-border);
+  color: var(--orbis-host-fg, var(--text-muted));
 }
 /* The action buttons (speed/highlight/note) are pill-shaped, not circular. */
-.orbis-focus-mode .orbis-tts-player-action {
-  border-radius: var(--radius-m, 6px) !important;
+.orbis-focus-mode .orbis-tts-player-action:not(#orbis#important) {
+  border-radius: var(--radius-m, 6px);
 }
-.orbis-focus-mode .orbis-tts-player-collapse:hover,
-.orbis-focus-mode .orbis-tts-player-lock:hover,
-.orbis-focus-mode .orbis-tts-player-action:hover,
-.orbis-focus-mode .orbis-tts-player-skip:hover,
-.orbis-focus-mode .orbis-tts-player-chapter:hover {
-  color: var(--orbis-host-fg, var(--text-normal)) !important;
-  border-color: var(--orbis-host-fg, var(--text-muted)) !important;
+.orbis-focus-mode .orbis-tts-player-collapse:hover:not(#orbis#important),
+.orbis-focus-mode .orbis-tts-player-lock:hover:not(#orbis#important),
+.orbis-focus-mode .orbis-tts-player-action:hover:not(#orbis#important),
+.orbis-focus-mode .orbis-tts-player-skip:hover:not(#orbis#important),
+.orbis-focus-mode .orbis-tts-player-chapter:hover:not(#orbis#important) {
+  color: var(--orbis-host-fg, var(--text-normal));
+  border-color: var(--orbis-host-fg, var(--text-muted));
 }
 /* The primary play button stays filled with the book foreground (prominent, book-themed). */
-.orbis-focus-mode .orbis-tts-player-play {
-  background: var(--orbis-host-fg, var(--interactive-accent)) !important;
-  color: var(--orbis-host-bg, var(--text-on-accent)) !important;
-  border: none !important;
+.orbis-focus-mode .orbis-tts-player-play:not(#orbis#important) {
+  background: var(--orbis-host-fg, var(--interactive-accent));
+  color: var(--orbis-host-bg, var(--text-on-accent));
+  border: none;
 }
 /* Voice/recording chip (bar + player): match the book-themed secondary controls in focus mode
    instead of the dark app-theme pill. */
-.orbis-focus-mode .orbis-tts-voice-chip {
-  background: var(--orbis-host-bg, var(--background-secondary)) !important;
-  border: 1px solid var(--background-modifier-border) !important;
-  color: var(--orbis-host-fg, var(--text-normal)) !important;
+.orbis-focus-mode .orbis-tts-voice-chip:not(#orbis#important) {
+  background: var(--orbis-host-bg, var(--background-secondary));
+  border: 1px solid var(--background-modifier-border);
+  color: var(--orbis-host-fg, var(--text-normal));
 }
 @media (hover: hover) and (pointer: fine) {
-  .orbis-focus-mode .orbis-tts-voice-chip:hover {
-    background: var(--orbis-host-bg, var(--background-secondary)) !important;
-    border-color: var(--orbis-host-fg, var(--text-muted)) !important;
+  .orbis-focus-mode .orbis-tts-voice-chip:hover:not(#orbis#important) {
+    background: var(--orbis-host-bg, var(--background-secondary));
+    border-color: var(--orbis-host-fg, var(--text-muted));
   }
 }
 /* Book-themed scrubber in focus mode: played portion + handle in the book foreground, unplayed
@@ -4052,9 +4155,10 @@ body.orbis-listen-locked .orbis-recording-chip {
  * field reading "1.2×". Raw slider units are an implementation detail; the field shows the reader's units and can be
  * typed into, so it is the one that stays.
  *
- * Scoped by `:has()` to rows that actually carry the pair, so any other slider in settings keeps its value.
+ * Scoped to rows that actually carry the pair (`orbis-has-num-field`, set where the field is added), so any other
+ * slider in settings keeps its value.
  */
-.setting-item-control:has(.orbis-num-input-sm) > .slider-value {
+.setting-item-control.orbis-has-num-field > .slider-value {
   display: none;
 }
 .orbis-num-input-sm {
@@ -4088,7 +4192,7 @@ body.orbis-listen-locked .orbis-recording-chip {
    horizontal .setting-item layout squeezes the name/description into a narrow sliver
    (and overflows the pane in portrait). Stack the control below the info, full width.
    Selectors chain .setting-item.orbis-setting-stacked (both classes on the same element)
-   for specificity, plus !important on the button, to beat Obsidian's .is-phone settings
+   for specificity, plus `:not(#orbis#important)` on the button, to beat Obsidian's .is-phone settings
    rules — which otherwise force the "+" button wide and collapse the <select> (mobile
    phone only; desktop and tablets don't apply .is-phone). */
 .setting-item.orbis-setting-stacked {
@@ -4127,17 +4231,17 @@ body.orbis-listen-locked .orbis-recording-chip {
 .setting-item.orbis-setting-stacked > .setting-item-control > * {
   margin: 0;
 }
-.setting-item.orbis-setting-stacked .setting-item-control select {
-  flex: 1 1 auto !important;
-  min-width: 0 !important;
-  width: auto !important;
+.setting-item.orbis-setting-stacked .setting-item-control select:not(#orbis#important) {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
 }
 /* `:not(.orbis-record-model-disc)` — that one is a button pretending to be a row, and shrink-wrapping it pulls the
    switch it shares the row with in beside the title instead of leaving it at the right edge. */
-.setting-item.orbis-setting-stacked .setting-item-control button:not(.orbis-record-model-disc) {
-  flex: 0 0 auto !important;
-  width: fit-content !important;
-  min-width: 0 !important;
+.setting-item.orbis-setting-stacked .setting-item-control button:not(.orbis-record-model-disc):not(#orbis#important) {
+  flex: 0 0 auto;
+  width: fit-content;
+  min-width: 0;
 }
 
 /* The "Hear the live voice" play button with no voice downloaded. `setDisabled` on an ExtraButtonComponent sets a
@@ -4153,13 +4257,13 @@ body.orbis-listen-locked .orbis-recording-chip {
 /* `password` as well as `text`: the book source dialog's password is a masked field of ours (see BookSourceModal),
    and a rule keyed on the type alone would leave that one at Obsidian's fixed width — the one field in the
    dialog you cannot read to check. */
-.setting-item.orbis-setting-stacked .setting-item-control input[type="text"],
-.setting-item.orbis-setting-stacked .setting-item-control input[type="password"] {
-  flex: 1 1 auto !important;
-  width: 100% !important;
-  min-width: 0 !important;
+.setting-item.orbis-setting-stacked .setting-item-control input[type="text"]:not(#orbis#important),
+.setting-item.orbis-setting-stacked .setting-item-control input[type="password"]:not(#orbis#important) {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
   /* `border-box`, without which `width: 100%` plus the input's own padding and border overflows its container. */
-  box-sizing: border-box !important;
+  box-sizing: border-box;
 }
 /* Records the cleanup dialog keeps — named so they can be dealt with by hand, since nothing here deletes a
    file the reader has written in. Bounded, because a long-abandoned book can have a lot of them. */
@@ -4239,21 +4343,24 @@ body.orbis-listen-locked .orbis-recording-chip {
   position: absolute;
   top: 8px;
   right: 8px;
-  display: inline-flex !important;
   align-items: center;
   justify-content: center;
-  width: 36px !important;
-  height: 36px !important;
-  min-width: 0 !important;
-  padding: 0 !important;
-  border: 1px solid var(--background-modifier-border) !important;
   border-radius: 4px;
-  background: var(--orbis-host-bg, var(--interactive-normal)) !important;
-  box-shadow: none !important;
-  /* !important for the same reason the back/forward arrows document a few rules up: this is a plain <button>, and
+  /* `:not(#orbis#important)` for the same reason the back/forward arrows document a few rules up: this is a plain <button>, and
      community themes set their own `color` on generic buttons. Without it the theme wins — a pale UI gray on the
      book's light page, faint beside the crisp exit-focus ✕. */
-  color: var(--orbis-host-fg, var(--text-normal)) !important;
+}
+.orbis-image-viewer-close:not(#orbis#important),
+.orbis-image-viewer-copy:not(#orbis#important) {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  min-width: 0;
+  padding: 0;
+  border: 1px solid var(--background-modifier-border);
+  background: var(--orbis-host-bg, var(--interactive-normal));
+  box-shadow: none;
+  color: var(--orbis-host-fg, var(--text-normal));
 }
 /* The overlay already carries the page's brightness, so the glyph must not be dimmed a second time — that would
    make it look washed out beside the crisp exit-focus ✕. */
@@ -4481,13 +4588,15 @@ body.orbis-listen-locked .orbis-recording-chip {
 /* The shared reorder arrows (`reorderControls`), wherever they appear: flat, muted, and dimmed at the ends. Sized
    once here rather than per list, so the same three controls look the same in every dialog. */
 .orbis-reorder-btn {
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 2px !important;
-  height: auto !important;
   color: var(--text-muted);
   display: flex;
   align-items: center;
+}
+.orbis-reorder-btn:not(#orbis#important) {
+  background: transparent;
+  box-shadow: none;
+  padding: 2px;
+  height: auto;
 }
 .orbis-reorder-btn:disabled {
   opacity: 0.3;
@@ -4643,13 +4752,13 @@ body.orbis-listen-locked .orbis-recording-chip {
    Applied only to the rows that need it — a toggle is happy in a narrow row, and restyling every row on a tablet to
    fix two would be a bigger change than the fault. */
 @container (max-width: 620px) {
-  .setting-item:has(> .setting-item-control.orbis-folder-line),
-  .setting-item:has(> .setting-item-control.orbis-text-line) {
+  /* `orbis-line-row` is on the rows whose control is a folder line or a text line; the code sets it with the
+     control's own class. `:not(.setting-item-heading)` keeps the selector as specific as the `:has()` it replaces. */
+  .setting-item.orbis-line-row:not(.setting-item-heading) {
     flex-direction: column;
     align-items: stretch;
   }
-  .setting-item:has(> .setting-item-control.orbis-folder-line) > .setting-item-info,
-  .setting-item:has(> .setting-item-control.orbis-text-line) > .setting-item-info {
+  .setting-item.orbis-line-row:not(.setting-item-heading) > .setting-item-info {
     margin-inline-end: 0;
   }
   .setting-item-control.orbis-folder-line,
@@ -4702,23 +4811,26 @@ body.orbis-listen-locked .orbis-recording-chip {
 }
 /* A chip is a BUTTON, not a `<code>` with a click listener, so it has a tab stop and Enter. The rules
    below undo Obsidian's button metrics so it still reads as a chip; the shadow is deliberately left alone, since that
-   is the focus ring. `!important` on the sizing for the same reason every other small control in the plugin needs it:
+   is the focus ring. `:not(#orbis#important)` on the sizing for the same reason every other small control in the plugin needs it:
    `.is-mobile button` out-specifies a class. */
 .orbis-var-chip,
 .orbis-var-chip-2 {
-  border: none !important;
   border-radius: 3px;
   background: var(--background-modifier-border);
   color: var(--text-normal);
   cursor: var(--cursor);
   font-family: var(--font-monospace);
-  height: auto !important;
-  min-height: 0 !important;
   line-height: 1.5;
 }
-.orbis-var-chip {
-  padding: 1px 4px !important;
-  font-size: var(--orbis-font-10) !important;
+.orbis-var-chip:not(#orbis#important),
+.orbis-var-chip-2:not(#orbis#important) {
+  border: none;
+  height: auto;
+  min-height: 0;
+}
+.orbis-var-chip:not(#orbis#important) {
+  padding: 1px 4px;
+  font-size: var(--orbis-font-10);
 }
 .orbis-reset-chip-btn {
   font-size: var(--orbis-font-11);
@@ -4744,9 +4856,9 @@ body.orbis-listen-locked .orbis-recording-chip {
   color: var(--text-normal);
 }
 /* Sizing only — the chip's appearance is shared with `.orbis-var-chip` above. */
-.orbis-var-chip-2 {
-  padding: 1px 5px !important;
-  font-size: var(--orbis-font-11) !important;
+.orbis-var-chip-2:not(#orbis#important) {
+  padding: 1px 5px;
+  font-size: var(--orbis-font-11);
 }
 .orbis-settings-preview {
   padding: 12px 18px;
@@ -4764,30 +4876,38 @@ body.orbis-listen-locked .orbis-recording-chip {
  * is one or two words — "Set up", "Download", "Ready" — so the text column loses about 80px and the row still
  * fits.
  *
- * `!important` throughout, and not for convenience: Obsidian's own `.is-mobile` rules are element-level
+ * `:not(#orbis#important)` throughout, and not for convenience: Obsidian's own `.is-mobile` rules are element-level
  * (`.is-mobile button`, `.is-mobile .setting-item`) and out-specify a class. The same fight is documented on the
  * advanced-search toggles above. */
 .is-mobile .orbis-setup-row {
-  flex-direction: row !important;
   align-items: center;
   gap: 12px;
+}
+.is-mobile .orbis-setup-row:not(#orbis#important) {
+  flex-direction: row;
 }
 .is-mobile .orbis-setup-row .setting-item-info {
   flex: 1 1 auto;
   min-width: 0;
-  margin-bottom: 0 !important;
+}
+.is-mobile .orbis-setup-row .setting-item-info:not(#orbis#important) {
+  margin-bottom: 0;
 }
 /* Natural width, hugging the right edge — `width: auto` on both, because the stretch comes from the control area
    AND from the button inside it. */
 .is-mobile .orbis-setup-row .setting-item-control {
-  width: auto !important;
   flex: 0 0 auto;
   justify-content: flex-end;
 }
+.is-mobile .orbis-setup-row .setting-item-control:not(#orbis#important) {
+  width: auto;
+}
 .is-mobile .orbis-setup-row .setting-item-control button {
-  width: auto !important;
-  flex: 0 0 auto !important;
   white-space: nowrap;
+}
+.is-mobile .orbis-setup-row .setting-item-control button:not(#orbis#important) {
+  width: auto;
+  flex: 0 0 auto;
 }
 /* The Setup page's copy of the sample, which sits above seven other rows and has two controls to demonstrate
    rather than nine.
@@ -4966,8 +5086,10 @@ body.orbis-listen-locked .orbis-recording-chip {
 }
 @media (hover: hover) {
   .orbis-debug-overlay .orbis-ctrl-btn:hover {
-    background: rgba(255, 255, 255, 0.14) !important;
     color: #fff;
+  }
+  .orbis-debug-overlay .orbis-ctrl-btn:hover:not(#orbis#important) {
+    background: rgba(255, 255, 255, 0.14);
   }
 }
 /* **Android reports no safe-area inset**, so a bare `env()` leaves this panel under the status bar and the clock
@@ -5351,14 +5473,16 @@ body.orbis-listen-locked .orbis-recording-chip {
      and above it (`--orbis-focus-top-strip`, the band the exit button floats
      in) show Obsidian's own content background
      instead of the book's — a jarring black bar against a light theme.
-     !important because contentEl is Obsidian's own .view-content element,
+     `:not(#orbis#important)` because contentEl is Obsidian's own .view-content element,
      which Obsidian/the active theme may set a background on directly.
      --orbis-host-bg-dimmed (not --orbis-host-bg) so this strip matches the
      brightness-adjusted buttons floating in it — a plain CSS `filter` here
      instead would double-dim filterWrapperEl's content and the exit/
      back/forward buttons, which already have the brightness filter applied
      directly; see resolveHostBgDimmed()'s doc comment in settings.ts. */
-  background: var(--orbis-host-bg-dimmed, var(--orbis-host-bg, #000)) !important;
+}
+.orbis-focus-mode:not(#orbis#important) {
+  background: var(--orbis-host-bg-dimmed, var(--orbis-host-bg, #000));
 }
 /* Focus mode on a desktop: the pane's content area stays where the leaf puts it, below the view header Obsidian
    keeps there, instead of being pinned over the whole leaf. `contain: layout` makes it the containing block for
@@ -5415,10 +5539,12 @@ body.orbis-listen-locked .orbis-recording-chip {
   justify-content: center;
   border: 1px solid var(--background-modifier-border);
   border-radius: 4px;
-  background: var(--orbis-host-bg, var(--interactive-normal)) !important;
   filter: var(--orbis-host-filter, none);
-  color: var(--orbis-host-fg, var(--text-normal)) !important;
   cursor: var(--cursor);
+}
+.orbis-focus-exit-btn:not(#orbis#important) {
+  background: var(--orbis-host-bg, var(--interactive-normal));
+  color: var(--orbis-host-fg, var(--text-normal));
 }
 .orbis-focus-exit-btn:hover,
 .orbis-focus-exit-btn:active {
@@ -5443,9 +5569,8 @@ body.orbis-listen-locked .orbis-recording-chip {
      buttons — it sits on the theme-matched gap background (see
      .orbis-focus-mode above), not Obsidian's own (often dark) chrome, so
      --text-muted could render as pale/white against a light theme.
-     !important for the same reason the exit/back/forward buttons need it:
+     `:not(#orbis#important)` for the same reason the exit/back/forward buttons need it:
      community themes can set their own color on generic elements. */
-  color: var(--orbis-host-fg, var(--text-muted)) !important;
   background: transparent;
   /* Widens the tappable box well beyond the text, same as .orbis-location —
      matters most in the blank mode, where there's no text to tap on at all. */
@@ -5454,9 +5579,12 @@ body.orbis-listen-locked .orbis-recording-chip {
   min-height: 1em;
   border-radius: 0;
 }
-.orbis-focus-progress-hidden {
+.orbis-focus-progress:not(#orbis#important) {
+  color: var(--orbis-host-fg, var(--text-muted));
+}
+.orbis-focus-progress-hidden:not(#orbis#important) {
   /* Keyboard open on mobile: hide the chip rather than let it ride up above the keyboard. */
-  display: none !important;
+  display: none;
 }
 /* Top-right button cluster in focus mode: back/forward pair + exit button in one
    flex row (see FocusMode.enter). A real `gap` separates them, so the spacing is
@@ -5599,19 +5727,21 @@ body.orbis-listen-locked .orbis-recording-chip {
   border: 1px solid var(--background-modifier-border);
   border-radius: 8px;
   filter: var(--orbis-host-filter, none);
-  background: var(--orbis-host-bg, var(--background-primary)) !important;
 }
-.orbis-focus-mode .orbis-highlight-drawer-row .orbis-note-btn {
+.orbis-focus-mode .orbis-highlight-drawer-row:not(#orbis#important) {
+  background: var(--orbis-host-bg, var(--background-primary));
+}
+.orbis-focus-mode .orbis-highlight-drawer-row .orbis-note-btn:not(#orbis#important) {
   /* Flat icon look (no visible box), matching desktop's #orbis-picker
      treatment for the same buttons, which `.orbis-note-btn` above gives them; this keeps the drawer's text in the
-     book's color, and still needs !important to beat Obsidian's own default <button> chrome. */
-  background: transparent !important;
-  color: var(--orbis-host-fg, var(--text-normal)) !important;
+     book's color, and still needs `:not(#orbis#important)` to beat Obsidian's own default <button> chrome. */
+  background: transparent;
+  color: var(--orbis-host-fg, var(--text-normal));
 }
-.orbis-focus-mode .orbis-highlight-drawer-row .orbis-ctrl-btn {
-  background: var(--orbis-host-bg, var(--background-secondary)) !important;
-  border: 1px solid var(--background-modifier-border) !important;
-  color: var(--orbis-host-fg, var(--text-muted)) !important;
+.orbis-focus-mode .orbis-highlight-drawer-row .orbis-ctrl-btn:not(#orbis#important) {
+  background: var(--orbis-host-bg, var(--background-secondary));
+  border: 1px solid var(--background-modifier-border);
+  color: var(--orbis-host-fg, var(--text-muted));
 }
 
 /* Container for overlay drawers that floats over the reader without taking up layout space */
@@ -5717,32 +5847,34 @@ body.orbis-listen-locked .orbis-recording-chip {
   align-items: center;
   gap: 10px;
 }
-/* The disclosure half of the row: chevron + name + voice, as a real button that looks like neither. `!important`
+/* The disclosure half of the row: chevron + name + voice, as a real button that looks like neither. `:not(#orbis#important)`
    throughout because Obsidian's `.is-mobile button` rules set their own fill, size and padding and beat a class
    selector — the same trap as the mark swatches. `text-align: left` because a button centers its text, and this one
    is a row of prose. */
 .orbis-record-model-disc {
-  /* `!important` and `white-space` both fight `.is-mobile button`, which sizes buttons for a phone and does not let
+  /* `:not(#orbis#important)` and `white-space` both fight `.is-mobile button`, which sizes buttons for a phone and does not let
      their text wrap — so a long model name would run straight under the switch beside it. This one is a row of
      prose. */
-  flex: 1 1 auto !important;
   min-width: 0;
   overflow: hidden;
-  white-space: normal !important;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 0 !important;
-  background: none !important;
-  border: none !important;
   border-radius: 4px;
-  box-shadow: none !important;
-  text-align: left !important;
-  height: auto !important;
-  width: auto !important;
   font-size: inherit;
   color: inherit;
   cursor: var(--cursor);
+}
+.orbis-record-model-disc:not(#orbis#important) {
+  flex: 1 1 auto;
+  white-space: normal;
+  padding: 10px 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+  text-align: left;
+  height: auto;
+  width: auto;
 }
 .orbis-record-model-disc:focus-visible {
   outline: 2px solid var(--background-modifier-border-focus);
@@ -5814,16 +5946,16 @@ body.orbis-listen-locked .orbis-recording-chip {
  * it as "interactive element inside a <summary>", once per fold.
  *
  * Any fold of ours whose content carries a `display` is exposed to the same thing, so this is a rule about folds rather
- * than a fix to one. `!important` is the point — it has to out-rank the author rule. Scoped to our own surfaces, in
+ * than a fix to one. `:not(#orbis#important)` is the point — it has to out-rank the author rule. Scoped to our own surfaces, in
  * case a rendered note in one of our panels has folds of its own; the effect there is the browser default anyway.
  */
-.orbis-settings details:not([open]) > *:not(summary),
-.orbis-popup details:not([open]) > *:not(summary),
-.orbis-modal details:not([open]) > *:not(summary),
-.orbis-library details:not([open]) > *:not(summary),
-.orbis-data-view details:not([open]) > *:not(summary),
-.orbis-toc-panel details:not([open]) > *:not(summary) {
-  display: none !important;
+.orbis-settings details:not([open]) > *:not(summary):not(#orbis#important),
+.orbis-popup details:not([open]) > *:not(summary):not(#orbis#important),
+.orbis-modal details:not([open]) > *:not(summary):not(#orbis#important),
+.orbis-library details:not([open]) > *:not(summary):not(#orbis#important),
+.orbis-data-view details:not([open]) > *:not(summary):not(#orbis#important),
+.orbis-toc-panel details:not([open]) > *:not(summary):not(#orbis#important) {
+  display: none;
 }
 .orbis-voice-filters-inner {
   width: 100%;
@@ -5864,11 +5996,13 @@ body.orbis-listen-locked .orbis-recording-chip {
    and pinned against growing: on mobile Obsidian gives form inputs `width: 100%`, which as a flex item becomes the
    flex basis — each box would stretch to fill its label and run straight over the word beside it. */
 .orbis-voice-filter-item input[type="checkbox"] {
-  flex: 0 0 auto !important;
-  width: var(--checkbox-size, 16px) !important;
-  height: var(--checkbox-size, 16px) !important;
-  min-width: 0 !important;
   margin: 0;
+}
+.orbis-voice-filter-item input[type="checkbox"]:not(#orbis#important) {
+  flex: 0 0 auto;
+  width: var(--checkbox-size, 16px);
+  height: var(--checkbox-size, 16px);
+  min-width: 0;
 }
 
 /* ── Recording generation / management modal ── */
@@ -5906,8 +6040,10 @@ body.orbis-listen-locked .orbis-recording-chip {
  * introduces. */
 .orbis-setup-lead {
   display: block;
-  border-top: none !important;
   padding-top: 0;
+}
+.orbis-setup-lead:not(#orbis#important) {
+  border-top: none;
 }
 /* The row has an empty name only because `render` definitions require one; the column it would sit in has nothing
    to show and would otherwise reserve half the width for it. */
@@ -6169,17 +6305,19 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 4px !important;
   margin-left: 4px;
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
   color: var(--text-muted);
   cursor: var(--cursor);
 }
-.is-mobile .orbis-recording-mix-rename {
-  min-height: 0 !important;
-  height: auto !important;
+.orbis-recording-mix-rename:not(#orbis#important) {
+  padding: 4px;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+.is-mobile .orbis-recording-mix-rename:not(#orbis#important) {
+  min-height: 0;
+  height: auto;
 }
 .orbis-recording-mix-rename svg {
   width: 15px;
@@ -6219,16 +6357,18 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   align-items: center; /* badge column centers vertically against the two-line text block */
   gap: 10px;
   text-align: left;
-  padding: 10px 8px !important;
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
   -webkit-appearance: none;
   appearance: none;
   cursor: var(--cursor);
   /* Square, because the row is flush in the list rather than a rounded card: a radius here would leave the hover
      highlight with clipped corners inside a straight-edged row. */
   border-radius: 0;
+}
+.orbis-recording-lib-open:not(#orbis#important) {
+  padding: 10px 8px;
+  background: none;
+  border: none;
+  box-shadow: none;
 }
 /* The leading tick: which recording plays. A fixed-width column so names line up whether or not a row is the
    chosen one, and the tick itself is a character in a fixed box for the same reason — an icon that appears on one
@@ -6240,19 +6380,21 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   align-items: center;
   justify-content: center;
   width: 34px;
-  padding: 0 !important;
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
   -webkit-appearance: none;
   appearance: none;
   border-radius: 0;
   color: var(--text-faint);
   cursor: var(--cursor);
 }
-.is-mobile .orbis-recording-lib-pick {
-  min-height: 0 !important;
-  height: auto !important;
+.orbis-recording-lib-pick:not(#orbis#important) {
+  padding: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+.is-mobile .orbis-recording-lib-pick:not(#orbis#important) {
+  min-height: 0;
+  height: auto;
 }
 .orbis-recording-lib-tick {
   font-size: 14px;
@@ -6268,8 +6410,8 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
 }
 /* The "None — use the live voice" row: one line, no second line and no trailing actions, so it needs the height
    the two-line rows get from their text. */
-.orbis-recording-lib-row.is-none .orbis-recording-lib-open {
-  padding: 12px 8px !important;
+.orbis-recording-lib-row.is-none .orbis-recording-lib-open:not(#orbis#important) {
+  padding: 12px 8px;
 }
 @media (hover: hover) and (pointer: fine) {
   .orbis-recording-lib-pick:hover {
@@ -6305,9 +6447,9 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
 /* Everywhere, not only on mobile: Obsidian sizes every button to `--input-height`, one line of text, and this one
    holds two — the name and its detail — plus its padding. Held to that height on the desktop, both lines spilled
    past the row onto the hairlines above and below it. */
-.orbis-recording-lib-open {
-  min-height: 0 !important;
-  height: auto !important;
+.orbis-recording-lib-open:not(#orbis#important) {
+  min-height: 0;
+  height: auto;
 }
 .orbis-recording-lib-name {
   min-width: 0;
@@ -6344,16 +6486,18 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px !important;
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
   color: var(--text-muted);
   cursor: var(--cursor);
 }
-.is-mobile .orbis-recording-lib-act {
-  min-height: 0 !important;
-  height: auto !important;
+.orbis-recording-lib-act:not(#orbis#important) {
+  padding: 6px;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+.is-mobile .orbis-recording-lib-act:not(#orbis#important) {
+  min-height: 0;
+  height: auto;
 }
 @media (hover: hover) and (pointer: fine) {
   /* Both icons brighten the same way. No red on the trash: nothing else in the plugin colors a delete
@@ -6607,15 +6751,13 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
  * changed and merge into your existing notes". These dialogs are mostly labeled radio rows, so this is what "where
  * am I?" looks like in them.
  *
- * `:has()` rather than `:focus-within`, which cannot tell a keyboard from a click and would ring the pair whenever
- * anyone chose one with the mouse. Chromium has had `:has()` since 105 and the manifest floor is Obsidian 1.13.
+ * The label carries `is-focus-visible` while its box or radio has keyboard focus: `label-focus-ring.ts` sets it,
+ * from the input's own `:focus-visible`. Not `:focus-within`, which cannot tell a keyboard from a click and would
+ * ring the pair whenever anyone chose one with the mouse.
  */
-.orbis-modal label:has(input[type="checkbox"]:focus-visible),
-.orbis-popup label:has(input[type="checkbox"]:focus-visible),
-.orbis-settings label:has(input[type="checkbox"]:focus-visible),
-.orbis-modal label:has(input[type="radio"]:focus-visible),
-.orbis-popup label:has(input[type="radio"]:focus-visible),
-.orbis-settings label:has(input[type="radio"]:focus-visible) {
+.orbis-modal label.is-focus-visible,
+.orbis-popup label.is-focus-visible,
+.orbis-settings label.is-focus-visible {
   outline: 2px solid var(--background-modifier-border-focus);
   outline-offset: 2px;
   border-radius: 4px;
@@ -6717,9 +6859,9 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
 /* Obsidian pins a mobile button's height, which would clip that second line — the same wall as the advanced-search
    scope buttons. Height goes auto with the pinned height as a floor, so the touch target is unchanged for
    the single-line labels and only a cell that needs a second line grows. */
-.is-mobile .orbis-preset-actions .orbis-cmd-btn {
-  height: auto !important;
-  min-height: var(--input-height, 40px) !important;
+.is-mobile .orbis-preset-actions .orbis-cmd-btn:not(#orbis#important) {
+  height: auto;
+  min-height: var(--input-height, 40px);
 }
 .orbis-preset-label {
   font-weight: 600;
@@ -6895,7 +7037,6 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
     auto
     auto;
   align-items: center;
-  column-gap: 8px;
   /**
    * A tickable list, as a region you can see the edges of — the same treatment and the same reasons as
    * `.orbis-list-box` in the export / PDF / EPUB dialogs. A recessed ground as well as a border: the border alone reads
@@ -6904,7 +7045,7 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
    * `row-gap` goes to zero because the rows are separated by a rule rather than by air. Floating a border in
    * the middle of a 4px gap would read as a line between two lists rather than a divider inside one.
    */
-  row-gap: 0;
+  gap: 0 8px;
   margin: 4px 0 8px;
   border: 1px solid var(--background-modifier-border);
   border-radius: 6px;
@@ -7015,19 +7156,20 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
  * the badge END at the same x, whatever they contain.
  */
 .orbis-mark-open {
-  display: grid !important;
   grid-template-columns: 6.5em minmax(5em, max-content) minmax(0, 1fr);
   align-items: center;
-  column-gap: 8px;
-  row-gap: 2px;
+  gap: 2px 8px;
   min-width: 0;
-  height: auto !important;
-  min-height: 44px !important;
-  padding: 4px 6px !important;
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  text-align: left !important;
+}
+.orbis-mark-open:not(#orbis#important) {
+  display: grid;
+  height: auto;
+  min-height: 44px;
+  padding: 4px 6px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  text-align: left;
 }
 .orbis-mark-open-text {
   grid-column: 1;
@@ -7127,14 +7269,27 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
 .orbis-mark-preview.is-double-underline {
   border-bottom: 4px double var(--orbis-mark-line);
 }
+/* **The squiggle and the strikethrough are drawn as backgrounds**, not with `text-decoration`. The Community
+   directory's CSS lint reports a decoration's wavy style, its color and its thickness as only partly supported, and
+   these two need all three. A background on an inline sample also repeats along every line the sample wraps to, as a
+   decoration does. The longhands leave `is-fill`'s background color in place when a mark has both. */
 .orbis-mark-preview.is-squiggle {
-  text-decoration: underline wavy var(--orbis-mark-line);
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 2px;
+  /* A zigzag, as the book draws a squiggle (foliate's `Overlayer.squiggly` strokes straight segments). Each 6×3px
+     tile holds one stroke down and one up: a 1.5px stripe across each half of the tile, the rest of each stripe
+     falling outside it. */
+  background-image:
+    linear-gradient(45deg, transparent 21.5%, var(--orbis-mark-line) 21.5% 45.1%, transparent 45.1%),
+    linear-gradient(135deg, transparent 54.9%, var(--orbis-mark-line) 54.9% 78.5%, transparent 78.5%);
+  background-size: 6px 3px;
+  background-position: 0 100%;
+  background-repeat: repeat-x;
+  padding-bottom: 2px;
 }
 .orbis-mark-preview.is-strikethrough {
-  text-decoration: line-through var(--orbis-mark-line);
-  text-decoration-thickness: 2px;
+  background-image: linear-gradient(var(--orbis-mark-line), var(--orbis-mark-line));
+  background-size: 100% 2px;
+  background-position: 0 58%;
+  background-repeat: no-repeat;
 }
 .orbis-mark-preview.is-box {
   border: 2px solid var(--orbis-mark-line);
@@ -7166,14 +7321,16 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   gap: 6px;
 }
 .orbis-mark-actions button {
-  width: 40px !important;
-  min-width: 0 !important;
-  height: 40px !important;
-  min-height: 0 !important;
-  padding: 0 !important;
-  border-radius: 4px !important;
   font-size: var(--orbis-font-12);
   line-height: 1;
+}
+.orbis-mark-actions button:not(#orbis#important) {
+  width: 40px;
+  min-width: 0;
+  height: 40px;
+  min-height: 0;
+  padding: 0;
+  border-radius: 4px;
 }
 /* The drag handle is at the trailing edge, so there is nothing on the left to clear. */
 .orbis-mark-add-row {
@@ -7222,17 +7379,19 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   width: 14px;
   height: 14px;
 }
-/* !important on the box: Obsidian's `.is-mobile button` rules beat a class on size and alignment. */
+/* `:not(#orbis#important)` on the box: Obsidian's `.is-mobile button` rules beat a class on size and alignment. */
 .orbis-mark-role-select {
-  display: flex !important;
   align-items: center;
-  justify-content: flex-start !important;
   gap: 10px;
-  width: 100% !important;
-  min-height: 40px !important;
-  height: auto !important;
-  padding: 6px 10px !important;
   text-align: left;
+}
+.orbis-mark-role-select:not(#orbis#important) {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 40px;
+  height: auto;
+  padding: 6px 10px;
 }
 .orbis-mark-role-chevron {
   display: inline-flex;
@@ -7258,12 +7417,14 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
 /* No mark: the note editor's × in a circle, sitting in the same column. */
 .orbis-mark-role-none {
   height: 1.6em;
-  width: 1.6em !important;
-  flex-basis: 1.6em !important;
   margin: 0 0.4em;
   border: 1px solid var(--background-modifier-border);
   border-radius: 50%;
   color: var(--text-muted);
+}
+.orbis-mark-role-none:not(#orbis#important) {
+  width: 1.6em;
+  flex-basis: 1.6em;
 }
 .orbis-mark-role-none .svg-icon {
   width: 12px;
@@ -7286,22 +7447,24 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   display: inline-flex;
 }
 /* The ground, border and padding are `.orbis-list-box`'s; this adds only the scroll height, and the hairline between
-   rows the chapter list draws — `!important` because `.orbis-mark-pick-row` clears every border to look like text. */
+   rows the chapter list draws — `:not(#orbis#important)` because `.orbis-mark-pick-row` clears every border to look like text. */
 .orbis-mark-role-list {
   max-height: 40vh;
   gap: 0;
 }
-.orbis-mark-role-list .orbis-mark-pick-row + .orbis-mark-pick-row {
-  border-top: 1px solid var(--background-modifier-border) !important;
-  border-radius: 0 !important;
+.orbis-mark-role-list .orbis-mark-pick-row + .orbis-mark-pick-row:not(#orbis#important) {
+  border-top: 1px solid var(--background-modifier-border);
+  border-radius: 0;
 }
 /* The manage-marks row at the foot of the … list: separated by a rule, since it leaves the list rather than
    choosing from it. */
 .orbis-mark-pick-manage {
-  border-top: 1px solid var(--background-modifier-border) !important;
-  border-radius: 0 !important;
   margin-top: 2px;
   color: var(--text-muted);
+}
+.orbis-mark-pick-manage:not(#orbis#important) {
+  border-top: 1px solid var(--background-modifier-border);
+  border-radius: 0;
 }
 .orbis-mark-pick-icon {
   display: flex;
@@ -7384,8 +7547,7 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  column-gap: 10px;
-  row-gap: 2px;
+  gap: 2px 10px;
 }
 /* Checkbox, glyph and label on one line; the label never wraps, since it is a name. The min-width is the
    longer of the two labels, so both hints start at the same x and the pair reads as two columns rather
@@ -7446,15 +7608,17 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
 .orbis-palette-swatch {
   /* For the struck-through bar on a color another mark already uses (below). */
   position: relative;
-  width: 26px !important;
-  height: 26px !important;
-  min-height: 0 !important;
-  padding: 0 !important;
-  border: 1px solid var(--background-modifier-border) !important;
   border-radius: 50%;
-  background: var(--orbis-mark-color) !important;
-  box-shadow: none !important;
   cursor: var(--cursor);
+}
+.orbis-palette-swatch:not(#orbis#important) {
+  width: 26px;
+  height: 26px;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid var(--background-modifier-border);
+  background: var(--orbis-mark-color);
+  box-shadow: none;
 }
 /* **Chosen is a thick border; focused is a ring around it.**
    An outline at the focus ring's exact geometry in a different color would be the same property, so the two states
@@ -7463,8 +7627,8 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
    from "this is where the keyboard is". A border reads as part of the
    swatch rather than as something drawn around it, which is also how the mark chips show selection
    (`.orbis-color-swatch-dot.is-selected`) — and `box-sizing: border-box` is global, so nothing moves. */
-.orbis-palette-swatch.is-current {
-  border: 3px solid var(--text-accent) !important;
+.orbis-palette-swatch.is-current:not(#orbis#important) {
+  border: 3px solid var(--text-accent);
 }
 /* **A color another mark already uses.** Faded AND struck through, not faded alone: a pale swatch reads as a pale
    color, which is exactly the wrong reading in a palette. The bar is the same gesture as a crossed-out price. */
@@ -7526,23 +7690,27 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   min-width: 4em;
   color: var(--text-normal);
 }
-/* !important because Obsidian's mobile rules size inputs with a selector that outranks a bare class —
+/* `:not(#orbis#important)` because Obsidian's mobile rules size inputs with a selector that outranks a bare class —
    without it the field would take the whole row and push the picker onto a line of its own. */
 .orbis-palette-hex {
   flex: 0 0 auto;
-  width: 7em !important;
   min-width: 0;
 }
+.orbis-palette-hex:not(#orbis#important) {
+  width: 7em;
+}
 .orbis-palette-pick {
-  display: flex !important;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 34px !important;
-  min-width: 0 !important;
-  height: 34px !important;
-  min-height: 0 !important;
-  padding: 0 !important;
+}
+.orbis-palette-pick:not(#orbis#important) {
+  display: flex;
+  width: 34px;
+  min-width: 0;
+  height: 34px;
+  min-height: 0;
+  padding: 0;
 }
 
 /* Phones: the row cannot hold seven controls, so it becomes two lines with the preview leading. */
@@ -7638,16 +7806,16 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   .orbis-mark-row {
     padding: 2px 4px;
   }
-  .orbis-mark-open {
-    min-height: 30px !important;
-    padding: 2px 4px !important;
+  .orbis-mark-open:not(#orbis#important) {
+    min-height: 30px;
+    padding: 2px 4px;
   }
   .orbis-mark-actions {
     gap: 3px;
   }
-  .orbis-mark-actions button {
-    width: 28px !important;
-    height: 28px !important;
+  .orbis-mark-actions button:not(#orbis#important) {
+    width: 28px;
+    height: 28px;
   }
   .orbis-mark-open-name {
     font-size: var(--orbis-font-13);
@@ -7692,8 +7860,7 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
     grid-column: auto;
     grid-template-columns: auto 1fr;
     align-items: center;
-    column-gap: 8px;
-    row-gap: 4px;
+    gap: 4px 8px;
   }
   /* The block takes the whole first line. Its own tracks are the desktop ones with a narrower sample and a fixed
      tag/badge column — fixed rather than content-sized because the list is not the grid here, so a content-sized
@@ -7708,8 +7875,10 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
     grid-template-columns: minmax(0, 1fr) 5.5em 2.6em;
     /* No inset of its own, so the name and the sample begin at the row's left edge — which is where the Active
        checkbox below them begins. The tap target loses nothing: it still spans the row. */
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+  }
+  .orbis-mark-list > .orbis-mark-row > .orbis-mark-open:not(#orbis#important) {
+    padding-left: 0;
+    padding-right: 0;
   }
   /* Same edge as the sample above it: the checkbox's own left margin would be 2px of drift. */
   .orbis-mark-row input[type="checkbox"].orbis-mark-check {
@@ -7777,11 +7946,14 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   align-items: stretch;
   margin: 10px 0;
 }
-/* No box of its own — its cells become direct grid items of the list. Selectors like
-   `.orbis-pron-row.is-off .orbis-pron-row-text` still match; only box generation is suppressed,
-   which is why the row border has to move onto the cells. */
+/* Each row spans the list and lays its cells on the LIST's columns (`subgrid`), so the columns line up across the
+   header and every row as one grid. Not `display: contents`, which did the same by giving the row no box at all: the
+   Community directory's CSS lint reports it as only partly supported. The row border stays on the cells, where it
+   was drawn when the row had no box. */
 .orbis-pron-row {
-  display: contents;
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
 }
 .orbis-pron-row > * {
   /* Vertical padding + border per cell rather than per row. No column-gap on the grid, for the same
@@ -7864,10 +8036,10 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   flex-wrap: wrap;
   gap: 6px;
 }
-.orbis-pron-preview-btn {
-  background: var(--background-modifier-hover) !important;
-  min-height: 0 !important;
-  height: auto !important;
+.orbis-pron-preview-btn:not(#orbis#important) {
+  background: var(--background-modifier-hover);
+  min-height: 0;
+  height: auto;
 }
 
 /* ── Library view (docs/design/library.md) ─────────────────────────────────────
@@ -7912,7 +8084,7 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
 }
 /* A row is a container; its BODY is the button, with the action buttons as siblings — a button inside a button
    is invalid and the inner one stops responding. Obsidian's button styling has to be undone for the body to look
-   like a list row rather than a gray slab: `!important` beats `.is-mobile button`, which pins a height and a
+   like a list row rather than a gray slab: `:not(#orbis#important)` beats `.is-mobile button`, which pins a height and a
    background — see the note on .orbis-ctrl-btn. */
 .orbis-library-row {
   display: flex;
@@ -7928,21 +8100,23 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   .orbis-library-row:hover {
     background: var(--background-modifier-hover);
   }
-  .orbis-library-tile:hover {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
+  .orbis-library-tile:hover:not(#orbis#important) {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   }
 }
 .orbis-library-row-main {
   flex: 1;
   min-width: 0; /* so a long title ellipsizes instead of pushing the actions off the row */
-  display: block !important;
-  height: auto !important;
   text-align: left;
-  padding: 7px 8px !important;
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
   cursor: var(--cursor);
+}
+.orbis-library-row-main:not(#orbis#important) {
+  display: block;
+  height: auto;
+  padding: 7px 8px;
+  background: none;
+  border: none;
+  box-shadow: none;
 }
 /* The action strip never shrinks: the title gives up width first, because a truncated title is still readable
    and a truncated Listen button is not tappable. */
@@ -8028,27 +8202,29 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
 .orbis-rule-text {
   flex: 1;
   min-width: 0;
-  /* !important because Obsidian centers button text from `.modal button`, which out-specifies a bare class — the
+  /* `:not(#orbis#important)` because Obsidian centers button text from `.modal button`, which out-specifies a bare class — the
      rows would read as centered captions rather than as a list, and a clipped center hides both ends of a long one.
      `justify-content` as well as `text-align`: Obsidian lays its buttons out as flex, where text-align alone
      does nothing to the position of a child element. */
-  text-align: left !important;
-  justify-content: flex-start !important;
   flex-direction: column;
   align-items: flex-start;
   font-size: var(--orbis-font-13);
-  height: auto !important;
-  padding: 5px 6px !important;
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
   cursor: var(--cursor);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.orbis-rule-text:hover {
-  background: var(--background-modifier-hover) !important;
+.orbis-rule-text:not(#orbis#important) {
+  text-align: left;
+  justify-content: flex-start;
+  height: auto;
+  padding: 5px 6px;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+.orbis-rule-text:hover:not(#orbis#important) {
+  background: var(--background-modifier-hover);
 }
 /* What this rule alone matches. A collection-level count says the collection is empty; only this says which rule did it. */
 .orbis-rule-count {
@@ -8186,7 +8362,31 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   z-index: 3;
 }
 .orbis-table-title-btn {
-  all: unset;
+  /* What `all: unset` did, spelled out: the directory's CSS lint reports the `all` property. None of a button's own
+     box, and the cell's font, so the button reads as the text it is. */
+  appearance: none;
+  display: inline;
+  align-items: normal;
+  justify-content: normal;
+  box-sizing: content-box;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  outline: none;
+  font: inherit;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  text-align: inherit;
+  text-transform: inherit;
+  text-shadow: inherit;
+  white-space: inherit;
+  text-rendering: inherit;
+  transition: all 0s;
   cursor: var(--cursor);
   color: var(--text-normal);
   font-weight: 500;
@@ -8206,7 +8406,30 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   color: var(--text-accent);
 }
 .orbis-table-head {
-  all: unset;
+  /* As `.orbis-table-title-btn`: what `all: unset` did, spelled out. */
+  appearance: none;
+  display: inline;
+  align-items: normal;
+  justify-content: normal;
+  box-sizing: content-box;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  outline: none;
+  font: inherit;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  text-align: inherit;
+  text-transform: inherit;
+  text-shadow: inherit;
+  white-space: inherit;
+  text-rendering: inherit;
+  transition: all 0s;
   cursor: var(--cursor);
   color: var(--text-muted);
   font-weight: 600;
@@ -8425,7 +8648,7 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   border-radius: 3px;
 }
 /* Obsidian's button styling has to be undone for a tile to be cover art rather than a gray slab, and
-   `!important` is what beats `.is-mobile button`'s pinned height and background — the same note as
+   `:not(#orbis#important)` is what beats `.is-mobile button`'s pinned height and background — the same note as
    .orbis-library-row-main. The aspect ratio is the paperback-ish 2:3 every cover roughly is, so a grid of mixed
    artwork still lines up in rows. */
 /* The box the grid and the strip lay out, holding the cover button and the ⋯ as siblings — a button cannot
@@ -8447,9 +8670,11 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   opacity: 0;
   pointer-events: none;
   /* Cover art is arbitrary, so the button carries its own ground rather than trusting what is behind it. */
-  background: var(--background-primary) !important;
   border-radius: 4px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+.orbis-library-tile-more:not(#orbis#important) {
+  background: var(--background-primary);
 }
 /* Hover is guarded, focus is not. A touch leaves `:hover` on whatever was under the finger until something else
    is tapped — the same trap the row's hover rule is wrapped for, a few hundred lines up. Focus has no such
@@ -8470,28 +8695,30 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   display: none;
 }
 .orbis-library-tile {
-  display: block !important;
   /* The containing block for the focus ring's `::after` — see `.orbis-library-tile:focus-visible::after`. */
   position: relative;
   width: 100%;
-  height: auto !important;
   aspect-ratio: 2 / 3;
-  padding: 0 !important;
-  background: none !important;
-  border: none !important;
   border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35) !important;
   overflow: hidden;
   cursor: var(--cursor);
   /* Obsidian sets `white-space: nowrap` on every button, and a tile IS a button. Inherited, that reaches the
      title and the author inside it, so a line-clamp would have nothing to clamp: the text would run off both
      edges on one line instead of wrapping. */
-  white-space: normal !important;
   /* The long press belongs to the menu, not to iOS: no selection callout over a generated tile's text, and no
      preview over its artwork. Without this the gesture is spent before `contextmenu` fires. */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
+}
+.orbis-library-tile:not(#orbis#important) {
+  display: block;
+  height: auto;
+  padding: 0;
+  background: none;
+  border: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  white-space: normal;
 }
 .orbis-library-tile-cover {
   display: block;
@@ -8579,16 +8806,16 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
 /* The row's dropdown keeps enough width to show what it says.
    On a phone Obsidian's own rules let a `<select>` sharing a row with another control collapse to its chevron — the
    same trap as the display-style selector — so the choice between Attach and New note would show neither word, only
-   an arrow. `!important` because those rules out-specify a class, and `min-width` in em so it follows the font rather
+   an arrow. `:not(#orbis#important)` because those rules out-specify a class, and `min-width` in em so it follows the font rather
    than pinning a pixel count that a larger text size would overflow. The info column gets `min-width: 0` so the
    title and path wrap instead of pushing the control off the edge. */
 .orbis-catalog-row .setting-item-info {
   min-width: 0;
 }
-.orbis-catalog-row .setting-item-control select {
-  flex: 0 0 auto !important;
-  width: auto !important;
-  min-width: 7.5em !important;
+.orbis-catalog-row .setting-item-control select:not(#orbis#important) {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 7.5em;
 }
 /* The match reason, on its own line under what the book is: quieter than the line above it, because it is our
    guess about the book rather than a fact from the book. */
@@ -8625,12 +8852,14 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
    Obsidian 1.13 aligns a setting row's contents to the top, and the 40px drag handle makes these rows tall enough
    for that to show: the name sat at the top while the buttons sat lower. */
 .orbis-value-row {
-  padding: 6px 0 !important;
   align-items: center;
 }
-/* `!important` to beat the compact dialog's own `border-top: none !important` above, at the same specificity. */
-.orbis-list-box > .orbis-value-row + .orbis-value-row {
-  border-top: 1px solid var(--background-modifier-border) !important;
+.orbis-value-row:not(#orbis#important) {
+  padding: 6px 0;
+}
+/* Must win, to beat the compact dialog's own `border-top: none` above, which must win too: the same weight, and later. */
+.orbis-list-box > .orbis-value-row + .orbis-value-row:not(#orbis#important) {
+  border-top: 1px solid var(--background-modifier-border);
 }
 /* Marked by `wireListDrag` on every reorderable row, so a list can be found by shape. No styling of its own — the
    drag feedback lives on `.orbis-draggable-row`; this is how the rows of one list are told from the heading, hint
@@ -8825,15 +9054,17 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* The `+`: the same flat, muted icon button as the arrows on the rows below — and `!important` on the box, because
+/* The `+`: the same flat, muted icon button as the arrows on the rows below — and `:not(#orbis#important)` on the box, because
    `.is-mobile button` gives every button a filled background and a phone-sized target. */
 .orbis-list-add {
   flex: 0 0 auto;
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 4px !important;
-  height: auto !important;
   color: var(--text-muted);
+}
+.orbis-list-add:not(#orbis#important) {
+  background: transparent;
+  box-shadow: none;
+  padding: 4px;
+  height: auto;
 }
 .orbis-list-add:hover {
   color: var(--text-normal);
@@ -8902,23 +9133,23 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
   align-items: stretch;
   padding-top: 0;
 }
-/* A dialog lifted above the phone keyboard (`pinModalAboveKeyboard`), for as long as it is lifted. `!important`
+/* A dialog lifted above the phone keyboard (`pinModalAboveKeyboard`), for as long as it is lifted. `:not(#orbis#important)`
    because these beat Obsidian's own modal rules and every inset above, as the inline values they replace did; nothing
    else sets them while the classes are on. The container's padding goes because `top` on an out-of-flow child is
    measured from the padding edge. The modal's `position`, `top` and height cap are computed, and stay inline. */
-.modal-container.orbis-keyboard-lifted-container {
-  padding-top: 0 !important;
+.modal-container.orbis-keyboard-lifted-container:not(#orbis#important) {
+  padding-top: 0;
 }
-.orbis-keyboard-lifted {
-  left: 0 !important;
-  right: 0 !important;
-  bottom: auto !important;
-  margin-inline: auto !important;
+.orbis-keyboard-lifted:not(#orbis#important) {
+  left: 0;
+  right: 0;
+  bottom: auto;
+  margin-inline: auto;
 }
 /* The scroller of a dialog that reserves the keyboard's share instead: it scrolls, so the padding under its last
    field can be scrolled into. */
-.orbis-keyboard-reserve {
-  overflow-y: auto !important;
+.orbis-keyboard-reserve:not(#orbis#important) {
+  overflow-y: auto;
 }
 /* `pinInsetPx` measures `--orbis-pin-inset` in pixels off an empty element of that height. */
 .orbis-pin-inset-probe {
@@ -8949,13 +9180,15 @@ body:not(.is-mobile) .orbis-recording-list.is-hub {
 /* The chevron, first of the row's controls — the same transparent icon button as the arrows beside it, since
    `.is-mobile button` would otherwise give it a filled background and a phone-sized box. */
 .orbis-row-expander {
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 2px !important;
-  height: auto !important;
   color: var(--text-muted);
   display: flex;
   align-items: center;
+}
+.orbis-row-expander:not(#orbis#important) {
+  background: transparent;
+  box-shadow: none;
+  padding: 2px;
+  height: auto;
 }
 .orbis-row-expander:focus-visible {
   outline: 2px solid var(--background-modifier-border-focus);
@@ -8994,7 +9227,7 @@ body.orbis-inset-debug .orbis-focus-mode::after {
   right: 0;
   bottom: 0;
   height: 2px;
-  background: red;
+  background: #ff0000;
   z-index: 100002;
   pointer-events: none;
 }
@@ -9005,10 +9238,10 @@ body.orbis-inset-debug .orbis-focus-overlay::before {
   right: 0;
   bottom: var(--orbis-focus-bottom-inset, 0px);
   height: 2px;
-  background: lime;
+  background: #00ff00;
   z-index: 100002;
   pointer-events: none;
 }
 body.orbis-inset-debug .orbis-focus-progress {
-  outline: 1px solid magenta;
+  outline: 1px solid #ff00ff;
 }
