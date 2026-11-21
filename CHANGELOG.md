@@ -20,6 +20,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 - The test fixtures for Download test fixtures (dev) are in a release of their own, and each build downloads the fixtures from its own commit. A release of Orbis Reader holds only the three files Obsidian installs.
 
+### Fixed
+
+- On iPad and iPhone, the lines of a book that asks for balanced line breaks now break as they do on other devices. A page no longer ends with a short line that has room for more words.
+
 ## [0.1.5] — 2026-11-21
 
 ### Changed

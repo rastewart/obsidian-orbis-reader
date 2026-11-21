@@ -1142,7 +1142,7 @@ export class OrbisReaderView
 
   private applyDocStyles(doc: Document): void {
     const colors = this.paintColors();
-    let css = buildBookCss(this.settings, colors, this.resolveFont());
+    let css = buildBookCss(this.settings, colors, this.resolveFont(), Platform.isIosApp);
     if (Platform.isMobile) {
       // iOS WkWebView only fires 'click' on non-interactive text when the element (or
       // an ancestor) has cursor:pointer. Foliate's show-annotation mechanism relies on

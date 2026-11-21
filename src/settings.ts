@@ -14,6 +14,7 @@ import type { RecordKinds, RecordsMode } from './record-config';
 import type { DeviceInfo } from './sync/devices';
 import type { VersionMap } from './sync/stamp';
 import { parseTextAlign, STORAGE_KEY_TEXT_ALIGN, type TextAlign } from './text-align';
+import { textWrapCss } from './text-wrap';
 
 /**
  * A reader theme's id: one of the five always offered, a provided extra, or one the reader made — see
@@ -1401,7 +1402,12 @@ export function applyStyleToLocalStorage(app: App, settings: DisplayStyle['setti
 }
 
 /** Build the CSS string to inject into each book iframe document. */
-export function buildBookCss(settings: DisplaySettings, colors: ThemeColors, resolvedFont = ''): string {
+export function buildBookCss(
+  settings: DisplaySettings,
+  colors: ThemeColors,
+  resolvedFont = '',
+  webkit = false
+): string {
   const lines: string[] = [
     `html, body { background: ${colors.bg} !important; color: ${colors.fg} !important; }`,
     `html { font-size: ${settings.fontSize}% !important; }`,
@@ -1437,6 +1443,9 @@ export function buildBookCss(settings: DisplaySettings, colors: ThemeColors, res
 
   const hyphens = hyphenationCss(settings.hyphenation, BODY_TEXT);
   if (hyphens) lines.push(hyphens);
+  // On iPad and iPhone, ordinary line breaking instead of WebKit's whole-paragraph `pretty` — see `textWrapCss`.
+  const wrap = textWrapCss(webkit, BODY_TEXT);
+  if (wrap) lines.push(wrap);
 
   if (colors.link) lines.push(`a { color: ${colors.link} !important; }`);
   if (colors.visited) lines.push(`a:visited { color: ${colors.visited} !important; }`);

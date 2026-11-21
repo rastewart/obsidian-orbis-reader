@@ -61,6 +61,11 @@ describe('buildBookCss — typography', () => {
     expect(buildBookCss({ ...base, textAlign: 'book' }, light)).not.toContain('text-align');
   });
 
+  it("wraps body text the ordinary way on iPad and iPhone only, where WebKit's pretty breaks paged text badly", () => {
+    expect(buildBookCss(base, light, '', true)).toContain('.orbis-body-text { text-wrap-style: auto !important; }');
+    expect(buildBookCss(base, light)).not.toContain('text-wrap');
+  });
+
   it('leaves hyphenation to the book when following the book', () => {
     expect(buildBookCss(base, light)).not.toContain('hyphens');
   });
