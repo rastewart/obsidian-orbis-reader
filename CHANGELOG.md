@@ -9,7 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 ---
 
-## [0.1.5] — Unreleased
+## [0.1.5] — 2026-11-21
 
 ### Changed
 
