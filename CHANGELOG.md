@@ -9,6 +9,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 ---
 
+## [0.1.4] — 2026-11-20
+
+### Changed
+
+- The reader engine, foliate-js, now comes from Orbis's own fork of it, [rastewart/foliate-js](https://github.com/rastewart/foliate-js), instead of a copy kept in this repository. The Community directory's checks of the repository are then of Orbis's own code. Books look and work as before.
+- Small changes to how Orbis adds elements to a book's pages, for the Community directory's review. Books look and work as before.
+
 ## [0.1.3] — 2026-11-20
 
 ### Added
