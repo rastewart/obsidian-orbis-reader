@@ -22,6 +22,7 @@ End-user documentation for installing and using Orbis Reader.
 | [Reading Records](guide/reading-records.md) | A vault note for each annotation, kept up to date as you read |
 | [Reading Progress](guide/reading-progress.md) | The progress indicator, locations and reading stats |
 | [Sync and Devices](guide/sync-and-devices.md) | One vault on more than one device: reading locations and shared settings |
+| [Data and Storage](guide/data-and-storage.md) | Where Orbis Reader stores your data, what it reads, and the items in the Community plugins directory's review |
 | [Look-up](guide/look-up.md) | Definitions, vault notes and web results for selected text |
 | [Library Dashboards](guide/library-dashboards.md) | Title notes, cataloging, collections and dashboards |
 | [Book Sources](guide/book-sources.md) | Browsing OPDS feeds and downloading books into your vault |

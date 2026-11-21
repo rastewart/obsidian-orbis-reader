@@ -9,6 +9,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 ---
 
+## [0.1.6] — Unreleased
+
+### Added
+
+- **Hyphenation** in Settings → Appearance and on the display style bar's Spacing tab. It follows the book, hyphenates all body text, or turns hyphenation off. Obsidian on Windows and Linux does not hyphenate words automatically, so On has no effect there.
+- The User Guide's Data and Storage page and the README's Storage and permissions section explain how Orbis Reader uses each item in the Community directory's review.
+
+### Changed
+
+- The test fixtures for Download test fixtures (dev) are in a release of their own, and each build downloads the fixtures from its own commit. A release of Orbis Reader holds only the three files Obsidian installs.
+
 ## [0.1.5] — 2026-11-21
 
 ### Changed

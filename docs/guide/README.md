@@ -26,6 +26,7 @@ Orbis Reader is an Obsidian plugin for reading books in your vault. It opens EPU
 | [Reading Records](reading-records.md) | A vault note for each annotation, kept up to date as you read |
 | [Reading Progress](reading-progress.md) | The progress indicator, locations and reading stats |
 | [Sync and Devices](sync-and-devices.md) | One vault on more than one device: reading locations and shared settings |
+| [Data and Storage](data-and-storage.md) | Where Orbis Reader stores your data, what it reads, and the items in the Community plugins directory's review |
 | [Look-up](look-up.md) | Definitions, vault notes and web results for selected text |
 | [Library Dashboards](library-dashboards.md) | Title notes, cataloging, collections and dashboards |
 | [Book Sources](book-sources.md) | Browsing OPDS feeds and downloading books into your vault |

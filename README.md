@@ -85,7 +85,7 @@ An ebook reader for your [Obsidian](https://obsidian.md) vault. Read your books,
 - **Your sync:** Keep using the vault sync you already have, such as Obsidian Sync, to continue on another device where you left off, with your styles, presets, dashboards and pronunciations already there.
 - **Your data:** Keep everything private: no telemetry, voices and dictionaries that work offline, book files that are never changed, and your data in plain files in your vault.
 
-**Learn more:** [Getting Started](https://guide.orbisreader.com/getting-started) · [Sync and Devices](https://guide.orbisreader.com/sync-and-devices) · [The .orbis File](https://guide.orbisreader.com/orbis-file) · [Settings Reference](https://guide.orbisreader.com/settings-reference) · [Command Reference](https://guide.orbisreader.com/command-reference)
+**Learn more:** [Getting Started](https://guide.orbisreader.com/getting-started) · [Sync and Devices](https://guide.orbisreader.com/sync-and-devices) · [Data and Storage](https://guide.orbisreader.com/data-and-storage) · [The .orbis File](https://guide.orbisreader.com/orbis-file) · [Settings Reference](https://guide.orbisreader.com/settings-reference) · [Command Reference](https://guide.orbisreader.com/command-reference)
 
 ---
 
@@ -205,11 +205,41 @@ Web look-ups and links in books open in your web browser, but only when you sele
 
 ---
 
-## Files outside your vault
+## Storage and permissions
 
-Orbis Reader reads and writes files in your vault only, with one exception that you choose each time. On a computer, Save as PDF, Save annotations as PDF, Save as Markdown, Generate notes and Notes to EPUB have an **Export…** button. It opens your system's save dialog, so that you can save the file wherever you pick: to send it to someone, or to open it in another app. Orbis Reader writes only that one file, and only after you select **Save**.
+The Community plugins directory reviews each release of Orbis Reader and lists what the plugin's code uses. Each heading below names an item in the review and explains how Orbis Reader uses it. The [Data and Storage](https://guide.orbisreader.com/data-and-storage) page of the User Guide provides additional details.
 
-On a phone or tablet, the same dialogs have **Share…** instead. The file goes to your device's share sheet from Orbis Reader's plugin folder, and nothing is written outside the vault.
+### Vault Read and Vault Write
+
+Orbis Reader reads and writes your books' data, its notes and its shared settings as ordinary files in your vault, through Obsidian. See [Reading data](#reading-data).
+
+### Direct Filesystem Access
+
+Orbis Reader uses direct file system access only to save a file outside your vault, and only when you select that option. On a computer, Save as PDF, Save annotations as PDF, Save as Markdown, Generate notes and Notes to EPUB have an **Export…** button. It opens your system's save dialog, so that you can save the file wherever you pick. You can then send it to someone, or open it in another app. Orbis Reader writes only that one file, and only after you select **Save**. On a phone or tablet, the same dialogs have a **Share…** button instead. Selecting that button sends the file to your device's share sheet from Orbis Reader's plugin folder, and nothing is written outside the vault.
+
+### Vault Enumeration
+
+Orbis Reader lists the files in your vault to find your books, title notes, covers and reading records, the notes that link to a book, the files your other devices share, and the vault notes that Look-up shows. The list never leaves your device.
+
+### Local Storage
+
+Settings that belong to one device, such as its display style, toolbar buttons, voice and playback speed, are stored in Obsidian's local storage for the vault on that device, through Obsidian's own `app.saveLocalStorage` API. They are not vault files, so your sync tool does not copy them. This separation keeps the toolbar selections on the phone distinct from the computer's toolbar selections. Settings that are the same on every device are in the plugin's `data.json` and in vault files. See [Settings on each device](https://guide.orbisreader.com/sync-and-devices#settings-on-each-device).
+
+### Clipboard Access
+
+Orbis Reader writes to the clipboard only when you select a copy command, such as Copy text, Copy link or Copy image. It does not read the clipboard. On Android, Orbis Reader also keeps the last image that you copied from a book in memory, so that you can paste it into a note.
+
+### Plugin references unrecognized WASM files
+
+Orbis voices run on two WebAssembly modules, the speech engine ([ONNX Runtime](https://onnxruntime.ai/)) and the module that turns text into speech sounds ([piper-phonemize](https://github.com/rhasspy/piper-phonemize)). Neither is in the plugin's code. The first time you download an Orbis voice, Orbis Reader downloads both from `cdnjs.cloudflare.com` and `cdn.jsdelivr.net`, checks each against a SHA-256 checksum fixed in the plugin, and saves it in the plugin folder. If you never use Orbis voices, they are never downloaded. The zip library that opens EPUB and CBZ files also names a WebAssembly module, which Orbis Reader does not use.
+
+### Number of network request calls
+
+See [Network use](#network-use). Nothing is downloaded until you ask for it, and your books, notes and reading data are never sent anywhere unless you set up a speech server.
+
+### Code uses runtime base64 encode or decode calls
+
+Orbis Reader decodes base64 data to read the images inside FB2 books, the images a book embeds in its text, and the cover in a `.orbis` file. It encodes base64 data to sign in to an OPDS feed that uses a username and password, and to make the short silent sound that keeps the listening controls active on a phone.
 
 ---
 
