@@ -5,8 +5,9 @@ name: Release
 # docs/design/feature-development-guide.md for the whole procedure.
 #
 # **A draft, never published from here.** The release holds the three files Obsidian installs — `main.js`,
-# `manifest.json`, `styles.css` — and `orbis-test-fixtures.zip`, the test plans' files for the plugin's *Download test
-# fixtures (dev)* command. It is reviewed on GitHub and published by hand. A stable release has the version's
+# `manifest.json`, `styles.css` — and nothing else: the Community directory's review counts any other file in a release
+# against it. The test plans' files have a release of their own (`test-fixtures.yml`). It is reviewed on GitHub and
+# published by hand. A stable release has the version's
 # CHANGELOG.md section as its notes and is published with "Set as the latest release" ticked: a draft cannot be marked
 # latest, and the `dictionaries` release holds that title until a plugin release takes it. A beta is drafted as a
 # pre-release, which GitHub never marks latest, with the CHANGELOG.md section of the version it leads up to as its
@@ -77,7 +78,7 @@ jobs:
 
   # **Built without the write token, published by a job that runs nothing of the repository's.** Install, build and
   # the release scripts run dependency code; none of it should hold the token that can write releases. So `build` reads
-  # only, and hands the four files and the notes to `draft`, which runs `gh` and GitHub's provenance attestation.
+  # only, and hands the three files and the notes to `draft`, which runs `gh` and GitHub's provenance attestation.
   build:
     name: Build the release files
     needs: gate
@@ -141,7 +142,6 @@ jobs:
             release/main.js
             release/manifest.json
             release/styles.css
-            release/orbis-test-fixtures.zip
 
       - name: Create the draft release
         env:
@@ -153,5 +153,5 @@ jobs:
           kind=()
           case "$TAG" in *-beta.*) kind=(--prerelease) ;; esac
           gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --draft "${kind[@]}" --verify-tag --title "$TAG" \
-            --notes-file notes.md main.js manifest.json styles.css orbis-test-fixtures.zip
+            --notes-file notes.md main.js manifest.json styles.css
           gh release view "$TAG" --repo "$GITHUB_REPOSITORY"

@@ -13,13 +13,11 @@ import {
   isVersion,
   NOTES_PLACEHOLDER,
   notesProblem,
-  TEST_FIXTURES_ZIP,
   UNRELEASED,
   withChangelogSection,
   withVersion,
   withVersionEntry,
 } from '../../scripts/release-lib';
-import { TEST_FIXTURES_ZIP as PLUGIN_TEST_FIXTURES_ZIP } from '../test-fixtures';
 
 const CHANGELOG = `# Changelog
 
@@ -124,9 +122,5 @@ describe('betas', () => {
     expect(bumped).not.toContain(UNRELEASED);
     expect(changelogSection(bumped, '0.2.0')).toBe('### Added\n\n- A swipe.');
     expect(bumped.match(/## \[0\.2\.0\]/g)).toHaveLength(1);
-  });
-
-  it('names the test fixtures zip as the plugin fetches it', () => {
-    expect(TEST_FIXTURES_ZIP).toBe(PLUGIN_TEST_FIXTURES_ZIP);
   });
 });

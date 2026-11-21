@@ -81,11 +81,11 @@ In `test-vault`, on the Mac.
 
 - [ ] `once` With developer options on, type **(dev)** in the palette: commands including **Factory reset — back to a new install (dev)**, **Reset the welcome (dev)** and **Sync status (dev)**. **Recalculate locations (dev)** is there only while a book is open.
 
-- [ ] `once` In a new, empty vault with this release installed through BRAT, run **Toggle developer options**, then **Download test fixtures (dev)**: **Copy test fixtures?**, *From release* and the installed version, *New files:* and the number of files in the repository's `test-vault/fixtures`, *Changed files: 0.* Select **Copy**: *Copied* that number *test fixtures into fixtures.* The vault's `fixtures` folder now matches `test-vault/fixtures`, with `library`, `notes-to-epub`, `resilience` and `sync` inside it.
+- [ ] `once` In a new, empty vault with this release installed through BRAT, run **Toggle developer options**, then **Download test fixtures (dev)**: **Copy test fixtures?**, *New files:* and the number of files in the repository's `test-vault/fixtures`, *Changed files: 0.* Select **Copy**: *Copied* that number *test fixtures into fixtures.* The vault's `fixtures` folder now matches `test-vault/fixtures`, with `library`, `notes-to-epub`, `resilience` and `sync` inside it.
 
 - [ ] `once` Run **Download test fixtures (dev)** again: *The test fixtures are already up to date.* Add a line to a note in `fixtures/library` and run it again: *New files: 0. Changed files: 1.* Select **Copy**: *Copied 1 test fixture into fixtures.*, and the line is gone. Delete the vault.
 
-- [ ] `once` In `test-vault`, with a build from `deploy.sh` whose version has no published release, run **Download test fixtures (dev)**: *No test fixtures are published for version* and the version, *A release must be published first.* Nothing in `fixtures` changes.
+- [ ] `once` In `test-vault`, with the network off, run **Download test fixtures (dev)**: *Could not download the test fixtures. See the debug log.* Nothing in `fixtures` changes.
 
 - [ ] `once` Run **Toggle developer options**: *Orbis Reader developer options are off.* Typing **(dev)** finds nothing from Orbis Reader. Run it again to turn them back on: it is a setting for this device, so another device still has them as it did.
 

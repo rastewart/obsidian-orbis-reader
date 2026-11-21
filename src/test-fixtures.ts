@@ -1,16 +1,25 @@
-// The test plans' files, fetched into a vault from the release this build was published as.
+// The test plans' files, fetched into a vault from the repository's `test-fixtures` release.
 //
 // **A developer's command, offered only while developer options are on.** It is how a fresh vault — a BRAT install
 // on a phone, say — gets the books and notes the test plans open, without a computer that has the repository. The
-// release workflow packs every file git tracks under `test-vault/fixtures` into `orbis-test-fixtures.zip` beside the
-// three plugin files, so the fixtures always match the code under test, beta or stable.
+// test fixtures workflow (`.github/workflows/test-fixtures.yml`) packs every file git tracks under `test-vault/fixtures`
+// into one zip and uploads it to that release whenever main's fixtures change.
+//
+// **One release for every version, not a copy in each.** The Community directory's review counts any file in a plugin
+// release beyond the three Obsidian installs against it, and the fixtures change when a test plan's files do, not with
+// each release.
+//
+// **The build's own fixtures, checked before anything is written.** The build pins the zip's SHA-256
+// (`test-fixtures-pin.ts`), downloads the file named by it, and refuses one that does not hash to it. The release
+// keeps every zip it has held, so a stable release, a beta or a local build each get the fixtures of their own commit,
+// and a damaged or altered download writes nothing. A local build whose fixtures are not on main yet finds no zip.
 //
 // **Asks before writing, copies only what differs, deletes nothing.** The download is 1–2 MB and the command itself
 // is the request for it; the question is about the vault, so it comes after the download, when the counts are known.
 // A changed file replaces the vault's copy, which is how a test that edited a Library title note gets it back.
 //
-// **An entry lands inside `fixtures/` or not at all.** The zip comes from this repository's own release, but a path
-// in a zip is just a string: one with `..`, a leading slash or a dot-folder could write anywhere in the vault, the
+// **An entry lands inside `fixtures/` or not at all.** The digest says the zip is the one this build was made with,
+// but a path in a zip is just a string: one with `..`, a leading slash or a dot-folder could write anywhere in the vault, the
 // `.obsidian` folder included. `fixturePath` refuses those.
 
 import { unzipSync } from 'fflate';
@@ -19,19 +28,19 @@ import { askToConfirm } from './ConfirmModal';
 import { deviceSetting } from './device-settings';
 import { t } from './i18n';
 import type OrbisReaderPlugin from './main';
+import { sha256Hex } from './reader/tts/asset-integrity';
+import { TEST_FIXTURES_SHA256, testFixturesFile } from './test-fixtures-pin';
 
-/** The repository's releases. The release workflow attaches the zip to each one. */
-const RELEASES = 'https://github.com/rastewart/obsidian-orbis-reader/releases/download';
+/** The repository's `test-fixtures` release, which keeps every zip of the fixtures it has held. */
+const RELEASE = 'https://github.com/rastewart/obsidian-orbis-reader/releases/download/test-fixtures';
 
-export const TEST_FIXTURES_ZIP = 'orbis-test-fixtures.zip';
+/** Where the zip with `sha256`'s fixtures is: by default, this build's own. */
+export function testFixturesUrl(sha256: string = TEST_FIXTURES_SHA256): string {
+  return `${RELEASE}/${testFixturesFile(sha256)}`;
+}
 
 /** The vault folder the test plans name, at the root: `fixtures/annotation-workhorse.epub`. */
 export const FIXTURES_FOLDER = 'fixtures';
-
-/** The zip attached to the release tagged `version`, which is the installed `manifest.json`'s version. */
-export function testFixturesUrl(version: string): string {
-  return `${RELEASES}/${version}/${TEST_FIXTURES_ZIP}`;
-}
 
 /**
  * Where a zip entry goes in the vault, or null for an entry that is not a file this command may write: a folder
@@ -69,11 +78,10 @@ export function addTestFixturesCommand(plugin: OrbisReaderPlugin): void {
   });
 }
 
-/** Download this version's fixtures, say what would change, and copy them in on a yes. */
+/** Download the fixtures, say what would change, and copy them in on a yes. */
 export async function downloadTestFixtures(plugin: OrbisReaderPlugin): Promise<void> {
   const { app } = plugin;
-  const version = plugin.manifest.version;
-  const url = testFixturesUrl(version);
+  const url = testFixturesUrl();
   const log = (msg: string, extra?: unknown) => plugin.debug(`test fixtures: ${msg}`, extra);
 
   let entries: Record<string, Uint8Array>;
@@ -81,10 +89,16 @@ export async function downloadTestFixtures(plugin: OrbisReaderPlugin): Promise<v
     const res = await requestUrl({ url, method: 'GET', throw: false });
     log(`GET ${url} → ${res.status}`);
     if (res.status === 404) {
-      new Notice(t('notices.test_fixtures_not_published', { version }));
+      new Notice(t('notices.test_fixtures_not_published'));
       return;
     }
     if (res.status !== 200) throw new Error(`HTTP ${res.status}`);
+    const digest = await sha256Hex(res.arrayBuffer);
+    if (digest !== TEST_FIXTURES_SHA256) {
+      log(`refused: the download hashes to ${digest}, and this build pins ${TEST_FIXTURES_SHA256}`);
+      new Notice(t('notices.test_fixtures_wrong_file'));
+      return;
+    }
     entries = unzipSync(new Uint8Array(res.arrayBuffer));
   } catch (err) {
     log('download failed', err);
@@ -113,7 +127,7 @@ export async function downloadTestFixtures(plugin: OrbisReaderPlugin): Promise<v
   const ok = await askToConfirm(app, {
     title: t('test_fixtures_dialog.title'),
     message: [
-      t('test_fixtures_dialog.counts', { version, added: added.length, changed: changed.length }),
+      t('test_fixtures_dialog.counts', { added: added.length, changed: changed.length }),
       t('test_fixtures_dialog.replaced'),
     ],
     confirmText: t('test_fixtures_dialog.copy'),

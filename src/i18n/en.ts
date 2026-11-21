@@ -3473,16 +3473,18 @@ const en = {
   'notices.read_in_orbis_failed': 'Could not make a book from {{name}}. See the debug log for why.',
   'notices.debug_log_notes_on': 'Debug log: also writing a note for each launch, in {{folder}}',
   'notices.debug_log_note_off': 'Debug log: no longer writing to a note',
-  // `test-fixtures.ts`. A local build has the version number of a release that may not exist yet.
-  'notices.test_fixtures_not_published':
-    'No test fixtures are published for version {{version}}. A release must be published first.',
+  // `test-fixtures.ts`. The zip is published when main's fixtures change, so a local build with fixtures not yet on
+  // main finds none.
+  'notices.test_fixtures_not_published': "This build's test fixtures are not published yet.",
+  'notices.test_fixtures_wrong_file':
+    "The downloaded test fixtures are not this build's, so nothing was copied. See the debug log.",
   'notices.test_fixtures_failed': 'Could not download the test fixtures. See the debug log.',
   'notices.test_fixtures_up_to_date': 'The test fixtures are already up to date.',
   'notices.test_fixtures_copied': 'Copied {{count}} test fixtures into {{folder}}.',
   'notices.test_fixtures_copied_one': 'Copied 1 test fixture into {{folder}}.',
   'notices.test_fixtures_partly_copied': 'Copied {{count}} test fixtures. Not copied: {{failed}}. See the debug log.',
   'test_fixtures_dialog.title': 'Copy test fixtures?',
-  'test_fixtures_dialog.counts': 'From release {{version}}. New files: {{added}}. Changed files: {{changed}}.',
+  'test_fixtures_dialog.counts': 'New files: {{added}}. Changed files: {{changed}}.',
   'test_fixtures_dialog.replaced':
     'A changed file replaces the copy in the vault, including a Library title note a test has edited. Nothing is deleted.',
   'test_fixtures_dialog.copy': 'Copy',

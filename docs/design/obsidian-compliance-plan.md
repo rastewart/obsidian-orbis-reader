@@ -308,8 +308,9 @@ Import `moment` from `'obsidian'`, not from npm.
 - [x] `.github/workflows/release.yml`: a pushed tag of `x.y.z` or `x.y.z-beta.N` is checked against the plugin's
       files (`scripts/release-check.ts`), the whole gate runs on the tagged commit, a job that can only read builds,
       and a job that runs only `gh` and the provenance attestation drafts the release with `main.js`,
-      `manifest.json`, `styles.css` and `orbis-test-fixtures.zip`. First run `0.1.0-beta.1` (2026-11-15); four betas
-      so far
+      `manifest.json` and `styles.css`. First run `0.1.0-beta.1` (2026-11-15); four betas
+      so far. Until `0.1.5` it also attached `orbis-test-fixtures.zip`; from `0.1.6` that zip has a release of its
+      own, `test-fixtures`, made by `.github/workflows/test-fixtures.yml` when main's fixtures change
 - [x] No `v` prefix: the workflow triggers only on tags without one, and the release check refuses a stable tag
       that differs from `manifest.json`'s version
 
@@ -349,6 +350,8 @@ plugin cannot be installed from Obsidian until no errors remain. Scanner results
     hash of its source, so any checkout of the commit builds the same file ([Debug System](debug-system.md#build-stamp)).
     The review of `0.1.2` passed it.
   - **A recommendation:** the release's fourth file, `orbis-test-fixtures.zip`, is one Obsidian does not download.
+    The listing shows it under Other as "Release contains extra unsupported files". From `0.1.6` the zip is in the
+    `test-fixtures` release instead, which is not a version of the plugin.
 - [x] Publish the entry (2026-11-19): <https://community.obsidian.md/plugins/orbis-reader>
 - [ ] Bring the listing's scorecard down. Its scan of `0.1.3` (2026-11-20) rated it **Risks**, with 5,756
       issues, all warnings or disclosures: about 5,370 in vendored foliate-js, nearly all the `no-unsafe-*`

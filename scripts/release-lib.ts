@@ -4,9 +4,18 @@
 // **Shared by the two ends of a release.** `pnpm bump` (`bump-version.ts`) writes the files; the release workflow
 // (`release-check.ts`) reads them back and refuses a tag they do not agree with. Kept free of Node so the tests in
 // `src/__tests__` can import it — the plugin's tsconfig carries no Node types on purpose.
+import { zipSync } from 'fflate';
 
-/** The release file the plugin's *Download test fixtures (dev)* command fetches. `src/test-fixtures.ts` names it too. */
-export const TEST_FIXTURES_ZIP = 'orbis-test-fixtures.zip';
+/**
+ * The test plans' files as one zip, for *Download test fixtures (dev)*: `files` maps each path below
+ * `test-vault/fixtures` to its bytes. Sorted, and every entry dated midnight on 1980-01-01 wherever it runs, so the
+ * same fixtures pack the same bytes and the plugin can pin their digest (`src/test-fixtures-pin.ts`).
+ */
+export function packTestFixtures(files: Record<string, Uint8Array>): Uint8Array {
+  const sorted: Record<string, Uint8Array> = {};
+  for (const name of Object.keys(files).sort()) sorted[name] = files[name];
+  return zipSync(sorted, { mtime: new Date(1980, 0, 1) });
+}
 
 /** Obsidian's form: three numbers, no `v`. The release workflow's tag filter and `versions.json` both expect it. */
 export function isVersion(v: string): boolean {

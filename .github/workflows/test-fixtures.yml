@@ -1,0 +1,156 @@
+name: Test fixtures
+
+# Packs the test plans' files into a zip and uploads it to the `test-fixtures` release, where the plugin's *Download
+# test fixtures (dev)* command downloads it.
+#
+# **A release of its own, not a file in every plugin release.** The Community directory's review counts any file in a
+# plugin release beyond `main.js`, `manifest.json` and `styles.css` against it. And the fixtures change when a test
+# plan's files do, not with each release.
+#
+# **Runs when main's fixtures change, or by hand.** A push to main that touches `test-vault/fixtures` starts it; so does
+# Actions → Test fixtures → Run workflow.
+#
+# **Pinned like the dictionaries, and never replaced.** The plugin pins the zip's SHA-256 (`src/test-fixtures-pin.ts`)
+# and downloads `orbis-test-fixtures-<first twelve hex digits>.zip`, refusing one that does not hash to the pin. The
+# same fixtures pack the same bytes (`scripts/test-fixtures-zip.ts`), which refuses to write a zip that is not the
+# pinned one, so only the zip main's plugin asks for is uploaded. A build already out asks for the zip of its own
+# commit, so a zip in the release is never replaced or removed: changed fixtures are a new file beside the old. A zip
+# already there is downloaded and compared instead: the same file passes, a different one stops the run.
+#
+# **Not the "latest" release.** The README links to the latest release for the plugin's own files, and a fixtures
+# release made after a plugin release would otherwise take that place. Its tag does not start with a number, so BRAT
+# lists it below the plugin's versions, as it does `dictionaries`.
+
+on:
+  push:
+    branches: [main]
+    paths: ['test-vault/fixtures/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+# **Packed without the write token, uploaded by a job that runs nothing of the repository's.** Installing and packing
+# run dependency code; none of it should hold the token that can write releases. So `pack` reads only and hands the
+# zip to `upload`, which runs `gh` and GitHub's provenance attestation.
+jobs:
+  pack:
+    name: Pack the test fixtures
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    env:
+      TAG: test-fixtures
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26.5.0'
+          # setup-node turns on a dependency cache from `packageManager` unless told not to.
+          package-manager-cache: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          run_install: false
+
+      # No dependency cache: a workflow that publishes should not restore what another run saved.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Fails unless the fixtures pack to the digest the plugin pins. Prints `<digest>  <file>`.
+      - name: Pack the pinned zip
+        run: |
+          set -euo pipefail
+          pnpm exec tsx scripts/test-fixtures-zip.ts out > "$RUNNER_TEMP/pin.txt"
+          cat "$RUNNER_TEMP/pin.txt"
+          (cd out && sha256sum -c "$RUNNER_TEMP/pin.txt")
+
+      # `out/upload` names the file to upload, or is empty when the release already has it.
+      - name: Check what the release already has
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          read -r digest file < "$RUNNER_TEMP/pin.txt"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' > "$RUNNER_TEMP/existing.txt" 2> /dev/null; then
+            echo "The $TAG release exists."
+          else
+            echo "There is no $TAG release yet."
+            : > "$RUNNER_TEMP/existing.txt"
+          fi
+          if grep -qxF "$file" "$RUNNER_TEMP/existing.txt"; then
+            gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$file" --dir "$RUNNER_TEMP/check"
+            if echo "$digest  $RUNNER_TEMP/check/$file" | sha256sum -c --quiet -; then
+              echo "$file: already in the release, and the same file. Nothing to upload."
+              : > out/upload
+            else
+              echo "::error::$file is already in the release with a different digest. It was not replaced."
+              exit 1
+            fi
+          else
+            echo "$file: not in the release. It will be uploaded."
+            echo "$file" > out/upload
+          fi
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: test-fixtures
+          path: out/
+          if-no-files-found: error
+
+  upload:
+    name: Upload the test fixtures
+    needs: pack
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # create the test-fixtures release and add a zip to it; nothing else
+      id-token: write # sign the provenance attestation
+      attestations: write # store it, so anyone can check the zip was packed here, from main
+    env:
+      TAG: test-fixtures
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: test-fixtures
+          path: out
+
+      - name: Decide
+        id: decide
+        run: |
+          set -euo pipefail
+          file="$(cat out/upload)"
+          if [ -n "$file" ] && ! [[ "$file" =~ ^orbis-test-fixtures-[0-9a-f]{12}\.zip$ ]]; then
+            echo "::error::Unexpected file name: $file"
+            exit 1
+          fi
+          echo "file=$file" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        if: steps.decide.outputs.file != ''
+        with:
+          subject-path: out/${{ steps.decide.outputs.file }}
+
+      - name: Upload the zip
+        if: steps.decide.outputs.file != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FILE: ${{ steps.decide.outputs.file }}
+        run: |
+          set -euo pipefail
+          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --latest=false \
+              --title "Test fixtures" \
+              --notes "The books and notes Orbis Reader's test plans open, for the plugin's Download test fixtures (dev) command, which is offered while developer options are on. Not a version of the plugin: nothing here is installed by Obsidian or BRAT. Each zip is named by the start of its SHA-256, which the plugin pins and checks, and a zip here is never replaced: changed fixtures are a new zip."
+            echo "Created the $TAG release."
+          fi
+          gh release upload "$TAG" --repo "$GITHUB_REPOSITORY" "out/$FILE"
+          echo "$FILE: uploaded."
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY"

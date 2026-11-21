@@ -16,6 +16,7 @@
     "build:wordnet": "tsx scripts/build-wordnet.ts",
     "build:webster": "tsx scripts/build-webster.ts",
     "bump": "tsx scripts/bump-version.ts",
+    "pin:fixtures": "tsx scripts/test-fixtures-zip.ts --pin",
     "test": "vitest run --reporter=default --reporter=json --outputFile.json=.vitest-last-run.json",
     "test:watch": "vitest",
     "lint:size": "tsx scripts/check-size.ts",

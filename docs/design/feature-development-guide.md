@@ -217,8 +217,8 @@ that changes `main.js` goes through a new beta before the directory sees it agai
 - [ ] Pushing the tag starts `.github/workflows/release.yml`. It checks that the tag is on `main`, equals
       `manifest.json`'s version and has a `versions.json` entry and a filled-in CHANGELOG section; runs the whole
       gate on the tagged commit; builds in a job that can only read; and, in a job that runs only `gh` and GitHub's
-      provenance attestation, creates a **draft** release with `main.js`, `manifest.json`, `styles.css` and
-      `orbis-test-fixtures.zip` (the test plans' files, for *Download test fixtures (dev)*), and the CHANGELOG section
+      provenance attestation, creates a **draft** release with `main.js`, `manifest.json` and `styles.css`, and the
+      CHANGELOG section
       as its notes
 - [ ] Check the attestation: download the draft's `main.js` and run
       `gh attestation verify main.js --repo <owner>/obsidian-orbis-reader`. It names the tag and the workflow run

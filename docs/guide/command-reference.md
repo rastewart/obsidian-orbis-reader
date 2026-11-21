@@ -240,7 +240,7 @@ These commands are in the command palette only when developer options are enable
 |---|---|
 | Recalculate locations (dev) | Changes the location saved with each passage selection, annotation note and bookmark to the location where it begins |
 | Rebuild location index for current book (dev) | Deletes the book's location index and makes it again |
-| Download test fixtures (dev) | Downloads the test books and notes from the release of the installed version and, after asking, copies the files that differ into the `fixtures` folder |
+| Download test fixtures (dev) | Downloads the test books and notes from this repository's `test-fixtures` release and, after asking, copies the files that differ into the `fixtures` folder |
 
 ---
 

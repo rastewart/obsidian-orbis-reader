@@ -45,9 +45,9 @@ describe('sameBytes', () => {
 });
 
 describe('testFixturesUrl', () => {
-  it("names the zip on the installed version's release, a beta's included", () => {
-    expect(testFixturesUrl('0.1.0-beta.1')).toBe(
-      'https://github.com/rastewart/obsidian-orbis-reader/releases/download/0.1.0-beta.1/orbis-test-fixtures.zip'
+  it("names the zip with the pinned digest's first twelve hex digits, in the test-fixtures release", () => {
+    expect(testFixturesUrl('0123456789abcdef'.repeat(4))).toBe(
+      'https://github.com/rastewart/obsidian-orbis-reader/releases/download/test-fixtures/orbis-test-fixtures-0123456789ab.zip'
     );
   });
 });
