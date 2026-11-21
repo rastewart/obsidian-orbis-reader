@@ -26,6 +26,8 @@
 // a sheet placed before the book's own, inside `:where()`, so any rule of the book's still wins over it, as it wins
 // over the tag.
 
+import { bookElement } from './book-element';
+
 /** Each absolute keyword as a multiple of the root size — the browsers' own table (9…48px) over its 16px `medium`. */
 const KEYWORD_REM: Readonly<Record<string, number>> = {
   'xx-small': 0.5625,
@@ -69,7 +71,7 @@ function scaleFontTags(doc: Document): void {
     sizes.add(rem);
   }
   if (!sizes.size || !doc.head) return;
-  const sheet = doc.createElement('style');
+  const sheet = bookElement(doc, 'style');
   sheet.textContent = [...sizes]
     .map((rem) => `:where(font[data-orbis-font-size="${rem}"]) { font-size: ${rem}; }`)
     .join('\n');

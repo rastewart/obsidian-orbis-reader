@@ -7,6 +7,7 @@ import { mobiPictureHref } from './kindle-resources';
 import { isoToday } from './library/dates';
 import { yamlString } from './library/record-note';
 import { bookTextLine } from './markdown-line';
+import { bookElement } from './reader/book-element';
 import type { RawSection } from './reader/foliate-view';
 import { createTurndownService, imageEmbed } from './turndown-rules';
 import { isPictureOnly, namesOnlyTheBook } from './unlisted-sections';
@@ -76,10 +77,8 @@ async function collectImages(
   for (const svgImage of Array.from(doc.querySelectorAll('svg image'))) {
     const href = svgImage.getAttribute('href') || svgImage.getAttribute('xlink:href');
     if (!href) continue;
-    // createElement (not createEl) — must be created in `doc` (the foliate-parsed section document, which has
-    // no `.win` and is un-augmented in tests) and detached. The prefer-create-el warning stands: the plugin
-    // refuses a disable comment for its own rules.
-    const replacement = doc.createElement('img');
+    // Made in `doc`, the foliate-parsed section document, and detached (see bookElement).
+    const replacement = bookElement(doc, 'img');
     replacement.setAttribute('src', href);
     (svgImage.closest('svg') ?? svgImage).replaceWith(replacement);
   }
@@ -809,8 +808,8 @@ export async function collectByTocAnchors(
       if (!anchor) continue;
       const el = doc.getElementById(anchor) ?? doc.querySelector(`[name="${CSS.escape(anchor)}"]`);
       if (!el) continue;
-      // createElement (not createSpan): created in the un-augmented parsed `doc`; see above.
-      const span = doc.createElement('span');
+      // Made in the parsed `doc` (see bookElement).
+      const span = bookElement(doc, 'span');
       span.textContent = `${SPLIT}${j}`;
       /**
        * **An anchor on `<body>` — or on anything holding it — is the start of the file.** Calibre writes every

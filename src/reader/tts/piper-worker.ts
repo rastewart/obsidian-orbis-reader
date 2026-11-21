@@ -27,7 +27,7 @@ const ctx = self as unknown as {
   postMessage(message: unknown, transfer?: Transferable[]): void;
 };
 
-import { createPiperPhonemize } from '../../vendor/piper-phonemize';
+import { createPiperPhonemize, type PiperPhonemizeModule } from '../../vendor/piper-phonemize';
 import { DEFAULT_PAUSE_MS, jitteredPauseMs } from './pacing';
 import { splitForSynthesis } from './synth-pieces';
 
@@ -51,10 +51,6 @@ interface VoiceCfg {
   espeak: { voice: string };
   speaker_id_map?: Record<string, number>;
 }
-interface PhonemizeModule {
-  callMain(args: string[]): void;
-}
-
 interface InitMsg {
   type: 'init';
   ortWasm: Record<string, ArrayBuffer>; // filename → bytes (whatever ORT fetched, cached)
@@ -104,7 +100,7 @@ function phonemize(text: string): Promise<number[]> {
       printErr: (line: string) => warnings.push(line),
       locateFile: (p: string) => p,
     })
-      .then((mod: PhonemizeModule) => {
+      .then((mod: PiperPhonemizeModule) => {
         try {
           mod.callMain(['-l', cfg.espeak.voice, '--input', input, '--espeak_data', '/espeak-ng-data']);
         } catch {

@@ -23,6 +23,8 @@
 // to an absolute `blob:` URL, so moving the text into the document cannot break a relative path — there are none
 // left to break.
 
+import { bookElement } from './book-element';
+
 /** Reads a `blob:` URL created by this origin. Injected so the logic is testable without a browser. */
 export type FetchText = (url: string) => Promise<string>;
 
@@ -101,8 +103,8 @@ export async function inlineBlobStylesheets(doc: Document, fetchText: FetchText)
         return; // leave the link in place
       }
       // A raw <style> in the book's document: `createEl('style')` is banned by no-forbidden-elements, and the
-      // prefer-create-el warning this leaves cannot be suppressed.
-      const style = doc.createElement('style');
+      // book's document has no createEl (see bookElement).
+      const style = bookElement(doc, 'style');
       // The media query travels with the sheet; dropping it would apply a print stylesheet to the screen.
       const media = link.getAttribute('media');
       if (media) style.setAttribute('media', media);

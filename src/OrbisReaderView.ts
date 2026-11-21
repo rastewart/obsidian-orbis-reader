@@ -84,6 +84,7 @@ import { BookmarkController } from './reader/BookmarkController';
 import { barOwnsKey } from './reader/bar-keys';
 import { tagBodyText } from './reader/body-text';
 import { hardenBookCopies } from './reader/book-copies';
+import { bookElement } from './reader/book-element';
 import { ClipboardExporter } from './reader/ClipboardExporter';
 import { cfiSortKey } from './reader/cfi-sort';
 import { repairChapterContrast } from './reader/contrast-repair';
@@ -1152,10 +1153,9 @@ export class OrbisReaderView
     );
     const existing = doc.getElementById('orbis-styles');
     if (existing) existing.remove();
-    // A raw <style> in the section doc is intended. This keeps a (non-blocking)
-    // prefer-create-el warning: createEl('style') is banned by no-forbidden-elements and
-    // prefer-create-el can't be disabled — an unavoidable rule conflict.
-    const style = doc.createElement('style');
+    // A raw <style> in the section doc is intended: createEl('style') is banned by no-forbidden-elements, and
+    // the section doc has no createEl (see bookElement).
+    const style = bookElement(doc, 'style');
     style.id = 'orbis-styles';
     style.textContent = css;
     doc.head?.appendChild(style);

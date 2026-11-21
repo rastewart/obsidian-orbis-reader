@@ -32,6 +32,7 @@
 // Android, the check included.
 
 import { t } from '../i18n';
+import { bookElement, HTML_NS } from './book-element';
 
 /**
  * What a book may do: draw what it carries, and nothing else.
@@ -63,8 +64,6 @@ const BOOK_CSP = [
   'font-src blob: data:',
   "style-src 'unsafe-inline' blob: data:", // inline: the book's inlined sheets and Orbis's own styles
 ].join('; ');
-
-const HTML_NS = 'http://www.w3.org/1999/xhtml';
 
 /** `<link rel>` values that open a connection without loading anything a CSP would see — DNS prefetching is not a
  *  fetch, so no directive governs it. A stylesheet link is left alone. */
@@ -252,7 +251,7 @@ export function plainTextChapter(source: string): string {
   const notice = t('book_page.chapter_shown_as_plain_text');
   try {
     const doc = new DOMParser().parseFromString('<!DOCTYPE html><html><head></head><body></body></html>', 'text/html');
-    const add = (text: string) => doc.body.appendChild(doc.createElement('p')).append(text);
+    const add = (text: string) => doc.body.appendChild(bookElement(doc, 'p')).append(text);
     add(notice);
     for (const block of textBlocks(source)) add(block);
     hardenBookDoc(doc);
@@ -330,17 +329,16 @@ export function hardenBookDoc(doc: Document): void {
    * A document whose only policy is already ours, first in the head, is left untouched: `settleBookHtml` reads any
    * change at all as the hardening finding something.
    *
-   * `createElement`, not `createEl`: `doc` is the book's own parsed document, which Obsidian never augments. The
-   * two prefer-create-el warnings stand; the plugin refuses a disable comment for its own rules.
+   * `bookElement`, not `createEl`: `doc` is the book's own parsed document, which Obsidian never augments.
    */
-  const head = doc.head ?? doc.documentElement.insertBefore(doc.createElement('head'), doc.documentElement.firstChild);
+  const head = doc.head ?? doc.documentElement.insertBefore(bookElement(doc, 'head'), doc.documentElement.firstChild);
   const policies = Array.from(doc.querySelectorAll('meta[http-equiv]')).filter(
     (meta) => meta.getAttribute('http-equiv')?.toLowerCase() === 'content-security-policy'
   );
   const ours = policies.length === 1 && policies[0] === head.firstChild && isOurPolicy(policies[0]);
   if (!ours) {
     for (const existing of policies) existing.remove();
-    const meta = doc.createElement('meta');
+    const meta = bookElement(doc, 'meta');
     meta.setAttribute('http-equiv', 'Content-Security-Policy');
     meta.setAttribute('content', BOOK_CSP);
     head.insertBefore(meta, head.firstChild);
@@ -447,7 +445,7 @@ function neutralizeLiteralText(doc: Document): void {
   }
   for (const el of Array.from(doc.querySelectorAll('xmp, plaintext'))) {
     if (el.namespaceURI !== HTML_NS) continue;
-    const pre = doc.createElement('pre');
+    const pre = bookElement(doc, 'pre');
     for (const attr of Array.from(el.attributes)) {
       el.removeAttributeNode(attr);
       pre.setAttributeNode(attr);
