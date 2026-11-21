@@ -1,6 +1,6 @@
 {
   "name": "orbis-reader",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Read, listen to and annotate ebooks in your Obsidian vault, and make your reading part of your knowledge base.",
   "main": "main.js",
   "scripts": {
