@@ -9,6 +9,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 ---
 
+## [0.1.5] — Unreleased
+
+### Changed
+
+- The squiggle in mark samples is drawn as a zigzag, as it is in the book.
+- Changes to Orbis Reader's stylesheet for the Community directory's review. Everything else looks and works as before.
+
 ## [0.1.4] — 2026-11-20
 
 ### Changed
