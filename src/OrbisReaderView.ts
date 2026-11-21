@@ -180,6 +180,7 @@ import {
   loadSettings,
   NoteStyle,
   ProgressMode,
+  parseHyphenation,
   parseTextAlign,
   ReadingHighlightMode,
   readAheadMaxChars,
@@ -188,6 +189,7 @@ import {
   STORAGE_KEY_FLOW,
   STORAGE_KEY_FONT_FAMILY,
   STORAGE_KEY_FONT_SIZE,
+  STORAGE_KEY_HYPHENATION,
   STORAGE_KEY_LINE_HEIGHT,
   STORAGE_KEY_MARGINS,
   STORAGE_KEY_TEXT_ALIGN,
@@ -1069,6 +1071,7 @@ export class OrbisReaderView
       margins: 'orbis-margins',
       lineHeight: 'orbis-line-height',
       textAlign: STORAGE_KEY_TEXT_ALIGN,
+      hyphenation: STORAGE_KEY_HYPHENATION,
       theme: 'orbis-theme',
       fontFamily: 'orbis-font-family',
       flow: 'orbis-flow',
@@ -4669,6 +4672,9 @@ export class OrbisReaderView
         this.reinjectAllDocs();
       } else if (key === STORAGE_KEY_TEXT_ALIGN) {
         this.settings.textAlign = parseTextAlign(newValue);
+        this.reinjectAllDocs();
+      } else if (key === STORAGE_KEY_HYPHENATION) {
+        this.settings.hyphenation = parseHyphenation(newValue);
         this.reinjectAllDocs();
       } else if (key === STORAGE_KEY_THEME) {
         this.settings.theme = newValue ?? MATCH_OBSIDIAN_MODE;

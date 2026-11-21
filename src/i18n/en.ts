@@ -156,6 +156,10 @@ const en = {
   'display_menu.line_spacing': 'Line spacing',
   // The display toolbar's alignment row — its options are Settings' own three (`appearance_page.text_align_*`).
   'display_menu.alignment': 'Alignment',
+  // Its options are Settings' own three (`appearance_page.hyphenation_*`).
+  'display_menu.hyphenation': 'Hyphenation',
+  // On, marked where `autoHyphenates` finds it can do nothing here. The select's tooltip explains the asterisk.
+  'display_menu.hyphenation_on_unsupported': 'On *',
   'display_menu.two_column_layout': 'Two-column layout',
   'standalone_search_bar.search': 'Search…',
   'standalone_search_bar.previous_result': 'Previous result',
@@ -2371,6 +2375,13 @@ const en = {
   'appearance_page.text_align_book': 'Follow the book',
   'appearance_page.text_align_left': 'Left',
   'appearance_page.text_align_justify': 'Justified',
+  'appearance_page.hyphenation': 'Hyphenation',
+  'appearance_page.hyphenation_desc': 'Hyphenation set by the book, or always on or off.',
+  'appearance_page.hyphenation_book': 'Follow the book',
+  'appearance_page.hyphenation_on': 'On',
+  'appearance_page.hyphenation_off': 'Off',
+  // Added to the description, and the display menu's tooltip, where `autoHyphenates` finds On can do nothing.
+  'appearance_page.hyphenation_unsupported': 'This device does not hyphenate words automatically.',
   'appearance_page.text_margins': 'Text margins',
   'appearance_page.text_padding_desc':
     'Extra space around book text beyond the navigation buttons (0–12%). 0% = widest text; higher values add breathing room.',

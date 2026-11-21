@@ -92,6 +92,7 @@ Most settings on this page change the display style that is selected in **Displa
 | **Text margins** | Sets the space around book text, from 0% to 12% |
 | **Line spacing** | Sets the space between lines, from 1.0× to 3.0× |
 | **Text alignment** | Sets the alignment of body text: **Follow the book**, **Left** or **Justified** |
+| **Hyphenation** | Sets whether long words break across lines with a hyphen. The values are **Follow the book**, **On** and **Off** |
 | **Font** | Sets the font for book text |
 | **Font size** | Sets the size of book text, from 80% to 300% |
 | **Preview** | Shows a sample of book text with your changes |

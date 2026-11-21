@@ -20,6 +20,7 @@ const base: DisplaySettings = {
   margins: 3,
   lineHeight: 1.5,
   textAlign: 'book',
+  hyphenation: 'book',
 };
 // Which theme gives which colors is `reader-themes.test.ts`; here the colors are given.
 const light = { bg: '#ffffff', fg: '#000000' };
@@ -58,6 +59,19 @@ describe('buildBookCss — typography', () => {
 
   it('leaves alignment to the book when following the book', () => {
     expect(buildBookCss({ ...base, textAlign: 'book' }, light)).not.toContain('text-align');
+  });
+
+  it('leaves hyphenation to the book when following the book', () => {
+    expect(buildBookCss(base, light)).not.toContain('hyphens');
+  });
+
+  it('hyphenates body text when on, and nothing when off — soft hyphens included', () => {
+    expect(buildBookCss({ ...base, hyphenation: 'on' }, light)).toContain(
+      '.orbis-body-text { -webkit-hyphens: auto !important; hyphens: auto !important; }'
+    );
+    expect(buildBookCss({ ...base, hyphenation: 'off' }, light)).toContain(
+      'html, body, body * { -webkit-hyphens: none !important; hyphens: none !important; }'
+    );
   });
 
   it('puts line spacing on body text, where a book paragraph rule would otherwise win', () => {

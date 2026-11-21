@@ -1,6 +1,8 @@
+import { setTooltip } from 'obsidian';
+import { autoHyphenates, HYPHENATION_LABELS } from './hyphenation';
 import { t } from './i18n';
 import { resolveThemeId, type ThemeSettings, themeChoices } from './reader-themes';
-import { DisplaySettings, Flow, FONT_FAMILY_OPTIONS, parseTextAlign } from './settings';
+import { DisplaySettings, Flow, FONT_FAMILY_OPTIONS, parseHyphenation, parseTextAlign } from './settings';
 import { isSliderDragging } from './slider-input';
 import { setSvgIcon } from './ui-utils';
 
@@ -344,6 +346,36 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
   });
   syncAlign();
 
+  // Hyphenation, the row after alignment and the same shape: Settings' three answers (`Hyphenation`).
+  const hyphenWrap = spacingDrawer.createDiv({ cls: 'orbis-slider-drawer' });
+  const hyphenLabel = hyphenWrap.createSpan({ text: t('display_menu.hyphenation'), cls: 'orbis-drawer-label' });
+  const hyphenSelect = hyphenWrap.createEl('select', { cls: 'dropdown orbis-dropdown' });
+  hyphenSelect.setAttribute('aria-label', t('appearance_page.hyphenation'));
+  // Where this device cannot hyphenate, On is marked with an asterisk and the tooltip says why. No room for more.
+  const hyphenates = autoHyphenates(hyphenSelect.doc);
+  for (const [value, key] of Object.entries(HYPHENATION_LABELS)) {
+    const text = value === 'on' && !hyphenates ? t('display_menu.hyphenation_on_unsupported') : t(key);
+    hyphenSelect.createEl('option', { value, text });
+  }
+  if (!hyphenates) {
+    // `setTooltip` writes its text into `aria-label`, so the select is named from its visible label instead, which
+    // `aria-labelledby` lets win, and a screen reader gets the note as the select's description.
+    const note = `* ${t('appearance_page.hyphenation_unsupported')}`;
+    hyphenLabel.id = `orbis-hyphenation-label-${crypto.randomUUID()}`;
+    setTooltip(hyphenSelect, note);
+    hyphenSelect.setAttribute('aria-labelledby', hyphenLabel.id);
+    hyphenSelect.setAttribute('aria-description', note);
+  }
+  const syncHyphenation = () => {
+    hyphenSelect.value = view.settings.hyphenation;
+  };
+  hyphenSelect.addEventListener('change', () => {
+    const next = parseHyphenation(hyphenSelect.value);
+    view.settings.hyphenation = next;
+    view.saveSetting('hyphenation', next);
+  });
+  syncHyphenation();
+
   // Number inputs are skipped while focused — this runs both on menu open and
   // reactively on every incoming orbis:settings-change event (including ones
   // this same field's own keystrokes just dispatched via
@@ -365,6 +397,7 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     if (!isSliderDragging(fsSlider)) fsSlider.value = String(view.settings.fontSize);
     if (!isFocused(fsNum)) fsNum.value = String(view.settings.fontSize);
     syncAlign();
+    syncHyphenation();
     if (!isSliderDragging(marginsSlider)) marginsSlider.value = String(view.settings.margins);
     if (!isFocused(marginsNum)) marginsNum.value = String(view.settings.margins);
     if (!isSliderDragging(lhSlider)) lhSlider.value = String(Math.round(view.settings.lineHeight * 10));

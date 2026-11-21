@@ -1,5 +1,6 @@
 import { App, Plugin } from 'obsidian';
 import type { AnnotationPreset, BookPreset, PromotedPreset, RemapChoice } from './annotation-presets';
+import { type Hyphenation, hyphenationCss, parseHyphenation, STORAGE_KEY_HYPHENATION } from './hyphenation';
 import { TranslationKey } from './i18n/en';
 import type { FieldValues, GroupKey, GroupOrder, SortSpec } from './library/arrange';
 import type { TimeFrame } from './library/dates';
@@ -267,6 +268,8 @@ export interface DisplayStyle {
     fontSize: number;
     lineHeight: number;
     textAlign: TextAlign;
+    /** Absent from a style saved before the setting existed, which reads as the book's — see `parseHyphenation`. */
+    hyphenation?: Hyphenation;
     margins: number;
     brightness: number;
     flow: Flow;
@@ -1281,6 +1284,7 @@ export const STORAGE_KEY_FONT_FAMILY = 'orbis-font-family';
 export const STORAGE_KEY_FLOW = 'orbis-flow';
 export const STORAGE_KEY_COLUMNS = 'orbis-columns';
 export const STORAGE_KEY_ACTIVE_STYLE = 'orbis-active-style-id';
+export { type Hyphenation, parseHyphenation, STORAGE_KEY_HYPHENATION } from './hyphenation';
 export { parseTextAlign, STORAGE_KEY_TEXT_ALIGN, type TextAlign } from './text-align';
 
 export interface DisplaySettings {
@@ -1293,10 +1297,11 @@ export interface DisplaySettings {
   margins: number; // renderer gap %, e.g. 3
   lineHeight: number; // e.g. 1.5
   textAlign: TextAlign;
+  hyphenation: Hyphenation;
 }
 
 /**
- * The nine display values a book uses when nothing is stored.
+ * The ten display values a book uses when nothing is stored.
  *
  * **Exported because the settings page has to agree with the book.** Sliders falling back to their own `min`
  * would show a fresh vault brightness 20 over a book rendering at 100.
@@ -1312,6 +1317,7 @@ export const DISPLAY_DEFAULTS = {
   margins: 3,
   lineHeight: 1.5,
   textAlign: 'book' as TextAlign,
+  hyphenation: 'book' as Hyphenation,
 };
 
 export function loadSettings(app: App, _ps: OrbisPluginSettings): DisplaySettings {
@@ -1335,6 +1341,7 @@ export function loadSettings(app: App, _ps: OrbisPluginSettings): DisplaySetting
     margins: getInt(STORAGE_KEY_MARGINS, DISPLAY_DEFAULTS.margins),
     lineHeight: getFloat(STORAGE_KEY_LINE_HEIGHT, DISPLAY_DEFAULTS.lineHeight),
     textAlign: parseTextAlign(ls(STORAGE_KEY_TEXT_ALIGN)),
+    hyphenation: parseHyphenation(ls(STORAGE_KEY_HYPHENATION)),
   };
 }
 
@@ -1350,6 +1357,7 @@ export function readCurrentDisplaySettings(app: App): DisplayStyle['settings'] {
     fontSize: parseInt(ls(STORAGE_KEY_FONT_SIZE) ?? String(DISPLAY_DEFAULTS.fontSize)),
     lineHeight: parseFloat(ls(STORAGE_KEY_LINE_HEIGHT) ?? String(DISPLAY_DEFAULTS.lineHeight)),
     textAlign: parseTextAlign(ls(STORAGE_KEY_TEXT_ALIGN)),
+    hyphenation: parseHyphenation(ls(STORAGE_KEY_HYPHENATION)),
     margins: parseInt(ls(STORAGE_KEY_MARGINS) ?? String(DISPLAY_DEFAULTS.margins)),
     brightness: parseInt(ls(STORAGE_KEY_BRIGHTNESS) ?? String(DISPLAY_DEFAULTS.brightness)),
     flow: (ls(STORAGE_KEY_FLOW) ?? DISPLAY_DEFAULTS.flow) as Flow,
@@ -1371,6 +1379,7 @@ export function displayStyleEntries(settings: DisplayStyle['settings']): [string
     [STORAGE_KEY_FONT_SIZE, String(settings.fontSize)],
     [STORAGE_KEY_LINE_HEIGHT, String(settings.lineHeight)],
     [STORAGE_KEY_TEXT_ALIGN, parseTextAlign(settings.textAlign)],
+    [STORAGE_KEY_HYPHENATION, parseHyphenation(settings.hyphenation)],
     [STORAGE_KEY_MARGINS, String(settings.margins)],
     [STORAGE_KEY_BRIGHTNESS, String(settings.brightness)],
     [STORAGE_KEY_FLOW, settings.flow],
@@ -1425,6 +1434,9 @@ export function buildBookCss(settings: DisplaySettings, colors: ThemeColors, res
   if (settings.textAlign !== 'book') {
     lines.push(`.${BODY_TEXT} { text-align: ${settings.textAlign} !important; }`);
   }
+
+  const hyphens = hyphenationCss(settings.hyphenation, BODY_TEXT);
+  if (hyphens) lines.push(hyphens);
 
   if (colors.link) lines.push(`a { color: ${colors.link} !important; }`);
   if (colors.visited) lines.push(`a:visited { color: ${colors.visited} !important; }`);

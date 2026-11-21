@@ -18,6 +18,7 @@ import {
 import { confirmThen } from './ConfirmModal';
 import { deviceSetting, setDeviceSetting } from './device-settings';
 import { getOrCreateDeviceId } from './device-store';
+import { autoHyphenates, HYPHENATION_LABELS } from './hyphenation';
 import { t } from './i18n';
 import { LS_DEVICE_NAME } from './progress';
 import { resolveThemeId, themeChoices, themeColors } from './reader-themes';
@@ -29,6 +30,7 @@ import {
   FONT_FAMILY_OPTIONS,
   generateStyleId,
   IOrbisReaderPlugin,
+  parseHyphenation,
   parseTextAlign,
   readCurrentDisplaySettings,
   STORAGE_KEY_ACTIVE_STYLE,
@@ -37,6 +39,7 @@ import {
   STORAGE_KEY_FLOW,
   STORAGE_KEY_FONT_FAMILY,
   STORAGE_KEY_FONT_SIZE,
+  STORAGE_KEY_HYPHENATION,
   STORAGE_KEY_LINE_HEIGHT,
   STORAGE_KEY_MARGINS,
   STORAGE_KEY_TEXT_ALIGN,
@@ -77,6 +80,7 @@ export class DisplayStylesPage {
     col?: Setting;
     colToggle?: ToggleComponent;
     align?: DropdownComponent;
+    hyphenation?: DropdownComponent;
     slider: Record<string, { slider: SliderComponent; num: HTMLInputElement }>;
   } = { slider: {} };
 
@@ -309,6 +313,25 @@ export class DisplayStylesPage {
                 dispatchStr(STORAGE_KEY_TEXT_ALIGN, value);
                 applyPreview();
               });
+          });
+        },
+      },
+      {
+        // After alignment, as on the display toolbar's Spacing tab. The same shape: the book's answer first.
+        name: t('appearance_page.hyphenation'),
+        desc: t('appearance_page.hyphenation_desc'),
+        render: (setting) => {
+          // Where On can do nothing here, the description says so — see `autoHyphenates`.
+          if (!autoHyphenates(setting.settingEl.doc)) {
+            setting.setDesc(`${t('appearance_page.hyphenation_desc')} ${t('appearance_page.hyphenation_unsupported')}`);
+          }
+          setting.addDropdown((d) => {
+            h.hyphenation = d;
+            const options: Record<string, string> = {};
+            for (const [value, key] of Object.entries(HYPHENATION_LABELS)) options[value] = t(key);
+            d.addOptions(options)
+              .setValue(parseHyphenation(ls(STORAGE_KEY_HYPHENATION)))
+              .onChange((value) => dispatchStr(STORAGE_KEY_HYPHENATION, value));
           });
         },
       },
@@ -659,6 +682,9 @@ export class DisplayStylesPage {
         break;
       case STORAGE_KEY_TEXT_ALIGN:
         h.align?.setValue(parseTextAlign(value));
+        break;
+      case STORAGE_KEY_HYPHENATION:
+        h.hyphenation?.setValue(parseHyphenation(value));
         break;
       case STORAGE_KEY_MARGINS:
         syncSlider(key, parseInt(value));

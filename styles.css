@@ -498,6 +498,25 @@ body {
   flex-wrap: wrap;
 }
 
+/* The measuring boxes for `autoHyphenates` (hyphenation.ts): two copies of three long words, four letters wide,
+   out of sight, one hyphenated automatically. Removed as soon as they are measured. */
+.orbis-hyphen-probe {
+  position: absolute;
+  top: 0;
+  left: -9999px;
+  visibility: hidden;
+  width: 4em;
+  font-size: 16px;
+  -webkit-hyphens: manual;
+  hyphens: manual;
+}
+
+/* Prefixed too, for the WebKit on iOS before 17, as the book's own rule is (`hyphenationCss`). */
+.orbis-hyphen-probe.is-auto {
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
 .orbis-slider-drawer {
   display: flex;
   align-items: center;

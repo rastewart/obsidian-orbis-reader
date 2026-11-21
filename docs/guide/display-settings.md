@@ -22,7 +22,7 @@ The display style bar has four tabs:
 |---|---|
 | **Theme** | **Reader theme**, **Brightness** |
 | **Layout** | **Mode** (**Paged mode** or **Scrolled mode**), and the **Two-column layout** button. The button shows two columns of lines, and it is highlighted when the layout is enabled |
-| **Spacing** | **Margins**, **Spacing** (line spacing), **Alignment** |
+| **Spacing** | **Margins**, **Spacing** (line spacing), **Alignment**, **Hyphenation** |
 | **Font** | **Font**, **Size** |
 
 The left and right arrow keys move between the tabs. The up and down arrow keys move between the tabs, the toolbar above them and the controls below them. See [Using the toolbar from the keyboard](reading-a-book.md#using-the-toolbar-from-the-keyboard).
@@ -235,6 +235,7 @@ These settings are in **Settings → Orbis Reader → Appearance**. They are sav
 | **Text margins** | Sets the space at the sides of the text, from 0% to 12%. A higher value gives a narrower column. The default is 3% |
 | **Line spacing** | Sets the space between lines of body text, from 1.0× to 3.0×. Headings keep the book's spacing. The default is 1.5× |
 | **Text alignment** | Sets the alignment of body text: **Follow the book**, **Left** or **Justified**. The default is **Follow the book** |
+| **Hyphenation** | Sets whether long words break across lines with a hyphen. The values are **Follow the book**, **On** and **Off**. The default is **Follow the book** |
 | **Font** | Sets the font of body text. The default is **Default (use book fonts)**. See [Fonts](#fonts) |
 | **Font size** | Scales all the book's text, from 80% to 300%. The default is 100% |
 
@@ -243,6 +244,10 @@ These settings are in **Settings → Orbis Reader → Appearance**. They are sav
 In a CBZ book or a fixed-layout EPUB, where each page is a picture, **Two-column layout** shows two pages side by side when the reading area is wider than it is tall. When it is turned off, you see one page at a time at any size.
 
 **Left** text alignment gives a ragged right edge. **Justified** aligns the text to both margins. With either value, text that the book centers or right-aligns keeps its alignment, such as title lines, verse and signatures.
+
+**Hyphenation** set to **On** hyphenates body text. Headings keep the book's hyphenation. **Off** removes all hyphenation, including the hyphens that the book puts in its words.
+
+Obsidian on Windows and Linux does not hyphenate words automatically. On these computers, **On** has no effect, and only a book's own hyphens show. On macOS, iOS and Android, **On** hyphenates words in the book's language. On a device that does not hyphenate words automatically, the display style bar shows **On \***, and the **Hyphenation** setting shows *This device does not hyphenate words automatically.*
 
 The **Reader theme manager** is in **Settings → Orbis Reader → Appearance → Reader theme manager**.
 
