@@ -271,7 +271,8 @@ Found while testing `0.1.1-beta.1` (2026-11-19). Each waits until `0.1.1` ships.
       on it, and it grows with devices × synced items, not with the vault. A cache that skips unchanged files would
       remove it, and was declined for now: it could miss another device's change if Obsidian's index lagged the disk.
       Revisit if the file count grows a lot
-- [ ] Monitor foliate-js upstream and merge it into `src/vendor/foliate-js` — last merged through upstream
+- [ ] Monitor foliate-js upstream and merge it into the fork's `orbis` branch
+      ([`rastewart/foliate-js`](https://github.com/rastewart/foliate-js)) — last merged through upstream
       `78914ae`, **2026-09**; see [Dependency Security](dependency-security.md)
 - [ ] Quarterly dependency audit — last done **2026-09**, next due **2026-12**
 - [ ] Recheck `onnxruntime-web` after 1.30 for iPadOS — **due 2026-12**. Every release since 1.19 asks for 4 GB of

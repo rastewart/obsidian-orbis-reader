@@ -1,7 +1,7 @@
 // The contents entry an annotation belongs to.
 //
 // **The passage's own entry, not the page's.** foliate reports one entry per page — the last entry whose heading
-// starts on or before the END of the visible page (`TOCProgress.getProgress` in vendor/foliate-js/progress.js).
+// starts on or before the END of the visible page (`TOCProgress.getProgress` in foliate-js's progress.js).
 // That is the right answer for "where am I", and the wrong one for a passage: a page holding the end of one section
 // and the heading of the next would file everything marked in the first section under the second, and under the
 // third when two headings start on the page. So the range is collapsed to its START before foliate is asked, and the

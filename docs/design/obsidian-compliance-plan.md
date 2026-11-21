@@ -334,7 +334,7 @@ plugin cannot be installed from Obsidian until no errors remain. Scanner results
       errors, and its build verification reproduced the release's `main.js` byte for byte. How it got there:
   - **The review of `0.1.0` (2026-11-18): 21 errors, all in vendored foliate-js:** two regex lookbehinds, which stop `main.js` loading on iOS before 16.4;
     16 fixed inline styles; an `innerHTML`; a user-agent check; and a directive comment with no reason. `0.1.1` fixes
-    each in the code (foliate patches 31 to 35, in `src/vendor/foliate-js/ORBIS-CHANGES.md`): an `obsidianmd/*`
+    each in the code (foliate patches 31 to 35, in foliate's `ORBIS-CHANGES.md`): an `obsidianmd/*`
     rule cannot be turned off with a directive.
   - **The review of `0.1.1` (2026-11-19): 9 errors,** the `style.x = ''` lines patch 34 used to clear a style. The
     directory runs `no-static-styles-assignment` as it was up to 0.4, which counts `''` as a fixed value; from 0.5 the
@@ -350,6 +350,14 @@ plugin cannot be installed from Obsidian until no errors remain. Scanner results
     The review of `0.1.2` passed it.
   - **A recommendation:** the release's fourth file, `orbis-test-fixtures.zip`, is one Obsidian does not download.
 - [x] Publish the entry (2026-11-19): <https://community.obsidian.md/plugins/orbis-reader>
+- [ ] Bring the listing's scorecard down. Its scan of `0.1.3` (2026-11-20) rated it **Risks**, with 5,756
+      issues, all warnings or disclosures: about 5,370 in vendored foliate-js, nearly all the `no-unsafe-*`
+      family, which flags almost every line of untyped JavaScript; about 368 in `styles.css`, most of them
+      `!important`; and 11 in Orbis's own TypeScript. The scan lints the files in the repository, so foliate moved
+      to Orbis's fork, [`rastewart/foliate-js`](https://github.com/rastewart/foliate-js), as a dependency pinned to
+      a commit, with `main.js` unchanged apart from the build ID. **Review branch** on that change (2026-11-21)
+      found none of foliate's. Still to do: confirm that build verification passes on a release, which now
+      installs the fork from GitHub; then the CSS, and Orbis's own 11
 - [ ] Set the pricing label to **Free**, if the listing editor asks for one
 - [ ] Optional: listing screenshots (§7.4)
 - [ ] Announce in Obsidian forum (Share & Showcase) and Discord (#updates)
@@ -358,8 +366,8 @@ plugin cannot be installed from Obsidian until no errors remain. Scanner results
 
 - [x] `pnpm lint:obsidian` (eslint-plugin-obsidianmd's recommended set) finds nothing in the code that ships; 5
       warnings remain in tests (2026-11-18)
-- [x] `pnpm lint:obsidian` also lints the vendored libraries (`src/vendor/**/*.js`), which `eslint.config.mjs` leaves
-      out, and fails on an error from the rules the directory reports there: `obsidianmd/*`, `no-unsanitized/*` and
+- [x] `pnpm lint:obsidian` also lints the vendored libraries (`src/vendor/**/*.js`), and the files Orbis bundles
+      from the foliate-js fork, which `eslint.config.mjs` leaves out, and fails on an error from the rules the directory reports there: `obsidianmd/*`, `no-unsanitized/*` and
       `eslint-comments/*`. The `console` calls in lamejs and the piper phonemizer, which the directory's review did not
       report, are allowed (2026-11-18)
 - [x] `pnpm lint:obsidian` also fails on a literal assigned to a style, `''` and `null` included, in the code that

@@ -24,7 +24,7 @@ export type NoteIconPlace = { where: 'margin' } | { where: 'page'; x: number };
 /**
  * **Every icon is centred on the edge after its own column, so each sits the same distance from its text.**
  *
- * Foliate pads each page by half a gap on either side (vendored foliate patch 3b), so a column plus a gap is
+ * Foliate pads each page by half a gap on either side (foliate patch 3b), so a column plus a gap is
  * exactly one step across the page, and the edge after column `i` is at `(i + 1) × (columnWidth + columnGap)`: the
  * middle of the gap between two columns, and — for the last column — the page's own edge, half a gap from the text
  * like the others. There the icon overhangs into the strip the reader keeps beside the book. With two columns, an

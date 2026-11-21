@@ -190,7 +190,7 @@ image map's `<area>`, an SVG `<a>` written with `xlink:href`, and a MathML eleme
 for `a[href]`, so a tap on one of the others went straight to its address in the chapter's frame — measured with
 `fixtures/link-checks.epub`, rows 20 to 23: the chapter flickered or was left blank on every device, an image map's
 `obsidian://search` ran a search on Android with no dialog, and iPhone and iPad followed a link on a formula. ORBIS
-patch 23 has foliate find the link with **`findLink` in `src/vendor/foliate-js/view.js`**, which knows all four
+patch 23 has foliate find the link with **`findLink` in foliate-js's `view.js`**, which knows all four
 shapes, so each takes the same road as `<a href>`: out of the book through this dialog, inside it to its page. A link
 it cannot read at all — a `<use>` copy, an animated address — does nothing instead (see [A chapter stays in its
 frame](#a-chapter-stays-in-its-frame)).
@@ -320,7 +320,7 @@ chapter loaded — so a book reopened at its last place froze Obsidian again on 
 MOBI/AZW3 reader never ended on a damaged or crafted file, which the library's scan also opens. More of the same
 class are patches too: three EPUB patterns over the OPF's prefixes, processing instructions and `srcset` (patch 28),
 and the MOBI/AZW3 reader's EXTH, index, NCX, HUFF and FDST loops (patch 29). ORBIS patches 24 to 29 in
-`src/vendor/foliate-js/ORBIS-CHANGES.md` say how each was measured and checked against the code it replaces.
+the foliate-js fork's `ORBIS-CHANGES.md` say how each was measured and checked against the code it replaces.
 
 Orbis's own code holds to it as well: the guard's stylesheet escaping (`escapeStyleText`) finds each `<` and counts
 the backslashes before it, where a pattern rescanned a long run of them (256 KB: 27 s), and an FB2's cover is found
@@ -407,9 +407,9 @@ are pinned the same way, on download (`pdf-fonts.ts`).
 ## A dependency
 
 Policy, the ten shipping libraries, and the foliate-js fork finding are in [Dependency
-Security](dependency-security.md). The short version: exact pins for anything that runs in the plugin or builds it,
-and foliate-js and `lamejs` are vendored in `src/vendor/`, so neither comes from a third party's npm account — the npm
-`foliate-js` package is a third-party fork, not an upstream release. Each records the full upstream commit it matches,
+Security](dependency-security.md). The short version: exact pins for anything that runs in the plugin or builds it.
+`lamejs` is vendored in `src/vendor/`, and foliate-js comes from Orbis's own fork, pinned to a commit, so neither
+comes from a third party's npm account — the npm `foliate-js` package is a third-party fork, not an upstream release. Each records the full upstream commit it matches,
 and foliate's two pre-built bundles their SHA-256s.
 
 **A release is built without write access and attested** (`.github/workflows/release.yml`). Installing, building and

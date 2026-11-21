@@ -171,7 +171,7 @@ Work through these in order. Items marked **C only** are typically only needed f
 ### The order of a release
 Every release goes through these steps in order. A fix for a problem found at any step goes back to step 1, and a fix
 that changes `main.js` goes through a new beta before the directory sees it again.
-1. **The change, and the gate locally.** `pnpm lint:obsidian` also lints the vendored code with the rules the
+1. **The change, and the gate locally.** `pnpm lint:obsidian` also lints the vendored code and the foliate-js fork with the rules the
    Community directory reports, and checks for a literal assigned to a style as the directory reads that rule, so
    most of what its review would find is found here
 2. **Push to `main`, and wait for CI to pass.** Main's `manifest.json` keeps the last stable version until the

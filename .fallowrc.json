@@ -6,7 +6,7 @@
     // esbuild.config.mjs); it pulls in the vendored phonemizer. Not reachable from main.ts.
     "src/reader/tts/piper-worker.ts"
   ],
-  // src/vendor holds third-party code kept as upstream wrote it (foliate-js, lamejs, the phonemizer): its unused
+  // src/vendor holds third-party code kept as upstream wrote it (lamejs, the phonemizer): its unused
   // exports and import cycles are upstream's, and editing them would break the byte-for-byte match each folder's
   // ORBIS-CHANGES.md promises. Its files stay IN the analysis, so what our code uses of them is still checked;
   // only findings located inside them are hidden.

@@ -2,7 +2,7 @@
 // the chapter where it is — and that no document the frame could be sent to runs a script.
 //
 // **What it probes.** foliate finds a tapped link by walking up from the tap's target to an `<a>`, `<area>` or MathML
-// element with an `href` written on it (ORBIS patch 23, `findLink` in src/vendor/foliate-js/view.js). Two SVG shapes
+// element with an `href` written on it (ORBIS patch 23, `findLink` in foliate-js's view.js). Two SVG shapes
 // get past that: a `<use>` copy of a link, whose tap lands on the `<use>`, and a link whose address comes from an
 // animation, which has no `href` written on it. Without the protections, the browser followed such a link in the
 // chapter's frame, with no **Open this link?** and no guard; on iPhone and iPad a script in the book's own document

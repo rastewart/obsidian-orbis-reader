@@ -16,6 +16,8 @@
 // repository, though, and reports an error from Obsidian's own rules (`obsidianmd/*`), the HTML-injection rules
 // (`no-unsanitized/*`) and the directive-comment rules (`eslint-comments/*`) wherever it is. So the vendored
 // JavaScript is linted with the same recommended set, only errors from those three are kept, and any one fails this.
+// foliate-js is linted the same way. It comes from Orbis's fork, so it is not in the repository for the review to
+// scan, but it is built into main.js, and its patches 31 to 36 were written to pass these rules.
 //
 // **Last, any literal assigned to a style, the way the directory's review reads `no-static-styles-assignment`.** From
 // eslint-plugin-obsidianmd 0.5, the rule lets an assignment of `''` or `null` through, since it clears a style. The

@@ -7,7 +7,7 @@ asset — and where each boundary is enforced is in [Security model](security.md
 
 ## Runtime dependencies
 
-Ten libraries ship in the built plugin, two of them vendored in `src/vendor/`. Their licenses and notices are in
+Ten libraries ship in the built plugin. One, lamejs, is vendored in `src/vendor/`, and foliate-js comes from Orbis's own fork. Their licenses and notices are in
 [NOTICES](../../NOTICES) and [`licenses/`](../../licenses); this table is about supply-chain risk.
 
 **`NOTICES` covers what is actually bundled, not what `package.json` lists.** The list comes from esbuild's
@@ -20,7 +20,7 @@ whenever a runtime dependency changes.
 
 | Package | Pinning | What it does | Risk note |
 |---|---|---|---|
-| `foliate-js` | **Vendored** (`src/vendor/foliate-js`) | The reader engine | Upstream plus Orbis's changes, all listed in its `ORBIS-CHANGES.md`, which also records the upstream commit it is merged through. See below — the one that needs a procedure |
+| `foliate-js` | **Orbis's fork** ([`rastewart/foliate-js`](https://github.com/rastewart/foliate-js), pinned to a commit) | The reader engine | Upstream plus Orbis's changes, all listed in the fork's `ORBIS-CHANGES.md`, which also records the upstream commit it is merged through. See below — the one that needs a procedure |
 | `onnxruntime-web` | Exact (`1.18.0`) | Piper TTS inference (`PiperEngine`, `piper-worker`) | Exact-pinned: it ships WASM, and the model/runtime pairing is version-sensitive. **Held**: 1.19+ can't start on iPadOS — see below |
 | `pdf-lib` | Exact (`1.17.1`) | Writes the PDF exports | Pure computation, no network |
 | `@pdf-lib/fontkit` | Exact (`1.1.1`) | Subsets the DejaVu fonts pdf-lib embeds | Pure computation |
@@ -28,7 +28,7 @@ whenever a runtime dependency changes.
 | `diff` | Exact (`9.0.0`) | The notes merge/diff flow | Pure computation |
 | `fflate` | Exact (`0.8.3`) | Zip, for writing EPUBs and reading OPF metadata | Also vendored inside foliate-js — see below |
 | `lamejs` | **Vendored** (`src/vendor/lamejs`) | MP3 encoding for recorded audio | LGPL; upstream `zhuker/lamejs` at `582bbba6a12f981b984d8fb9e1874499fed85675`, unmodified. `mp3-encoder.test.ts` pins its output. See NOTICES |
-| `construct-style-sheets-polyfill` | Exact (`3.1.0`) | Imported by foliate-js's `fixed-layout.js` | A dependency of the vendored foliate, so Orbis pins it |
+| `construct-style-sheets-polyfill` | Exact (`3.1.0`) | Imported by foliate-js's `fixed-layout.js` | A dependency of the foliate-js fork, which pins the same version |
 | `browser-id3-writer` | Exact (`6.4.0`) | ID3 tags on the MP3s it writes | Pure computation |
 
 One more piece of vendored code is not a package: `src/vendor/piper-phonemize.js`, the Emscripten loader for the
@@ -43,15 +43,18 @@ dependency fetches anything.
 
 ## foliate-js — special considerations
 
-`foliate-js` is vendored in `src/vendor/foliate-js`, so it changes only when that folder does. The folder's
-`ORBIS-CHANGES.md` lists every difference from upstream, marks which ones Orbis relies on, records the upstream
-commit it is merged through, and gives the merge steps.
+`foliate-js` comes from Orbis's fork, [`rastewart/foliate-js`](https://github.com/rastewart/foliate-js), whose
+`orbis` branch is upstream plus Orbis's changes. `package.json` pins it to a commit, and `pnpm-lock.yaml` records
+the integrity hash of that commit's tarball, so it changes only when the pin does. It comes from Orbis's own
+account, not a third party's npm account. The fork's `ORBIS-CHANGES.md` lists every difference from upstream,
+marks which ones Orbis relies on, records the upstream commit it is merged through, and gives the merge steps.
+Until 0.1.3 the same files were vendored in `src/vendor/foliate-js`.
 
 **Vendored bundles.** foliate-js carries pre-built copies of `fflate` and `@zip.js/zip.js` under `vendor/`. These
 are not visible to `pnpm audit`, and a merge from upstream can change them without any version moving — which is why
 the checklist below compares them.
 
-**Orbis is built on changes upstream does not have.** The vendored copy keeps the changes of the npm publisher whose
+**Orbis is built on changes upstream does not have.** The fork keeps the changes of the npm publisher whose
 package it replaced: its `Overlayer` takes `constructor(doc)` where upstream takes none, corrects client rects for
 Safari zoom, and adds `#splitRangeByParagraph` — which `tts-blocks.ts` reasons about explicitly and
 `tts-units.test.ts` reproduces to guard against blank highlights. Upstream has no such method, so a merge must keep
@@ -128,8 +131,8 @@ legitimate, and the reader asked for that conversion — the URL is theirs, not 
 
 ### Before taking changes from upstream foliate-js
 
-Orbis's patches are ordinary edits in the vendored files, each marked `// ORBIS patch N`. The merge steps are in
-the folder's `ORBIS-CHANGES.md`; these are the checks around them.
+Orbis's patches are ordinary edits in the fork's files, each marked `// ORBIS patch N`. The merge steps are in
+the fork's `ORBIS-CHANGES.md`; these are the checks around them.
 
 1. Read the upstream changelog for iframe, sandbox, or CSP changes.
 2. Check whether upstream's `vendor/fflate.js` and `vendor/zip.js` changed (compare file hashes or inspect the diff).
@@ -243,9 +246,10 @@ needed to rule a version out:
 
 ### foliate-js
 
-Vendored, so there is no version to bump: changes arrive only by merging upstream into `src/vendor/foliate-js`,
-following `ORBIS-CHANGES.md` and the checklist [above](#before-taking-changes-from-upstream-foliate-js), then
-`pnpm audit` and a smoke test in Obsidian desktop.
+There is no version to bump: changes arrive only by merging upstream into the fork's `orbis` branch, following
+its `ORBIS-CHANGES.md` and the checklist [above](#before-taking-changes-from-upstream-foliate-js). Then move the
+pinned commit in `package.json` to the merge, run `pnpm install`, `pnpm audit` and a smoke test in Obsidian
+desktop.
 
 ---
 
