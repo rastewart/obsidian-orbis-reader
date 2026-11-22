@@ -173,10 +173,11 @@ Required for the community plugin directory.
 Must start with an action verb. Max 250 characters, ends with a period, no emoji.
 
 - [x] Rewrite without "Obsidian", which the review bot asks for — where the description is read, Obsidian is a given
-- [x] Update in `manifest.json` — *"Read, listen to and annotate ebooks in your vault, and make your reading part of
-      your knowledge base."* (101 chars). Starts with an action verb, as the guidance asks. Guarded by
+- [x] Update in `manifest.json` — *"Download, read and annotate ebooks in your vault; listen with on-device
+      text-to-speech. Turn your notes into books. Fine-tune every aspect of your reading experience. EPUB, MOBI,
+      AZW3, FB2 and CBZ."* (197 chars). Starts with an action verb, as the guidance asks. Guarded by
       `release-metadata.test.ts`
-- [x] Match `package.json` — the same sentence, with "Obsidian vault", since the review bot does not read it
+- [x] Match `package.json` — the same text
 
 ### 4.3 Add `fundingUrl` to `manifest.json`
 

@@ -1,7 +1,7 @@
 {
   "name": "orbis-reader",
   "version": "0.1.6",
-  "description": "Read, listen to and annotate ebooks in your Obsidian vault, and make your reading part of your knowledge base.",
+  "description": "Download, read and annotate ebooks in your vault; listen with on-device text-to-speech. Turn your notes into books. Fine-tune every aspect of your reading experience. EPUB, MOBI, AZW3, FB2 and CBZ.",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
