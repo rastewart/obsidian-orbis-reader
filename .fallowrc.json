@@ -4,7 +4,9 @@
   "entry": [
     // Built as a separate esbuild entry and inlined via the __PIPER_WORKER_SRC__ macro (see
     // esbuild.config.mjs); it pulls in the vendored phonemizer. Not reachable from main.ts.
-    "src/reader/tts/piper-worker.ts"
+    "src/reader/tts/piper-worker.ts",
+    // `pnpm e2e`: the end-to-end tests' command, run by tsx (see docs/design/end-to-end-tests.md).
+    "e2e/run.ts"
   ],
   // src/vendor holds third-party code kept as upstream wrote it (lamejs, the phonemizer): its unused
   // exports and import cycles are upstream's, and editing them would break the byte-for-byte match each folder's

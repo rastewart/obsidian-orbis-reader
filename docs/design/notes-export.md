@@ -6,7 +6,7 @@
 
 The Notes Export system generates companion Markdown files from a book's bookmarks, highlights, and notes. **Note Styles** are named, reusable configurations stored in plugin settings. The **Generate Notes dialog** (`GenerateNotesModal`) lets the user control what goes into each file. Two output modes are supported: a single file for the whole book, and per-chapter mode (one file per TOC entry plus a MOC).
 
-The markdown-building logic lives in the pure module `src/reader/export-format.ts` (`buildDeepLink`, `sortByLoc`, frontmatter/bucket assembly — covered by `export-format.test.ts`), driven by the `NotesExporter` collaborator (`src/reader/NotesExporter.ts`) for file I/O and the `ClipboardExporter` collaborator for copy commands. The view keeps only the modal launchers (`generateCompanionNotes`, `openOrCreateNotesFile`). Merge/diff UI stays in `src/NotesDiffModal.ts`.
+The markdown-building logic lives in the pure module `src/reader/export-format.ts` (`buildDeepLink`, frontmatter/bucket assembly — covered by `export-format.test.ts`), driven by the `NotesExporter` collaborator (`src/reader/NotesExporter.ts`) for file I/O and the `ClipboardExporter` collaborator for copy commands. The view keeps only the modal launchers (`generateCompanionNotes`, `openOrCreateNotesFile`). Merge/diff UI stays in `src/NotesDiffModal.ts`.
 
 ---
 
@@ -101,11 +101,11 @@ read, on demand, for one book; that one produces a queryable database, continuou
 templates. Everything else — the frontmatter schema, the filesystem layout, the generated views, the Bases syntax,
 live export — lives in [reading-records.md](reading-records.md).
 
-**`sortByLoc()` sorts by `loc` then `createdAt` (`export-format.ts`), and both can tie.** A location spans many
-paragraphs, so several highlights in one chapter often share one, and `createdAt` is reading order only if the
-reader never went back to mark an earlier passage — so a chapter's first sentence can appear fourth.
-`cfiSortKey()` in `reader/cfi-sort.ts` gives true reading order and already orders records; using it here changes
-existing generated notes, so it is a change of its own.
+**Marks are in reading order** (`inReadingOrder` in `reader/cfi-sort.ts`), by where each begins in the book. A
+location spans many paragraphs, so sorting by `loc` put marks on one page in the order they were made, and a
+chapter's first sentence could appear fourth. `cfiSortKey()` is the same key the reading records and the marks PDF
+sort by, so every list of a book's marks agrees. `loc` orders only marks whose position cannot be read, and
+`createdAt` breaks a tie between two marks that begin at the same place.
 
 ---
 

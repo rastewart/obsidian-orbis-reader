@@ -19,6 +19,7 @@
     "pin:fixtures": "tsx scripts/test-fixtures-zip.ts --pin",
     "test": "vitest run --reporter=default --reporter=json --outputFile.json=.vitest-last-run.json",
     "test:watch": "vitest",
+    "e2e": "pnpm build && tsx e2e/run.ts",
     "lint:size": "tsx scripts/check-size.ts",
     "lint:orphans": "tsx scripts/check-orphans.ts",
     "lint:vocab": "tsx scripts/check-vocabulary.ts",

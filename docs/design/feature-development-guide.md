@@ -177,14 +177,16 @@ that changes `main.js` goes through a new beta before the directory sees it agai
    does
 2. **Push to `main`, and wait for CI to pass.** Main's `manifest.json` keeps the last stable version until the
    release
-3. **A beta, and a functional check** (*Publishing a beta*, below). Check the attestation, and that the beta's
+3. **The end-to-end tests.** `pnpm e2e` on Windows or a Mac, with main checked out. It runs the built plugin in a
+   separate Obsidian and must pass; see [End-to-End Tests](end-to-end-tests.md)
+4. **A beta, and a functional check** (*Publishing a beta*, below). Check the attestation, and that the beta's
    `main.js` is byte-identical to a local build of the same commit: the directory rebuilds releases and compares them,
    and this is the only way to see that before a release. Install it with BRAT on each kind of device, then quit and
    restart Obsidian (a plugin reload keeps the earlier build's reader), and check what the change touched. A fix is
    the next `-beta.N`
-4. **The directory's review of `main`.** On the plugin's page at community.obsidian.md, **Review branch** on `main`
+5. **The directory's review of `main`.** On the plugin's page at community.obsidian.md, **Review branch** on `main`
    scans it without a release. It must report no errors; warnings do not block
-5. **The release** (*Version bump*, *CHANGELOG* and *Publishing*, below). The CHANGELOG section is the release's
+6. **The release** (*Version bump*, *CHANGELOG* and *Publishing*, below). The CHANGELOG section is the release's
    notes, so it is agreed before it is committed. Then, on the plugin's page, **Check for new releases**, and confirm
    that the review of the release, build verification included, reports no errors. While the entry is a draft,
    **Publish** it, and do the steps for a new listing in Roadmap §5.7

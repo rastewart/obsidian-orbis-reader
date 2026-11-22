@@ -94,6 +94,7 @@ lives in one place: [Roadmap](roadmap.md)** — a design doc carries no status o
 | Document | Description |
 |---|---|
 | [Integration Test Strategy](integration-test-strategy.md) | vitest unit tests, mock-vault pattern, fixture books, CI setup |
+| [End-to-End Tests](end-to-end-tests.md) | `pnpm e2e`, the built plugin tested in a separate Obsidian on your computer; writing a test, golden files, known issues |
 | [Test plans](test-plans/README.md) | Manual device tests, one page per system, each step tagged by the devices it runs on; how much to run after a build, a change and before a release |
 
 ---

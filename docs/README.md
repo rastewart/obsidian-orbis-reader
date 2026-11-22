@@ -57,5 +57,6 @@ Internal developer documentation covering architecture and subsystem design.
 | [Book Export](design/book-export.md) | epub→Markdown extraction, Turndown, image handling |
 | [Debug System](design/debug-system.md) | Category-filtered debug log panel |
 | [Integration Test Strategy](design/integration-test-strategy.md) | vitest, mock-vault pattern, CI |
+| [End-to-End Tests](design/end-to-end-tests.md) | `pnpm e2e`, the built plugin in a separate Obsidian |
 | [Dependency Security](design/dependency-security.md) | Supply-chain audit |
 | [Roadmap](design/roadmap.md) | Development phases and completion status |

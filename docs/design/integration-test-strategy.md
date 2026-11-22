@@ -8,6 +8,7 @@ Obsidian plugins run inside Electron and depend on the Obsidian API (`App`, `Vau
 
 - **Unit tests** (pure functions with no Obsidian API calls) run with vitest + jsdom — see `src/__tests__/`.
 - **Integration tests** (anything that touches `app.vault`, workspace, or settings persistence) require a different approach.
+- **End-to-end tests** run the built plugin in a real Obsidian on your computer, with `pnpm e2e`. See [End-to-End Tests](end-to-end-tests.md).
 
 CI runs the full vitest suite on every push via `.github/workflows/ci.yml` (`pnpm test`).
 
@@ -24,7 +25,8 @@ The suites in `src/__tests__/` cover the pure modules, among them:
 | `progress.ts` | `progressFolderPath`, `progressFilePath` (path helpers, no vault I/O) |
 | `book-extractor.ts` | `sanitizeName`, `stripLeadingDuplicateTitle` |
 | `display-commands.ts` | `stepLineHeight`, `stepFontSize`, `stepBrightness`, `stepMargins` — floating-point accumulation and boundary clamping |
-| `export-format.ts` | `buildNotesMarkdown`, per-chapter assembly, frontmatter, chapter bucketing, clipboard formatting, `buildDeepLink`, `sortByLoc` |
+| `export-format.ts` | `buildNotesMarkdown`, per-chapter assembly, frontmatter, chapter bucketing, clipboard formatting, `buildDeepLink`, reading order of marks |
+| `cfi-sort.ts` | `cfiSortKey` (a position as a string that sorts in reading order), `inReadingOrder`, `markCfi` |
 | `stats-math.ts` | chapter boundaries, section/chapter progress, WPM trimmed mean + sampling gate, words-in-range, loc-mode cycling, label/time formatting |
 | `bookmark-utils.ts` | `findCurrentBookmark` (exactCfi/loc matching, stale-loc guard) |
 | `panel-utils.ts` | `visibleTabIds` (visibility config, never-empty invariant) |

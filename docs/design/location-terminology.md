@@ -280,7 +280,6 @@ two-vocabulary codebase.
 | `buildLocationIndex()` / `loadOrBuildLocationIndex()` |
 | `getSectionProgress()` / `getChapterProgress()` returning `{ loc, total, pct }` |
 | `buildDeepLink(…, loc?: number)` |
-| `sortByLoc<T extends { loc?: number; createdAt: number }>(items: T[]): T[]` (`export-format.ts`) |
 
 ### Instance variables
 

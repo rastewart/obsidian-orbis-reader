@@ -1215,10 +1215,6 @@ are meant to compare. `buildDeepLink()` has no display-text parameter, so both c
 baked into the property value, but `writeProps()` rewrites frontmatter on every export, so changing it costs a
 re-export, not a migration.
 
-**Reading order in Notes Export.** `sortByLoc` in `export-format.ts` sorts by `loc` then `createdAt`, which has the
-same tie as `loc` in a base, and `createdAt` is reading order only if you never go back to mark an earlier passage.
-Sorting by `cfi_sort` fixes both with one comparator, and changes existing note output.
-
 **Recreating the default bases.** The [staleness](#staleness) rule calls for an explicit command that overwrites
 with a warning; there is no such command.
 
