@@ -1,9 +1,10 @@
 // A CFI flattened into a string that sorts in reading order.
 //
 // Obsidian Bases sorts on a property. It cannot call a comparator, so `compare()` from foliate's epubcfi —
-// which is what puts search hits and the Saved pane in reading order — is unavailable to a `.base` view. The
-// only way a view can order annotations by position in the book is a property whose ORDINARY sort already
-// matches document order. That is what this builds.
+// which is what puts search hits in reading order — is unavailable to a `.base` view. The only way a view can
+// order annotations by position in the book is a property whose ORDINARY sort already matches document order.
+// That is what this builds. The marks PDF, the generated notes, the clipboard copies, the Saved pane and the
+// book's data view sort by it too (`inReadingOrder`), so every list of a book's marks agrees.
 //
 // See docs/design/reading-records.md §Reading order.
 
@@ -69,4 +70,35 @@ export function cfiSortKey(cfi: string): string {
   } catch {
     return CFI_SORT_UNPLACEABLE;
   }
+}
+
+/**
+ * Where a mark begins: a passage selection's or a note's range, or a bookmark's exact place (its page start when it
+ * has none).
+ */
+export function markCfi(mark: { cfiRange?: string; exactCfi?: string; cfi?: string }): string {
+  return mark.cfiRange ?? mark.exactCfi ?? mark.cfi ?? '';
+}
+
+/**
+ * Marks in the order they appear in the book. A copy, so the caller's list keeps its own order.
+ *
+ * **Position first, not `loc`.** A location covers about a page, so three passages marked in one location
+ * sorted by `loc` came out in the order they were made. `loc` still orders marks whose position cannot be read,
+ * which sort after every mark whose position can. `createdAt` breaks a tie only between two marks that begin at
+ * the same place.
+ */
+export function inReadingOrder<T extends { loc?: number; createdAt: number }>(
+  items: readonly T[],
+  cfiOf: (item: T) => string
+): T[] {
+  return items
+    .map((item) => ({ item, key: cfiSortKey(cfiOf(item)) }))
+    .sort(
+      (a, b) =>
+        a.key.localeCompare(b.key) ||
+        (a.item.loc ?? Infinity) - (b.item.loc ?? Infinity) ||
+        a.item.createdAt - b.item.createdAt
+    )
+    .map(({ item }) => item);
 }

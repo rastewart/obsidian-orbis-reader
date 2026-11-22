@@ -5,6 +5,7 @@ import { chapterKey, flattenTocWithDisambiguation, type TocItemLike } from '../t
 import { applyMarkPreview, claimFocusSoon, onActivate, setSvgIcon, trapTab } from '../ui-utils';
 import type { AnnotationController } from './AnnotationController';
 import type { BookmarkController } from './BookmarkController';
+import { inReadingOrder, markCfi } from './cfi-sort';
 import { LANDING_FLASH_COLOR } from './flash-target';
 import type { PanelsHost } from './PanelsHost';
 import { PANEL_TAB_SVGS } from './panel-tab-icons';
@@ -528,38 +529,35 @@ export class ReaderPanels {
     }
   }
 
-  // Group items by chapter and render them with a chapter sub-header.
-  // Items without a chapter appear last under an empty header.
-  // Within each chapter, items are sorted by page number (then createdAt as tiebreaker).
-  private renderChapterGrouped<T extends { chapter?: string; chapterHref?: string; loc?: number; createdAt: number }>(
-    el: HTMLElement,
-    items: T[],
-    renderRow: (container: HTMLElement, item: T) => void
-  ): void {
+  // Group items by chapter and render them with a chapter sub-header, all in the order they appear in the book
+  // (`inReadingOrder`). Sorting first and grouping second puts each chapter where its first mark is, and keeps each
+  // chapter's marks in that order. Items without a chapter come under an empty header.
+  private renderChapterGrouped<
+    T extends {
+      chapter?: string;
+      chapterHref?: string;
+      loc?: number;
+      createdAt: number;
+      cfiRange?: string;
+      exactCfi?: string;
+      cfi?: string;
+    },
+  >(el: HTMLElement, items: T[], renderRow: (container: HTMLElement, item: T) => void): void {
     // Group by chapterHref, not chapter label — chapter labels repeat across
     // parts in many books ("PART I > CHAPTER I", "PART II > CHAPTER I").
     const hrefToDisplayLabel = new Map(
       flattenTocWithDisambiguation(this.host.tocItems ?? []).map((e) => [e.href, e.displayLabel])
     );
     const grouped = new Map<string, T[]>();
-    for (const item of items) {
+    for (const item of inReadingOrder(items, markCfi)) {
       const key = chapterKey(item);
       if (!grouped.has(key)) grouped.set(key, []);
       grouped.get(key)!.push(item);
     }
-    const chapterKeys = [...grouped.keys()].sort((a, b) => {
-      const aMin = Math.min(...grouped.get(a)!.map((i) => i.loc ?? Infinity));
-      const bMin = Math.min(...grouped.get(b)!.map((i) => i.loc ?? Infinity));
-      return aMin - bMin;
-    });
-    for (const key of chapterKeys) {
-      const groupItems = grouped.get(key)!;
+    for (const [key, groupItems] of grouped) {
       const label = hrefToDisplayLabel.get(key) ?? groupItems[0]?.chapter ?? '';
       if (label) el.createDiv({ cls: 'orbis-saved-chapter-hdr', text: label });
-      const sorted = [...groupItems].sort(
-        (a, b) => (a.loc ?? Infinity) - (b.loc ?? Infinity) || a.createdAt - b.createdAt
-      );
-      for (const item of sorted) renderRow(el, item);
+      for (const item of groupItems) renderRow(el, item);
     }
   }
 

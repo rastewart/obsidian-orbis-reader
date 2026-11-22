@@ -9,6 +9,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 ---
 
+## [0.1.7] — Unreleased
+
+### Fixed
+
+- Passage selections, notes and bookmarks are now listed in the order they appear in the book. Before, marks close together on a page were listed in the order you made them. This affected generated notes, the copy to clipboard commands, the Saved list in the side panel and the book's data page.
+
 ## [0.1.6] — 2026-11-21
 
 ### Added

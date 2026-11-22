@@ -24,7 +24,6 @@ import {
   resolveChapterFilePlans,
   resolveChapterOrder,
   selectionVars,
-  sortByLoc,
 } from '../reader/export-format';
 import { DEFAULT_FRONTMATTER_TEMPLATE, DEFAULT_NOTE_STYLE_CONFIG, type NoteStyle } from '../settings';
 
@@ -372,26 +371,48 @@ describe('buildDeepLink', () => {
   });
 });
 
-// ── sortByLoc ─────────────────────────────────────────────────────────────────
+// ── Reading order ─────────────────────────────────────────────────────────────
 
-describe('sortByLoc', () => {
-  it('sorts ascending by loc, undefined last, createdAt tiebreak', () => {
-    const items = [
-      { loc: undefined, createdAt: 1 },
-      { loc: 5, createdAt: 3 },
-      { loc: 5, createdAt: 2 },
-      { loc: 1, createdAt: 9 },
-    ];
-    expect(sortByLoc(items).map((i) => `${i.loc ?? 'x'}:${i.createdAt}`)).toEqual(['1:9', '5:2', '5:3', 'x:1']);
+describe('marks in one location', () => {
+  // A location covers about a page. These three are in one, marked first, third, then second paragraph.
+  const first = hl({
+    id: 'p1',
+    text: 'first',
+    cfiRange: 'epubcfi(/6/12!/4/2[c1]/4,/1:0,/1:176)',
+    loc: 5,
+    createdAt: 1,
+  });
+  const third = hl({
+    id: 'p3',
+    text: 'third',
+    cfiRange: 'epubcfi(/6/12!/4/2[c1]/8,/1:0,/1:864)',
+    loc: 5,
+    createdAt: 2,
+  });
+  const second = hl({
+    id: 'p2',
+    text: 'second',
+    cfiRange: 'epubcfi(/6/12!/4/2[c1]/6,/1:0,/1:550)',
+    loc: 5,
+    createdAt: 3,
+  });
+  const marked = data({ highlights: [first, third, second] });
+  const order = (text: string) => ['"first"', '"second"', '"third"'].map((q) => text.indexOf(q));
+
+  it('are listed in a generated note in the order they appear in the book', () => {
+    const buckets = buildAnnotationBuckets(cfg(), marked);
+    const text = renderChapterSection(buckets.get('ch1.html'), cfg(), marked).join('\n');
+    const [a, b, c] = order(text);
+    expect(a).toBeGreaterThan(-1);
+    expect(a).toBeLessThan(b);
+    expect(b).toBeLessThan(c);
   });
 
-  it('does not mutate the input', () => {
-    const items = [
-      { loc: 2, createdAt: 1 },
-      { loc: 1, createdAt: 1 },
-    ];
-    sortByLoc(items);
-    expect(items[0].loc).toBe(2);
+  it('are copied to the clipboard in the order they appear in the book', () => {
+    const [a, b, c] = order(buildClipboardMarkdown('highlights', marked));
+    expect(a).toBeGreaterThan(-1);
+    expect(a).toBeLessThan(b);
+    expect(b).toBeLessThan(c);
   });
 });
 

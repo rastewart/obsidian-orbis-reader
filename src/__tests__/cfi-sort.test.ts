@@ -1,6 +1,6 @@
 import { compare as cfiCompare } from 'foliate-js/epubcfi.js';
 import { describe, expect, it } from 'vitest';
-import { CFI_SORT_UNPLACEABLE, cfiSortKey } from '../reader/cfi-sort';
+import { CFI_SORT_UNPLACEABLE, cfiSortKey, inReadingOrder, markCfi } from '../reader/cfi-sort';
 
 /** Ordered as they appear in the book: two spine documents, deepening steps, then offsets in one text node. */
 const IN_READING_ORDER = [
@@ -59,5 +59,48 @@ describe('cfiSortKey', () => {
     // The trap: '~' reads as "sorts last" and does the opposite under localeCompare.
     expect('~'.localeCompare('0')).toBeLessThan(0);
     expect(CFI_SORT_UNPLACEABLE).toMatch(/^\d+$/);
+  });
+});
+
+describe('inReadingOrder', () => {
+  const at = (cfi: string, createdAt: number, loc?: number) => ({ cfi, createdAt, loc });
+  const ids = (items: { cfi: string; createdAt: number }[]) => items.map((i) => `${i.cfi}@${i.createdAt}`);
+
+  it('orders by position in the book, not by location or when each was made', () => {
+    // One location, marked out of order. Sorting by loc then createdAt would have kept this order.
+    const items = [
+      at('epubcfi(/6/4!/4/4/1:0)', 1, 5),
+      at('epubcfi(/6/4!/4/8/1:0)', 2, 5),
+      at('epubcfi(/6/4!/4/6/1:0)', 3, 5),
+    ];
+    expect(ids(inReadingOrder(items, (i) => i.cfi))).toEqual([
+      'epubcfi(/6/4!/4/4/1:0)@1',
+      'epubcfi(/6/4!/4/6/1:0)@3',
+      'epubcfi(/6/4!/4/8/1:0)@2',
+    ]);
+  });
+
+  it('breaks a tie at one position by when each was made', () => {
+    const items = [at('epubcfi(/6/4!/4/4/1:0)', 9), at('epubcfi(/6/4!/4/4/1:0)', 2)];
+    expect(inReadingOrder(items, (i) => i.cfi).map((i) => i.createdAt)).toEqual([2, 9]);
+  });
+
+  it('puts marks whose position cannot be read last, by location and then when each was made', () => {
+    const items = [at('', 3, 7), at('epubcfi(/6/900!/4/2/1:0)', 9, 900), at('', 1), at('', 2, 7), at('', 4, 2)];
+    expect(inReadingOrder(items, (i) => i.cfi).map((i) => i.createdAt)).toEqual([9, 4, 2, 3, 1]);
+  });
+
+  it('does not change the list it is given', () => {
+    const items = [at('epubcfi(/6/6!/4/2/1:0)', 1), at('epubcfi(/6/4!/4/2/1:0)', 2)];
+    inReadingOrder(items, (i) => i.cfi);
+    expect(items[0].createdAt).toBe(1);
+  });
+});
+
+describe('markCfi', () => {
+  it('reads a passage selection or note by its range, and a bookmark by its exact place', () => {
+    expect(markCfi({ cfiRange: 'epubcfi(/6/4!/4,/1:0,/1:9)' })).toBe('epubcfi(/6/4!/4,/1:0,/1:9)');
+    expect(markCfi({ cfi: 'epubcfi(/6/4!/2)', exactCfi: 'epubcfi(/6/4!/4/2/1:0)' })).toBe('epubcfi(/6/4!/4/2/1:0)');
+    expect(markCfi({ cfi: 'epubcfi(/6/4!/2)' })).toBe('epubcfi(/6/4!/2)');
   });
 });

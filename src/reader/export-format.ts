@@ -14,6 +14,7 @@ import {
   groupByTopLevel,
   type TocItemLike,
 } from '../toc-utils';
+import { inReadingOrder, markCfi } from './cfi-sort';
 import { chapterHeadingMark, contentsEntry, resolveChapterAnchors, resolveChapterWikiLinks } from './contents-links';
 import { bookLinkLabel, plainVaultLinks } from './portable-markdown';
 
@@ -234,10 +235,6 @@ const SYSTEM_CHAPTER_KEYS = new Set([
   'toc',
   'open_chapter',
 ]);
-
-export function sortByLoc<T extends { loc?: number; createdAt: number }>(items: T[]): T[] {
-  return [...items].sort((a, b) => (a.loc ?? Infinity) - (b.loc ?? Infinity) || a.createdAt - b.createdAt);
-}
 
 export function resolveChapterFileName(
   template: string,
@@ -507,19 +504,19 @@ export function renderChapterSection(
   for (const sectionId of config.sectionOrder) {
     if (sectionId === 'bookmarks' && bucket.bookmarks.length > 0) {
       lines.push(`${h} Bookmarks`, '');
-      for (const b of sortByLoc(bucket.bookmarks)) lines.push(bookmarkLine(b, config, link));
+      for (const b of inReadingOrder(bucket.bookmarks, markCfi)) lines.push(bookmarkLine(b, config, link));
       lines.push('');
     }
     if (sectionId === 'highlights' && bucket.highlights.length > 0) {
       lines.push(`${h} Passage selections`, '');
-      for (const h2 of sortByLoc(bucket.highlights)) lines.push(highlightLine(h2, config, data, link));
+      for (const h2 of inReadingOrder(bucket.highlights, markCfi)) lines.push(highlightLine(h2, config, data, link));
       lines.push('');
     }
     if (sectionId === 'notes' && bucket.notes.length > 0) {
       lines.push(`${h} Notes`, '');
       // The template owns the quoted passage too (`{{selection}}`), so the block is part of the rendered
       // string rather than a line pushed ahead of it.
-      for (const n of sortByLoc(bucket.notes)) lines.push(noteLine(n, config, data, link, portable), '');
+      for (const n of inReadingOrder(bucket.notes, markCfi)) lines.push(noteLine(n, config, data, link, portable), '');
     }
   }
   return lines;
@@ -877,27 +874,21 @@ export function buildClipboardMarkdown(
   };
   const link: BookLink = (cfi, loc) => buildDeepLink(filePath, cfi, loc);
   if (section === 'highlights') {
-    const sorted = [...data.highlights].sort(
-      (a, b) => (a.loc ?? Infinity) - (b.loc ?? Infinity) || a.createdAt - b.createdAt
-    );
+    const sorted = inReadingOrder(data.highlights, markCfi);
     for (const h of sorted) {
       const bk = getBucket(h.chapterHref, h.chapter);
       if (h.loc != null && h.loc < bk.minLoc) bk.minLoc = h.loc;
       bk.rows.push(highlightLine(h, config, data, link));
     }
   } else if (section === 'notes') {
-    const sorted = [...data.notes].sort(
-      (a, b) => (a.loc ?? Infinity) - (b.loc ?? Infinity) || a.createdAt - b.createdAt
-    );
+    const sorted = inReadingOrder(data.notes, markCfi);
     for (const n of sorted) {
       const bk = getBucket(n.chapterHref, n.chapter);
       if (n.loc != null && n.loc < bk.minLoc) bk.minLoc = n.loc;
       bk.rows.push(noteLine(n, config, data, link, false));
     }
   } else {
-    const sorted = [...data.bookmarks].sort(
-      (a, b) => (a.loc ?? Infinity) - (b.loc ?? Infinity) || a.createdAt - b.createdAt
-    );
+    const sorted = inReadingOrder(data.bookmarks, markCfi);
     for (const b of sorted) {
       const bk = getBucket(b.chapterHref, b.chapter);
       if (b.loc != null && b.loc < bk.minLoc) bk.minLoc = b.loc;

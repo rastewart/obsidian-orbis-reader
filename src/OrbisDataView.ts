@@ -19,6 +19,7 @@ import {
   scanBacklinks,
   TocEntry,
 } from './progress';
+import { inReadingOrder, markCfi } from './reader/cfi-sort';
 import { logToLibrary } from './reader/DebugLog';
 import { locAtCfi, locStartsOf } from './reader/loc-lookup';
 import { trimmedMeanWpm, WPM_MIN_SAMPLES } from './reader/stats-math';
@@ -380,16 +381,10 @@ export class OrbisDataView extends FileView {
     // highlights would otherwise push Notes and Linked notes so far down that expanding one section is the same as
     // hiding the rest.
     const scrollable = details.createDiv({ cls: 'orbis-data-scroll orbis-list-box' });
-    for (const item of items) {
-      let cfi = '';
-      if (type === 'bookmark') {
-        const bm = item as Bookmark;
-        cfi = bm.exactCfi ?? bm.cfi;
-      } else if (type === 'highlight') {
-        cfi = (item as Highlight).cfiRange;
-      } else {
-        cfi = (item as Note).cfiRange;
-      }
+    // In the order they appear in the book, as the reader's Saved pane lists them; the file keeps them in the order
+    // they were made.
+    for (const item of inReadingOrder(items, markCfi)) {
+      const cfi = markCfi(item);
 
       const row = scrollable.createDiv({ cls: 'orbis-saved-item orbis-data-item' });
       if (cfi && bookFile) {
