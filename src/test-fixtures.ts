@@ -40,7 +40,7 @@ export function testFixturesUrl(sha256: string = TEST_FIXTURES_SHA256): string {
 }
 
 /** The vault folder the test plans name, at the root: `fixtures/annotation-workhorse.epub`. */
-export const FIXTURES_FOLDER = 'fixtures';
+const FIXTURES_FOLDER = 'fixtures';
 
 /**
  * Where a zip entry goes in the vault, or null for an entry that is not a file this command may write: a folder
@@ -79,7 +79,7 @@ export function addTestFixturesCommand(plugin: OrbisReaderPlugin): void {
 }
 
 /** Download the fixtures, say what would change, and copy them in on a yes. */
-export async function downloadTestFixtures(plugin: OrbisReaderPlugin): Promise<void> {
+async function downloadTestFixtures(plugin: OrbisReaderPlugin): Promise<void> {
   const { app } = plugin;
   const url = testFixturesUrl();
   const log = (msg: string, extra?: unknown) => plugin.debug(`test fixtures: ${msg}`, extra);

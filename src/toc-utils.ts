@@ -122,6 +122,18 @@ export function topLevelChapters(items: TocItemLike[]): TocBranch[] {
   return rows;
 }
 
+/**
+ * Which row of `topLevelChapters` each href belongs to, by index. An href listed under two rows belongs to the first,
+ * the one the contents names it under first.
+ */
+export function branchIndexByHref(branches: readonly TocBranch[]): Map<string, number> {
+  const branchOf = new Map<string, number>();
+  branches.forEach((branch, idx) => {
+    for (const href of branch.hrefs) if (!branchOf.has(href)) branchOf.set(href, idx);
+  });
+  return branchOf;
+}
+
 /** A chapter and the finer contents entries beneath it — see `groupByTopLevel`. */
 export interface TocChapterGroup {
   /** The chapter: a top-level contents entry. */
@@ -146,10 +158,7 @@ export interface TocChapterGroup {
  */
 export function groupByTopLevel(order: readonly FlatTocChapter[], items: TocItemLike[]): TocChapterGroup[] {
   const branches = topLevelChapters(items);
-  const branchOf = new Map<string, number>();
-  branches.forEach((branch, idx) => {
-    for (const href of branch.hrefs) if (!branchOf.has(href)) branchOf.set(href, idx);
-  });
+  const branchOf = branchIndexByHref(branches);
   const groups: TocChapterGroup[] = [];
   const groupAt = new Map<number, TocChapterGroup>();
   for (const entry of order) {

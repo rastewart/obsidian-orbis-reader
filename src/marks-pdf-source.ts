@@ -42,7 +42,7 @@ import { embeddableImage } from './pdf-image';
 import { type NotesData } from './reader/export-format';
 import type { ReaderContext } from './reader/ReaderContext';
 import { IOrbisReaderPlugin } from './settings';
-import { flattenTocWithDisambiguation, topLevelChapters } from './toc-utils';
+import { branchIndexByHref, flattenTocWithDisambiguation, topLevelChapters } from './toc-utils';
 import type { OrbisPopupHost } from './ui-utils';
 import { qualifyRepeatedNames } from './unlisted-sections';
 import { exportFileName } from './vault-names';
@@ -529,10 +529,7 @@ export class MarksPdfSource {
     const bySection = await this.marksBySection(data);
 
     const branches = topLevelChapters(data.tocItems ?? []);
-    const branchOf = new Map<string, number>();
-    branches.forEach((branch, idx) => {
-      for (const href of branch.hrefs) if (!branchOf.has(href)) branchOf.set(href, idx);
-    });
+    const branchOf = branchIndexByHref(branches);
     /** The contents entries each spine file holds, in contents order — the cut points, before they are located. */
     const cutsBySection = new Map<number, { fragment: string; owner: string }[]>();
     for (const entry of flattenTocWithDisambiguation(data.tocItems ?? [])) {

@@ -199,7 +199,13 @@ import {
 import { bindRealTimeSliderInput } from './slider-input';
 import { ANNOTATIONS_ICON_ID, annotationsSvg, CONVERSION_ICON_ID } from './system-glyphs';
 import { openRatingDialog, openStatusDialog } from './TitleFieldModal';
-import { flattenTocWithDisambiguation, markTocSections, tocNeighbourHref, topLevelChapters } from './toc-utils';
+import {
+  type FlatTocChapter,
+  flattenTocWithDisambiguation,
+  markTocSections,
+  tocNeighbourHref,
+  topLevelChapters,
+} from './toc-utils';
 import { createOrbisPopup, setSvgIcon } from './ui-utils';
 import { continuationSections } from './unlisted-sections';
 import { VoiceRecordingsModal } from './VoiceRecordingsModal';
@@ -556,17 +562,24 @@ export class OrbisReaderView
   }
   /** Like chapterForSection but returns '' when there is no exact TOC match — no proportional fallback. */
   exactChapterForSection(sIdx: number): string {
-    const sectionId = String(this.bookSections[sIdx]?.id ?? '');
-    if (!sectionId || !this.tocItems.length) return '';
-    const basename = (h: string) => h.split('#')[0].split('/').pop() ?? h;
-    const sh = basename(sectionId);
     // Return the disambiguated displayLabel, not the raw TOC label — chapter
     // labels repeat across parts in many books ("PART I > CHAPTER I", "PART
     // II > CHAPTER I"), and this feeds book-export chapter titles/filenames.
-    const match = flattenTocWithDisambiguation(this.tocItems).find(
+    return this.tocEntriesInSection(sIdx)[0]?.displayLabel ?? '';
+  }
+
+  /**
+   * The contents entries that point into this section's file, in contents order: an href naming the section, or one
+   * whose file name matches it. Empty when the section has no id or the book no contents.
+   */
+  private tocEntriesInSection(sIdx: number): FlatTocChapter[] {
+    const sectionId = String(this.bookSections[sIdx]?.id ?? '');
+    if (!sectionId || !this.tocItems.length) return [];
+    const basename = (h: string) => h.split('#')[0].split('/').pop() ?? h;
+    const sh = basename(sectionId);
+    return flattenTocWithDisambiguation(this.tocItems).filter(
       (t) => basename(t.href) === sh || t.href.split('#')[0] === sectionId
     );
-    return match?.displayLabel ?? '';
   }
   get focusMode(): boolean {
     return this.focus.isActive;
@@ -1690,14 +1703,7 @@ export class OrbisReaderView
    * "no identity known", which a caller can turn into a per-section key instead of a shared one.
    */
   exactHrefForSection(sIdx: number): string {
-    const sectionId = String(this.bookSections[sIdx]?.id ?? '');
-    if (!sectionId || !this.tocItems.length) return '';
-    const basename = (h: string) => h.split('#')[0].split('/').pop() ?? h;
-    const sh = basename(sectionId);
-    const match = flattenTocWithDisambiguation(this.tocItems).find(
-      (tocEntry) => basename(tocEntry.href) === sh || tocEntry.href.split('#')[0] === sectionId
-    );
-    return match?.href ?? '';
+    return this.tocEntriesInSection(sIdx)[0]?.href ?? '';
   }
 
   /** sectionIndex → disambiguated display label, built by resolving each flattened-TOC entry's href
@@ -1772,14 +1778,7 @@ export class OrbisReaderView
   /** A contents entry whose href shares this section's file basename — the last inference before numbering.
    *  The LAST such entry wins: where a Part and its first chapter share a file, the chapter is the deeper name. */
   private basenameLabelForSection(sIdx: number): string {
-    const sectionId = String(this.bookSections[sIdx]?.id ?? '');
-    if (!sectionId || !this.tocItems.length) return '';
-    const basename = (h: string) => h.split('#')[0].split('/').pop() ?? h;
-    const sh = basename(sectionId);
-    const matches = flattenTocWithDisambiguation(this.tocItems).filter(
-      (t) => basename(t.href) === sh || t.href.split('#')[0] === sectionId
-    );
-    return matches.length ? matches[matches.length - 1].displayLabel : '';
+    return this.tocEntriesInSection(sIdx).at(-1)?.displayLabel ?? '';
   }
 
   /** Disambiguated display label for a stored annotation chapter href — prefer an exact TOC-href

@@ -11,7 +11,7 @@ import { t } from './i18n';
 export const GUIDE_URL = 'https://guide.orbisreader.com/';
 
 /** Open the guide in the system browser — on desktop and mobile alike. */
-export function openGuide(): void {
+function openGuide(): void {
   window.open(GUIDE_URL, '_blank');
 }
 

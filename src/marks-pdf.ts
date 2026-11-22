@@ -21,7 +21,13 @@ import type { Highlight, Note } from './progress';
 import { cfiSortKey } from './reader/cfi-sort';
 import type { NotesData } from './reader/export-format';
 import { markParts } from './reader/export-format';
-import { flattenTocWithDisambiguation, groupByTopLevel, type TocItemLike, topLevelChapters } from './toc-utils';
+import {
+  branchIndexByHref,
+  flattenTocWithDisambiguation,
+  groupByTopLevel,
+  type TocItemLike,
+  topLevelChapters,
+} from './toc-utils';
 
 /**
  * Which of the two artifacts to produce.
@@ -284,10 +290,7 @@ export function chapterRowsFrom(opts: {
   continues?: (index: number) => boolean;
 }): { rows: ChapterChoice[]; rowOfHref: Map<string, string>; rowOfSection: Map<number, string> } {
   const branches = topLevelChapters(opts.toc);
-  const branchOf = new Map<string, number>();
-  branches.forEach((branch, idx) => {
-    for (const href of branch.hrefs) if (!branchOf.has(href)) branchOf.set(href, idx);
-  });
+  const branchOf = branchIndexByHref(branches);
   const bySection = new Map<number, string[]>();
   for (const entry of flattenTocWithDisambiguation(opts.toc)) {
     const index = opts.sectionIndexOf(entry.href);

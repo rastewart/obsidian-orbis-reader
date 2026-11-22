@@ -6,7 +6,13 @@ import { destinationGrid, type FilingState } from './folder-picker';
 import { t } from './i18n';
 import { askOutsideTarget, type OutsideTarget, outsideRoute, sendOutside } from './outside-vault';
 import { CONVERSION_SVG } from './system-glyphs';
-import { flattenTocWithDisambiguation, selectedBranchCount, TocItemLike, topLevelChapters } from './toc-utils';
+import {
+  branchIndexByHref,
+  flattenTocWithDisambiguation,
+  selectedBranchCount,
+  TocItemLike,
+  topLevelChapters,
+} from './toc-utils';
 import { answerFold, createOrbisPopup, rebuildKeepingFocus } from './ui-utils';
 import { qualifyRepeatedNames } from './unlisted-sections';
 import { exportFileName } from './vault-names';
@@ -164,10 +170,7 @@ export function exportRows(view: BookExportViewContext): { rows: ExportRow[]; se
    * listed, in the place it belongs, rather than falling through to a "Section 12" row.
    */
   const branches = topLevelChapters(view.bookToc);
-  const branchOf = new Map<string, number>();
-  branches.forEach((branch, idx) => {
-    for (const href of branch.hrefs) if (!branchOf.has(href)) branchOf.set(href, idx);
-  });
+  const branchOf = branchIndexByHref(branches);
   const emitted = new Set<number>();
 
   const rows: ExportRow[] = [];

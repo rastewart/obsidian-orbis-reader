@@ -62,7 +62,6 @@
   "dependencies": {
     "@pdf-lib/fontkit": "1.1.1",
     "browser-id3-writer": "6.4.0",
-    "construct-style-sheets-polyfill": "3.1.0",
     "diff": "9.0.0",
     "fflate": "0.8.3",
     "foliate-js": "github:rastewart/foliate-js#bbba01c49154c58157575d15177fc2f02c0f2c45",

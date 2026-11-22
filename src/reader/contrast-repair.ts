@@ -105,7 +105,7 @@ function hasOwnText(el: Element): boolean {
 }
 
 /** Put back every color an earlier repair set, so the chapter is read as the book and the theme draw it. */
-export function undoContrastRepairs(doc: Document): void {
+function undoContrastRepairs(doc: Document): void {
   for (const el of Array.from(doc.querySelectorAll<HTMLElement>(`[${REPAIRED}]`))) {
     const before = el.getAttribute(REPAIRED) ?? '';
     const priority = el.getAttribute(REPAIRED_PRIORITY) ?? '';

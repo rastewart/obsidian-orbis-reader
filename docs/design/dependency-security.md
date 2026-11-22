@@ -28,7 +28,7 @@ whenever a runtime dependency changes.
 | `diff` | Exact (`9.0.0`) | The notes merge/diff flow | Pure computation |
 | `fflate` | Exact (`0.8.3`) | Zip, for writing EPUBs and reading OPF metadata | Also vendored inside foliate-js — see below |
 | `lamejs` | **Vendored** (`src/vendor/lamejs`) | MP3 encoding for recorded audio | LGPL; upstream `zhuker/lamejs` at `582bbba6a12f981b984d8fb9e1874499fed85675`, unmodified. `mp3-encoder.test.ts` pins its output. See NOTICES |
-| `construct-style-sheets-polyfill` | Exact (`3.1.0`) | Imported by foliate-js's `fixed-layout.js` | A dependency of the foliate-js fork, which pins the same version |
+| `construct-style-sheets-polyfill` | Exact (`3.1.0`), through foliate-js | Imported by foliate-js's `fixed-layout.js` | A dependency of the foliate-js fork, which pins it. Orbis does not list it itself, so it changes only with the fork's pin |
 | `browser-id3-writer` | Exact (`6.4.0`) | ID3 tags on the MP3s it writes | Pure computation |
 
 One more piece of vendored code is not a package: `src/vendor/piper-phonemize.js`, the Emscripten loader for the
