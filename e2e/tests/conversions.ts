@@ -135,7 +135,7 @@ export const conversionTests: E2eTest[] = [
     },
   },
   {
-    name: 'save as PDF carries the marks: a cover sheet and a comment per note',
+    name: 'save as PDF carries the marks, with a cover sheet and a comment per note',
     timeoutMs: 180_000,
     async run(context) {
       const { page } = context;

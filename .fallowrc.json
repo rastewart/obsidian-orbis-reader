@@ -19,7 +19,10 @@
     "minOccurrences": 3,
     // The same reason as `ignoreFindings`: vendored code's repetition is upstream's, and counting it took the
     // duplication figure from 1.8% to 7.7% without one line of ours changing.
-    "ignore": ["src/vendor/**"]
+    // e2e/in-page.ts holds the functions the end-to-end tests run inside Obsidian. Each crosses as source text and can
+    // reach only its arguments and the page's globals, so each finds the open book for itself, and a shared helper
+    // would not cross with it (docs/design/end-to-end-tests.md, Writing a test).
+    "ignore": ["src/vendor/**", "e2e/in-page.ts"]
   },
   "health": {
     // src/vendor is third-party code we ship unmodified (the piper phonemizer, emscripten output).

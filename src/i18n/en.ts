@@ -2652,8 +2652,8 @@ const en = {
   'cleanup.remove': 'Remove {{n}}',
   'cleanup.repair': 'Repair {{n}}',
   'cleanup.can_repair': 'can be repaired',
-  'cleanup.repairable_summary': '{{n}} of them can be put back on the passage they were made on.',
-  'cleanup.repairable_summary_one': '1 of them can be put back on the passage it was made on.',
+  'cleanup.repairable_summary': '{{n}} of them can be put back where they were made.',
+  'cleanup.repairable_summary_one': '1 of them can be put back where it was made.',
   'cleanup.repaired': 'Repaired {{what}}',
   // Built from a phrase per count, leaving out a count that is zero — see `removedMessage`.
   'cleanup.removed': 'Removed {{what}}',

@@ -87,12 +87,12 @@ in it. A test that saves through a dialog presses its main button (`saveDialog`)
 test may switch reading records on or turn Link preview off without the next test meeting it. Orbis keeps its device
 settings (Link preview, page turning by key, the toolbar's buttons) in memory as well as in storage, so when one of
 those changed the runner turns Orbis off and on, which reads them afresh. Three values Orbis changes by itself are left
-alone (`OWN_BOOKKEEPING` in `e2e/run.ts`): the version it last greeted the device with, the sync clock, which only
-moves forward, and the shipped preset it installs again whenever it loads. `ORBIS_E2E_SHOW_RESTORED=1` prints what was
+alone, listed in `OWN_BOOKKEEPING` in `e2e/run.ts`. They are the version it last greeted the device with, the sync
+clock, which only moves forward, and the shipped preset it installs again whenever it loads. `ORBIS_E2E_SHOW_RESTORED=1` prints what was
 put back after each test.
 
 **Each test starts with no tabs open.** Generate notes and the conversions open what they write beside the book, and
-left there those notes pile up in splits until a later book is squeezed into a pane too small to turn a page in. The
+left there those notes pile up in splits until a later book is squeezed into a pane too small for turning a page. The
 runner closes every tab before each test (`closeEveryTab`), and `openBook` puts the book's tab in front and focused,
 as a person's opening it does.
 
@@ -181,32 +181,32 @@ The tests run in the order below. Running every command is last, because it chan
 | `marks.ts` | marks made in quick succession are all kept | Twenty marks made 5 to 20 ms apart are all held, and all saved, through a reload |
 | | copy passage selections gives them in book order | The copy from a MOBI, in book order, matching `copy-passage-selections.md` |
 | | generate notes writes one file per chapter | The dialog's *Book folder* choice, from an AZW3, matching `generate-notes-per-chapter.md`, with links that lead somewhere |
-| | marks and notes come back in MOBI and FB2, on the same text | Closed and reopened, each mark and note is held, and its stored place still covers the text it was made on |
+| | marks and notes come back in MOBI and FB2, on the same text | Closed and reopened, each mark and note is held, and its stored place still covers the text it marked |
 | | a changed or removed mark stays changed through a reload | A mark given another mark, one removed and a note deleted, all as they were left after Orbis reloads |
 | | bookmarks are kept, and each copy command lists what the book holds | The bookmark command adds and removes; bookmarks survive closing; the three copy commands say when there is nothing, and match `copy-annotations.md` |
 | | save annotations as PDF is offered once a passage is marked | Not for a book with nothing marked, nor with only a bookmark |
 | `conversions.ts` | save as Markdown | Twelve exports of eight books in four formats, including the Conversions plan's hard books, each matching its `markdown-*.md`; every note has frontmatter Obsidian reads and no link that leads nowhere |
 | | save as PDF, save annotations as PDF | Each writes a PDF with pages |
-| | save as PDF carries the marks | With marks: a cover sheet and a comment per note. Without: neither |
+| | save as PDF carries the marks, with a cover sheet and a comment per note | Neither appears for a book with no marks |
 | | save note as EPUB makes a book that opens | The book's contents match `note-as-epub-contents.txt` |
 | | read in Orbis Reader opens a note as a book | The note's prose is in the book shown |
 | `epubs.ts` | converting a note again when nothing changed writes nothing | "already up to date", and the book's file untouched |
 | | read in Orbis Reader keeps one book per note | Twice on one note leaves one book; a very long note name gives a book name of 80 characters or fewer |
 | | a folder of notes becomes one book, a set of books | The folder's book in its index note's order (`folder-epub-contents.txt`); the set's six books and a contents note, and "already up to date" the second time |
-| `exists.ts` | generating notes, saving as Markdown again | *Save as new version* writes a numbered copy and leaves the first alone; *Replace* (confirmed, for notes) writes over it |
+| `exists.ts` | generating notes again, saving a book as Markdown again | *Save as new version* writes a numbered copy and leaves the first alone; *Replace* (confirmed, for notes) writes over it |
 | `search.ts` | search finds a word and a result lands on it | The results match `search-boathouse.txt`, the next Enter shows a page holding a result, and the book then closes without an error |
 | | a search with no match finds none, and a new search replaces the last | |
 | | advanced search finds marks and notes, and matches case and whole words | Each scope finds only its own kind; Match case and Whole word narrow the results |
 | `checks.ts` | hostile-scripts, stylesheet-checks, stylesheet-hazards | Each book's own checks read PASS, none FAIL |
 | | an empty file, a file that is not a book, a cut-off EPUB | The tab says why, matching `open-*.txt` |
-| `links.ts` | a link out of the book is shown in full before it opens | Each row of `link-checks.epub` but two, matching `link-checks.txt`: its dialog, warnings and which button is red, or the notice refusing a script |
+| `links.ts` | a link out of the book is shown in full before it opens | Each row of `link-checks.epub` but two, matching `link-checks.txt`, which holds its dialog, warnings and which button is red, or the notice refusing a script |
 | | a note reference shows its note, and Go and back work | In an EPUB with footnotes, one with endnotes and an FB2, matching `note-previews.txt`; the book does not move until Go |
 | | with link preview off, a note reference goes to its note | |
 | `display.ts` | the display commands stop at their limits, and the book follows them | Font size 80–300%, line spacing 1–3 with no stray decimals, brightness 20–100%, margins 0–12%, the alignment cycle and its notices; text at 150% is half as large again |
 | | the reader's alignment and size reach a book's own styles | `body-text-styles.epub`'s justified text goes left while its centered and right-aligned lines stay; `keyword-sizes.epub`'s sizes grow |
 | | text on a book's own backgrounds stays readable in Light, Sepia and Dark | Every line of `contrast-checks.epub` that can be measured is at least 3 : 1; the white words over the picture stay white |
 | | focus mode hides the toolbar, comes out again, and is not remembered | |
-| | the page keys turn the page, unless told not to | Right, Space and Page Down forward; Left and Page Up back; Up and Down not; none of them with the setting off |
+| | the page keys turn the page, unless the setting is off | Right, Space and Page Down forward; Left and Page Up back; Up and Down not; none of them with the setting off |
 | `resilience.ts` | a renamed or moved book keeps its marks and place | Its reading data takes the new name and the new folder, and the book reopens with its mark at its place |
 | | a deleted book takes its reading data with it | With the notice the plan quotes |
 | | damaged reading data is written again from the marks | A `.orbis` emptied or not JSON is written again with its marks; a damaged place opens the book at its start |
@@ -216,7 +216,7 @@ The tests run in the order below. Running every command is last, because it chan
 | | scan puts a mark and a note stored empty back on their passages | Offered as *can be repaired*, and after **Repair** each covers its passage, through a reload |
 | `records.ts` | reading records follow the marks and notes, and keep what the reader wrote | A record per mark and note, with its bases; a changed mark updates it and keeps the reader's line; a record nobody wrote in goes with its mark, one they did stays, orphaned |
 | `library.ts` | a book is cataloged, and its status and rating set from the reader | The title note matches `catalog-title-note.md`; status and rating are written to it, and a rating cleared |
-| `sync.ts` | another device's mark appears in the open book | A device file written under another device's id, as the Sync plan's first run does: the mark appears without reopening, on its text |
+| `sync.ts` | another device's mark appears in the open book | A device file written under another device's id, as the Sync plan's first run does. The mark appears without reopening, on its text |
 | `commands.ts` | every command runs without an error | Each command the palette offers with a book open, toggles twice. Three are left out, each with its reason in `SKIP` |
 
 Each of the first set of tests was made to fail first, on the code it guards; for the hostile book that needs both of
@@ -227,7 +227,7 @@ them has been made to fail on purpose.
 
 **Helpers that mark and note.** `markParagraphs` and `noteParagraph` select a paragraph from its first character to its
 last, as a person's selection runs. A range on the paragraph element itself, `(p, 0)` to `(p, n)`, is stored with its
-start and end at the same place: see *What the tests found*.
+start and end at the same place (see *What the tests found*).
 
 ---
 
@@ -271,7 +271,7 @@ The second set found these.
 - **A paragraph marked while a recording played was stored as an empty range.** With the mark button set to
   **Paragraph**, the listening player marks a recorded track's paragraph by the element itself
   (`enclosingBlockRange`), from `(p, 0)` to `(p, n)`. `tightenRange` left such a range alone when its text had no space
-  at either end, and its CFI came out with the same start and end, `epubcfi(/6/10!/4,/4,/4)`: the mark and the note
+  at either end, and its CFI came out with the same start and end, `epubcfi(/6/10!/4,/4,/4)`. The mark and the note
   were saved, but showed nothing, and Scan annotation data for problems called them broken ranges. The live voice
   marks by the text and was never affected. Fixed in `tightenRange`, which now moves an end on an element onto its
   text; *a mark made on a whole paragraph is stored over its text*. A mark already stored this way still names its
@@ -279,12 +279,12 @@ The second set found these.
   (`collapsedElementPath`); *scan puts a mark and a note stored empty back on their passages*. The test helpers had
   made such marks too, and the golden files carrying a mark's link held these empty ranges until they changed.
 - **A space in a link's host was a web page on desktop.** Row 17 of `link-checks.epub`, `https://exa mple.com/`, was
-  shown as a web page at `exa%20mple.com` with Open, where Safari refuses the address: `readLinkAddress` trusted
+  shown as a web page at `exa%20mple.com` with Open, where Safari refuses the address. `readLinkAddress` trusted
   `new URL()`, and Chromium accepts a space in a host by encoding it. Fixed by checking the host before parsing;
   *a link out of the book is shown in full before it opens*.
 - **A chapter Calibre split in two was two chapters.** Calibre gives the second file of a split chapter the first's
   `<title>`, and with no heading of its own that title was its name, so `continuationSections` kept it as a section of
-  its own: `# Chapter 3, Calibre Body Anchors` in the note. A file whose heading repeats the file just before it now
+  its own, with a second heading, `# Chapter 3, Calibre Body Anchors`, in the note. A file whose heading repeats the file just before it now
   continues it; *save as Markdown: calibre-body-anchors.epub as one note*.
 
 And these, left as they are for now.

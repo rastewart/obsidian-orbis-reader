@@ -50,7 +50,7 @@ async function openCopy({ page }: TestContext, from: string, name: string): Prom
 
 export const existsTests: E2eTest[] = [
   {
-    name: 'generating notes again: a new version beside them, or replaced',
+    name: 'generating notes again makes a new version beside them, or replaces them',
     async run(context) {
       const { page } = context;
       await openCopy(context, 'fixtures/parts-and-chapters.epub', 'Exists Notes');
@@ -74,7 +74,7 @@ export const existsTests: E2eTest[] = [
     },
   },
   {
-    name: 'saving a book as Markdown again: a new version beside it, or replaced',
+    name: 'saving a book as Markdown again makes a new version beside it, or replaces it',
     async run(context) {
       const { page } = context;
       await openCopy(context, 'fixtures/footnotes.epub', 'Exists Book');

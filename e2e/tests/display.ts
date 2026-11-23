@@ -202,7 +202,7 @@ export const displayTests: E2eTest[] = [
     },
   },
   {
-    name: 'the page keys turn the page, unless told not to',
+    name: 'the page keys turn the page, unless the setting is off',
     async run(context) {
       const { page } = context;
       const book = 'fixtures/parts-and-chapters.epub';

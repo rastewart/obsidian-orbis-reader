@@ -707,35 +707,6 @@ export function getDisplay(key: string): string | null {
 }
 
 /**
- * Clicks the `nth` element matching `selector` in the open book's rendered sections, as a person's click on it does,
- * and returns its text. Fails if there is none.
- */
-export function clickInBook(selector: string, nth = 0): string {
-  const app = (window as unknown as { app: PageApp }).app;
-  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
-  if (!view?.foliateView) throw new Error('no book is open');
-  const found: Element[] = [];
-  for (const { doc } of view.foliateView.renderer.getContents())
-    found.push(...Array.from(doc.querySelectorAll(selector)));
-  const el = found[nth];
-  if (!el) throw new Error(`the page shows no ${selector} (#${nth}); it shows ${found.length}`);
-  const rect = el.getBoundingClientRect();
-  const init = {
-    bubbles: true,
-    cancelable: true,
-    view: el.ownerDocument.defaultView,
-    clientX: rect.x + 2,
-    clientY: rect.y + 2,
-  };
-  el.dispatchEvent(new MouseEvent('pointerdown', init));
-  el.dispatchEvent(new MouseEvent('mousedown', init));
-  el.dispatchEvent(new MouseEvent('pointerup', init));
-  el.dispatchEvent(new MouseEvent('mouseup', init));
-  el.dispatchEvent(new MouseEvent('click', init));
-  return (el.textContent ?? '').trim();
-}
-
-/**
  * What is wrong with notes Orbis wrote, as Obsidian reads them once it has indexed them: frontmatter it could not
  * parse, and links that lead nowhere. Empty when nothing is.
  */
