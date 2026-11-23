@@ -27,6 +27,8 @@ Use it to send the book with your annotations to another person, or to make a PD
 
 You can also run **Save as PDF** from the command palette. Save as PDF is always available, even for a book with no annotations.
 
+The first time you open a book, Orbis reads the whole book in the background to learn its chapters. If you select **Save as PDF** before it finishes, the notice **Preparing the chapter list…** shows until it has, and then the dialog opens. On a large book on a phone, this can take a little while.
+
 If a file with that name already exists, the **Overwrite PDF?** dialog prompts you. Select **Replace** to overwrite the file. Select **Cancel** to go back to the dialog with your choices kept.
 
 For the options in the dialog, see [The dialog](#the-dialog). For what the PDF contains, see [What the PDF contains](#what-the-pdf-contains).

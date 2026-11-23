@@ -186,6 +186,7 @@ The tests run in the order below. Running every command is last, because it chan
 | | bookmarks are kept, and each copy command lists what the book holds | The bookmark command adds and removes; bookmarks survive closing; the three copy commands say when there is nothing, and match `copy-annotations.md` |
 | | save annotations as PDF is offered once a passage is marked | Not for a book with nothing marked, nor with only a bookmark |
 | `conversions.ts` | save as Markdown | Twelve exports of eight books in four formats, including the Conversions plan's hard books, each matching its `markdown-*.md`; every note has frontmatter Obsidian reads and no link that leads nowhere |
+| | save as Markdown waits for a book being measured | Asked for while the book's location index is held unbuilt, the dialog waits with its notice, and the omnibus's notes still match `markdown-omnibus-epub.md` |
 | | save as PDF, save annotations as PDF | Each writes a PDF with pages |
 | | save as PDF carries the marks, with a cover sheet and a comment per note | Neither appears for a book with no marks |
 | | save note as EPUB makes a book that opens | The book's contents match `note-as-epub-contents.txt` |
@@ -288,14 +289,20 @@ The second set found these.
   its own, with a second heading, `# Chapter 3, Calibre Body Anchors`, in the note. A file whose heading repeats the file just before it now
   continues it; *save as Markdown: calibre-body-anchors.epub as one note*.
 - **Two errors from foliate when a book's tab closed mid-load.** foliate patches 41 and 42, above.
+- **Save as Markdown asked for before the location index was built split a book differently.** `sectionContinues`
+  answers from the location index, which a book builds in the background the first time it is opened, and says no
+  section continues until then. Asked for before that, a file that continues a chapter (`omnibus.epub`'s *This file
+  continues*) was listed and written as a note of its own, `013 - Section 13`, and Save as PDF split it the same way.
+  Rare on a computer, likelier with a large book opened first on a slow phone. Both dialogs now wait for the index,
+  with the notice *Preparing the chapter list…*, for as long as it is being built (`waitForIndex`, at most two
+  minutes); a book already measured opens them at once, as before. *save as Markdown waits for a book being
+  measured* holds the build so this happens every run, and the other Markdown tests no longer wait for the index
+  themselves.
 
-And these, left as they are for now.
+And this, left as it is by choice.
 
-- **Save as Markdown pressed before the location index is built splits a book differently.** `sectionContinues`
-  answers from the location index, which the book builds after it opens, and says no section continues until then.
-  Saved before that, a file that continues a chapter (`omnibus.epub`'s *This file continues*) is written as a note of
-  its own named `Section 13`. The index is built once, when a book is first opened, so a person would have to open
-  a book for the first time and save it before looking at the dialog; the Markdown tests, which press Save at once,
-  wait for the index instead.
-- **To look at, not known to be wrong.** In `endnotes.epub` and `fb2-notes.fb2` a note's preview runs on through the
-  notes after it, where `footnotes.epub`'s holds one note (`note-previews.txt`).
+- **A note's preview can run on into the notes after it.** In `endnotes.epub` and `fb2-notes.fb2` the notes are
+  siblings, and the preview reads on from its target to its length limit, as it does for any link, so it shows the
+  note and then the ones after it; `footnotes.epub`'s holds one note (`note-previews.txt`). Ending the preview at the
+  note's end, as Save as Markdown does, would hide a note's later paragraph styled differently from its first, as
+  Note 2-2 in `endnotes.epub` has. Showing too much costs little; hiding part of a note costs more.

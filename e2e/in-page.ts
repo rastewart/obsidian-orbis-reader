@@ -1136,6 +1136,50 @@ export async function locationIndexReady(timeoutMs: number): Promise<boolean> {
   }
 }
 
+/** The open book's location index: whether it is measured, and whether a load or build is under way. */
+export function indexState(): { ready: boolean; building: boolean } {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as
+    | { locIndex?: { isReady: boolean; isBuilding: boolean } }
+    | undefined;
+  return { ready: !!view?.locIndex?.isReady, building: !!view?.locIndex?.isBuilding };
+}
+
+/**
+ * Holds every location index build from now on before it measures anything, or lets them go on. What lets a test do,
+ * every time, what a large book on a slow phone does by itself: ask for the chapters while the index is still being
+ * built. Reaches the index through the open book, so a book must be open; returns whether one was.
+ */
+export function holdIndexBuilds(hold: boolean): boolean {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as { locIndex?: object } | undefined;
+  if (!view?.locIndex) return false;
+  type Measure = (...args: unknown[]) => Promise<unknown>;
+  const index = Object.getPrototypeOf(view.locIndex) as { measureSectionSizes: Measure; orbisE2eMeasure?: Measure };
+  const w = window as unknown as { orbisE2eReleaseIndex?: () => void };
+  if (hold && !index.orbisE2eMeasure) {
+    const measure = index.measureSectionSizes;
+    const held = new Promise<void>((r) => {
+      w.orbisE2eReleaseIndex = r;
+    });
+    index.orbisE2eMeasure = measure;
+    index.measureSectionSizes = async function (this: unknown, ...args: unknown[]) {
+      await held;
+      return measure.apply(this, args);
+    };
+  } else if (!hold && index.orbisE2eMeasure) {
+    index.measureSectionSizes = index.orbisE2eMeasure;
+    delete index.orbisE2eMeasure;
+    w.orbisE2eReleaseIndex?.();
+  }
+  return true;
+}
+
+/** How many dialogs are open: Obsidian's and Orbis's own. */
+export function dialogsOpen(): number {
+  return document.querySelectorAll('.modal-container, .orbis-popup').length;
+}
+
 /** When a vault file was last written, in milliseconds, or null when there is no such file. */
 export async function modifiedTime(path: string): Promise<number | null> {
   const adapter = (

@@ -37,6 +37,8 @@ Every step carries one tag.
 
 - [ ] `each` Open the book's **⋯** menu and choose **Save as Markdown…**. The dialog opens titled **Save as Markdown**, with **Format** on **Book folder**, as the setting says. **Save as Markdown…** in the command palette opens the same dialog.
 
+- [ ] `once` On a phone, open a large book you have not opened on it before, such as `omnibus.epub`, and choose **Save as Markdown…** at once. If **Preparing the chapter list…** shows, the dialog opens once it goes. Either way the list shows no chapter named **Section** and a number. Cancel the dialog.
+
 - [ ] `each` The **Save to** fold's header shows the folder the export will write, beside the book from **Same folder as the book**, ending in `Parts and Chapters/` — a folder, so it ends in a slash. Choose **Single Obsidian note**: the header now ends in `Parts and Chapters.md`, and inside the fold the name field's label changes from **Book folder** to **File name**. Choose **Book folder** again.
 
 - [ ] `each` Open **Save to** and change the name to **Parts: test?**. The header shows **Parts test**, with the colon and question mark turned into spaces. Change it back to **Parts and Chapters**.

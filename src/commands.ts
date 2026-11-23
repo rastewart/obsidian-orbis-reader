@@ -13,7 +13,6 @@
 import { App, FuzzySuggestModal, Notice } from 'obsidian';
 import { openAboutDialog } from './AboutDialog';
 import { openAnnotationPresets } from './AnnotationPresetsModal';
-import { BookExportModal } from './BookExportModal';
 import { openBookDataFile } from './book-data-file';
 import { isBookExtension } from './book-formats';
 import { confirmThen } from './ConfirmModal';
@@ -1285,7 +1284,7 @@ export function registerCommands(plugin: OrbisReaderPlugin): void {
     checkCallback: (checking) => {
       const view = plugin.getActiveView();
       if (!view) return false;
-      if (!checking) new BookExportModal(plugin.app, view).open();
+      if (!checking) view.openBookExport();
       return true;
     },
   });

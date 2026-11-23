@@ -96,6 +96,7 @@ import type { FoliateViewEl, RawSection } from './reader/foliate-view';
 import { relayFrameFocus, relayFramePress } from './reader/frame-focus';
 import { commandFor, type Hotkey } from './reader/hotkey-match';
 import { ImageViewer } from './reader/ImageViewer';
+import { ChaptersWait } from './reader/index-wait';
 import { scaleKeywordSizes } from './reader/keyword-sizes';
 import { LinkCheck } from './reader/LinkCheck';
 import { LinkPreview } from './reader/LinkPreview';
@@ -911,7 +912,7 @@ export class OrbisReaderView
               new Notice(t('notices.no_book_loaded'));
               return;
             }
-            new BookExportModal(this.app, this).open();
+            this.openBookExport();
           })
       );
       // No disable rule on either of these: a PDF or a Markdown copy of the book is a readable artifact before
@@ -2366,9 +2367,23 @@ export class OrbisReaderView
     return this.sentenceSel.extend(key);
   }
 
+  /** Before an export lists the chapters, waits for a book still being measured — see `ChaptersWait`. */
+  private readonly chaptersWait = new ChaptersWait({
+    ready: () => this.locIndex.isReady,
+    building: () => this.locIndex.isBuilding,
+    book: () => this.currentFile,
+  });
+
+  /** Save as Markdown, once the chapters are known. */
+  openBookExport(): void {
+    void this.chaptersWait.known().then((go) => {
+      if (go) new BookExportModal(this.app, this).open();
+    });
+  }
+
   /** Save as PDF — the dialog is `MarksPdfModal`; reading the book into what it needs is `MarksPdfSource`. */
-  private openMarksPdf(scope: MarksPdfScope): Promise<void> {
-    return new MarksPdfSource(this, this).open(scope);
+  private async openMarksPdf(scope: MarksPdfScope): Promise<void> {
+    if (await this.chaptersWait.known()) await new MarksPdfSource(this, this).open(scope);
   }
 
   /**

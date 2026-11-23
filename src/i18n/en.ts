@@ -2760,6 +2760,9 @@ const en = {
   'command_palette.toggle_writing_the_debug_log_to_a_note': 'Toggle writing the debug log to a note',
   'notices.no_book_loaded': 'No book loaded',
   'notices.book_not_loaded': 'Book not loaded',
+  // While Save as Markdown or Save as PDF waits for a book opened for the first time to be measured — see
+  // `waitForIndex`. Shown only then, and gone when the dialog opens.
+  'notices.preparing_chapters': 'Preparing the chapter list…',
   'notices.no_navigation_history_to_clear': 'No navigation history to clear',
   'notices.navigation_history_cleared': 'Navigation history cleared',
   'notices.book_not_found_path': 'Book not found: {{path}}',

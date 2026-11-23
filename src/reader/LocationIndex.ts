@@ -91,6 +91,11 @@ export class LocationIndex {
     return this.locationIndexReady;
   }
 
+  /** Whether a load or a build is under way — what an export waits on (`waitForIndex`). */
+  get isBuilding(): boolean {
+    return this.locationIndexBuilding || this.loadOrBuildInFlight !== null;
+  }
+
   /** Reset all per-book index state (called from the view's resetFileState). */
   reset(): void {
     this.sectionHrefMap = new Map();

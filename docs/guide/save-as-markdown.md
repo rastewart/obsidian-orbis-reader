@@ -24,6 +24,8 @@ Your annotations are not included, so a book with annotations gives the same res
 
 You can also run **Save as Markdown** from the command palette.
 
+The first time you open a book, Orbis reads the whole book in the background to learn its chapters. If you select **Save as Markdown** before it finishes, the notice **Preparing the chapter list…** shows until it has, and then the dialog opens. On a large book on a phone, this can take a little while.
+
 While the book is saved, the dialog shows the progress of each section and image. When it is done, a notice shows the path of the notes.
 
 For the options in the dialog, see [The dialog](#the-dialog). For what the notes contain, see [What the notes contain](#what-the-notes-contain).
