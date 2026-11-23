@@ -33,9 +33,25 @@ export interface LinkAddress {
   url?: URL;
 }
 
+/**
+ * Whether the host of an address written with `//` holds a space, which no host can.
+ *
+ * **Not left to the parser.** The URL standard forbids a space in a host, and Safari and Firefox refuse such an
+ * address — but Chromium, which Obsidian runs on the desktop and Android, accepts it and writes the space as `%20`,
+ * so the same link would be *Not a valid address* on an iPhone and a web page to open on a Mac. Tabs and line breaks
+ * are taken out first, as the standard has every browser do anywhere in an address; what is left is a host no
+ * browser should go to. A space in the user name before `@` is not the host's, and is allowed.
+ */
+function hostHasSpace(raw: string): boolean {
+  const authority = /^[a-z][a-z\d+.-]*:\/\/([^/?#\\]*)/i.exec(raw.trim().replace(/[\t\n\r]/g, ''))?.[1];
+  if (authority === undefined) return false;
+  return /\s/.test(authority.slice(authority.lastIndexOf('@') + 1));
+}
+
 export function readLinkAddress(raw: string): LinkAddress {
   // Kept as the string test it always was: the converter writes these links, so their spelling is known.
   if (raw.startsWith('obsidian://orbis-nav')) return { kind: 'book' };
+  if (hostHasSpace(raw)) return { kind: 'invalid' };
   let url: URL;
   try {
     url = new URL(raw);

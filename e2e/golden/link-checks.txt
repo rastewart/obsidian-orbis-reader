@@ -178,16 +178,13 @@ notice: Orbis Reader doesn’t open links that run scripts.
 --- row 17
 Open this link?
 Link type
-Web page
-Domain
-exa%20mple.com
+Not a valid address
 Link text
 A broken address
 Link address
-https://exa%20mple.com/
+https://exa mple.com/
 Cancel
-Open
-buttons: Cancel, Open (accent)
+buttons: Cancel
 --- row 19
 Link preview
 This is where the link inside the book leads. Nothing here leaves the book.

@@ -6,7 +6,7 @@
 //
 // Invisible characters are built with `String.fromCodePoint` so this file holds none of its own.
 
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
   decodePunycode,
   describeCharacter,
@@ -83,6 +83,37 @@ describe('readLinkAddress', () => {
   it('calls an address the parser rejects invalid', () => {
     expect(readLinkAddress('https://exa mple.com/').kind).toBe('invalid');
     expect(readLinkAddress('http://[::1').kind).toBe('invalid');
+  });
+
+  describe('with a parser that accepts a space in a host, as Chromium does', () => {
+    // Chromium writes the space as %20 and carries on; Node's URL, like Safari's, refuses it. Obsidian runs on
+    // Chromium, so the check must not lean on the parser. The stand-in accepts such a host, as Chromium does.
+    const Standard = globalThis.URL;
+    class Lenient extends Standard {
+      constructor(input: string | URL, base?: string | URL) {
+        const host = /^([a-z]+:\/\/[^/?#]*)/i;
+        super(typeof input === 'string' ? input.replace(host, (a) => a.replace(/ /g, 'x')) : input, base);
+      }
+    }
+    beforeEach(() => {
+      globalThis.URL = Lenient;
+    });
+    afterEach(() => {
+      globalThis.URL = Standard;
+    });
+
+    it('still calls a space in the host invalid', () => {
+      expect(() => new URL('https://exa mple.com/')).not.toThrow(); // the lenient parser is in place
+      expect(readLinkAddress('https://exa mple.com/').kind).toBe('invalid');
+      expect(readLinkAddress('https://example.com /').kind).toBe('invalid');
+    });
+
+    it('allows what the standard allows: a space in the path, the user name, or around the address', () => {
+      expect(readLinkAddress('https://example.com/a page').kind).toBe('web');
+      expect(readLinkAddress('https://a user@example.com/').host).toBe('example.com');
+      expect(readLinkAddress('  https://example.com/  ').kind).toBe('web');
+      expect(readLinkAddress('https://exa\tmple.com/').host).toBe('example.com');
+    });
   });
 });
 
