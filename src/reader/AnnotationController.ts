@@ -261,12 +261,25 @@ export class AnnotationController {
    * longer in the lists that redraw walks.
    */
   async reload(file: TFile): Promise<void> {
+    // Not while this view's own saves are being written: see `savesInFlight`.
+    if (this.savesInFlight > 0) {
+      this.reloadAfterSaves = file;
+      return;
+    }
     const byId = (list: { id: string }[]) => JSON.stringify([...list].sort((a, b) => (a.id < b.id ? -1 : 1)));
+    const savesBefore = this.savesStarted;
     const [highlights, notes, preset] = await Promise.all([
       readHighlights(this.ctx.app, file),
       readNotes(this.ctx.app, file),
       readBookPreset(this.ctx.app, file),
     ]);
+    // A save that began while the file was being read means what was read may be older than what is held. Read again
+    // once the saves are written.
+    if (this.savesStarted !== savesBefore) {
+      if (this.savesInFlight > 0) this.reloadAfterSaves = file;
+      else void this.reload(file);
+      return;
+    }
     const shown = byId([...this.highlights, ...this.notes]) + JSON.stringify(this.bookPreset);
     if (byId([...highlights, ...notes]) + JSON.stringify(preset) === shown) return;
     const before = [...this.highlights, ...this.notes].map((a) => a.cfiRange);
@@ -2654,7 +2667,7 @@ export class AnnotationController {
   private persistHighlights(deleted?: readonly string[]): void {
     const file = this.ctx.currentFile;
     if (!file) return;
-    saveHighlights(this.ctx.app, file, this.highlights).catch((e) =>
+    this.whileSaving(saveHighlights(this.ctx.app, file, this.highlights)).catch((e) =>
       this.ctx.debug(`saveHighlights error: ${e}`, 'annot')
     );
     this.ctx.recordsChanged(deleted, 'passages');
@@ -2663,8 +2676,41 @@ export class AnnotationController {
   private persistNotes(deleted?: readonly string[]): void {
     const file = this.ctx.currentFile;
     if (!file) return;
-    saveNotes(this.ctx.app, file, this.notes).catch((e) => this.ctx.debug(`saveNotes error: ${e}`, 'annot'));
+    this.whileSaving(saveNotes(this.ctx.app, file, this.notes)).catch((e) =>
+      this.ctx.debug(`saveNotes error: ${e}`, 'annot')
+    );
     this.ctx.recordsChanged(deleted, 'notes');
+  }
+
+  /**
+   * How many of this view's saves are still being written, and the book to reload once none is.
+   *
+   * **A reload in between would lose a mark.** Each save announces that the book changed, and the view reloads what
+   * the file holds. Saves are written one after another, so when marks come quickly — a command repeated from the
+   * keyboard — the first save's announcement arrives while the next mark is in memory but not yet in the file. The
+   * reload replaced the list with the file's, dropping that mark, and the save after it then wrote the list without
+   * it. The end-to-end tests lost one mark in about seven made 5 to 20 ms apart.
+   *
+   * So a reload asked for while a save is in flight waits, and runs once the last one is written. A reload already
+   * reading the file when a save begins starts again afterwards, since what it read may be older than the list. What
+   * arrived from another device in the meantime is not lost: the saves write it into the file (`writeOrbisFile`
+   * rebuilds from every device's file), and the reload then reads it.
+   */
+  private savesInFlight = 0;
+  /** Saves begun since the view opened, so a reload can tell that one began while it read. */
+  private savesStarted = 0;
+  private reloadAfterSaves: TFile | null = null;
+
+  private whileSaving(save: Promise<void>): Promise<void> {
+    this.savesInFlight++;
+    this.savesStarted++;
+    return save.finally(() => {
+      this.savesInFlight--;
+      if (this.savesInFlight > 0 || !this.reloadAfterSaves) return;
+      const file = this.reloadAfterSaves;
+      this.reloadAfterSaves = null;
+      void this.reload(file);
+    });
   }
 
   // ── Location recalculation ──────────────────────────────────────────────────

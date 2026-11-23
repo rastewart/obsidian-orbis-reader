@@ -221,6 +221,12 @@ pass, which compares every note with the merged marks and rewrites only those th
 **The open book is told directly.** Its own watcher ignores content this device wrote, and a rebuild is written by
 this device — so the rebuild notifies the open view itself, which then reloads exactly as it does today.
 
+**Not while the view's own saves are being written.** Every save announces the book as changed, so marks made
+quickly brought a reload that read the file between two saves and dropped the mark not yet written. A reload asked for
+while one of the view's saves is in flight waits for the last of them, and one that was reading when a save began
+reads again afterwards (`savesInFlight`, `AnnotationController`). Another device's marks are not held up for long:
+the saves write them into the file, and the reload then reads them.
+
 ---
 
 ## What stays shared in `.orbis`, and why

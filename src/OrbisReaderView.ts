@@ -4869,7 +4869,7 @@ export class OrbisReaderView
   onunload(): void {
     if (this.focusMode) this.focus.toggle();
     this.panels.dispose();
-    this.search.clearAnnotations();
+    this.search.forgetAnnotations();
     this.flushPendingSave();
     // Before `annot.dispose` empties the lists the pass reads — and then nothing may fire on a closed book.
     this.recordsCtl.flush();

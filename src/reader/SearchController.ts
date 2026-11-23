@@ -761,6 +761,19 @@ export class SearchController {
   /** Remove the amber active-hit and cyan same-section annotations from the view. Only removes the
    *  search-drawn overlays (activeOverlayCfi / secondaries) — never a real annotation, so navigating
    *  to a highlight/note result leaves its own highlight intact. */
+  /**
+   * Forget the on-page markers without erasing them, for a book that is closing.
+   *
+   * **Erasing them then threw once per result.** An erase is asynchronous: foliate finds the marker's section first
+   * and reads the book's contents last, and by then the reader had closed and the contents were gone. Closing a book
+   * with 33 search results raised 33 errors. The pages the markers sit on close with the book, so there is nothing
+   * to erase; `dispose` forgets them the same way when another book opens in the tab.
+   */
+  forgetAnnotations(): void {
+    this.activeOverlayCfi = null;
+    this.secondaryAnnotations = [];
+  }
+
   clearAnnotations(): void {
     if (this.activeOverlayCfi) {
       void this.ctx.foliateView?.deleteAnnotation({ value: this.activeOverlayCfi });

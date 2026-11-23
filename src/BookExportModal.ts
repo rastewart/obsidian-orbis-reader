@@ -356,6 +356,15 @@ export class BookExportModal {
    * still true of the book and worth keeping. See `ExtractOptions.labelForSection`.
    */
   private readonly resolvedLabels = new Map<number, string>();
+  /**
+   * The naming pass for the list on screen, which the export waits for.
+   *
+   * **A save made before it finished wrote other notes.** The export takes each unlisted section's name from
+   * `resolvedLabels`, and a section not named yet was written under its number (`Section 4`), with a repeated name
+   * not yet given its chapter (`Summary`) and a different split into notes. A person pressing Save as soon as the
+   * dialog opened got that, and the end-to-end tests saw the technical book's notes change from run to run.
+   */
+  private naming: Promise<void> = Promise.resolve();
   private bodyEl: HTMLElement | null = null;
   /** The button row, a sibling of the scrolling body — created once, emptied and refilled on each rebuild. */
   private footerEl: HTMLElement | null = null;
@@ -598,8 +607,8 @@ export class BookExportModal {
       const labelEl = hit.querySelector<HTMLElement>('.orbis-checklist-label');
       if (labelEl) rowLabels.set(chapter.href, labelEl);
     }
-    // After the list is on screen, never before it — see `nameUnlistedRows`.
-    void nameUnlistedRows(this.view, chapters, rowLabels, this.resolvedLabels);
+    // After the list is on screen, never before it — see `nameUnlistedRows`. Saving waits for it: see `naming`.
+    this.naming = nameUnlistedRows(this.view, chapters, rowLabels, this.resolvedLabels).catch(() => undefined);
 
     /** Every bulk action is this, given a rule — select all, clear and invert differ only in what they return. */
     function setAll(next: (wasOn: boolean) => boolean): void {
@@ -731,6 +740,7 @@ export class BookExportModal {
         }
 
         try {
+          await this.naming;
           const { imageFormat } = this.view.plugin.settings.bookExport;
           await extractBook(
             this.view.bookSectionsPublic,
