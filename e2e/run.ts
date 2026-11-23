@@ -68,20 +68,7 @@ const OWN_BOOKKEEPING = ['orbis-seen-version', 'orbis-sync-clock', 'annotationPr
  * not counted as a failure, so the run stays a reliable yes or no while the bug stays in view. Each names where it is
  * tracked; remove it with the fix.
  */
-const KNOWN_ISSUES: { text: string; issue: string }[] = [
-  {
-    text: "Failed to execute 'unobserve' on 'ResizeObserver'",
-    issue:
-      "foliate's View.destroy unobserves a section document that has no body yet, when a book closes while a section " +
-      'is still loading (docs/design/end-to-end-tests.md, Known issues)',
-  },
-  {
-    text: "Cannot read properties of undefined (reading 'cfi')",
-    issue:
-      "foliate's paginator, resized as a book's tab closes, reports a place in a section the view no longer has, and " +
-      'View.getCFI reads it (docs/design/end-to-end-tests.md, Known issues)',
-  },
-];
+const KNOWN_ISSUES: { text: string; issue: string }[] = [];
 
 const args = process.argv.slice(2);
 const update = args.includes('--update');

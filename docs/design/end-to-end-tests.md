@@ -237,18 +237,19 @@ start and end at the same place (see *What the tests found*).
 seen rather than failing the run, so the run stays a reliable yes or no while the bug stays in view. Remove an entry
 with its fix.
 
-Its first entry was an error from foliate's paginator, which walked a chapter's document before the document had a
-body, in about one run in three. foliate patch 40 fixed it (the fork's `ORBIS-CHANGES.md`).
+The list is empty. Each entry so far was an error from foliate's paginator, fixed in the fork (its
+`ORBIS-CHANGES.md`).
 
-It holds two now, both from a book's tab closing while foliate is still at work, which *the reading data folder
-mends itself* meets in most runs:
+- **The paginator walked a chapter's document before the document had a body**, in about one run in three. Fixed by
+  foliate patch 40.
+- **A frame closed mid-load unobserved a document with no body.** Its `destroy` passed `document.body` to
+  `ResizeObserver.unobserve` while the chapter was still loading. Fixed by foliate patch 41.
+- **A resize while the paginator had no section reported a place in it.** Closing a book's tab mid-load left the
+  paginator's section index at -1 or undefined, and the view's `getCFI` read `book.sections[index].cfi` for it. Fixed
+  by foliate patch 42.
 
-- **`View.destroy` unobserves a document with no body.** foliate's `View.destroy` checks `this.document` and then
-  passes `this.document.body` to `ResizeObserver.unobserve`, which throws while a section's document is still loading.
-  The same family as patch 40; `this.document?.body` would end it.
-- **A resize after closing reports a place in a section the view no longer has.** The paginator's resize observer
-  still fires as the tab closes, lays out, and relocates, and `View.getCFI` reads `this.book.sections[index].cfi` for
-  an index with no section.
+The last two came from a book's tab closing while foliate was still at work, which *the reading data folder mends
+itself* and *a deleted book takes its reading data with it* meet.
 
 ---
 
@@ -286,6 +287,7 @@ The second set found these.
   `<title>`, and with no heading of its own that title was its name, so `continuationSections` kept it as a section of
   its own, with a second heading, `# Chapter 3, Calibre Body Anchors`, in the note. A file whose heading repeats the file just before it now
   continues it; *save as Markdown: calibre-body-anchors.epub as one note*.
+- **Two errors from foliate when a book's tab closed mid-load.** foliate patches 41 and 42, above.
 
 And these, left as they are for now.
 

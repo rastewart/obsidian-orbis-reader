@@ -65,7 +65,7 @@
     "browser-id3-writer": "6.4.0",
     "diff": "9.0.0",
     "fflate": "0.8.3",
-    "foliate-js": "github:rastewart/foliate-js#caa64bab9dd73c055a70489eed7c64c91b797dd5",
+    "foliate-js": "github:rastewart/foliate-js#6be855d7a0525d8f12631e63b8f649e110801391",
     "lamejs": "link:src/vendor/lamejs",
     "onnxruntime-web": "1.18.0",
     "pdf-lib": "1.17.1",
