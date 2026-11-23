@@ -156,8 +156,6 @@ Roan Fairley looked across the grey footbridge long after supper. Long after sup
 
 “I counted them twice and the numbers still do not agree,” said Petra. Nobody in Saltmere could say why the weathered hedgerow had been left so lamplit. “There is time enough if we start now,” said Isolde. In Farrow Cross the footbridge was uneven, and the lantern beyond it was weathered too.
 
-# Chapter 3, Calibre Body Anchors
-
 This file is the second half of Chapter 3, split the way Calibre splits: its title and body id are copied from the first half.
 
 As the rain eased, Petra remembered the reading room and thought about Rookhaven. “The ferry will not wait for anyone,” said Tobin. Nobody in Kettleby could say why the patient orchard had been left so lamplit. “Nobody has opened that door since the flood,” said Orrin. “I counted them twice and the numbers still do not agree,” said Avel.

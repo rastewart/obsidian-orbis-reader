@@ -54,7 +54,10 @@ export function namesOnlyTheBook(name: string, bookTitle: string): boolean {
  *   navigation leaves out (a technical book's "Summary", a history's "CHAPTER ONE"), and stays a chapter. **A heading
  *   that repeats the chapter's own name is no name of its own either.** A technical book lists each chapter's title
  *   page — the publisher's copyright line — and opens the chapter itself in the next, unlisted file under the same
- *   heading, which as a row of its own would read `1. First Steps – 1. First Steps`.
+ *   heading, which as a row of its own would read `1. First Steps – 1. First Steps`. **Nor is one that repeats the
+ *   heading of the file just before it**: Calibre splits a long chapter into files that each carry the chapter's own
+ *   `<title>` (`Chapter 3, The Book`), and a second half with no heading of its own is read by that title. The same
+ *   name twice in a row is one chapter in two files.
  * - **Between two listed sections.** Not at the FRONT, where an untitled section is front matter with its own rule
  *   (`frontMatterMask`); and not at the BACK, where a long nameless section is often an excerpt from a different book,
  *   which would otherwise be glued to the last chapter.
@@ -97,7 +100,13 @@ export function continuationSections(opts: {
     }
     const heading = opts.heading(i);
     if (heading === undefined || opts.chars(i) < opts.minChars) continue;
-    if (namesOnlyTheBook(heading, opts.bookTitle) || (!!chapterName && same(heading, chapterName))) out.add(i);
+    const before = opts.heading(i - 1);
+    if (
+      namesOnlyTheBook(heading, opts.bookTitle) ||
+      (!!chapterName && same(heading, chapterName)) ||
+      (!!before && same(heading, before))
+    )
+      out.add(i);
   }
   return out;
 }

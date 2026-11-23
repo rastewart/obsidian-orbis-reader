@@ -92,6 +92,33 @@ describe('continuationSections', () => {
     expect([...set]).toEqual([1]);
   });
 
+  it("takes the second half of a chapter Calibre split, which carries the first half's title, as that chapter", () => {
+    // calibre-body-anchors.epub: Chapter 3 is listed; its second file copies the title, `Chapter 3, The Book`.
+    const set = continuationSections({
+      sectionCount: 4,
+      listed: (i) => i !== 2,
+      heading: (i) => ['Chapter 2, The Book', 'Chapter 3, The Book', 'Chapter 3, The Book', 'Part Two, The Book'][i],
+      listedName: (i) => ['Chapter 2', 'Chapter 3', '', 'Part Two'][i],
+      bookTitle: 'The Book',
+      chars: () => 5000,
+      minChars: LABEL_CHARS,
+    });
+    expect([...set]).toEqual([2]);
+  });
+
+  it('keeps a file whose name is its own, even beside a chapter with another', () => {
+    const set = continuationSections({
+      sectionCount: 3,
+      listed: (i) => i !== 1,
+      heading: (i) => ['Chapter 3, The Book', 'Interlude, The Book', 'Part Two, The Book'][i],
+      listedName: (i) => ['Chapter 3', '', 'Part Two'][i],
+      bookTitle: 'The Book',
+      chars: () => 5000,
+      minChars: LABEL_CHARS,
+    });
+    expect(set.size).toBe(0);
+  });
+
   it('continues nothing until the headings have been read', () => {
     expect(ask(() => undefined).size).toBe(0);
   });
