@@ -26,6 +26,20 @@ interface ExceptionDetails {
   exception?: RemoteObject;
 }
 
+/**
+ * `promise`'s value, or `timedOut` once `ms` have passed. A page that froze never answers, so every wait on one that
+ * might have frozen (a screenshot after a failure, closing Obsidian) has an end.
+ */
+export function within<T, U>(promise: Promise<T>, ms: number, timedOut: U): Promise<T | U> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => resolve(timedOut), ms);
+    promise.then(
+      (v) => (clearTimeout(timer), resolve(v)),
+      (e) => (clearTimeout(timer), reject(e))
+    );
+  });
+}
+
 /** An error the page reported while a test ran: an uncaught exception or a `console.error`. */
 export interface PageError {
   kind: 'exception' | 'console';
@@ -98,6 +112,15 @@ export class Page {
     const base = { key, code: key, windowsVirtualKeyCode: codes[key] };
     await this.send('Input.dispatchKeyEvent', { type: 'keyDown', ...base });
     await this.send('Input.dispatchKeyEvent', { type: 'keyUp', ...base });
+  }
+
+  /** Whether the page still runs script. One that froze, as a layout that never ends does, answers nothing. */
+  async responsive(ms: number): Promise<boolean> {
+    return within(
+      this.run(() => true).catch(() => false),
+      ms,
+      false
+    );
   }
 
   async screenshot(path: string): Promise<void> {

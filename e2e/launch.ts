@@ -19,7 +19,7 @@ import { createServer } from 'node:net';
 import { homedir, platform, tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { Page } from './cdp';
+import { Page, within } from './cdp';
 
 export const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const FIXTURES = 'test-vault/fixtures';
@@ -161,6 +161,21 @@ async function readyWithPlugin(page: Page): Promise<void> {
     return Boolean(plugins.plugins['orbis-reader']);
   });
   if (!loaded) throw new Error('Orbis Reader did not load in the test vault');
+  // **The clipboard is yours.** Electron's clipboard is the computer's, so a test that copies would replace what you
+  // copied. Orbis copies through `navigator.clipboard`; in the test window that keeps the text in the page instead,
+  // where a test reads it (`window.orbisE2eClipboard`).
+  await page.run(() => {
+    const w = window as unknown as { orbisE2eClipboard: string };
+    w.orbisE2eClipboard = '';
+    Object.assign(navigator.clipboard, {
+      writeText: async (text: string) => {
+        w.orbisE2eClipboard = text;
+      },
+      write: async () => undefined,
+      readText: async () => w.orbisE2eClipboard,
+      read: async () => [],
+    });
+  });
   // The trust prompt and the welcome are closed by the runner before the first test, as every dialog is.
 }
 
@@ -197,20 +212,33 @@ export async function launchObsidian(opts: { keep?: boolean } = {}): Promise<Obs
     page,
     vault,
     async close() {
+      const exited = new Promise((r) => (child.exitCode !== null ? r(true) : child.once('exit', () => r(true))));
       // Closing through the browser target ends every Electron helper process too, which killing the main one
       // does not always do on Windows.
-      try {
-        const version = (await (await fetch(`http://127.0.0.1:${port}/json/version`)).json()) as {
-          webSocketDebuggerUrl: string;
-        };
-        const ws = new WebSocket(version.webSocketDebuggerUrl);
-        await new Promise((r) => ws.addEventListener('open', r, { once: true }));
-        ws.send(JSON.stringify({ id: 1, method: 'Browser.close' }));
-      } catch {
-        child.kill();
-      }
+      await within(
+        (async () => {
+          const version = (await (await fetch(`http://127.0.0.1:${port}/json/version`)).json()) as {
+            webSocketDebuggerUrl: string;
+          };
+          const ws = new WebSocket(version.webSocketDebuggerUrl);
+          await new Promise((r) => ws.addEventListener('open', r, { once: true }));
+          ws.send(JSON.stringify({ id: 1, method: 'Browser.close' }));
+        })().catch(() => undefined),
+        5_000,
+        undefined
+      );
       page?.close();
-      await new Promise((r) => (child.exitCode !== null ? r(null) : child.once('exit', r)));
+      // A window that froze can keep Obsidian from closing. Then it is ended, with every process it started.
+      if (!(await within(exited, 15_000, false))) {
+        if (platform() === 'win32' && child.pid) {
+          try {
+            execFileSync('taskkill', ['/pid', String(child.pid), '/T', '/F'], { stdio: 'ignore' });
+          } catch {
+            /* already gone */
+          }
+        } else child.kill('SIGKILL');
+        await within(exited, 10_000, false);
+      }
       if (opts.keep) console.log(`Kept the run's vault and user data in ${runDir}`);
       else rmSync(runDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 500 });
     },

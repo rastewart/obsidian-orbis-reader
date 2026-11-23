@@ -31,14 +31,23 @@ export class TestFailure extends Error {}
 /**
  * Closes whatever dialogs are open, with Escape, as a person would. Orbis raises some on its own: the welcome on a
  * first run, and the device-locations and reading-records prompts at a book open.
+ *
+ * Obsidian's dialogs are `.modal-container`s, and Orbis's own are `.orbis-popup`s, placed in the page's body. A dialog
+ * Escape does not close fails the test: a person using the keyboard would be stuck in it.
  */
 export async function dismissDialogs(page: Page): Promise<void> {
+  const openDialog = () =>
+    page.run(() => {
+      const dialog = document.querySelector('.modal-container, .orbis-popup');
+      return dialog ? (dialog.textContent ?? '').trim().replace(/\s+/g, ' ').slice(0, 80) || '(no text)' : null;
+    });
   for (let i = 0; i < 6; i++) {
-    const open = await page.run(() => document.querySelectorAll('.modal-container').length > 0);
-    if (!open) return;
+    if ((await openDialog()) === null) return;
     await page.press('Escape');
     await new Promise((r) => setTimeout(r, 300));
   }
+  const stuck = await openDialog();
+  if (stuck !== null) throw new TestFailure(`a dialog did not close with Escape: "${stuck}"`);
 }
 
 export function expect(condition: boolean, message: string): asserts condition {

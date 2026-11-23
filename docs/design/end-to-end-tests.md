@@ -26,7 +26,8 @@ iPhone, iPad and Android, and how the reader feels to use.
 
 They run on your computer, **not in CI**. A CI runner offers Linux, which is not a platform Orbis is tested on, and
 an unattended Obsidian there would fail for reasons that have nothing to do with Orbis. On your computer they run
-the Obsidian you use, on Windows or macOS, and the tests take about 10 seconds once the build is done.
+the Obsidian you use, on Windows or macOS, and the tests take about three minutes once the build is done. A
+minute of that is running every command; `pnpm e2e "<name>"` runs one test while you work on it.
 
 In the order of a release (Feature Development Guide, *The order of a release*), they run after CI passes and before
 a beta or a release is tagged.
@@ -41,7 +42,7 @@ a beta or a release is tagged.
 | `e2e/cdp.ts` | Talks to the Obsidian window over the Chrome DevTools Protocol, collects errors, presses keys, takes screenshots |
 | `e2e/in-page.ts` | The functions that run inside Obsidian, and the parts of `app` and `OrbisReaderView` they reach |
 | `e2e/runner.ts` | The test shape, `expect`, golden files and closing dialogs |
-| `e2e/run.ts` | The command. Runs the tests one after another in one window, and lists the known issues |
+| `e2e/run.ts` | The command. Runs the tests one after another in one window, stops if Obsidian freezes, and lists the known issues |
 | `e2e/tests/` | The tests |
 | `e2e/golden/` | The output the tests compare with |
 
@@ -75,6 +76,18 @@ dialog is closed with the others.
 
 **Dialogs.** Before each test, and after a book opens, every open dialog is closed with Escape, as a person closes
 them. Orbis raises some on its own, among them the welcome and the device-locations and reading-records prompts.
+Obsidian's dialogs are `.modal-container`s and Orbis's own are `.orbis-popup`s, placed in the page's body, and both
+are looked for. A dialog that Escape does not close fails the test, since a person using the keyboard would be stuck
+in it. A test that saves through a dialog presses its main button (`saveDialog`) and picks a choice by its label
+(`pickInDialog`), so the dialog itself is tested too.
+
+**Your clipboard.** Electron's clipboard is the computer's, so a test that copies would replace what you copied. Once
+Orbis is on, the launcher has `navigator.clipboard` keep the text in the page, where `copiedText` reads it.
+
+**A frozen window.** A layout that never ends stops the window running script, and every wait on it would last
+forever. A test that does not finish fails at its time limit (60 seconds, or its own `timeoutMs`). The run then asks
+the window for an answer, and if none comes within 5 seconds it reports that Obsidian stopped responding, names the
+tests it did not run, and ends Obsidian with every process it started.
 
 **Errors.** Every uncaught exception and every `console.error` during a test fails it, unless the test lists it in
 `allowErrors` or it is a known issue (below).
@@ -124,10 +137,31 @@ the old sort back, and it reported the passages out of book order.
 
 ## The tests
 
-| Test | What it checks |
-|---|---|
-| opens EPUB, MOBI, AZW3, FB2, CBZ | The book renders, has sections, and for text formats has contents and shows text past the cover. A comic shows a page image |
-| generate notes lists passages in book order | Three paragraphs marked first, third, then second come out in book order in Generate notes, whose output matches `e2e/golden/generate-notes.md` |
+The tests run in the order below. Running every command is last, because a command can change a setting.
+
+| File | Test | What it checks |
+|---|---|---|
+| `books.ts` | opens EPUB, MOBI, AZW3, FB2, CBZ | The book renders, has sections, and for text formats has contents and shows text past the cover. A comic shows a page image |
+| `place.ts` | a book reopens where the reader left it | Closed and opened again, a book is at the section and location it was saved at, on a page boundary |
+| | a book keeps its place when Orbis reloads | Orbis turned off and on rebuilds the book's view at the same place |
+| | a book keeps its place behind another tab | The technical book's chapter with a bordered table, hidden behind a note and shown again. Without foliate patch 8 it froze Obsidian |
+| | a book left at its cover reopens on the cover page | Without foliate patch 39 the cover was shifted sideways |
+| `notes.ts` | generate notes lists passages in book order | Three paragraphs marked first, third, then second come out in book order, matching `generate-notes.md` |
+| `marks.ts` | marks made in quick succession are all kept | Twenty marks made 5 to 20 ms apart are all held, and all saved, through a reload |
+| | copy passage selections gives them in book order | The copy from a MOBI, in book order, matching `copy-passage-selections.md` |
+| | generate notes writes one file per chapter | The dialog's *Book folder* choice, from an AZW3, matching `generate-notes-per-chapter.md` |
+| `conversions.ts` | save as Markdown | Four books in four formats, a note per chapter, each matching its `markdown-*.md` |
+| | save as PDF, save annotations as PDF | Each writes a PDF with pages |
+| | save note as EPUB makes a book that opens | The book's contents match `note-as-epub-contents.txt` |
+| | read in Orbis Reader opens a note as a book | The note's prose is in the book shown |
+| `search.ts` | search finds a word and a result lands on it | The results match `search-boathouse.txt`, the next Enter shows a page holding a result, and the book then closes without an error |
+| `checks.ts` | hostile-scripts, stylesheet-checks, stylesheet-hazards | Each book's own checks read PASS, none FAIL |
+| | an empty file, a file that is not a book | The tab says why, matching `open-*.txt` |
+| `commands.ts` | every command runs without an error | Each command the palette offers with a book open, toggles twice. Three are left out, each with its reason in `SKIP` |
+
+Each test except the self-checking books was made to fail first, on the code it guards. For the hostile book that
+needs both of desktop's protections removed, which was not done. It passes here because nothing got through, which
+proves least on desktop, and its device run is still the check that matters.
 
 ---
 
@@ -140,8 +174,18 @@ with its fix.
 The list is empty. Its first entry was an error from foliate's paginator, which walked a chapter's document before
 the document had a body, in about one run in three. foliate patch 40 fixed it (the fork's `ORBIS-CHANGES.md`).
 
-Found while writing the notes test, and not listed because a test cannot trigger it at a person's pace.
+---
 
-- **Marks made within a few tens of milliseconds can lose one.** Saving a mark writes the book's Orbis file, and the
-  reload that follows replaces the list in memory with what was read, while a second mark made in the meantime is not
-  saved yet. A person cannot mark that fast, so the test spaces its marks as a person would.
+## What the tests found
+
+Writing them turned up these, each fixed with its test.
+
+- **Marks made quickly could lose one.** Each save announces that the book changed, and the view reloaded its marks
+  from the file, dropping one made while an earlier save was still being written. Fixed in `AnnotationController`
+  (`savesInFlight`); *marks made in quick succession are all kept*.
+- **Save as Markdown pressed early wrote other notes.** Saving before the dialog had named the book's unlisted
+  sections wrote them as `Section 4` and split the book differently. Fixed in `BookExportModal` (`naming`);
+  *save as Markdown: technical-book.epub*.
+- **Closing a book with search results threw an error for each.** Fixed in `SearchController` (`forgetAnnotations`);
+  *search finds a word and a result lands on it*.
+- **The paginator's error on a document with no body.** foliate patch 40, above.

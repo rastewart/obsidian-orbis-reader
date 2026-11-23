@@ -12,12 +12,29 @@
 
 import { mkdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
+import { within } from './cdp';
 import { launchObsidian, ROOT } from './launch';
 import { dismissDialogs, type E2eTest, goldenCheck, TestFailure } from './runner';
 import { bookTests } from './tests/books';
+import { checkTests } from './tests/checks';
+import { commandTests } from './tests/commands';
+import { conversionTests } from './tests/conversions';
+import { marksTests } from './tests/marks';
 import { notesTests } from './tests/notes';
+import { placeTests } from './tests/place';
+import { searchTests } from './tests/search';
 
-const ALL: E2eTest[] = [...bookTests, ...notesTests];
+// The commands run last: a command can change a setting, and the other tests start from the defaults.
+const ALL: E2eTest[] = [
+  ...bookTests,
+  ...placeTests,
+  ...notesTests,
+  ...marksTests,
+  ...conversionTests,
+  ...searchTests,
+  ...checkTests,
+  ...commandTests,
+];
 const DEFAULT_TIMEOUT_MS = 60_000;
 
 /**
@@ -83,8 +100,22 @@ async function main(): Promise<number> {
       const seconds = ((Date.now() - started) / 1000).toFixed(1);
       if (problem) {
         failures.push(test.name);
-        await obsidian.page.screenshot(join(OUT, `${slug(test.name)}.png`)).catch(() => undefined);
+        const frozen = !(await obsidian.page.responsive(5_000));
+        if (frozen)
+          problem += '\n  Obsidian stopped responding: its window runs no script, as when a layout never ends';
+        else {
+          await within(
+            obsidian.page.screenshot(join(OUT, `${slug(test.name)}.png`)).catch(() => undefined),
+            5_000,
+            undefined
+          );
+        }
         console.log(`  ✗ ${test.name} (${seconds} s)\n    ${problem.replace(/\n/g, '\n    ')}`);
+        if (frozen) {
+          const notRun = selected.slice(selected.indexOf(test) + 1);
+          if (notRun.length) console.log(`  Not run, because Obsidian froze: ${notRun.map((t) => t.name).join(', ')}`);
+          break;
+        }
       } else {
         console.log(`  ✓ ${test.name} (${seconds} s)`);
       }
