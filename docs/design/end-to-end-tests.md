@@ -26,7 +26,7 @@ iPhone, iPad and Android, and how the reader feels to use.
 
 They run on your computer, **not in CI**. A CI runner offers Linux, which is not a platform Orbis is tested on, and
 an unattended Obsidian there would fail for reasons that have nothing to do with Orbis. On your computer they run
-the Obsidian you use, on Windows or macOS, and a run takes under a minute.
+the Obsidian you use, on Windows or macOS, and the tests take about 10 seconds once the build is done.
 
 In the order of a release (Feature Development Guide, *The order of a release*), they run after CI passes and before
 a beta or a release is tagged.
@@ -47,7 +47,8 @@ a beta or a release is tagged.
 
 **A separate Obsidian.** Obsidian is started with its own `--user-data-dir`, so it runs beside the Obsidian you have
 open and shares nothing with it, neither its vault list nor its settings nor its local storage. It never opens your
-vaults. Each run gets a new folder under the system's temporary folder, deleted at the end.
+vaults. Each run gets a new folder under the system's temporary folder, deleted at the end. Its window opens and
+closes by itself, and on a Mac it shows as a second Obsidian icon in the Dock while it runs.
 
 **The Obsidian version you use.** Obsidian installs updates as an app file, `obsidian-<version>.asar`, in its own
 settings folder. The run copies the newest one, so the tests run the version you run rather than the one the
@@ -136,10 +137,8 @@ the old sort back, and it reported the passages out of book order.
 seen rather than failing the run, so the run stays a reliable yes or no while the bug stays in view. Remove an entry
 with its fix.
 
-- **`createTreeWalker` on a document with no body.** foliate's paginator renders from its `ResizeObserver` while a
-  section's document is between loads, and `getVisibleRange` walks `doc.body`, which is not there yet. It shows up
-  when a test changes section quickly right after another book's tab closed. Orbis logs it as an unhandled rejection
-  and the reader is unaffected. The fix belongs in the foliate fork, as a guard in `getVisibleRange` or in `render`.
+The list is empty. Its first entry was an error from foliate's paginator, which walked a chapter's document before
+the document had a body, in about one run in three. foliate patch 40 fixed it (the fork's `ORBIS-CHANGES.md`).
 
 Found while writing the notes test, and not listed because a test cannot trigger it at a person's pace.
 

@@ -25,13 +25,7 @@ const DEFAULT_TIMEOUT_MS = 60_000;
  * not counted as a failure, so the run stays a reliable yes or no while the bug stays in view. Each names where it is
  * tracked; remove it with the fix.
  */
-const KNOWN_ISSUES: { text: string; issue: string }[] = [
-  {
-    text: "Failed to execute 'createTreeWalker' on 'Document'",
-    issue:
-      "foliate's paginator renders from a resize while a section's document has no body yet (docs/design/end-to-end-tests.md, Known issues)",
-  },
-];
+const KNOWN_ISSUES: { text: string; issue: string }[] = [];
 
 const args = process.argv.slice(2);
 const update = args.includes('--update');
