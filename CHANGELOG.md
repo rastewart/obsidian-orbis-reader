@@ -14,6 +14,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 ### Fixed
 
 - Passage selections, notes and bookmarks are now listed in the order they appear in the book. Before, marks close together on a page were listed in the order you made them. This affected generated notes, the copy to clipboard commands, the Saved list in the side panel and the book's data page.
+- A paragraph marked from the listening player while a recording played, with the mark button set to Paragraph, is now marked in the book. Before, the mark or note was saved but showed nothing. **Scan annotation data for problems** now offers **Repair** for marks and notes saved this way, and puts them back on their paragraph.
+- A long chapter that Calibre split into two files is now one chapter in Save as Markdown, Save as PDF and the recording list. Before, the second half was a chapter of its own, named by the chapter and the book's title.
+- **Open this link?** now calls a link with a space in its web address's host *Not a valid address* on desktop and Android, and offers only **Cancel**, as on iPhone and iPad. Before, it called the link a web page, showed the space as `%20` and offered **Open**.
 
 ## [0.1.6] — 2026-11-21
 
