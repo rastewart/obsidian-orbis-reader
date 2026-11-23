@@ -9,12 +9,20 @@
  * non-whitespace character keeps the stored CFI tight, so overlap checks and exports see the passage
  * itself. (Before ORBIS patch 15 such a range also drew nothing — the phantom search result.)
  *
- * No-op if the range is already tight or is entirely whitespace (nothing to tighten to).
+ * **An end on an element is moved onto its text too**, even with no whitespace to trim. A range made from an element
+ * (`selectNodeContents(p)`, which the listening player's paragraph mark uses when playing a recording) runs from
+ * `(p, 0)` to `(p, n)`, and a CFI built from those two element ends puts its start and end at the same step:
+ * `epubcfi(/6/10!/4,/4,/4)`, a position that covers no text. Moved onto the first and last characters inside, it
+ * covers the paragraph.
+ *
+ * No-op if the range is already tight and ends in text, or is entirely whitespace (nothing to tighten to).
  */
 export function tightenRange(range: Range): void {
   const text = range.toString();
   const trimmed = text.trim();
-  if (!trimmed || trimmed === text) return;
+  if (!trimmed) return;
+  const inText = (node: Node) => node.nodeType === Node.TEXT_NODE;
+  if (trimmed === text && inText(range.startContainer) && inText(range.endContainer)) return;
   const lead = text.length - text.replace(/^\s+/, '').length;
   const trail = text.length - text.replace(/\s+$/, '').length;
 

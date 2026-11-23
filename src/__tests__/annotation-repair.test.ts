@@ -3,7 +3,13 @@
 
 import { describe, expect, it } from 'vitest';
 import type { Highlight, Note } from '../progress';
-import { scanAnnotationData } from '../reader/annotation-repair';
+import {
+  collapsedElementPath,
+  elementAtSteps,
+  scanAnnotationData,
+  storedText,
+  textRangeOf,
+} from '../reader/annotation-repair';
 
 const RANGE = 'epubcfi(/6/4!/4/2,/1:0,/1:12)';
 const BACKWARDS = 'epubcfi(/6/4!/4/2,/1:12,/1:0)';
@@ -43,5 +49,55 @@ describe('scanAnnotationData', () => {
       notes: [],
     });
     expect(found).toEqual([]);
+  });
+});
+
+describe('collapsedElementPath', () => {
+  it('finds the paragraph an empty element range was made on', () => {
+    expect(collapsedElementPath('epubcfi(/6/10!/4,/4,/4)')).toEqual({ point: 'epubcfi(/6/10!/4/4)', steps: [4, 4] });
+  });
+
+  it('keeps an id on a step', () => {
+    expect(collapsedElementPath('epubcfi(/6/4[ch1]!/4[body]/2,/6[p3],/6[p3])')).toEqual({
+      point: 'epubcfi(/6/4[ch1]!/4[body]/2/6[p3])',
+      steps: [4, 2, 6],
+    });
+  });
+
+  it('leaves a range that covers text alone', () => {
+    expect(collapsedElementPath('epubcfi(/6/4!/4/6,/1:0,/1:434)')).toBeNull();
+  });
+
+  it('leaves an empty range whose ends are in text alone', () => {
+    // Not the mistake this repairs: a collapsed point in text names no passage.
+    expect(collapsedElementPath('epubcfi(/6/4!/4/6,/1:12,/1:12)')).toBeNull();
+  });
+
+  it('leaves a point, and anything that is not a CFI, alone', () => {
+    expect(collapsedElementPath('epubcfi(/6/4!/4/6)')).toBeNull();
+    expect(collapsedElementPath('')).toBeNull();
+  });
+});
+
+describe('putting a paragraph back', () => {
+  const doc = new DOMParser().parseFromString(
+    '<html><head></head><body><h1>Chapter</h1><p>\n Nobody in <em>Thistlecombe</em> could say why. </p></body></html>',
+    'text/html'
+  );
+
+  it('walks CFI steps from the root element', () => {
+    expect(elementAtSteps(doc, [4, 4])?.tagName).toBe('P');
+    expect(elementAtSteps(doc, [4, 2])?.tagName).toBe('H1');
+  });
+
+  it('leads nowhere on an odd step or one past the last child', () => {
+    expect(elementAtSteps(doc, [4, 3])).toBeNull();
+    expect(elementAtSteps(doc, [4, 8])).toBeNull();
+  });
+
+  it('covers the element from its first character to its last', () => {
+    const range = textRangeOf(elementAtSteps(doc, [4, 4]) as Element);
+    expect(range?.toString()).toBe('Nobody in Thistlecombe could say why.');
+    expect(storedText(range?.toString() ?? '')).toBe(storedText(' Nobody in  Thistlecombe could say why.\n'));
   });
 });

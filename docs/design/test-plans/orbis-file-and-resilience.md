@@ -98,7 +98,9 @@ All in **Workhorse Copy.epub**'s reading data.
 
 - [ ] `once` With a book's tab active, the palette lists **Scan annotation data for problems**. With a note active, it does not.
 
-- [ ] `once` In `Workhorse Copy.epub`, run it: **Annotation data check**, saying *No problems found — all selections and notes look healthy.*, with **Close**. Broken and duplicate marks cannot be made from the reader; `annotation-repair.test.ts` checks that the scan finds them.
+- [ ] `once` In `Workhorse Copy.epub`, run it: **Annotation data check**, saying *No problems found — all selections and notes look healthy.*, with **Close**. Broken and duplicate marks cannot be made from the reader; `annotation-repair.test.ts` checks that the scan finds them, and the end-to-end test *scan puts a mark and a note stored empty back on their passages* that it offers **Repair** for one stored empty on its paragraph, as a paragraph mark made while a recording played was before 0.1.7.
+
+- [ ] `once` If a vault holds a book with a paragraph mark or note made from the listening player while a recording played, before 0.1.7, open that book and run the scan: such a mark shows nothing in the book, and the scan lists it as *broken range · can be repaired*, with *N of them can be put back on the passage they were made on.* Select **Repair**: a notice says *Repaired 1 passage selection* (or notes), and the passage is marked again.
 
 ---
 ## Moving, renaming and deleting a book

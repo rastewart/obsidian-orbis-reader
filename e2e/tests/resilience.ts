@@ -5,15 +5,22 @@
 import {
   closeBooks,
   copyVaultFile,
+  goToSectionWith,
+  type HeldAnnotation,
+  heldAnnotations,
+  markParagraphElement,
   markParagraphs,
   markPositions,
+  noteParagraph,
   noticeCount,
   noticesSince,
   openBook,
+  reloadOrbis,
   removeVaultPath,
   renameInVault,
   runCommand,
   settledPlace,
+  storeAsEmptyRanges,
   trashInVault,
   turnTo,
   vaultFiles,
@@ -272,4 +279,85 @@ export const resilienceTests: E2eTest[] = [
       );
     },
   },
+  {
+    name: 'a mark made on a whole paragraph is stored over its text',
+    async run({ page }) {
+      await page.run(copyVaultFile, 'fixtures/parts-and-chapters.epub', `${DIR}/Paragraph Copy.epub`, null);
+      await page.run(openBook, `${DIR}/Paragraph Copy.epub`, 30_000);
+      await dismissDialogs(page);
+      await page.run(goToSectionWith, 'Rookhaven', 20);
+      // As the listening player's paragraph mark does while a recording plays: a range on the element itself.
+      const text = await page.run(markParagraphElement, 0, 'Rookhaven');
+      const [held] = await page.run(heldAnnotations);
+      expect(held?.shown === text, `the mark made on the paragraph covers "${held?.shown ?? '(nothing)'}"`);
+      await page.run(runCommand, 'orbis-reader:orbis-scan-annotation-data-for-problems');
+      const said = await page.run(popupOrModalText);
+      expect(said.includes('No problems found'), `the scan said "${said.slice(0, 160)}"`);
+    },
+  },
+  {
+    name: 'scan puts a mark and a note stored empty back on their passages',
+    async run({ page }) {
+      await page.run(copyVaultFile, 'fixtures/parts-and-chapters.epub', `${DIR}/Repair Copy.epub`, null);
+      await page.run(openBook, `${DIR}/Repair Copy.epub`, 30_000);
+      await dismissDialogs(page);
+      await page.run(markParagraphs, [0], 300);
+      await page.run(noteParagraph, 1, 'A note made while a recording played.', null);
+      const made = await page.run(heldAnnotations);
+      expect(made.length === 2, `marking left ${made.length} annotations, not a mark and a note`);
+      await page.run(
+        storeAsEmptyRanges,
+        made.map((a) => a.id)
+      );
+      await new Promise((r) => setTimeout(r, 1000));
+      expect(await page.run(reloadOrbis, 30_000), 'the book was not shown again after Orbis reloaded');
+      const broken = await page.run(heldAnnotations);
+      expect(
+        broken.every((a) => a.shown === null),
+        'the emptied ranges still cover text'
+      );
+
+      await page.run(runCommand, 'orbis-reader:orbis-scan-annotation-data-for-problems');
+      const said = await page.run(popupOrModalText);
+      expect(said.includes('2 of them can be put back'), `the scan said "${said.slice(0, 200)}"`);
+      const from = await page.run(noticeCount);
+      await page.run(pressModalButton, 'Repair 2');
+      const notices = await page.run(noticesSince, from, 'Repaired', 5000);
+      expect(notices.includes('Repaired 1 passage selection and 1 note'), `repairing said ${JSON.stringify(notices)}`);
+      expectOnText('repaired', await page.run(heldAnnotations), made);
+      await new Promise((r) => setTimeout(r, 1000));
+      expect(await page.run(reloadOrbis, 30_000), 'the book was not shown again after Orbis reloaded');
+      expectOnText('repaired and reloaded', await page.run(heldAnnotations), made);
+    },
+  },
 ];
+
+/** Every annotation is back on the passage it was made on, with the note it carried. */
+function expectOnText(when: string, now: HeldAnnotation[], made: HeldAnnotation[]): void {
+  expect(now.length === made.length, `${when}, the book holds ${now.length} annotations, not ${made.length}`);
+  for (const a of now) {
+    const was = made.find((m) => m.id === a.id);
+    expect(a.shown === a.stored && a.stored === was?.stored, `${when}, a ${a.kind} covers "${a.shown ?? '(nothing)'}"`);
+    expect(a.note === was?.note, `${when}, the note reads "${a.note}"`);
+  }
+}
+
+/** The text of the dialog in front, Obsidian's or Orbis's, once it has some. */
+async function popupOrModalText(): Promise<string> {
+  for (let i = 0; i < 50; i++) {
+    const text = document.querySelector('.modal-container, .orbis-popup')?.textContent ?? '';
+    if (text.trim().length > 30) return text.replace(/\s+/g, ' ').trim();
+    await new Promise((r) => setTimeout(r, 200));
+  }
+  return '';
+}
+
+/** Selects the button labelled `label` in the dialog in front. */
+function pressModalButton(label: string): void {
+  const dialogs = Array.from(document.querySelectorAll<HTMLElement>('.modal-container, .orbis-popup'));
+  const button = Array.from(dialogs[dialogs.length - 1]?.querySelectorAll<HTMLButtonElement>('button') ?? []).find(
+    (b) => (b.textContent ?? '').trim() === label
+  );
+  if (!button) throw new Error(`the dialog has no "${label}" button`);
+  button.click();
+}

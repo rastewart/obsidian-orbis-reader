@@ -201,6 +201,8 @@ These use `long-chapter.epub` and the on-device engine — **Settings → Listen
 
 - [ ] `each` On a recorded track, **↻** moves exactly fifteen seconds, mid-sentence if that is where it lands. On **Chapter One**, the middle time counts the whole book, the unrecorded chapter included — over an hour.
 
+- [ ] `once` On a recorded track, set **How much the mark button marks** to **Paragraph**, select **Mark the passage**, then **Add note…** on another paragraph and save the note. Both paragraphs are marked in the book, and **Scan annotation data for problems** finds nothing. Before 0.1.7 both were saved with an empty range and showed nothing. Set the mark button back to **Sentence**.
+
 - [ ] `desktop` In **Edit recording**, select the trash on **Chapter Three**: **Delete this track?** — *“Chapter Three: Morning” loses its recorded audio, and plays in the live voice until it is recorded again.* Select **Cancel**: nothing changes. Select the trash again and **Delete**: **Deleted**, and the list says **1 of 5 tracks**. Record **Chapter Three** again.
 
 - [ ] `once` On a device with no voice downloaded, open `long-chapter.epub` at **Chapter One**, with **Night reads** the source and synced from the device that recorded it, and select **Listen**: no **Listen needs a voice** — the bar opens, and **▶** plays the recording. Select **⏭**: on **The Long Night 1 of 3**, which has to be read live, **▶** asks for a voice.

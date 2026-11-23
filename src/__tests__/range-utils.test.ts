@@ -73,4 +73,34 @@ describe('tightenRange', () => {
     tightenRange(r);
     expect(r.toString()).toBe('alpha beta gamma');
   });
+
+  it('moves the ends of a range made from an element onto its text', () => {
+    // `selectNodeContents(p)`: both ends on the element itself. Left there, its CFI has the same start and end.
+    const doc = parse('<div><p>Nobody in <em>Thistlecombe</em> could say why.</p></div>');
+    const p = doc.querySelector('p')!;
+    const r = doc.createRange();
+    r.selectNodeContents(p);
+
+    tightenRange(r);
+
+    const first = p.firstChild as Text;
+    const last = p.lastChild as Text;
+    expect(r.startContainer).toBe(first);
+    expect(r.startOffset).toBe(0);
+    expect(r.endContainer).toBe(last);
+    expect(r.endOffset).toBe(last.data.length);
+    expect(r.toString()).toBe('Nobody in Thistlecombe could say why.');
+  });
+
+  it('moves element ends onto the text past whitespace at the edges of the element', () => {
+    const doc = parse('<div><p>\n  <span>Wren</span> mended the weir.\n</p></div>');
+    const r = doc.createRange();
+    r.selectNodeContents(doc.querySelector('p')!);
+
+    tightenRange(r);
+
+    expect(r.startContainer.nodeType).toBe(Node.TEXT_NODE);
+    expect(r.endContainer.nodeType).toBe(Node.TEXT_NODE);
+    expect(r.toString()).toBe('Wren mended the weir.');
+  });
 });

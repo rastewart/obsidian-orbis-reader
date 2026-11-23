@@ -2577,6 +2577,43 @@ export class AnnotationController {
     return { highlights: hRemoved.length, notes: nRemoved.length };
   }
 
+  /** The CFI a range in section `sectionIndex` is stored under, as a mark made on it would be. */
+  cfiForRange(range: Range, sectionIndex: number): string {
+    return this.rangeCfi(range, sectionIndex);
+  }
+
+  /**
+   * Put passage selections and notes at new places, by id: the repair for a range stored empty (see
+   * `collapsedElementPath`). Each keeps its id, text, mark and note, so its reading record follows it. Saves what
+   * moved and draws it again. Returns how many of each moved.
+   */
+  moveAnnotations(moves: ReadonlyMap<string, string>): { highlights: number; notes: number } {
+    let highlights = 0;
+    let notes = 0;
+    this.highlights = this.highlights.map((h) => {
+      const to = moves.get(h.id);
+      if (!to) return h;
+      void this.ctx.foliateView?.deleteAnnotation({ value: h.cfiRange });
+      highlights++;
+      return { ...h, cfiRange: to };
+    });
+    this.notes = this.notes.map((n) => {
+      const to = moves.get(n.id);
+      if (!to) return n;
+      void this.ctx.foliateView?.deleteAnnotation({ value: n.cfiRange });
+      this.noteIcons.forget(n.cfiRange);
+      notes++;
+      return { ...n, cfiRange: to };
+    });
+    if (highlights) this.persistHighlights();
+    if (notes) this.persistNotes();
+    this.redrawAnnotations();
+    this.noteIcons.refresh();
+    this.host.refreshSavedPanelIfOpen();
+    this.ctx.debug(`annotations moved — ${highlights} passage selections, ${notes} notes`, 'annot');
+    return { highlights, notes };
+  }
+
   deleteNote(id: string): void {
     const note = this.notes.find((n) => n.id === id);
     if (note) {

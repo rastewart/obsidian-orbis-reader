@@ -1487,3 +1487,47 @@ export async function closeEveryTab(): Promise<void> {
   for (const leaf of leaves) leaf.detach();
   await new Promise((r) => setTimeout(r, 300));
 }
+
+/**
+ * Marks paragraph `n` of the shown section by the paragraph element itself, `(p, 0)` to `(p, n)`, as the listening
+ * player's paragraph mark does while a recording plays. Returns the paragraph's text.
+ */
+export async function markParagraphElement(n: number, sectionText: string): Promise<string> {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
+  const fv = view?.foliateView;
+  if (!view || !fv) throw new Error('no book is open');
+  for (let wait = 0; !view.annot.offeredPreset() && wait < 50; wait++) await new Promise((r) => setTimeout(r, 200));
+  const shown = fv.renderer.getContents().find((c) => (c.doc.body?.textContent ?? '').includes(sectionText));
+  if (!shown) throw new Error(`no section on screen has "${sectionText}"`);
+  const p = Array.from(shown.doc.querySelectorAll('p')).filter((el) => (el.textContent ?? '').trim().length > 40)[n];
+  const range = shown.doc.createRange();
+  range.selectNodeContents(p);
+  view.annot.highlightRange(range, shown.index);
+  await new Promise((r) => setTimeout(r, 300));
+  return (p.textContent ?? '').replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Stores the open book's annotations with these ids as a paragraph mark made from a recording was stored before the
+ * fix: an empty range on the element, `epubcfi(/6/4!/4,/6,/6)` for `epubcfi(/6/4!/4/6,/1:0,/1:434)`.
+ */
+export function storeAsEmptyRanges(ids: string[]): void {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
+  const annot = view?.annot as unknown as {
+    highlights: { id: string; cfiRange: string }[];
+    notes: { id: string; cfiRange: string }[];
+    persistHighlights(): void;
+    persistNotes(): void;
+  };
+  const empty = (cfi: string) => {
+    const [parent] = cfi.replace(/^epubcfi\(|\)$/g, '').split(',');
+    const step = /\/\d+(\[[^\]]*\])?$/.exec(parent)?.[0];
+    if (!step) throw new Error(`cannot make ${cfi} empty`);
+    return `epubcfi(${parent.slice(0, -step.length)},${step},${step})`;
+  };
+  for (const a of [...annot.highlights, ...annot.notes]) if (ids.includes(a.id)) a.cfiRange = empty(a.cfiRange);
+  annot.persistHighlights();
+  annot.persistNotes();
+}

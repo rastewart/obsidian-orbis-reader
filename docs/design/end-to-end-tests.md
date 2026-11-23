@@ -212,6 +212,8 @@ The tests run in the order below. Running every command is last, because it chan
 | | damaged reading data is written again from the marks | A `.orbis` emptied or not JSON is written again with its marks; a damaged place opens the book at its start |
 | | the reading data folder mends itself | The readme is put right and comes back, the page index is rebuilt, and the folder deleted while Obsidian runs comes back |
 | | scan annotation data finds nothing wrong | |
+| | a mark made on a whole paragraph is stored over its text | A range on the paragraph element, as the listening player's paragraph mark makes from a recording |
+| | scan puts a mark and a note stored empty back on their passages | Offered as *can be repaired*, and after **Repair** each covers its passage, through a reload |
 | `records.ts` | reading records follow the marks and notes, and keep what the reader wrote | A record per mark and note, with its bases; a changed mark updates it and keeps the reader's line; a record nobody wrote in goes with its mark, one they did stays, orphaned |
 | `library.ts` | a book is cataloged, and its status and rating set from the reader | The title note matches `catalog-title-note.md`; status and rating are written to it, and a rating cleared |
 | `sync.ts` | another device's mark appears in the open book | A device file written under another device's id, as the Sync plan's first run does: the mark appears without reopening, on its text |
@@ -264,25 +266,34 @@ Writing them turned up these, each fixed with its test.
   *search finds a word and a result lands on it*.
 - **The paginator's error on a document with no body.** foliate patch 40, above.
 
-The second set found these, not yet fixed. Each is written up here so the test that met it can be changed with the fix.
+The second set found these.
 
-- **A mark on a whole element is stored as an empty range.** A range from `(p, 0)` to `(p, n)` passes `tightenRange`
-  unchanged when its text has no space at either end, and its CFI comes out with the same start and end, such as
-  `epubcfi(/6/4!/4,/8,/8)`. Scan annotation data for problems then calls the mark a broken range. The listening
-  player builds such ranges for **Mark the passage** with the mark set to **Paragraph** (`enclosingBlockRange` and the
-  block ranges in `tts-blocks.ts` use `selectNodeContents`), so those marks are likely stored this way. The golden
-  files that carry a mark's link held these empty ranges until the helpers changed.
+- **A paragraph marked while a recording played was stored as an empty range.** With the mark button set to
+  **Paragraph**, the listening player marks a recorded track's paragraph by the element itself
+  (`enclosingBlockRange`), from `(p, 0)` to `(p, n)`. `tightenRange` left such a range alone when its text had no space
+  at either end, and its CFI came out with the same start and end, `epubcfi(/6/10!/4,/4,/4)`: the mark and the note
+  were saved, but showed nothing, and Scan annotation data for problems called them broken ranges. The live voice
+  marks by the text and was never affected. Fixed in `tightenRange`, which now moves an end on an element onto its
+  text; *a mark made on a whole paragraph is stored over its text*. A mark already stored this way still names its
+  paragraph, so the scan now offers **Repair** for it when the paragraph's text is the text it stored
+  (`collapsedElementPath`); *scan puts a mark and a note stored empty back on their passages*. The test helpers had
+  made such marks too, and the golden files carrying a mark's link held these empty ranges until they changed.
+- **A space in a link's host was a web page on desktop.** Row 17 of `link-checks.epub`, `https://exa mple.com/`, was
+  shown as a web page at `exa%20mple.com` with Open, where Safari refuses the address: `readLinkAddress` trusted
+  `new URL()`, and Chromium accepts a space in a host by encoding it. Fixed by checking the host before parsing;
+  *a link out of the book is shown in full before it opens*.
+- **A chapter Calibre split in two was two chapters.** Calibre gives the second file of a split chapter the first's
+  `<title>`, and with no heading of its own that title was its name, so `continuationSections` kept it as a section of
+  its own: `# Chapter 3, Calibre Body Anchors` in the note. A file whose heading repeats the file just before it now
+  continues it; *save as Markdown: calibre-body-anchors.epub as one note*.
+
+And these, left as they are for now.
+
 - **Save as Markdown pressed before the location index is built splits a book differently.** `sectionContinues`
   answers from the location index, which the book builds after it opens, and says no section continues until then.
   Saved before that, a file that continues a chapter (`omnibus.epub`'s *This file continues*) is written as a note of
-  its own named `Section 13`, and which sections are joined changes from run to run. The Markdown tests wait for the
-  index, as a person who waits would; the dialog does not, and Save as PDF and the recording list ask the same
-  question.
-- **A space in a link's host is not *Not a valid address* on desktop.** Row 17 of `link-checks.epub`,
-  `https://exa mple.com/`, is shown as a web page at `exa%20mple.com` with Open in the accent color, where the test
-  plan expects *Not a valid address* and no Open. `readLinkAddress` trusts `new URL()`, and Chromium accepts a space in
-  a host by encoding it. `link-checks.txt` holds what Orbis does now.
+  its own named `Section 13`. The index is built once, when a book is first opened, so a person would have to open
+  a book for the first time and save it before looking at the dialog; the Markdown tests, which press Save at once,
+  wait for the index instead.
 - **To look at, not known to be wrong.** In `endnotes.epub` and `fb2-notes.fb2` a note's preview runs on through the
-  notes after it, where `footnotes.epub`'s holds one note (`note-previews.txt`). `calibre-body-anchors.epub` saved as
-  one note names its chapters with their parts (`# Part One – Chapter 1`) and gives the second half of Chapter 3 a
-  heading of its own, where the Conversions plan expects `# Chapter 1` and one heading per chapter.
+  notes after it, where `footnotes.epub`'s holds one note (`note-previews.txt`).

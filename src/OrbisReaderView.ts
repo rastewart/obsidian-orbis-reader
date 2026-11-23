@@ -9,7 +9,7 @@ import { Overlayer } from 'foliate-js/overlayer.js';
 // Static imports force esbuild to bundle foliate-js into main.js.
 import * as FoliateViewMod from 'foliate-js/view.js';
 import { App, FileView, Menu, Notice, normalizePath, Platform, TFile, WorkspaceLeaf } from 'obsidian';
-import { AnnotationCleanupModal, removedMessage } from './AnnotationCleanupModal';
+import { AnnotationCleanupModal, removedMessage, repairedMessage } from './AnnotationCleanupModal';
 import { openAnnotationPresets } from './AnnotationPresetsModal';
 import {
   type AnnotationPreset,
@@ -79,7 +79,7 @@ import {
 import { RecordingsModal } from './RecordingsModal';
 import { AnnotationController } from './reader/AnnotationController';
 import type { AnnotationHost } from './reader/AnnotationHost';
-import { scanAnnotationData } from './reader/annotation-repair';
+import { findRepairs, scanAnnotationData } from './reader/annotation-repair';
 import { BookmarkController } from './reader/BookmarkController';
 import { barOwnsKey } from './reader/bar-keys';
 import { tagBodyText } from './reader/body-text';
@@ -1800,12 +1800,25 @@ export class OrbisReaderView
   }
 
   /** Scan this book's highlights + notes for bad data (malformed ranges / duplicates) and open the
-   *  cleanup preview; removal happens only if the user confirms. */
-  openAnnotationCleanup(): void {
+   *  cleanup preview; a repair or a removal happens only if the user confirms. */
+  async openAnnotationCleanup(): Promise<void> {
     const problems = scanAnnotationData({ highlights: this.annot.highlights, notes: this.annot.notes });
-    new AnnotationCleanupModal(this.app, problems, (ids) => {
-      const removed = this.annot.removeAnnotationsByIds(ids);
-      new Notice(removedMessage(removed.highlights, removed.notes));
+    const repairs = await findRepairs(problems, {
+      sections: this.bookSections as unknown as RawSection[],
+      sectionOf: (cfi) => this.foliateView?.resolveNavigation(cfi)?.index,
+      cfiForRange: (range, index) => this.annot.cfiForRange(range, index),
+      debug: (msg) => this.addDebugEntry(msg, 'annot'),
+    });
+    new AnnotationCleanupModal(this.app, problems, {
+      repairable: new Set(repairs.keys()),
+      onRepair: (ids) => {
+        const moved = this.annot.moveAnnotations(new Map([...repairs].filter(([id]) => ids.has(id))));
+        new Notice(repairedMessage(moved.highlights, moved.notes));
+      },
+      onRemove: (ids) => {
+        const removed = this.annot.removeAnnotationsByIds(ids);
+        new Notice(removedMessage(removed.highlights, removed.notes));
+      },
     }).open();
   }
 

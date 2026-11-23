@@ -276,7 +276,7 @@ export function registerCommands(plugin: OrbisReaderPlugin): void {
     checkCallback: (checking) => {
       const view = plugin.getActiveView();
       if (!view) return false;
-      if (!checking) view.openAnnotationCleanup();
+      if (!checking) void view.openAnnotationCleanup();
       return true;
     },
   });
