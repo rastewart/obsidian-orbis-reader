@@ -1,6 +1,6 @@
 // Generate notes writes what it wrote before, with passages in book order.
 
-import { generateNotes, markParagraphs, openBook } from '../in-page';
+import { generateNotes, markParagraphs, notesProblems, openBook } from '../in-page';
 import { dismissDialogs, type E2eTest, expect } from '../runner';
 
 export const notesTests: E2eTest[] = [
@@ -14,6 +14,8 @@ export const notesTests: E2eTest[] = [
       const { starts, marks } = await page.run(markParagraphs, [0, 2, 1], 700);
       expect(marks === 3, `marking three paragraphs left ${marks} marks`);
       const notes = await page.run(generateNotes, 'e2e-notes.md');
+      const problems = await page.run(notesProblems, ['e2e-notes.md'], 20_000);
+      expect(!problems.length, `the notes written have problems\n  ${problems.join('\n  ')}`);
       const at = starts.map((s) => notes.indexOf(s));
       expect(
         at.every((i) => i >= 0),

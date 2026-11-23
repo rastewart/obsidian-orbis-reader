@@ -5,8 +5,8 @@
 // pass here proves least for the book that tries to run code; iPhone, iPad and Android are where it matters, and the
 // device run still covers them. What this guards is a change that breaks it everywhere.
 
-import { openBook, openBroken, sectionTexts } from '../in-page';
-import { dismissDialogs, type E2eTest, expect } from '../runner';
+import { copyVaultFile, openBook, openBroken, sectionTexts } from '../in-page';
+import { dismissDialogs, type E2eTest, expect, type TestContext } from '../runner';
 
 function selfCheckTest(path: string): E2eTest {
   return {
@@ -27,12 +27,22 @@ function selfCheckTest(path: string): E2eTest {
   };
 }
 
-/** A file that cannot be read says so in its tab. Orbis logs why as an error, which is expected here. */
-function brokenBookTest(path: string, what: string, logged: string, goldenName: string): E2eTest {
+/**
+ * A file that cannot be read says so in its tab. Orbis logs why as an error, which is expected here. `make` writes the
+ * file first, for one that is not a fixture.
+ */
+function brokenBookTest(
+  path: string,
+  what: string,
+  logged: string,
+  goldenName: string,
+  make?: (page: TestContext['page']) => Promise<void>
+): E2eTest {
   return {
     name: `${what} says it cannot be opened`,
     allowErrors: [logged],
     async run({ page, golden }) {
+      await make?.(page);
       const said = await page.run(openBroken, path, 15_000);
       await dismissDialogs(page);
       expect(!!said, `${path} left its tab empty`);
@@ -51,5 +61,15 @@ export const checkTests: E2eTest[] = [
     'a file that is not a book',
     'UnsupportedTypeError',
     'open-not-a-book.txt'
+  ),
+  // A download that stopped part-way: the start of a real EPUB, cut off.
+  brokenBookTest(
+    'fixtures/resilience/cut-off.epub',
+    'a cut-off EPUB',
+    'DamagedBookError',
+    'open-cut-off.txt',
+    async (page) => {
+      await page.run(copyVaultFile, 'fixtures/resilience/First-Open.epub', 'fixtures/resilience/cut-off.epub', 10_000);
+    }
   ),
 ];

@@ -83,3 +83,25 @@ export function goldenCheck(update: boolean, outDir: string): (name: string, act
     }
   };
 }
+
+const pause = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Asks `check` every quarter second until `ok` holds for its answer, and returns that answer. Fails after `timeoutMs`
+ * with `what` and the last answer: for what Orbis does a moment later, such as a file it writes.
+ */
+export async function until<T>(
+  check: () => Promise<T>,
+  ok: (value: T) => boolean,
+  timeoutMs: number,
+  what: string
+): Promise<T> {
+  const started = Date.now();
+  for (;;) {
+    const value = await check();
+    if (ok(value)) return value;
+    if (Date.now() - started > timeoutMs)
+      throw new TestFailure(`${what}, within ${timeoutMs / 1000} s. Last seen: ${JSON.stringify(value).slice(0, 400)}`);
+    await pause(250);
+  }
+}

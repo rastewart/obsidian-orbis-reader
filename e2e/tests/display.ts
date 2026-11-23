@@ -1,0 +1,244 @@
+// How a book looks: the palette's display commands stop where they should and the book follows them, the book's own
+// alignment and sizes give way where the reader asks, text stays readable on the book's own colors in each theme,
+// Focus mode comes and goes, and the keys that turn pages do, unless they are told not to.
+
+import {
+  closeBooks,
+  computedText,
+  focusState,
+  getDisplay,
+  goToSectionWith,
+  noticeCount,
+  noticesSince,
+  openBook,
+  pressInBook,
+  readingPos,
+  runCommand,
+  setDeviceValue,
+  setDisplay,
+  settledPlace,
+  turnTo,
+} from '../in-page';
+import { dismissDialogs, type E2eTest, expect, type TestContext } from '../runner';
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Runs a display command `times` times, and returns each value it stored for `key`, in turn. */
+async function step({ page }: TestContext, command: string, key: string, times: number): Promise<string[]> {
+  const seen: string[] = [];
+  for (let i = 0; i < times; i++) {
+    await page.run(runCommand, `orbis-reader:${command}`);
+    seen.push((await page.run(getDisplay, key)) ?? '');
+  }
+  return seen;
+}
+
+/** The average font size of the shown section's paragraphs, once the book has laid itself out again. */
+async function paragraphSize({ page }: TestContext): Promise<number> {
+  await sleep(800);
+  const sizes = (await page.run(computedText, 'p', 40)).map((p) => p.size);
+  return sizes.reduce((a, b) => a + b, 0) / Math.max(1, sizes.length);
+}
+
+async function open({ page }: TestContext, path: string): Promise<void> {
+  await page.run(openBook, path, 30_000);
+  await dismissDialogs(page);
+}
+
+export const displayTests: E2eTest[] = [
+  {
+    name: 'the display commands stop at their limits, and the book follows them',
+    timeoutMs: 120_000,
+    async run(context) {
+      const { page } = context;
+      await open(context, 'fixtures/annotation-workhorse.epub');
+      await page.run(goToSectionWith, 'MENDING THE NETS', 40);
+
+      const smaller = await step(context, 'orbis-decrease-font-size', 'orbis-font-size', 5);
+      expect(smaller.at(-1) === '80', `Decrease font size stopped at ${smaller.at(-1)}%, not 80%`);
+      const larger = await step(context, 'orbis-increase-font-size', 'orbis-font-size', 25);
+      expect(larger.at(-1) === '300', `Increase font size stopped at ${larger.at(-1)}%, not 300%`);
+      expect(larger[0] === '90', `Increase font size went from 80% to ${larger[0]}%, not 90%`);
+
+      const spaced = await step(context, 'orbis-increase-line-spacing', 'orbis-line-height', 25);
+      const closed = await step(context, 'orbis-decrease-line-spacing', 'orbis-line-height', 25);
+      const odd = [...spaced, ...closed].find((v) => !/^\d(\.\d)?$/.test(v));
+      expect(!odd, `a line spacing step stored ${odd}, a stray decimal`);
+      expect(
+        spaced.at(-1) === '3' && closed.at(-1) === '1',
+        `line spacing stopped at ${spaced.at(-1)} and ${closed.at(-1)}, not 3 and 1`
+      );
+
+      const dimmer = await step(context, 'orbis-decrease-brightness', 'orbis-brightness', 12);
+      expect(dimmer.at(-1) === '20', `Decrease brightness stopped at ${dimmer.at(-1)}%, not 20%`);
+      const brighter = await step(context, 'orbis-increase-brightness', 'orbis-brightness', 12);
+      expect(brighter.at(-1) === '100', `Increase brightness stopped at ${brighter.at(-1)}%, not 100%`);
+
+      const wider = await step(context, 'orbis-increase-text-margins', 'orbis-margins', 15);
+      expect(wider.at(-1) === '12', `Increase text margins stopped at ${wider.at(-1)}%, not 12%`);
+      const narrower = await step(context, 'orbis-decrease-text-margins', 'orbis-margins', 15);
+      expect(narrower.at(-1) === '0', `Decrease text margins stopped at ${narrower.at(-1)}%, not 0%`);
+
+      // Cycle text alignment names each one as it goes.
+      await page.run(setDisplay, 'orbis-text-align', 'book');
+      const from = await page.run(noticeCount);
+      const aligned = await step(context, 'orbis-cycle-text-alignment', 'orbis-text-align', 3);
+      expect(aligned.join() === 'left,justify,book', `Cycle text alignment went ${aligned.join(', ')}`);
+      const said = await page.run(noticesSince, from, 'Follow the book', 3000);
+      expect(
+        ['Text alignment: Left', 'Text alignment: Justified', 'Text alignment: Follow the book'].every((n) =>
+          said.includes(n)
+        ),
+        `Cycle text alignment said ${JSON.stringify(said)}`
+      );
+
+      // The book's text, at 100% and at 150%: half as large again.
+      await page.run(setDisplay, 'orbis-font-size', '100');
+      const at100 = await paragraphSize(context);
+      await page.run(setDisplay, 'orbis-font-size', '150');
+      const at150 = await paragraphSize(context);
+      expect(
+        Math.abs(at150 / at100 - 1.5) < 0.05,
+        `at 150% the text is ${(at150 / at100).toFixed(2)} times its size at 100%`
+      );
+    },
+  },
+  {
+    name: "the reader's alignment and size reach a book's own styles",
+    async run(context) {
+      const { page } = context;
+      await open(context, 'fixtures/body-text-styles.epub');
+      await page.run(goToSectionWith, 'Justified by the book', 40);
+      await page.run(setDisplay, 'orbis-text-align', 'book');
+      await sleep(800);
+      const own = await page.run(computedText, 'p', 20);
+      expect(
+        own.some((p) => p.align === 'justify'),
+        `the book's justified paragraphs are ${[...new Set(own.map((p) => p.align))].join(', ')}`
+      );
+      await page.run(setDisplay, 'orbis-text-align', 'left');
+      await sleep(800);
+      const left = await page.run(computedText, 'p', 20);
+      expect(!left.some((p) => p.align === 'justify'), 'with Left chosen, a paragraph is still justified');
+
+      await page.run(goToSectionWith, 'Centered and right-aligned lines', 40);
+      await sleep(800);
+      const lines = await page.run(computedText, 'p, div, h1, h2, h3', 60);
+      expect(
+        lines.some((l) => l.align === 'center'),
+        'with Left chosen, the centered lines are no longer centered'
+      );
+      expect(
+        lines.some((l) => l.align === 'right'),
+        'with Left chosen, the right-aligned signature is no longer right'
+      );
+
+      // keyword-sizes.epub sets its sizes in every way CSS allows; each chapter's text grows with the font size.
+      await page.run(setDisplay, 'orbis-text-align', 'book');
+      await open(context, 'fixtures/keyword-sizes.epub');
+      for (const chapter of [
+        'Paragraphs set small',
+        'Inline sizes',
+        'Shorthand and important',
+        'Relative sizes are left alone',
+      ]) {
+        await page.run(goToSectionWith, chapter, 40);
+        await page.run(setDisplay, 'orbis-font-size', '100');
+        const before = await paragraphSize(context);
+        await page.run(setDisplay, 'orbis-font-size', '150');
+        const after = await paragraphSize(context);
+        expect(
+          after / before > 1.3,
+          `in "${chapter}", the text at 150% is ${(after / before).toFixed(2)} times its size at 100%`
+        );
+      }
+    },
+  },
+  {
+    name: "text on a book's own backgrounds stays readable in Light, Sepia and Dark",
+    async run(context) {
+      const { page } = context;
+      await open(context, 'fixtures/contrast-checks.epub');
+      for (const theme of ['dark', 'light', 'sepia', 'dark']) {
+        await page.run(setDisplay, 'orbis-theme', theme);
+        await sleep(1500);
+        const all = await page.run(computedText, 'p, li, td, span, div', 300);
+        // Row 10: white words the book sets over a dark picture stay white, in a light theme too.
+        const pictured = all.find((r) => r.text.startsWith('Dusk over the north landing'));
+        expect(
+          pictured?.color === 'rgb(255, 255, 255)',
+          `in ${theme}, the words over the picture are ${pictured?.color}`
+        );
+        const rows = all.filter((r) => r.contrast !== null);
+        expect(rows.length > 5, `in ${theme}, too few lines could be measured: ${rows.length}`);
+        const faint = rows.filter((r) => (r.contrast ?? 0) < 3);
+        expect(
+          !faint.length,
+          `in ${theme}, ${faint.length} line(s) are below 3 : 1\n  ${faint.map((r) => `${r.contrast} : 1  ${r.text}`).join('\n  ')}`
+        );
+      }
+    },
+  },
+  {
+    name: 'focus mode hides the toolbar, comes out again, and is not remembered',
+    async run(context) {
+      const { page } = context;
+      await open(context, 'fixtures/annotation-workhorse.epub');
+      expect(await page.run(runCommand, 'orbis-reader:orbis-toggle-focus-mode'), 'Toggle focus mode was not offered');
+      await sleep(500);
+      const inside = await page.run(focusState);
+      expect(inside.focus && !inside.toolbar && inside.exit, `in Focus mode: ${JSON.stringify(inside)}`);
+      await page.run(runCommand, 'orbis-reader:orbis-toggle-focus-mode');
+      await sleep(500);
+      const outside = await page.run(focusState);
+      expect(!outside.focus && outside.toolbar && !outside.exit, `out of Focus mode: ${JSON.stringify(outside)}`);
+
+      await page.run(runCommand, 'orbis-reader:orbis-toggle-focus-mode');
+      await sleep(500);
+      await page.run(closeBooks);
+      await open(context, 'fixtures/annotation-workhorse.epub');
+      const reopened = await page.run(focusState);
+      expect(!reopened.focus && reopened.toolbar, `reopened, the book is ${JSON.stringify(reopened)}`);
+    },
+  },
+  {
+    name: 'the page keys turn the page, unless told not to',
+    async run(context) {
+      const { page } = context;
+      const book = 'fixtures/parts-and-chapters.epub';
+      const turned = async (key: string) => {
+        const before = await page.run(readingPos);
+        await page.run(pressInBook, key);
+        await page.run(settledPlace, 10_000);
+        const after = await page.run(readingPos);
+        if (after.section === before.section && after.pos === before.pos) return 0;
+        // A later section is further on, whatever its position: a page back across a chapter lands on the last page
+        // of the one before, scrolled further than the first page of this one.
+        return after.section > before.section || (after.section === before.section && after.pos > before.pos) ? 1 : -1;
+      };
+      await open(context, book);
+      await page.run(turnTo, 6, 2);
+      const keys: [string, number][] = [
+        ['ArrowRight', 1],
+        [' ', 1],
+        ['PageDown', 1],
+        ['ArrowLeft', -1],
+        ['PageUp', -1],
+        ['ArrowDown', 0],
+        ['ArrowUp', 0],
+      ];
+      for (const [key, expected] of keys) {
+        const moved = await turned(key);
+        expect(moved === expected, `"${key}" moved the page ${moved}, not ${expected}`);
+      }
+
+      await page.run(setDeviceValue, 'keyboardPageTurn', false);
+      await open(context, book);
+      await page.run(turnTo, 6, 2);
+      for (const key of ['ArrowRight', ' ', 'PageDown', 'ArrowLeft', 'PageUp']) {
+        const moved = await turned(key);
+        expect(moved === 0, `with Turn pages with the keyboard off, "${key}" still moved the page`);
+      }
+    },
+  },
+];

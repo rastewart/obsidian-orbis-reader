@@ -1,0 +1,1126 @@
+=== fixtures/First-Open.epub
+title: First Open
+author: Orbis Tester
+  Chapter One: The Weir
+  Chapter Two: Low Water
+  Chapter Three: The Tollkeeper
+  Chapter Four: A Letter from the Mill
+  Chapter Five: Market Day
+  Chapter Six: The Flood Gate
+  Chapter Seven: Night Crossing
+  Chapter Eight: The Survey
+  Chapter Nine: Two Lanterns
+  Chapter Ten: The Long Field
+  Chapter Eleven: Harvest Moon
+  Chapter Twelve: Home Again
+=== fixtures/annotation-workhorse.epub
+title: Annotation Workhorse
+author: Orbis Tester
+  ANNOTATION WORKHORSE: A SAMPLE BOOK
+  ANNOTATION WORKHORSE
+    A HOME BY THE WEIR
+    THE FIRST LANTERN
+    THE NIGHT FERRY
+    A QUARREL AT MARKET
+    THE SURVEYOR
+    MENDING THE NETS
+    THE LONG WINTER
+    A LETTER ARRIVES
+    THE BELL TOWER
+    SPRING TIDES
+    THE LOST LEDGER
+    A VISIT TO KETTLEBY
+    THE HARBOR WALL
+    THE ORCHARD GATE
+    A DAY OF RAIN
+    THE BOATHOUSE
+    FAIR WEATHER
+    THE NEW KEEPER
+    A SUPPER IN THE KITCHEN
+    THE FOOTBRIDGE
+    A STORM FROM THE EAST
+    THE MILL RACE
+    LAMPLIGHT
+    THE LAST FERRY
+    THE KEEPERS' RETURN
+    AFTERWORD
+=== fixtures/annotation-workhorse.mobi
+title: Annotation Workhorse
+author: Orbis Tester
+  ANNOTATION WORKHORSE: A SAMPLE BOOK
+  ANNOTATION WORKHORSE
+    A HOME BY THE WEIR
+    THE FIRST LANTERN
+    THE NIGHT FERRY
+    A QUARREL AT MARKET
+    THE SURVEYOR
+    MENDING THE NETS
+    THE LONG WINTER
+    A LETTER ARRIVES
+    THE BELL TOWER
+    SPRING TIDES
+    THE LOST LEDGER
+    A VISIT TO KETTLEBY
+    THE HARBOR WALL
+    THE ORCHARD GATE
+    A DAY OF RAIN
+    THE BOATHOUSE
+    FAIR WEATHER
+    THE NEW KEEPER
+    A SUPPER IN THE KITCHEN
+    THE FOOTBRIDGE
+    A STORM FROM THE EAST
+    THE MILL RACE
+    LAMPLIGHT
+    THE LAST FERRY
+    THE KEEPERS' RETURN
+    AFTERWORD
+=== fixtures/body-text-styles.epub
+title: Body Text Styles
+author: Orbis Tester
+  Justified by the book
+  Centered and right-aligned lines
+  A font in spans
+  Code and symbols keep their font
+  One wrapper, many paragraphs
+=== fixtures/cafe-and-co.epub
+title: Café & Co.
+author: Zoë Lefèvre & Søren Ågård
+  Crème Brûlée & Coffee
+  Señora Muñoz’s Table
+  Smørrebrød & Søren
+  Œuvres & Hors-d’œuvre
+=== fixtures/cafe-and-co.mobi
+title: Café & Co.
+author: Zoë Lefèvre & Søren Ågård
+  Crème Brûlée & Coffee
+  Señora Muñoz’s Table
+  Smørrebrød & Søren
+  Œuvres & Hors-d’œuvre
+=== fixtures/calibre-body-anchors.epub
+title: Calibre Body Anchors (Orbis Reader Fixtures)
+author: Orbis Tester
+  Other Titles
+  Title Page
+  Contents
+  Prologue
+  Part One
+    Chapter 1
+    Chapter 2
+    Chapter 3
+  Part Two
+    Chapter 4
+    Chapter 5
+    Epilogue
+  Acknowledgments
+  About the Author
+  Excerpt
+=== fixtures/calibre-split.epub
+title: Calibre Split
+author: Orbis Tester
+  CHAPTER I
+  CHAPTER II.
+  CHAPTER III
+  The mill in winter
+  INTRODUCTION
+  FOREWORD
+  APPENDIX A
+  APPENDIX B
+  APPENDIX C
+=== fixtures/contrast-checks.epub
+title: Text on the book's own colors (Orbis display fixture)
+author: Orbis Tester
+  Text on the book's own colors
+=== fixtures/contrast-fixed-layout.epub
+title: Lettering over a picture (Orbis display fixture)
+author: Orbis Tester
+  Lettering over a picture
+=== fixtures/converted-folder.epub
+title: Converted Folder
+author: Orbis Tester
+  001 Report 1
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+    Heading 11
+  002 Visit 2
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+    Heading 11
+  003 Report 3
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+    Heading 11
+  004 Plan 4
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+    Heading 11
+  005 Ledger 5
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+    Heading 11
+  006 Survey 6
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  007 Field notes 7
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  008 Plan 8
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  009 Field notes 9
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  010 Report 10
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  011 Survey 11
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  012 Field notes 12
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  013 Plan 13
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  014 Field notes 14
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  015 Ledger 15
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  016 Visit 16
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  017 Report 17
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  018 Plan 18
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  019 Plan 19
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  020 Plan 20
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  021 Report 21
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  022 Field notes 22
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  023 Survey 23
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  024 Survey 24
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  025 Plan 25
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  026 Ledger 26
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  027 Plan 27
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  028 Visit 28
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  029 Report 29
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  030 Field notes 30
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  031 Ledger 31
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  032 Visit 32
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  033 Visit 33
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  034 Field notes 34
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  035 Plan 35
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  036 Field notes 36
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  037 Report 37
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  038 Plan 38
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+  039 Visit 39
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+    Heading 10
+=== fixtures/converted-note.epub
+title: Converted Note
+author: Orbis Tester
+  Converted Note
+    Heading 1
+    Heading 2
+    Heading 3
+    Heading 4
+    Heading 5
+    Heading 6
+    Heading 7
+    Heading 8
+    Heading 9
+=== fixtures/endnotes.epub
+title: Endnotes
+author: Orbis Tester
+  Contents
+  Chapter One
+  Chapter Two
+  Chapter Three
+  Notes
+  About the Author
+=== fixtures/fb2-notes.fb2
+title: FB2 Notes
+author: Orbis Tester
+  FB2 Notes
+  Chapter One
+  Chapter Two
+  Chapter Three
+  Notes
+=== fixtures/fb2-sample.fb2
+title: FB2 Sample
+author: Orbis Tester
+  FB2 Sample
+  Chapter One
+  Chapter Two
+  Chapter Three
+  Chapter Four
+  Chapter Five
+  Chapter Six
+=== fixtures/footnotes.epub
+title: Footnotes
+author: Orbis Tester
+  Chapter One
+  Chapter One, Continued
+  Chapter Two
+  Chapter Three
+  Chapter Four
+  Afterword
+=== fixtures/frame-navigation.epub
+title: Links the reader cannot see (Orbis security fixture)
+author: Orbis Tester
+  Links the reader cannot see
+  A chapter that holds a script
+=== fixtures/gutenberg-style.epub
+title: Gutenberg Style
+author: Orbis Tester
+  GUTENBERG STYLE
+  By Orbis Tester
+  PREFACE
+  GUTENBERG STYLE
+  PART I
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  PART II
+  CHAPTER I
+  EPILOGUE
+    I
+    II
+  READINGS.
+    [p11] First Day. Contents
+  GUTENBERG STYLE.
+    [p17] Second Day. Contents
+  GUTENBERG STYLE.
+    [p23] Third Day. Contents
+  GUTENBERG STYLE.
+  THE FULL PLACEHOLDER PRESS LICENSE
+=== fixtures/hostile-scripts.epub
+title: Script execution checks (Orbis security fixture)
+author: Orbis Tester
+  Script execution checks
+  Markup hidden as text
+  An ordinary chapter
+  A chapter that must appear
+  A chapter with no doctype
+  A book cannot choose the page color
+=== fixtures/keyword-sizes.epub
+title: Keyword Sizes
+author: Orbis Tester
+  Paragraphs set small
+  Inline sizes
+  Shorthand and important
+  Relative sizes are left alone
+  Keywords that are not sizes
+=== fixtures/link-checks.epub
+title: Link checks (Orbis security fixture)
+author: Orbis Tester
+  Link checks
+  The second chapter
+=== fixtures/long-chapter.epub
+title: Long Chapter
+author: Orbis Tester
+  Chapter One: The Lantern
+  Chapter Two: The Long Night
+  Chapter Three: Morning
+=== fixtures/no-contents.epub
+title: No Contents
+author: Orbis Tester
+=== fixtures/numbered-chapters.epub
+title: Numbered Chapters
+author: Orbis Tester
+  Numbered Chapters
+  Contents
+  1 The Lamplighter
+  2 A Missing Key
+  3 The Night Coach
+  4 Questions at the Inn
+  5 The Ledger
+  6 A Second Visitor
+  7 The Footprints
+  8 An Alibi
+  9 The Weir
+  10 Market Gossip
+  11 A Letter Burned
+  12 The Flood
+  13 The Flood (contd.)
+  14 The Keeper Speaks
+  15 A False Trail
+  16 The Mill at Dawn
+  17 Confession
+  18 The Tollhouse Again
+  19 Loose Ends
+  20 Home
+  Transcriber's Notes
+  About This Edition
+=== fixtures/omnibus.epub
+title: Omnibus
+author: Orbis Tester
+  Title Page
+  Contents
+  Also by the Author
+  Novel One
+    Title Page
+    Copyright
+    Book One: Beginnings
+    Chapter 01
+    Chapter 02
+    Chapter 03
+    Chapter 04
+    Chapter 05
+    Chapter 06
+    Book Two: Crossings
+    Chapter 07
+    Chapter 08
+    Chapter 09
+    Chapter 10
+    Chapter 11
+    Chapter 12
+    Glossary
+  Novel Two
+    Title Page
+    Contents
+    Chapter 1
+    Chapter 2
+    Chapter 3
+    Chapter 4
+    Chapter 5
+    Chapter 6
+    Chapter 7
+    Chapter 8
+    Chapter 9
+    Chapter 10
+    Chapter 11
+    Chapter 12
+    Chapter 13
+    Chapter 14
+    Epilogue
+  Novel Three
+    Title Page
+    Introduction
+    Chapter 1
+    Chapter 2
+    Chapter 3
+    Chapter 4
+    Chapter 5
+    Chapter 6
+    Chapter 7
+    Chapter 8
+    Chapter 9
+    Chapter 10
+    About the Author
+  Reading Group Notes
+    Questions
+    Further Reading
+  Acknowledgments
+    To the Readers
+    To the Printers
+=== fixtures/parts-and-chapters.azw3
+title: Parts and Chapters
+author: Orbis Tester
+  PARTS AND CHAPTERS
+  A NOTE ON THE TEXT
+  PREFACE
+  PARTS AND CHAPTERS
+  PART I
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  CHAPTER V
+  CHAPTER VI
+  PART II
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  CHAPTER V
+  PART III
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  CHAPTER V
+  PART IV
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  PART V
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  PART VI
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  CHAPTER V
+  EPILOGUE
+    I
+    II
+  ABOUT THIS EDITION
+=== fixtures/parts-and-chapters.epub
+title: Parts and Chapters
+author: Orbis Tester
+  PARTS AND CHAPTERS
+  A NOTE ON THE TEXT
+  PREFACE
+  PARTS AND CHAPTERS
+  PART I
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  CHAPTER V
+  CHAPTER VI
+  PART II
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  CHAPTER V
+  PART III
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  CHAPTER V
+  PART IV
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  PART V
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  PART VI
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  CHAPTER V
+  EPILOGUE
+    I
+    II
+  ABOUT THIS EDITION
+=== fixtures/parts-and-chapters.fb2
+title: Parts and Chapters
+author: Orbis Tester
+  PARTS AND CHAPTERS
+  A NOTE ON THE TEXT
+  PREFACE
+  PARTS AND CHAPTERS
+  PART I
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  CHAPTER V
+  CHAPTER VI
+  PART II
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  CHAPTER V
+  PART III
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  CHAPTER V
+  PART IV
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  PART V
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  PART VI
+  CHAPTER I
+  CHAPTER II
+  CHAPTER III
+  CHAPTER IV
+  CHAPTER V
+  EPILOGUE
+    I
+    II
+  ABOUT THIS EDITION
+=== fixtures/running-header.epub
+title: Running Header
+author: Orbis Tester
+  [p3] PREFACE.
+  [p4] CONTENTS.
+    [p5] First Day. The Lamp
+  [p9] RUNNING HEADER.
+    [p9] Second Day. Waiting
+  [p13] RUNNING HEADER.
+    [p13] Third Day. The Open Door
+  [p17] RUNNING HEADER.
+    [p17] Fourth Day. Small Things
+  [p21] RUNNING HEADER.
+    [p21] Fifth Day. The Tide
+  [p25] RUNNING HEADER.
+    [p25] Sixth Day. Keeping Watch
+  [p29] RUNNING HEADER.
+    [p29] Seventh Day. Rest
+  [p33] RUNNING HEADER.
+    [p33] Eighth Day. The Lamp
+  [p37] RUNNING HEADER.
+    [p37] Ninth Day. Waiting
+  [p41] RUNNING HEADER.
+    [p41] Tenth Day. The Open Door
+  [p45] RUNNING HEADER.
+    [p45] Eleventh Day. Small Things
+  [p49] RUNNING HEADER.
+    [p49] Twelfth Day. The Tide
+  [p53] RUNNING HEADER.
+    [p53] Thirteenth Day. Keeping Watch
+  [p57] RUNNING HEADER.
+    [p57] Fourteenth Day. Rest
+  [p61] RUNNING HEADER.
+    [p61] Fifteenth Day. The Lamp
+  [p65] RUNNING HEADER.
+    [p65] Sixteenth Day. Waiting
+  [p69] RUNNING HEADER.
+    [p69] Seventeenth Day. The Open Door
+  [p73] RUNNING HEADER.
+    [p73] Eighteenth Day. Small Things
+  [p77] RUNNING HEADER.
+    [p77] Nineteenth Day. The Tide
+  [p81] RUNNING HEADER.
+    [p81] Twentieth Day. Keeping Watch
+  [p85] RUNNING HEADER.
+    [p85] Twenty-first Day. Rest
+  [p89] RUNNING HEADER.
+    [p89] Twenty-second Day. The Lamp
+  [p93] RUNNING HEADER.
+    [p93] Twenty-third Day. Waiting
+  [p97] RUNNING HEADER.
+    [p97] Twenty-fourth Day. The Open Door
+  [p101] RUNNING HEADER.
+    [p101] Twenty-fifth Day. Small Things
+  [p105] RUNNING HEADER.
+    [p105] Twenty-sixth Day. The Tide
+  [p109] RUNNING HEADER.
+    [p109] Twenty-seventh Day. Keeping Watch
+  [p113] RUNNING HEADER.
+    [p113] Twenty-eighth Day. Rest
+  [p117] RUNNING HEADER.
+    [p117] Twenty-ninth Day. The Lamp
+  [p121] RUNNING HEADER.
+    [p121] Thirtieth Day. Waiting
+  [p125] RUNNING HEADER.
+    [p125] Thirty-first Day. The Open Door
+  [p129] NOTES. Contents
+    NOTE A.
+      The Lamp
+    NOTE B.
+    NOTE C.
+    NOTE D.
+      Small Things
+    NOTE E.
+    NOTE F.
+    NOTE G.
+      Rest
+=== fixtures/sample-comic.cbz
+title: sample-comic.cbz
+author: 
+  page-01.png
+  page-02.png
+  page-03.png
+  page-04.png
+  page-05.png
+  page-06.png
+=== fixtures/speech-sampler.epub
+title: Speech Sampler
+author: Orbis Tester
+  Two-Letter Capitals
+  Initialisms
+  Capitals Read as Words
+  Headings in Capitals
+  Plurals, Possessives and Dots
+  Roman Numerals
+  Web and Email Addresses
+=== fixtures/stylesheet-checks.epub
+title: Stylesheet checks (Orbis rendering fixture)
+author: Orbis Tester
+  Stylesheet checks
+  A second chapter
+  Embedded fonts
+=== fixtures/stylesheet-hazards.epub
+title: Stylesheet hazards (Orbis rendering fixture)
+author: Orbis Tester
+  Stylesheet hazards
+=== fixtures/technical-book.azw3
+title: Technical Book
+author: Orbis Tester
+  Frontmatter
+  1. First Steps
+  2. Core Concepts
+  3. Working with Services
+  4. Running a Server
+  5. Advanced Topics
+  Backmatter
+=== fixtures/technical-book.epub
+title: Technical Book
+author: Orbis Tester
+  Frontmatter
+  1. First Steps
+  2. Core Concepts
+  3. Working with Services
+  4. Running a Server
+  5. Advanced Topics
+  Backmatter
+=== fixtures/trilogy-parts.epub
+title: Trilogy Parts
+author: Orbis Tester
+  Title Page
+  Contents
+  The Lantern Road
+  Dedication
+  Contents
+  Part I: “The Lantern Road”
+    1
+    2
+    3
+  Part II: “The Ferry Crossing”
+    4
+    5
+    6
+  Part III: “The Long Field”
+    7
+    8
+    9
+  The Harbor Wall
+  Dedication
+  Contents
+  Part I: “The Tide Book”
+    1
+    2
+    3
+  Part II: “The Bell Tower”
+    4
+    5
+    6
+  Part III: “The Weir”
+    7
+    8
+    9
+  The Weir at Dusk
+  Dedication
+  Contents
+  Part I: “The Mill Race”
+    1
+    2
+    3
+  Part II: “The Orchard”
+    4
+    5
+    6
+  Part III: “The Last Lantern”
+    7
+    8
+    9
+    Epilogue
+  Acknowledgments
+  About the Author
+=== fixtures/volumes.epub
+title: Volumes
+author: Orbis Tester
+  VOLUMES:
+  VOLUMES.
+  CHAPTER I.
+  CHAPTER II.
+  CHAPTER III.
+  CHAPTER IV.
+  CHAPTER V.
+  CHAPTER VI.
+  CHAPTER VII.
+  CHAPTER VIII.
+  VOLUMES:
+  VOLUMES.
+    VOL. II.
+  CHAPTER I.
+  CHAPTER II.
+  CHAPTER III.
+  CHAPTER IV.
+  CHAPTER V.
+  CHAPTER VI.
+  CHAPTER VII.
+  CHAPTER VIII.
+  VOLUMES:
+  VOLUMES.
+    VOL. III.
+    A VIEW OF THE MARKET CROSS
+  CHAPTER I.
+  CHAPTER II.
+  CHAPTER III.
+  CHAPTER IV.
+  CHAPTER V.
+  CHAPTER VI.
+  CHAPTER VII.
+  CHAPTER VIII.
+  ABOUT THIS EDITION

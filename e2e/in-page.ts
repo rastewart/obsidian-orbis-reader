@@ -97,6 +97,9 @@ export async function openBook(path: string, timeoutMs: number): Promise<OpenedB
   const leaf = app.workspace.getLeaf('tab');
   await leaf.openFile(file);
   for (const other of app.workspace.getLeavesOfType('orbis-reader')) if (other !== leaf) other.detach();
+  // In front and focused, as a book is when a person opens it: the page keys and a search's Enter belong to the
+  // active view, and a note an earlier test opened beside it could otherwise keep that.
+  app.workspace.setActiveLeaf(leaf, { focus: true });
   const view = leaf.view as ReaderView;
   const started = Date.now();
   for (;;) {
@@ -163,8 +166,17 @@ export async function markParagraphs(
     );
     if (!shown || paragraphs.length < needed || skip-- > 0) continue;
     for (const n of order) {
+      // From the paragraph's first character to its last, as a person's selection runs. A range on the element
+      // itself, (p, 0) to (p, n), is stored with its start and end at the same place, which the scan for problems
+      // rightly calls broken.
       const range = shown.doc.createRange();
-      range.selectNodeContents(paragraphs[n]);
+      const walker = shown.doc.createTreeWalker(paragraphs[n], NodeFilter.SHOW_TEXT);
+      const texts: Text[] = [];
+      for (let t = walker.nextNode(); t; t = walker.nextNode()) if ((t as Text).data.trim()) texts.push(t as Text);
+      const first = texts[0];
+      const last = texts[texts.length - 1];
+      range.setStart(first, first.data.length - first.data.trimStart().length);
+      range.setEnd(last, last.data.trimEnd().length);
       view.annot.highlightRange(range, index);
       await sleep(gapMs);
     }
@@ -394,12 +406,12 @@ export function copiedText(): string {
   return (window as unknown as { orbisE2eClipboard: string }).orbisE2eClipboard;
 }
 /**
- * A PDF in the vault: whether it starts as one, and how many pages it has.
+ * A PDF in the vault: whether it starts as one, how many pages it has, and how many comments (notes) it carries.
  *
  * The pages are counted by their `/Type /Page` objects. A PDF can keep its objects in compressed object streams, so
  * each of those is inflated first, with the browser's own `DecompressionStream`.
  */
-export async function pdfInfo(path: string): Promise<{ isPdf: boolean; pages: number }> {
+export async function pdfInfo(path: string): Promise<{ isPdf: boolean; pages: number; comments: number }> {
   const app = (window as unknown as { app: { vault: { adapter: { readBinary(p: string): Promise<ArrayBuffer> } } } })
     .app;
   const bytes = new Uint8Array(await app.vault.adapter.readBinary(path));
@@ -419,7 +431,12 @@ export async function pdfInfo(path: string): Promise<{ isPdf: boolean; pages: nu
       /* not a deflated stream */
     }
   }
-  return { isPdf: text.startsWith('%PDF-'), pages: (objects.match(/\/Type\s*\/Page(?![s\w])/g) ?? []).length };
+  return {
+    isPdf: text.startsWith('%PDF-'),
+    pages: (objects.match(/\/Type\s*\/Page(?![s\w])/g) ?? []).length,
+    // A note is a `/Text` annotation, the pin a viewer lists in its comments.
+    comments: (objects.match(/\/Subtype\s*\/Text(?!\w)/g) ?? []).length,
+  };
 }
 
 /**
@@ -499,6 +516,8 @@ export interface SearchResult {
   cfi: string;
   chapter: string;
   excerpt: string;
+  /** What it matched: `book` text, a `passage` selection, a note's passage (`note-anchor`) or its text (`note-content`). */
+  kind: string;
 }
 
 /**
@@ -508,7 +527,12 @@ export interface SearchResult {
 export async function searchFor(words: string, timeoutMs: number): Promise<SearchResult[]> {
   const app = (window as unknown as { app: PageApp & { commands: PageCommands } }).app;
   const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as
-    | { search: { barInputEl?: HTMLInputElement; results: { cfi: string; chapterTitle: string; excerpt: string }[] } }
+    | {
+        search: {
+          barInputEl?: HTMLInputElement;
+          results: { cfi: string; chapterTitle: string; excerpt: string; kind: string }[];
+        };
+      }
     | undefined;
   if (!view) throw new Error('no book is open');
   app.commands.executeCommandById('orbis-reader:orbis-open-search');
@@ -531,7 +555,7 @@ export async function searchFor(words: string, timeoutMs: number): Promise<Searc
     } else if (now > 0 && Date.now() - sameSince >= 1000) break;
     if (Date.now() - started > timeoutMs) break;
   }
-  return view.search.results.map((r) => ({ cfi: r.cfi, chapter: r.chapterTitle, excerpt: r.excerpt }));
+  return view.search.results.map((r) => ({ cfi: r.cfi, chapter: r.chapterTitle, excerpt: r.excerpt, kind: r.kind }));
 }
 
 /** Presses Enter in the search bar again, which goes to the next result, as it does for a person. */
@@ -541,4 +565,925 @@ export function nextSearchResult(): void {
     | { search: { barInputEl?: HTMLInputElement } }
     | undefined;
   view?.search.barInputEl?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+}
+
+/** How many notices Obsidian has shown so far in this run, to read the ones a step shows with `noticesSince`. */
+export function noticeCount(): number {
+  return (window as unknown as { orbisE2eNotices: string[] }).orbisE2eNotices.length;
+}
+
+/**
+ * The notices shown since `from` (a `noticeCount`), once one containing `waitFor` has appeared, or after `timeoutMs`.
+ * Without `waitFor`, after `timeoutMs`.
+ */
+export async function noticesSince(from: number, waitFor = '', timeoutMs = 3000): Promise<string[]> {
+  const notices = () => (window as unknown as { orbisE2eNotices: string[] }).orbisE2eNotices.slice(from);
+  const started = Date.now();
+  while (Date.now() - started < timeoutMs) {
+    if (waitFor && notices().some((n) => n.includes(waitFor))) break;
+    await new Promise((r) => setTimeout(r, 100));
+  }
+  return notices();
+}
+
+/**
+ * Orbis's settings as they stand: the plugin's `data.json`, and what this device keeps in local storage (the display
+ * style's values, the device's own switches). The runner takes one before each test and puts it back after, so a
+ * test may change a setting without the next one meeting it.
+ */
+export function settingsSnapshot(): string {
+  const app = (
+    window as unknown as { app: { appId: string; plugins: { plugins: Record<string, { settings: unknown }> } } }
+  ).app;
+  const prefix = `${app.appId}-`;
+  const local: Record<string, string> = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i) ?? '';
+    if (key.startsWith(prefix) && key.includes('orbis'))
+      local[key.slice(prefix.length)] = localStorage.getItem(key) ?? '';
+  }
+  return JSON.stringify({ data: app.plugins.plugins['orbis-reader'].settings, local });
+}
+
+/**
+ * Puts back what `settingsSnapshot` took, and returns what had changed, by name. The plugin's settings are written to
+ * `data.json` and read again as a change from another device is, so every open view takes them. A local value is
+ * written back and announced as the display commands announce theirs.
+ */
+export async function restoreSettings(snapshot: string, ownBookkeeping: string[]): Promise<string[]> {
+  const app = (
+    window as unknown as {
+      app: {
+        appId: string;
+        saveLocalStorage(key: string, value: string | null): void;
+        workspace: { trigger(name: string, ...args: unknown[]): void };
+        plugins: {
+          plugins: Record<
+            string,
+            { settings: unknown; saveData(d: unknown): Promise<void>; onExternalSettingsChange(): Promise<void> }
+          >;
+        };
+      };
+    }
+  ).app;
+  const prefix = `${app.appId}-`;
+  const was = JSON.parse(snapshot) as { data: unknown; local: Record<string, string> };
+  const plugin = app.plugins.plugins['orbis-reader'];
+  const nowData = JSON.parse(JSON.stringify(plugin.settings)) as Record<string, unknown>;
+  const nowLocal: Record<string, string> = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i) ?? '';
+    if (key.startsWith(prefix) && key.includes('orbis'))
+      nowLocal[key.slice(prefix.length)] = localStorage.getItem(key) ?? '';
+  }
+  const now = { data: nowData, local: nowLocal };
+  const changed: string[] = [];
+  const before = was.data as Record<string, unknown>;
+  for (const key of new Set([...Object.keys(before), ...Object.keys(now.data)]))
+    if (!ownBookkeeping.includes(key) && JSON.stringify(before[key]) !== JSON.stringify(now.data[key]))
+      changed.push(key);
+  if (changed.length) {
+    // Only what the test changed goes back: Orbis's own bookkeeping keeps the value it has now.
+    const restored = { ...now.data };
+    for (const key of changed) {
+      if (key in before) restored[key] = before[key];
+      else delete restored[key];
+    }
+    await plugin.saveData(restored);
+    await plugin.onExternalSettingsChange();
+  }
+  let display = false;
+  for (const key of new Set([...Object.keys(was.local), ...Object.keys(now.local)])) {
+    if (was.local[key] === now.local[key] || ownBookkeeping.includes(key)) continue;
+    changed.push(`local:${key}`);
+    if (key in was.local) localStorage.setItem(prefix + key, was.local[key]);
+    else localStorage.removeItem(prefix + key);
+    app.workspace.trigger('orbis:settings-change', key, was.local[key] ?? null);
+    display = true;
+  }
+  if (display) app.workspace.trigger('orbis:settings-change', 'orbis-display-style-applied', '');
+  // **The display values are read from storage whenever they are used; the device's other values are not.** Orbis
+  // keeps those (link preview, page turning by key, the toolbar's buttons) in a copy in memory, which a value written
+  // back to storage does not reach. Turning Orbis off and on loads it afresh, from what storage now holds.
+  const displayKeys = [
+    'orbis-theme',
+    'orbis-font-family',
+    'orbis-font-size',
+    'orbis-line-height',
+    'orbis-text-align',
+    'orbis-hyphenation',
+    'orbis-margins',
+    'orbis-brightness',
+    'orbis-flow',
+    'orbis-columns',
+  ];
+  if (changed.some((c) => c.startsWith('local:') && !displayKeys.includes(c.slice('local:'.length)))) {
+    const plugins = (
+      app as unknown as {
+        plugins: { disablePlugin(id: string): Promise<void>; enablePlugin(id: string): Promise<void> };
+      }
+    ).plugins;
+    await plugins.disablePlugin('orbis-reader');
+    await plugins.enablePlugin('orbis-reader');
+    changed.push('(Orbis reloaded)');
+  }
+  return changed;
+}
+
+/** Sets one of this device's display values, as the display commands and the display style bar do. */
+export function setDisplay(key: string, value: string): void {
+  const app = (
+    window as unknown as {
+      app: { saveLocalStorage(k: string, v: string): void; workspace: { trigger(n: string, ...a: unknown[]): void } };
+    }
+  ).app;
+  app.saveLocalStorage(key, value);
+  app.workspace.trigger('orbis:settings-change', key, value);
+}
+
+/** One of this device's display values, as stored, or null. */
+export function getDisplay(key: string): string | null {
+  return (window as unknown as { app: { loadLocalStorage(k: string): string | null } }).app.loadLocalStorage(key);
+}
+
+/**
+ * Clicks the `nth` element matching `selector` in the open book's rendered sections, as a person's click on it does,
+ * and returns its text. Fails if there is none.
+ */
+export function clickInBook(selector: string, nth = 0): string {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
+  if (!view?.foliateView) throw new Error('no book is open');
+  const found: Element[] = [];
+  for (const { doc } of view.foliateView.renderer.getContents())
+    found.push(...Array.from(doc.querySelectorAll(selector)));
+  const el = found[nth];
+  if (!el) throw new Error(`the page shows no ${selector} (#${nth}); it shows ${found.length}`);
+  const rect = el.getBoundingClientRect();
+  const init = {
+    bubbles: true,
+    cancelable: true,
+    view: el.ownerDocument.defaultView,
+    clientX: rect.x + 2,
+    clientY: rect.y + 2,
+  };
+  el.dispatchEvent(new MouseEvent('pointerdown', init));
+  el.dispatchEvent(new MouseEvent('mousedown', init));
+  el.dispatchEvent(new MouseEvent('pointerup', init));
+  el.dispatchEvent(new MouseEvent('mouseup', init));
+  el.dispatchEvent(new MouseEvent('click', init));
+  return (el.textContent ?? '').trim();
+}
+
+/**
+ * What is wrong with notes Orbis wrote, as Obsidian reads them once it has indexed them: frontmatter it could not
+ * parse, and links that lead nowhere. Empty when nothing is.
+ */
+export async function notesProblems(paths: string[], timeoutMs: number): Promise<string[]> {
+  const app = (
+    window as unknown as {
+      app: {
+        vault: { getAbstractFileByPath(p: string): unknown; adapter: { read(p: string): Promise<string> } };
+        metadataCache: {
+          getFileCache(f: unknown): { frontmatter?: unknown } | null;
+          unresolvedLinks: Record<string, Record<string, number>>;
+          resolvedLinks: Record<string, Record<string, number>>;
+        };
+      };
+    }
+  ).app;
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  const notes = paths.filter((p) => p.endsWith('.md'));
+  const started = Date.now();
+  // A new file is indexed a moment after it is written: wait until every note has a cache and its links are counted.
+  for (;;) {
+    const ready = notes.every((p) => {
+      const file = app.vault.getAbstractFileByPath(p);
+      return (
+        file &&
+        app.metadataCache.getFileCache(file) &&
+        (p in app.metadataCache.resolvedLinks || p in app.metadataCache.unresolvedLinks)
+      );
+    });
+    if (ready) break;
+    if (Date.now() - started > timeoutMs) return [`Obsidian had not indexed every note within ${timeoutMs} ms`];
+    await sleep(200);
+  }
+  await sleep(500);
+  const problems: string[] = [];
+  for (const path of notes) {
+    const text = await app.vault.adapter.read(path);
+    const cache = app.metadataCache.getFileCache(app.vault.getAbstractFileByPath(path));
+    if (/^---\r?\n[\s\S]*?\r?\n---/.test(text) && !cache?.frontmatter)
+      problems.push(`${path}: Obsidian could not read its frontmatter`);
+    for (const target of Object.keys(app.metadataCache.unresolvedLinks[path] ?? {}))
+      problems.push(`${path}: a link to "${target}" leads nowhere`);
+  }
+  return problems;
+}
+
+/** Writes `text` to a file of the vault, replacing what it held. */
+export async function writeVaultFile(path: string, text: string): Promise<void> {
+  await (
+    window as unknown as { app: { vault: { adapter: { write(p: string, t: string): Promise<void> } } } }
+  ).app.vault.adapter.write(path, text);
+}
+
+/** Deletes a file or a whole folder of the vault from the disk, as a file manager would, without Obsidian's trash. */
+export async function removeVaultPath(path: string): Promise<void> {
+  const adapter = (
+    window as unknown as {
+      app: {
+        vault: {
+          adapter: {
+            stat(p: string): Promise<{ type: 'file' | 'folder' } | null>;
+            remove(p: string): Promise<void>;
+            rmdir(p: string, recursive: boolean): Promise<void>;
+          };
+        };
+      };
+    }
+  ).app.vault.adapter;
+  const stat = await adapter.stat(path);
+  if (stat?.type === 'folder') await adapter.rmdir(path, true);
+  else if (stat) await adapter.remove(path);
+}
+
+/**
+ * Copies a vault file to `to` through Obsidian, so the copy is in the vault at once, keeping only its first `bytes`
+ * bytes when given: a download that stopped part-way.
+ */
+export async function copyVaultFile(from: string, to: string, bytes: number | null): Promise<void> {
+  const vault = (
+    window as unknown as {
+      app: {
+        vault: {
+          adapter: { readBinary(p: string): Promise<ArrayBuffer> };
+          createBinary(p: string, data: ArrayBuffer): Promise<unknown>;
+        };
+      };
+    }
+  ).app.vault;
+  const data = await vault.adapter.readBinary(from);
+  await vault.createBinary(to, bytes === null ? data : data.slice(0, bytes));
+}
+
+/** Renames or moves a vault file as Obsidian's Files pane does, which is what Orbis watches for. */
+export async function renameInVault(from: string, to: string): Promise<void> {
+  const app = (
+    window as unknown as {
+      app: {
+        vault: { getAbstractFileByPath(p: string): unknown };
+        fileManager: { renameFile(f: unknown, to: string): Promise<void> };
+      };
+    }
+  ).app;
+  const file = app.vault.getAbstractFileByPath(from);
+  if (!file) throw new Error(`no file at ${from}`);
+  await app.fileManager.renameFile(file, to);
+}
+
+/** Deletes a vault file as the Files pane does, to the trash the vault's settings name. */
+export async function trashInVault(path: string): Promise<void> {
+  const app = (
+    window as unknown as {
+      app: {
+        vault: { getAbstractFileByPath(p: string): unknown };
+        fileManager: { trashFile(f: unknown): Promise<void> };
+      };
+    }
+  ).app;
+  const file = app.vault.getAbstractFileByPath(path);
+  if (!file) throw new Error(`no file at ${path}`);
+  await app.fileManager.trashFile(file);
+}
+
+/** A vault file's text, or null when there is no file there to read. */
+export async function vaultText(path: string): Promise<string | null> {
+  const adapter = (
+    window as unknown as {
+      app: { vault: { adapter: { exists(p: string): Promise<boolean>; read(p: string): Promise<string> } } };
+    }
+  ).app.vault.adapter;
+  // Gone between the two calls counts as gone: Orbis rewrites some files by removing and writing them again.
+  if (!(await adapter.exists(path))) return null;
+  return adapter.read(path).catch(() => null);
+}
+
+/** The open book's title and author as Orbis read them, and its contents, each entry indented by its depth. */
+export function bookSummary(): { title: string; author: string; contents: string[] } {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as
+    | (ReaderView & { bookMeta: { title: string; author: string } })
+    | undefined;
+  if (!view) throw new Error('no book is open');
+  const contents: string[] = [];
+  const walk = (items: unknown[], depth: number) => {
+    for (const item of items as { label?: string; subitems?: unknown[] }[]) {
+      contents.push(`${'  '.repeat(depth)}${(item.label ?? '').trim().replace(/\s+/g, ' ')}`);
+      if (item.subitems?.length) walk(item.subitems, depth + 1);
+    }
+  };
+  walk(view.tocItems ?? [], 0);
+  return { title: view.bookMeta.title, author: view.bookMeta.author, contents };
+}
+
+/**
+ * Goes to the open book's first section whose text includes `text`, and returns its index once it shows. Fails if no
+ * section of the first `maxSections` has it.
+ */
+export async function goToSectionWith(text: string, maxSections = 60): Promise<number> {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
+  const fv = view?.foliateView;
+  if (!view || !fv) throw new Error('no book is open');
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  for (let index = 0; index < Math.min(view.bookSections.length, maxSections); index++) {
+    await fv.goTo(index);
+    for (let wait = 0; wait < 25; wait++) {
+      const shown = fv.renderer.getContents().find((c) => c.index === index);
+      if (shown?.doc.body) {
+        if ((shown.doc.body.textContent ?? '').includes(text)) {
+          await sleep(400);
+          return index;
+        }
+        break;
+      }
+      await sleep(200);
+    }
+  }
+  throw new Error(`no section of the book has "${text}"`);
+}
+
+/** The section the open book shows, as foliate reports it. */
+export function shownSection(): number {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
+  return view?.foliateView?.renderer.getContents()[0]?.index ?? -1;
+}
+
+/**
+ * The Orbis dialog in front, once one has appeared within `timeoutMs`: its title, its text line by line, and its
+ * buttons, each marked `(red)` or `(accent)` when it wears the theme's warning or main color. Null when none appeared.
+ */
+export async function popupShown(
+  timeoutMs: number
+): Promise<{ title: string; lines: string[]; buttons: string[] } | null> {
+  const started = Date.now();
+  for (;;) {
+    const popups = Array.from(document.querySelectorAll<HTMLElement>('.orbis-popup'));
+    const popup = popups[popups.length - 1];
+    if (popup) {
+      await new Promise((r) => setTimeout(r, 150));
+      const title = (popup.querySelector('.orbis-popup-title, h2, h3')?.textContent ?? '').trim();
+      const buttons = Array.from(popup.querySelectorAll<HTMLElement>('button'))
+        .filter((b) => (b.textContent ?? '').trim())
+        .map(
+          (b) =>
+            `${(b.textContent ?? '').trim()}${b.classList.contains('mod-destructive') || b.classList.contains('mod-warning') ? ' (red)' : ''}${
+              b.classList.contains('mod-cta') ? ' (accent)' : ''
+            }`
+        );
+      const lines = popup.innerText
+        .split('\n')
+        .map((l) => l.trim())
+        .filter(Boolean);
+      return { title, lines, buttons };
+    }
+    if (Date.now() - started > timeoutMs) return null;
+    await new Promise((r) => setTimeout(r, 100));
+  }
+}
+
+/** Selects the button in the Orbis dialog in front whose label is `label`. */
+export function pressPopupButton(label: string): void {
+  const popups = Array.from(document.querySelectorAll<HTMLElement>('.orbis-popup'));
+  const button = Array.from(popups[popups.length - 1]?.querySelectorAll<HTMLButtonElement>('button') ?? []).find(
+    (b) => (b.textContent ?? '').trim() === label
+  );
+  if (!button) throw new Error(`the dialog has no "${label}" button`);
+  button.click();
+}
+
+/**
+ * Writes a note reading `text` on paragraph `n` of the first section with enough paragraphs (or the `nth` after it),
+ * with `markIndex` the bar's mark for it (from 0), or none when null, as saving the note editor does. Returns the
+ * start of the paragraph's text.
+ */
+export async function noteParagraph(n: number, text: string, markIndex: number | null, nth = 0): Promise<string> {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
+  if (!view?.foliateView) throw new Error('no book is open');
+  const annot = view.annot as unknown as {
+    offeredPreset(): unknown;
+    barMarks(): { id: string }[];
+    rangeCfi(r: Range, i: number): string;
+    saveNote(o: { cfiRange: string; text: string; selectedText: string; choice?: unknown }): void;
+  };
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  for (let wait = 0; !annot.offeredPreset() && wait < 50; wait++) await sleep(200);
+  let skip = nth;
+  for (let index = 0; index < view.bookSections.length; index++) {
+    await view.foliateView.goTo(index);
+    await sleep(800);
+    const shown = view.foliateView.renderer.getContents().find((c) => c.index === index);
+    const paragraphs = Array.from(shown?.doc.querySelectorAll('p') ?? []).filter(
+      (p) => (p.textContent ?? '').trim().length > 40
+    );
+    if (!shown || paragraphs.length <= n || skip-- > 0) continue;
+    const walker = shown.doc.createTreeWalker(paragraphs[n], NodeFilter.SHOW_TEXT);
+    const texts: Text[] = [];
+    for (let t = walker.nextNode(); t; t = walker.nextNode()) if ((t as Text).data.trim()) texts.push(t as Text);
+    const range = shown.doc.createRange();
+    range.setStart(texts[0], texts[0].data.length - texts[0].data.trimStart().length);
+    const last = texts[texts.length - 1];
+    range.setEnd(last, last.data.trimEnd().length);
+    const selectedText = range.toString().replace(/\s+/g, ' ').trim();
+    annot.saveNote({
+      cfiRange: annot.rangeCfi(range, index),
+      text,
+      selectedText,
+      choice: markIndex === null ? undefined : annot.barMarks()[markIndex],
+    });
+    await sleep(300);
+    return selectedText.slice(0, 30);
+  }
+  throw new Error(`no section has ${n + 1} paragraphs`);
+}
+
+/** One passage selection or note as the book holds it, and the text its stored place leads to in the book now. */
+export interface HeldAnnotation {
+  kind: 'mark' | 'note';
+  id: string;
+  markId: string | null;
+  /** The passage's text as stored when it was made. */
+  stored: string;
+  /** The text the stored place covers in the book as shown now, or null when it covers nothing. */
+  shown: string | null;
+  note?: string;
+}
+
+/**
+ * The open book's passage selections and notes, once loaded, each with the text its stored place covers now: a place
+ * that no longer leads to its passage shows here, rather than only as a mark drawn in the wrong spot.
+ */
+export async function heldAnnotations(): Promise<HeldAnnotation[]> {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
+  const fv = view?.foliateView as
+    | (NonNullable<ReaderView['foliateView']> & {
+        resolveCFI(cfi: string): { index: number; anchor(doc: Document): Range };
+      })
+    | undefined;
+  if (!view || !fv) throw new Error('no book is open');
+  const annot = view.annot as unknown as {
+    offeredPreset(): unknown;
+    highlights: { id: string; cfiRange: string; text: string; markId?: string }[];
+    notes: { id: string; cfiRange: string; text: string; selectedText?: string; markId?: string }[];
+  };
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  for (let wait = 0; !annot.offeredPreset() && wait < 50; wait++) await sleep(200);
+  const textAt = async (cfi: string): Promise<string | null> => {
+    try {
+      const { index, anchor } = fv.resolveCFI(cfi);
+      await fv.goTo(index);
+      for (let wait = 0; wait < 25; wait++) {
+        const shown = fv.renderer.getContents().find((c) => c.index === index);
+        if (shown?.doc.body) {
+          const text = anchor(shown.doc).toString().replace(/\s+/g, ' ').trim();
+          return text || null;
+        }
+        await sleep(200);
+      }
+    } catch {
+      /* a place that cannot be resolved covers nothing */
+    }
+    return null;
+  };
+  const held: HeldAnnotation[] = [];
+  for (const h of annot.highlights)
+    held.push({ kind: 'mark', id: h.id, markId: h.markId ?? null, stored: h.text, shown: await textAt(h.cfiRange) });
+  for (const n of annot.notes)
+    held.push({
+      kind: 'note',
+      id: n.id,
+      markId: n.markId ?? null,
+      stored: n.selectedText ?? '',
+      shown: await textAt(n.cfiRange),
+      note: n.text,
+    });
+  return held;
+}
+
+/** The bar's marks for the open book, by id and name, in the bar's order. */
+export function barMarks(): { id: string; name: string }[] {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
+  if (!view) throw new Error('no book is open');
+  return (view.annot as unknown as { barMarks(): { id: string; name: string }[] }).barMarks().map((m) => ({
+    id: m.id,
+    name: m.name,
+  }));
+}
+
+/**
+ * Changes the open book's annotations as the marks bar and the note view do: `remark` gives a passage selection
+ * (by id) the bar's mark at an index, `remove` takes passage selections away, `deleteNotes` deletes notes.
+ */
+export function changeAnnotations(changes: {
+  remark?: { id: string; markIndex: number }[];
+  remove?: string[];
+  deleteNotes?: string[];
+}): void {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
+  const annot = view?.annot as unknown as {
+    highlights: { id: string; cfiRange: string }[];
+    barMarks(): unknown[];
+    applyMarkToHighlight(cfi: string, mark: unknown): void;
+    removeHighlight(cfi: string): void;
+    deleteNote(id: string): void;
+  };
+  const cfiOf = (id: string) => {
+    const h = annot.highlights.find((x) => x.id === id);
+    if (!h) throw new Error(`no passage selection ${id}`);
+    return h.cfiRange;
+  };
+  for (const { id, markIndex } of changes.remark ?? [])
+    annot.applyMarkToHighlight(cfiOf(id), annot.barMarks()[markIndex]);
+  for (const id of changes.remove ?? []) annot.removeHighlight(cfiOf(id));
+  for (const id of changes.deleteNotes ?? []) annot.deleteNote(id);
+}
+
+/** The open book's bookmarks, by the location each names. */
+export function bookmarkList(): { id: string; loc: number | null }[] {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as {
+    bookmarkCtl: { bookmarks: { id: string; loc?: number }[] };
+  };
+  return view.bookmarkCtl.bookmarks.map((b) => ({ id: b.id, loc: b.loc ?? null }));
+}
+
+/** Sets one of Orbis's settings and saves it, as its row in Settings does. The runner puts it back after the test. */
+export async function setPluginSetting(key: string, value: unknown): Promise<void> {
+  const plugin = (
+    window as unknown as {
+      app: {
+        plugins: { plugins: Record<string, { settings: Record<string, unknown>; saveSettings(): Promise<void> }> };
+      };
+    }
+  ).app.plugins.plugins['orbis-reader'];
+  plugin.settings[key] = value;
+  await plugin.saveSettings();
+}
+
+/** Deletes a file or folder through Obsidian, so its index knows at once that the path is free. Nothing if absent. */
+export async function deleteInVault(path: string): Promise<void> {
+  const vault = (
+    window as unknown as {
+      app: { vault: { getAbstractFileByPath(p: string): unknown; delete(f: unknown, force: boolean): Promise<void> } };
+    }
+  ).app.vault;
+  const file = vault.getAbstractFileByPath(path);
+  if (file) await vault.delete(file, true);
+}
+
+/**
+ * Waits until the open book's location index has been measured: its locations, and the headings and lengths of its
+ * sections, which decide where a chapter split across files continues. Returns whether it got there in time.
+ */
+export async function locationIndexReady(timeoutMs: number): Promise<boolean> {
+  const app = (window as unknown as { app: PageApp }).app;
+  const started = Date.now();
+  for (;;) {
+    const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as
+      | { locIndex?: { isReady: boolean; sectionHeadings: string[] } }
+      | undefined;
+    if (view?.locIndex?.isReady && view.locIndex.sectionHeadings.length) return true;
+    if (Date.now() - started > timeoutMs) return false;
+    await new Promise((r) => setTimeout(r, 200));
+  }
+}
+
+/** When a vault file was last written, in milliseconds, or null when there is no such file. */
+export async function modifiedTime(path: string): Promise<number | null> {
+  const adapter = (
+    window as unknown as { app: { vault: { adapter: { stat(p: string): Promise<{ mtime: number } | null> } } } }
+  ).app.vault.adapter;
+  return (await adapter.stat(path))?.mtime ?? null;
+}
+
+/** Opens the dialog the Files pane's menu opens on a folder: Save folder as EPUB, or Save folder notes as EPUBs. */
+export function openFolderConversion(folder: string, separate: boolean): void {
+  const app = (
+    window as unknown as {
+      app: {
+        vault: { getAbstractFileByPath(p: string): unknown };
+        plugins: { plugins: Record<string, Record<string, (f: unknown) => void>> };
+      };
+    }
+  ).app;
+  const target = app.vault.getAbstractFileByPath(folder);
+  if (!target) throw new Error(`no folder at ${folder}`);
+  const plugin = app.plugins.plugins['orbis-reader'];
+  plugin[separate ? 'saveFolderAsSeparateEpubs' : 'saveFolderAsEpub'](target);
+}
+
+/** Where the open book is, closely: the section, how far its columns are scrolled, a page's width, the chapter. */
+export function readingPos(): {
+  section: number;
+  pos: number;
+  size: number;
+  chapter: string | null;
+  fraction: number | null;
+  canGoBack: boolean;
+  canGoForward: boolean;
+} {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as {
+    currentTocLabel: string | null;
+    foliateView?: {
+      renderer: { getContents(): { index: number }[]; containerPosition: number; size: number };
+      lastLocation?: { fraction?: number };
+      history?: { canGoBack: boolean; canGoForward: boolean };
+    };
+  };
+  const fv = view?.foliateView;
+  if (!fv) throw new Error('no book is open');
+  return {
+    section: fv.renderer.getContents()[0]?.index ?? -1,
+    pos: Math.round(fv.renderer.containerPosition),
+    size: Math.round(fv.renderer.size),
+    chapter: view.currentTocLabel,
+    fraction: fv.lastLocation?.fraction ?? null,
+    canGoBack: !!fv.history?.canGoBack,
+    canGoForward: !!fv.history?.canGoForward,
+  };
+}
+
+/** Goes to the open book's `nth` contents entry as selecting it on the Contents tab does, and returns its href. */
+export function jumpToContents(nth: number): string {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as {
+    tocHrefs(): string[];
+    goToTocHref(href: string): boolean;
+  };
+  const href = view.tocHrefs()[nth];
+  if (!href) throw new Error(`the book has no contents entry #${nth}`);
+  view.goToTocHref(href);
+  return href;
+}
+
+/**
+ * Types `input` into the Go to location bar, which it opens, and presses Enter. Returns whether the bar is still
+ * open and what its line under the field says.
+ */
+export async function goToLocation(input: string): Promise<{ open: boolean; hint: string }> {
+  const app = (window as unknown as { app: PageApp & { commands: PageCommands } }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as {
+    goToInputEl: HTMLInputElement | null;
+    goToHintEl: HTMLElement | null;
+  };
+  const field = view.goToInputEl;
+  if (!field?.isConnected || !field.offsetParent) app.commands.executeCommandById('orbis-reader:orbis-go-to-location');
+  await new Promise((r) => setTimeout(r, 300));
+  const input2 = view.goToInputEl;
+  if (!input2) throw new Error('the Go to location bar has no field');
+  input2.value = input;
+  input2.dispatchEvent(new Event('input'));
+  input2.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+  await new Promise((r) => setTimeout(r, 600));
+  return { open: !!input2.offsetParent, hint: (view.goToHintEl?.textContent ?? '').trim() };
+}
+
+/**
+ * Opens an `obsidian://orbis-nav` link as Obsidian does once the system hands it over, by calling Orbis's handler
+ * in this window. Never through the system, which could give it to another Obsidian, such as the one you use.
+ */
+export async function openOrbisLink(url: string): Promise<void> {
+  const app = (
+    window as unknown as {
+      app: { workspace: { protocolHandler?: { handlers?: Map<string, (params: Record<string, string>) => unknown> } } };
+    }
+  ).app;
+  // Where Obsidian keeps the handlers plugins register: not part of its published API, so checked rather than trusted.
+  const handler = app.workspace.protocolHandler?.handlers?.get('orbis-nav');
+  if (!handler) throw new Error('Orbis has no orbis-nav link handler registered');
+  const parsed = new URL(url);
+  if (parsed.protocol !== 'obsidian:' || parsed.host !== 'orbis-nav') throw new Error(`not an orbis-nav link: ${url}`);
+  const params: Record<string, string> = { action: 'orbis-nav' };
+  parsed.searchParams.forEach((value, key) => {
+    params[key] = value;
+  });
+  await handler(params);
+}
+
+/**
+ * Sets what the next search covers and how it matches, as Advanced search's OK does, and forgets the last query so
+ * the next Enter searches again rather than stepping to the next result.
+ */
+export function setSearchOptions(options: {
+  bookText?: boolean;
+  passages?: boolean;
+  noteAnchors?: boolean;
+  noteContent?: boolean;
+  caseSensitive?: boolean;
+  wholeWord?: boolean;
+}): void {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as {
+    search: {
+      scope: Record<string, boolean>;
+      caseSensitive: boolean;
+      wholeWord: boolean;
+      lastQuery: string;
+    };
+  };
+  const { caseSensitive, wholeWord, ...scope } = options;
+  view.search.scope = { bookText: true, passages: false, noteAnchors: false, noteContent: false, ...scope };
+  view.search.caseSensitive = !!caseSensitive;
+  view.search.wholeWord = !!wholeWord;
+  view.search.lastQuery = '';
+}
+
+/**
+ * Presses the open dialog's main button, then, when it asks to confirm, the confirmation's button labelled `confirm`,
+ * and waits until every dialog has closed.
+ */
+export async function saveAndConfirm(confirm: string, timeoutMs: number): Promise<void> {
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  const dialogs = () => Array.from(document.querySelectorAll<HTMLElement>('.modal-container, .orbis-popup'));
+  const main = Array.from(
+    document.querySelectorAll<HTMLButtonElement>('.modal-container button.mod-cta, .orbis-popup button.mod-cta')
+  ).pop();
+  if (!main) throw new Error('the dialog has no main button to press');
+  const open = dialogs().length;
+  main.click();
+  const started = Date.now();
+  for (;;) {
+    const top = dialogs().pop();
+    if (dialogs().length > open && top) {
+      const button = Array.from(top.querySelectorAll<HTMLButtonElement>('button')).find(
+        (b) => (b.textContent ?? '').trim() === confirm
+      );
+      if (!button) throw new Error(`the confirmation has no "${confirm}": ${(top.textContent ?? '').slice(0, 200)}`);
+      button.click();
+      break;
+    }
+    if (Date.now() - started > 5000) throw new Error('no confirmation was asked');
+    await sleep(100);
+  }
+  while (dialogs().length) {
+    if (Date.now() - started > timeoutMs) throw new Error(`the dialogs did not close within ${timeoutMs} ms`);
+    await sleep(200);
+  }
+}
+
+/**
+ * Sets one of this device's own settings (link preview, page turning by key, a toolbar button), as its switch in
+ * Settings does, then turns Orbis off and on so the reader takes it. Any book open is closed by that.
+ */
+export async function setDeviceValue(key: string, value: unknown): Promise<void> {
+  const app = (
+    window as unknown as {
+      app: {
+        loadLocalStorage(k: string): string | null;
+        saveLocalStorage(k: string, v: string): void;
+        plugins: { disablePlugin(id: string): Promise<void>; enablePlugin(id: string): Promise<void> };
+      };
+    }
+  ).app;
+  const held = JSON.parse(app.loadLocalStorage('orbis-device-settings') ?? '{}') as Record<string, unknown>;
+  held[key] = value;
+  app.saveLocalStorage('orbis-device-settings', JSON.stringify(held));
+  await app.plugins.disablePlugin('orbis-reader');
+  await app.plugins.enablePlugin('orbis-reader');
+}
+
+/** Sends a key press to the book's page, as a keyboard does with the book focused. */
+export function pressInBook(key: string): void {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
+  const doc = view?.foliateView?.renderer.getContents()[0]?.doc;
+  if (!doc) throw new Error('no book is open');
+  doc.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+}
+
+/**
+ * Styles as the open book's shown section computes them, for elements matching `selector` (the first `max`) that hold
+ * text of their own: the text alignment, the font size in pixels, the color, and how the text contrasts with what is
+ * behind it. The background is the
+ * first one set on the element or an ancestor, laid over the page; an element over a picture or a gradient has no
+ * contrast to give (null).
+ */
+export function computedText(
+  selector: string,
+  max = 200
+): { text: string; align: string; size: number; color: string; contrast: number | null }[] {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
+  const doc = view?.foliateView?.renderer.getContents()[0]?.doc;
+  if (!doc) throw new Error('no book is open');
+  const win = doc.defaultView as Window;
+  const parse = (c: string): number[] => {
+    const m = c.match(/[\d.]+/g)?.map(Number) ?? [0, 0, 0, 0];
+    return [m[0], m[1], m[2], m.length > 3 ? m[3] : 1];
+  };
+  const over = (top: number[], under: number[]) => [0, 1, 2].map((i) => top[i] * top[3] + under[i] * (1 - top[3]));
+  const luminance = (rgb: number[]) => {
+    const [r, g, b] = rgb.map((v) => {
+      const s = v / 255;
+      return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const backgroundOf = (el: Element): number[] | null => {
+    const layers: number[][] = [];
+    for (let at: Element | null = el; at; at = at.parentElement) {
+      const style = win.getComputedStyle(at);
+      if (style.backgroundImage && style.backgroundImage !== 'none') return null;
+      const bg = parse(style.backgroundColor);
+      if (bg[3] > 0) {
+        layers.push(bg);
+        if (bg[3] >= 1) break;
+      }
+    }
+    let rgb = [255, 255, 255];
+    for (const layer of layers.reverse()) rgb = over(layer, rgb);
+    return rgb;
+  };
+  const out: { text: string; align: string; size: number; color: string; contrast: number | null }[] = [];
+  for (const el of Array.from(doc.querySelectorAll(selector)).slice(0, max)) {
+    // Text of its own, not only inside its children: a box's color never shows when its words are all in a paragraph.
+    const own = Array.from(el.childNodes).some((n) => n.nodeType === Node.TEXT_NODE && (n.textContent ?? '').trim());
+    const text = (el.textContent ?? '').trim().replace(/\s+/g, ' ');
+    if (!text || !own) continue;
+    const style = win.getComputedStyle(el);
+    const bg = backgroundOf(el);
+    let contrast: number | null = null;
+    // Over a picture the book places beside it in the same box, what is behind the words is the picture's.
+    if (
+      bg &&
+      !el.querySelector('img, svg, picture') &&
+      !el.parentElement?.querySelector(':scope > img, :scope > svg, :scope > picture')
+    ) {
+      const fg = over(parse(style.color), bg);
+      const [a, b] = [luminance(fg), luminance(bg)].sort((x, y) => y - x);
+      contrast = Math.round(((a + 0.05) / (b + 0.05)) * 100) / 100;
+    }
+    out.push({
+      text: text.slice(0, 60),
+      align: style.textAlign,
+      size: parseFloat(style.fontSize),
+      color: style.color,
+      contrast,
+    });
+  }
+  return out;
+}
+
+/** Whether the open book is in Focus mode, its toolbar shows, and Focus mode's own × is there. */
+export function focusState(): { focus: boolean; toolbar: boolean; exit: boolean } {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as {
+    focusMode: boolean;
+    toolbarEl: HTMLElement | null;
+    containerEl: HTMLElement;
+  };
+  if (!view) throw new Error('no book is open');
+  const exit = view.containerEl.querySelector<HTMLElement>('.orbis-focus-exit-btn');
+  return { focus: view.focusMode, toolbar: !!view.toolbarEl?.offsetParent, exit: !!exit?.offsetParent };
+}
+
+/** Selects the row labelled `label` in the open pick list (a reading status, a rating), as a click on it does. */
+export async function pickRow(label: string): Promise<void> {
+  const find = () =>
+    Array.from(document.querySelectorAll<HTMLElement>('.orbis-pick-row')).find(
+      (row) => (row.querySelector('.orbis-pick-label')?.textContent ?? '').trim() === label
+    );
+  for (let wait = 0; !find() && wait < 25; wait++) await new Promise((r) => setTimeout(r, 200));
+  const row = find();
+  if (!row) {
+    const offered = Array.from(document.querySelectorAll('.orbis-pick-label')).map((l) => l.textContent?.trim());
+    throw new Error(`the list has no "${label}"; it has ${JSON.stringify(offered)}`);
+  }
+  row.click();
+  await new Promise((r) => setTimeout(r, 300));
+}
+
+/**
+ * Closes every tab in the main area, books and notes alike. The runner calls it before each test, so a test starts
+ * from an empty workspace whatever the last one opened: notes that Generate notes or a conversion opened beside a book
+ * would otherwise pile up in splits and squeeze the next book into a pane too small to turn a page in.
+ */
+export async function closeEveryTab(): Promise<void> {
+  const workspace = (
+    window as unknown as { app: { workspace: { iterateRootLeaves(fn: (leaf: { detach(): void }) => void): void } } }
+  ).app.workspace;
+  const leaves: { detach(): void }[] = [];
+  workspace.iterateRootLeaves((leaf) => {
+    leaves.push(leaf);
+  });
+  for (const leaf of leaves) leaf.detach();
+  await new Promise((r) => setTimeout(r, 300));
 }

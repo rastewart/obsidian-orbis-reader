@@ -3,13 +3,21 @@
 
 import {
   closeBooks,
+  copyVaultFile,
+  deleteInVault,
+  locationIndexReady,
   markParagraphs,
+  noteParagraph,
+  notesProblems,
   openBook,
   openInNewTab,
   pdfInfo,
+  pickInDialog,
   readVaultFile,
+  removeVaultPath,
   runCommand,
   saveDialog,
+  setPluginSetting,
   shownBook,
   vaultFiles,
 } from '../in-page';
@@ -24,9 +32,10 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
  * Runs `command` with what is in front, presses its dialog's main button, and returns the files ending in `ext` it
  * wrote. A dialog can close before its files are written, so they are waited for until none has appeared for a second.
  */
-async function saveWith({ page }: TestContext, command: string, ext: string): Promise<string[]> {
+async function saveWith({ page }: TestContext, command: string, ext: string, choice?: string): Promise<string[]> {
   const before = new Set(await page.run(vaultFiles));
   expect(await page.run(runCommand, `orbis-reader:${command}`), `${command} was not offered`);
+  if (choice) await page.run(pickInDialog, choice);
   await page.run(saveDialog, 60_000);
   let written: string[] = [];
   for (let waited = 0, sameFor = 0; waited < 60_000 && !(written.length && sameFor >= 1000); waited += 250) {
@@ -38,15 +47,41 @@ async function saveWith({ page }: TestContext, command: string, ext: string): Pr
   return written;
 }
 
-/** A book saved as Markdown, a note per chapter as it is by default, compared with what it gave before. */
-function markdownTest(path: string, goldenName: string): E2eTest {
+/** What the Markdown tests exported, by folder or note, removed before the next one saves. */
+const exported: string[] = [];
+
+/**
+ * A book saved as Markdown, a note per chapter as it is by default (or as one note), compared with what it gave
+ * before. Every note written must be one Obsidian can read: frontmatter it parses, and links that lead somewhere.
+ */
+function markdownTest(path: string, goldenName: string, single = false): E2eTest {
   return {
-    name: `save as Markdown: ${path.split('/').pop()}`,
+    name: `save as Markdown: ${path.split('/').pop()}${single ? ' as one note' : ''}`,
+    timeoutMs: 90_000,
     async run(context) {
+      // What an earlier export wrote goes first: the same book in another format has the same title, and its folder
+      // already there would make this one a numbered copy, named after which test happened to run before.
+      for (const earlier of exported.splice(0)) await context.page.run(deleteInVault, earlier);
       await context.page.run(openBook, path, 30_000);
       await dismissDialogs(context.page);
-      const written = await saveWith(context, 'orbis-save-as-markdown', '.md');
+      // Which files continue the chapter before them is decided from the location index, which the book builds after
+      // it opens. Saved before then, a continuation is written as a note of its own; see the Known issues in
+      // docs/design/end-to-end-tests.md.
+      expect(await context.page.run(locationIndexReady, 60_000), `${path}'s location index was not built`);
+      const written = await saveWith(
+        context,
+        'orbis-save-as-markdown',
+        '.md',
+        single ? 'Single Obsidian note' : undefined
+      );
       expect(written.length > 0, 'Save as Markdown wrote no notes');
+      expect(!single || written.length === 1, `as one note, Save as Markdown wrote ${written.length} notes`);
+      // The folder or the note this export made, and a single note's images beside it, to remove before the next.
+      const dir = path.slice(0, path.lastIndexOf('/') + 1);
+      for (const root of new Set(written.map((p) => dir + p.slice(dir.length).split('/')[0])))
+        exported.push(root, ...(root.endsWith('.md') ? [`${root.slice(0, -3)}-assets`] : []));
+      const problems = await context.page.run(notesProblems, written, 20_000);
+      expect(!problems.length, `what Save as Markdown wrote has problems\n  ${problems.join('\n  ')}`);
       const texts: string[] = [];
       for (const note of written) texts.push(`=== ${note}\n${await context.page.run(readVaultFile, note)}`);
       context.golden(goldenName, undated(texts.join('\n')));
@@ -61,6 +96,17 @@ export const conversionTests: E2eTest[] = [
   markdownTest('fixtures/technical-book.epub', 'markdown-technical-book-epub.md'),
   markdownTest('fixtures/fb2-notes.fb2', 'markdown-fb2-notes-fb2.md'),
   markdownTest('fixtures/cafe-and-co.mobi', 'markdown-cafe-and-co-mobi.md'),
+  // The books the Conversions test plan calls hard: notes at the back numbered again in each chapter, a Project
+  // Gutenberg layout whose file breaks cut across the text, an omnibus of novels, Calibre's contents that point at
+  // files rather than headings, and the same books as Kindle files.
+  markdownTest('fixtures/endnotes.epub', 'markdown-endnotes-epub.md'),
+  markdownTest('fixtures/endnotes.epub', 'markdown-endnotes-epub-single.md', true),
+  markdownTest('fixtures/gutenberg-style.epub', 'markdown-gutenberg-style-epub.md'),
+  markdownTest('fixtures/omnibus.epub', 'markdown-omnibus-epub.md'),
+  markdownTest('fixtures/calibre-body-anchors.epub', 'markdown-calibre-body-anchors-epub-single.md', true),
+  markdownTest('fixtures/parts-and-chapters.azw3', 'markdown-parts-and-chapters-azw3.md'),
+  markdownTest('fixtures/technical-book.azw3', 'markdown-technical-book-azw3.md'),
+  markdownTest('fixtures/annotation-workhorse.mobi', 'markdown-annotation-workhorse-mobi.md'),
   {
     name: 'save as PDF writes the book',
     timeoutMs: 120_000,
@@ -86,6 +132,38 @@ export const conversionTests: E2eTest[] = [
       const pdf = await context.page.run(pdfInfo, written[0]);
       expect(pdf.isPdf, `${written[0]} is not a PDF`);
       expect(pdf.pages >= 1, `the marks' PDF has ${pdf.pages} pages`);
+    },
+  },
+  {
+    name: 'save as PDF carries the marks: a cover sheet and a comment per note',
+    timeoutMs: 180_000,
+    async run(context) {
+      const { page } = context;
+      const path = 'fixtures/resilience/PDF Copy.epub';
+      await page.run(copyVaultFile, 'fixtures/footnotes.epub', path, null);
+      await page.run(openBook, path, 30_000);
+      await dismissDialogs(page);
+      await page.run(markParagraphs, [0], 300);
+      await page.run(noteParagraph, 1, 'A note for the PDF.', null);
+      await page.run(noteParagraph, 2, 'Another note for the PDF.', 0);
+      const save = async () => {
+        const written = await saveWith(context, 'orbis-save-as-pdf', '.pdf');
+        expect(written.length === 1, `Save as PDF wrote ${written.length} files, not one`);
+        const pdf = await page.run(pdfInfo, written[0]);
+        await page.run(removeVaultPath, written[0]);
+        return pdf;
+      };
+      await page.run(setPluginSetting, 'bookPdfIncludeMarks', true);
+      await page.run(setPluginSetting, 'bookPdfCoverSheet', true);
+      const marked = await save();
+      await page.run(setPluginSetting, 'bookPdfIncludeMarks', false);
+      const clean = await save();
+      expect(marked.comments === 2, `with the marks, the PDF carries ${marked.comments} comments, not one per note`);
+      expect(clean.comments === 0, `without the marks, the PDF still carries ${clean.comments} comments`);
+      expect(
+        marked.pages === clean.pages + 1,
+        `with the marks the PDF has ${marked.pages} pages, without them ${clean.pages}: the cover sheet should be the one more`
+      );
     },
   },
   {

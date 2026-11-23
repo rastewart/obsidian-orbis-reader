@@ -7,7 +7,7 @@ runs the end-to-end tests in it, and closes it. It prints a line per test and ex
 
 ```sh
 pnpm e2e                 # every test
-pnpm e2e "opens EPUB"    # the tests whose name contains this text
+pnpm e2e "opens EPUB"    # the tests whose name contains this text (give several to run each one's tests)
 pnpm e2e --update        # rewrite the golden files from this run, after checking the change is right
 pnpm e2e --keep          # keep the run's vault and Obsidian data afterwards, to look at what a test left
 ```
@@ -26,8 +26,9 @@ iPhone, iPad and Android, and how the reader feels to use.
 
 They run on your computer, **not in CI**. A CI runner offers Linux, which is not a platform Orbis is tested on, and
 an unattended Obsidian there would fail for reasons that have nothing to do with Orbis. On your computer they run
-the Obsidian you use, on Windows or macOS, and the tests take about three minutes once the build is done. A
-minute of that is running every command; `pnpm e2e "<name>"` runs one test while you work on it.
+the Obsidian you use, on Windows or macOS, and a full run takes about seven and a half minutes on a Mac, build
+included. A minute of that is running every command, and twenty-odd seconds reading records; `pnpm e2e "<name>"`
+runs one test while you work on it.
 
 In the order of a release (Feature Development Guide, *The order of a release*), they run after CI passes and before
 a beta or a release is tagged.
@@ -80,6 +81,30 @@ Obsidian's dialogs are `.modal-container`s and Orbis's own are `.orbis-popup`s, 
 are looked for. A dialog that Escape does not close fails the test, since a person using the keyboard would be stuck
 in it. A test that saves through a dialog presses its main button (`saveDialog`) and picks a choice by its label
 (`pickInDialog`), so the dialog itself is tested too.
+
+**Settings are put back after each test.** Before a test the runner takes a copy of Orbis's settings, the plugin's
+`data.json` and what this device keeps in local storage, and afterwards it puts back whatever the test changed. So a
+test may switch reading records on or turn Link preview off without the next test meeting it. Orbis keeps its device
+settings (Link preview, page turning by key, the toolbar's buttons) in memory as well as in storage, so when one of
+those changed the runner turns Orbis off and on, which reads them afresh. Three values Orbis changes by itself are left
+alone (`OWN_BOOKKEEPING` in `e2e/run.ts`): the version it last greeted the device with, the sync clock, which only
+moves forward, and the shipped preset it installs again whenever it loads. `ORBIS_E2E_SHOW_RESTORED=1` prints what was
+put back after each test.
+
+**Each test starts with no tabs open.** Generate notes and the conversions open what they write beside the book, and
+left there those notes pile up in splits until a later book is squeezed into a pane too small to turn a page in. The
+runner closes every tab before each test (`closeEveryTab`), and `openBook` puts the book's tab in front and focused,
+as a person's opening it does.
+
+**Notices.** Obsidian removes a notice after a few seconds, so the launcher keeps each one as it appears, and a test
+reads what Orbis said with `noticesSince`.
+
+**Deleting and renaming.** The test vault sends deleted files to its own `.trash`, deleted with the run, never to the
+computer's trash, and updates links to a renamed file without asking, as Obsidian's question would wait for an answer.
+
+**Links that leave Obsidian.** No test opens an `obsidian://` link through the system, which could hand it to the
+Obsidian you use. `openOrbisLink` calls Orbis's handler in the test window instead, and the link-check test presses
+Cancel, never Open.
 
 **Your clipboard.** Electron's clipboard is the computer's, so a test that copies would replace what you copied. Once
 Orbis is on, the launcher has `navigator.clipboard` keep the text in the page, where `copiedText` reads it.
@@ -137,31 +162,70 @@ the old sort back, and it reported the passages out of book order.
 
 ## The tests
 
-The tests run in the order below. Running every command is last, because a command can change a setting.
+The tests run in the order below. Running every command is last, because it changes the most settings.
 
 | File | Test | What it checks |
 |---|---|---|
 | `books.ts` | opens EPUB, MOBI, AZW3, FB2, CBZ | The book renders, has sections, and for text formats has contents and shows text past the cover. A comic shows a page image |
+| | every fixture opens, with the contents it had before | Every book git tracks in `fixtures` opens without an error, with no garbled characters, and its title, author and contents match `fixture-contents.txt` |
 | `place.ts` | a book reopens where the reader left it | Closed and opened again, a book is at the section and location it was saved at, on a page boundary |
 | | a book keeps its place when Orbis reloads | Orbis turned off and on rebuilds the book's view at the same place |
 | | a book keeps its place behind another tab | The technical book's chapter with a bordered table, hidden behind a note and shown again. Without foliate patch 8 it froze Obsidian |
 | | a book left at its cover reopens on the cover page | Without foliate patch 39 the cover was shifted sideways |
-| `notes.ts` | generate notes lists passages in book order | Three paragraphs marked first, third, then second come out in book order, matching `generate-notes.md` |
+| `navigation.ts` | the chapter and page commands land where they say | Next and previous chapter land on a chapter's first page; next and previous page turn one page |
+| | back and forward return across a jump | After a jump from the contents, Go back and Go forward return; a new jump drops the way forward |
+| | go to location goes there, and says what it cannot do | 50% lands near the middle; a location past the end and 150% give their messages and keep the bar open |
+| | a link copied to a place opens the book there | Copy link to current location, opened through Orbis's link handler, opens the book at that section |
+| | the commands offered with a note in front, and with a book | The palette's Orbis commands in each case, matching `commands-offered.txt` |
+| `notes.ts` | generate notes lists passages in book order | Three paragraphs marked first, third, then second come out in book order, matching `generate-notes.md`, in a note Obsidian reads without a problem |
 | `marks.ts` | marks made in quick succession are all kept | Twenty marks made 5 to 20 ms apart are all held, and all saved, through a reload |
 | | copy passage selections gives them in book order | The copy from a MOBI, in book order, matching `copy-passage-selections.md` |
-| | generate notes writes one file per chapter | The dialog's *Book folder* choice, from an AZW3, matching `generate-notes-per-chapter.md` |
-| `conversions.ts` | save as Markdown | Four books in four formats, a note per chapter, each matching its `markdown-*.md` |
+| | generate notes writes one file per chapter | The dialog's *Book folder* choice, from an AZW3, matching `generate-notes-per-chapter.md`, with links that lead somewhere |
+| | marks and notes come back in MOBI and FB2, on the same text | Closed and reopened, each mark and note is held, and its stored place still covers the text it was made on |
+| | a changed or removed mark stays changed through a reload | A mark given another mark, one removed and a note deleted, all as they were left after Orbis reloads |
+| | bookmarks are kept, and each copy command lists what the book holds | The bookmark command adds and removes; bookmarks survive closing; the three copy commands say when there is nothing, and match `copy-annotations.md` |
+| | save annotations as PDF is offered once a passage is marked | Not for a book with nothing marked, nor with only a bookmark |
+| `conversions.ts` | save as Markdown | Twelve exports of eight books in four formats, including the Conversions plan's hard books, each matching its `markdown-*.md`; every note has frontmatter Obsidian reads and no link that leads nowhere |
 | | save as PDF, save annotations as PDF | Each writes a PDF with pages |
+| | save as PDF carries the marks | With marks: a cover sheet and a comment per note. Without: neither |
 | | save note as EPUB makes a book that opens | The book's contents match `note-as-epub-contents.txt` |
 | | read in Orbis Reader opens a note as a book | The note's prose is in the book shown |
+| `epubs.ts` | converting a note again when nothing changed writes nothing | "already up to date", and the book's file untouched |
+| | read in Orbis Reader keeps one book per note | Twice on one note leaves one book; a very long note name gives a book name of 80 characters or fewer |
+| | a folder of notes becomes one book, a set of books | The folder's book in its index note's order (`folder-epub-contents.txt`); the set's six books and a contents note, and "already up to date" the second time |
+| `exists.ts` | generating notes, saving as Markdown again | *Save as new version* writes a numbered copy and leaves the first alone; *Replace* (confirmed, for notes) writes over it |
 | `search.ts` | search finds a word and a result lands on it | The results match `search-boathouse.txt`, the next Enter shows a page holding a result, and the book then closes without an error |
+| | a search with no match finds none, and a new search replaces the last | |
+| | advanced search finds marks and notes, and matches case and whole words | Each scope finds only its own kind; Match case and Whole word narrow the results |
 | `checks.ts` | hostile-scripts, stylesheet-checks, stylesheet-hazards | Each book's own checks read PASS, none FAIL |
-| | an empty file, a file that is not a book | The tab says why, matching `open-*.txt` |
+| | an empty file, a file that is not a book, a cut-off EPUB | The tab says why, matching `open-*.txt` |
+| `links.ts` | a link out of the book is shown in full before it opens | Each row of `link-checks.epub` but two, matching `link-checks.txt`: its dialog, warnings and which button is red, or the notice refusing a script |
+| | a note reference shows its note, and Go and back work | In an EPUB with footnotes, one with endnotes and an FB2, matching `note-previews.txt`; the book does not move until Go |
+| | with link preview off, a note reference goes to its note | |
+| `display.ts` | the display commands stop at their limits, and the book follows them | Font size 80–300%, line spacing 1–3 with no stray decimals, brightness 20–100%, margins 0–12%, the alignment cycle and its notices; text at 150% is half as large again |
+| | the reader's alignment and size reach a book's own styles | `body-text-styles.epub`'s justified text goes left while its centered and right-aligned lines stay; `keyword-sizes.epub`'s sizes grow |
+| | text on a book's own backgrounds stays readable in Light, Sepia and Dark | Every line of `contrast-checks.epub` that can be measured is at least 3 : 1; the white words over the picture stay white |
+| | focus mode hides the toolbar, comes out again, and is not remembered | |
+| | the page keys turn the page, unless told not to | Right, Space and Page Down forward; Left and Page Up back; Up and Down not; none of them with the setting off |
+| `resilience.ts` | a renamed or moved book keeps its marks and place | Its reading data takes the new name and the new folder, and the book reopens with its mark at its place |
+| | a deleted book takes its reading data with it | With the notice the plan quotes |
+| | damaged reading data is written again from the marks | A `.orbis` emptied or not JSON is written again with its marks; a damaged place opens the book at its start |
+| | the reading data folder mends itself | The readme is put right and comes back, the page index is rebuilt, and the folder deleted while Obsidian runs comes back |
+| | scan annotation data finds nothing wrong | |
+| `records.ts` | reading records follow the marks and notes, and keep what the reader wrote | A record per mark and note, with its bases; a changed mark updates it and keeps the reader's line; a record nobody wrote in goes with its mark, one they did stays, orphaned |
+| `library.ts` | a book is cataloged, and its status and rating set from the reader | The title note matches `catalog-title-note.md`; status and rating are written to it, and a rating cleared |
+| `sync.ts` | another device's mark appears in the open book | A device file written under another device's id, as the Sync plan's first run does: the mark appears without reopening, on its text |
 | `commands.ts` | every command runs without an error | Each command the palette offers with a book open, toggles twice. Three are left out, each with its reason in `SKIP` |
 
-Each test except the self-checking books was made to fail first, on the code it guards. For the hostile book that
-needs both of desktop's protections removed, which was not done. It passes here because nothing got through, which
-proves least on desktop, and its device run is still the check that matters.
+Each of the first set of tests was made to fail first, on the code it guards; for the hostile book that needs both of
+desktop's protections removed, which was not done. It passes here because nothing got through, which proves least on
+desktop, and its device run is still the check that matters. The second set was written against the test plans and
+checked against what the plans say, and three of its tests found the bugs below on their first runs; not every one of
+them has been made to fail on purpose.
+
+**Helpers that mark and note.** `markParagraphs` and `noteParagraph` select a paragraph from its first character to its
+last, as a person's selection runs. A range on the paragraph element itself, `(p, 0)` to `(p, n)`, is stored with its
+start and end at the same place: see *What the tests found*.
 
 ---
 
@@ -171,8 +235,18 @@ proves least on desktop, and its device run is still the check that matters.
 seen rather than failing the run, so the run stays a reliable yes or no while the bug stays in view. Remove an entry
 with its fix.
 
-The list is empty. Its first entry was an error from foliate's paginator, which walked a chapter's document before
-the document had a body, in about one run in three. foliate patch 40 fixed it (the fork's `ORBIS-CHANGES.md`).
+Its first entry was an error from foliate's paginator, which walked a chapter's document before the document had a
+body, in about one run in three. foliate patch 40 fixed it (the fork's `ORBIS-CHANGES.md`).
+
+It holds two now, both from a book's tab closing while foliate is still at work, which *the reading data folder
+mends itself* meets in most runs:
+
+- **`View.destroy` unobserves a document with no body.** foliate's `View.destroy` checks `this.document` and then
+  passes `this.document.body` to `ResizeObserver.unobserve`, which throws while a section's document is still loading.
+  The same family as patch 40; `this.document?.body` would end it.
+- **A resize after closing reports a place in a section the view no longer has.** The paginator's resize observer
+  still fires as the tab closes, lays out, and relocates, and `View.getCFI` reads `this.book.sections[index].cfi` for
+  an index with no section.
 
 ---
 
@@ -189,3 +263,26 @@ Writing them turned up these, each fixed with its test.
 - **Closing a book with search results threw an error for each.** Fixed in `SearchController` (`forgetAnnotations`);
   *search finds a word and a result lands on it*.
 - **The paginator's error on a document with no body.** foliate patch 40, above.
+
+The second set found these, not yet fixed. Each is written up here so the test that met it can be changed with the fix.
+
+- **A mark on a whole element is stored as an empty range.** A range from `(p, 0)` to `(p, n)` passes `tightenRange`
+  unchanged when its text has no space at either end, and its CFI comes out with the same start and end, such as
+  `epubcfi(/6/4!/4,/8,/8)`. Scan annotation data for problems then calls the mark a broken range. The listening
+  player builds such ranges for **Mark the passage** with the mark set to **Paragraph** (`enclosingBlockRange` and the
+  block ranges in `tts-blocks.ts` use `selectNodeContents`), so those marks are likely stored this way. The golden
+  files that carry a mark's link held these empty ranges until the helpers changed.
+- **Save as Markdown pressed before the location index is built splits a book differently.** `sectionContinues`
+  answers from the location index, which the book builds after it opens, and says no section continues until then.
+  Saved before that, a file that continues a chapter (`omnibus.epub`'s *This file continues*) is written as a note of
+  its own named `Section 13`, and which sections are joined changes from run to run. The Markdown tests wait for the
+  index, as a person who waits would; the dialog does not, and Save as PDF and the recording list ask the same
+  question.
+- **A space in a link's host is not *Not a valid address* on desktop.** Row 17 of `link-checks.epub`,
+  `https://exa mple.com/`, is shown as a web page at `exa%20mple.com` with Open in the accent color, where the test
+  plan expects *Not a valid address* and no Open. `readLinkAddress` trusts `new URL()`, and Chromium accepts a space in
+  a host by encoding it. `link-checks.txt` holds what Orbis does now.
+- **To look at, not known to be wrong.** In `endnotes.epub` and `fb2-notes.fb2` a note's preview runs on through the
+  notes after it, where `footnotes.epub`'s holds one note (`note-previews.txt`). `calibre-body-anchors.epub` saved as
+  one note names its chapters with their parts (`# Part One – Chapter 1`) and gives the second half of Chapter 3 a
+  heading of its own, where the Conversions plan expects `# Chapter 1` and one heading per chapter.

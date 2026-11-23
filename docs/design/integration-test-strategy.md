@@ -88,6 +88,6 @@ Generated books are committed in `test-vault/fixtures/` across formats (epub, mo
 
 ## Real Obsidian instance testing
 
-For testing that requires the full Obsidian runtime (plugin loading, command palette, workspace layout), there is no automated solution. Playwright + Electron is not used: Orbis renders epub content inside an iframe, which makes DOM assertions across that boundary impractical, so automated E2E coverage is significantly harder than for a typical Obsidian plugin.
+For testing that requires the full Obsidian runtime (plugin loading, command palette, workspace layout), `pnpm e2e` runs the built plugin in a separate Obsidian on your computer and drives it over the Chrome DevTools Protocol, reaching into the book's frames from the page itself: see [End-to-End Tests](end-to-end-tests.md). Playwright + Electron is not used.
 
-The runtime is covered by manual device tests, one page per system of Orbis, each tagged by the devices a step must run on: see [Test plans](test-plans/README.md).
+What only a device can show — touch, the phone and tablet engines, sync between real devices, and how a book reads — is covered by manual device tests, one page per system of Orbis, each tagged by the devices a step must run on: see [Test plans](test-plans/README.md).

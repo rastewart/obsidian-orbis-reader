@@ -118,7 +118,12 @@ function makeVault(vault: string): void {
     copyFileSync(from, join(plugin, file));
   }
   writeFileSync(join(vault, '.obsidian', 'community-plugins.json'), JSON.stringify(['orbis-reader']));
-  writeFileSync(join(vault, '.obsidian', 'app.json'), JSON.stringify({ promptDelete: false }));
+  // A file a test deletes goes to the vault's own `.trash`, deleted with the run, never to the computer's trash. A file
+  // a test renames has the links to it updated without Obsidian asking, as it would wait for an answer.
+  writeFileSync(
+    join(vault, '.obsidian', 'app.json'),
+    JSON.stringify({ promptDelete: false, trashOption: 'local', alwaysUpdateLinks: true })
+  );
 }
 
 /** The user-data folder: a vault list holding only the test vault, open, and the newest Obsidian app file. */
@@ -175,6 +180,18 @@ async function readyWithPlugin(page: Page): Promise<void> {
       readText: async () => w.orbisE2eClipboard,
       read: async () => [],
     });
+  });
+  // **Notices.** Obsidian shows one for a few seconds and then removes it, so a test that asks what Orbis said could
+  // miss it. Each one is kept as it appears, in `window.orbisE2eNotices`, for `noticesSince` to read.
+  await page.run(() => {
+    const w = window as unknown as { orbisE2eNotices: string[] };
+    w.orbisE2eNotices = [];
+    new MutationObserver((records) => {
+      for (const record of records)
+        for (const node of Array.from(record.addedNodes))
+          if (node instanceof HTMLElement && node.classList.contains('notice'))
+            w.orbisE2eNotices.push((node.textContent ?? '').trim().replace(/\s+/g, ' '));
+    }).observe(document.body, { childList: true, subtree: true });
   });
   // The trust prompt and the welcome are closed by the runner before the first test, as every dialog is.
 }

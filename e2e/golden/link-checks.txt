@@ -1,0 +1,246 @@
+--- row 1
+Open this link?
+Link type
+Web page
+Domain
+example.com
+Link text
+https://example.com/
+Link address
+https://example.com/
+Cancel
+Open
+buttons: Cancel, Open (accent)
+--- row 2
+Open this link?
+Link type
+Web page
+Domain
+www.example.com
+Link text
+example.com
+Link address
+https://www.example.com/about
+Cancel
+Open
+buttons: Cancel, Open (accent)
+--- row 3
+Open this link?
+Link type
+Web page
+Domain
+example.org
+Link text
+https://example.com/account
+The link text shows example.com. The link address goes to example.org.
+Link address
+https://example.org/sign-in
+This link may be unsafe. Open it only if you trust the book’s source.
+Cancel
+Open
+buttons: Cancel, Open (red)
+--- row 4
+Open this link?
+Link type
+Web page
+Domain
+example.net
+Link text
+Sign in
+Link address
+https://example.com@example.net/
+The link address has a name before “@” (example.com). The domain is example.net.
+This link may be unsafe. Open it only if you trust the book’s source.
+Cancel
+Open
+buttons: Cancel, Open (red)
+--- row 6
+Open this link?
+Link type
+Web page
+Domain
+xn--exmple-4nf.com
+The domain contains characters outside the basic Latin alphabet: а (Cyrillic, U+0430).
+Link text
+A shop
+Link address
+https://xn--exmple-4nf.com/
+This link may be unsafe. Open it only if you trust the book’s source.
+Cancel
+Open
+buttons: Cancel, Open (red)
+--- row 7
+Open this link?
+Link type
+Web page
+Domain
+example.com
+Link text
+https://example.com/
+Link address
+https://example.com/
+The link address in the book has characters you can’t see. It’s shown here as it will be opened.
+Cancel
+Open
+buttons: Cancel, Open (accent)
+--- row 8
+Open this link?
+Link type
+Web page
+Domain
+example.com
+Link text
+invoice[U+202E]fdp.exe
+Characters you can’t see in the book are shown as codes, such as [U+202E].
+Link address
+https://example.com/invoice
+Cancel
+Open
+buttons: Cancel, Open (accent)
+--- row 9
+Open this link?
+Link type
+Web page
+Domain
+example.com
+Link text
+A short label for a long address
+Link address
+https://example.com/section-1-of-a-very-long-address/section-2-of-a-very-long-address/section-3-of-a-very-long-address/section-4-of-a-very-long-address/section-5-of-a-very-long-address/section-6-of-a-very-long-address/section-7-of-a-very-long-address/section-8-of-a-very-long-address/section-9-of-a-very-long-address/section-10-of-a-very-long-address/section-11-of-a-very-long-address/section-12-of-a-very-long-address?ref=link-check&n=1
+Cancel
+Open
+buttons: Cancel, Open (accent)
+--- row 10
+Open this link?
+Link type
+Web page
+Domain
+example.com
+Link text
+(a picture: A blue square)
+Link address
+https://example.com/picture
+Cancel
+Open
+buttons: Cancel, Open (accent)
+--- row 11
+Open this link?
+Link type
+Email
+Domain
+example.com
+Link text
+Write to someone@example.com
+Link address
+mailto:someone@example.com?subject=Orbis%20link%20check
+Cancel
+Open
+buttons: Cancel, Open (accent)
+--- row 12
+Open this link?
+Link type
+Phone number
+Link text
+Call 555-0100
+Link address
+tel:+15555550100
+Cancel
+Open
+buttons: Cancel, Open (accent)
+--- row 13
+Open this link?
+Link type
+Obsidian link (search)
+Link text
+Search the vault
+Link address
+obsidian://search?query=orbis-link-check
+Cancel
+Open
+buttons: Cancel, Open (accent)
+--- row 14
+Open this link?
+Link type
+File on this device
+Link text
+Open the files on this device
+Link address
+file:///
+Cancel
+Open
+buttons: Cancel, Open (accent)
+--- row 15
+(no dialog)
+notice: Orbis Reader doesn’t open links that run scripts.
+--- row 16
+(no dialog)
+notice: Orbis Reader doesn’t open links that run scripts.
+--- row 17
+Open this link?
+Link type
+Web page
+Domain
+exa%20mple.com
+Link text
+A broken address
+Link address
+https://exa%20mple.com/
+Cancel
+Open
+buttons: Cancel, Open (accent)
+--- row 19
+Link preview
+This is where the link inside the book leads. Nothing here leaves the book.
+Back to the link checks
+Go
+buttons: Go (accent)
+--- row 20
+Open this link?
+Link type
+Web page
+Domain
+example.com
+Link text
+(a picture: A blue square)
+Link address
+https://example.com/image-map
+Cancel
+Open
+buttons: Cancel, Open (accent)
+--- row 21
+Open this link?
+Link type
+Web page
+Domain
+example.com
+Link text
+A green square
+Link address
+https://example.com/svg-link
+Cancel
+Open
+buttons: Cancel, Open (accent)
+--- row 22
+Open this link?
+Link type
+Web page
+Domain
+example.com
+Link text
+x+y
+Link address
+https://example.com/formula
+Cancel
+Open
+buttons: Cancel, Open (accent)
+--- row 23
+Open this link?
+Link type
+Obsidian link (search)
+Link text
+(a picture: A blue square)
+Link address
+obsidian://search?query=orbis-image-map-check
+Cancel
+Open
+buttons: Cancel, Open (accent)

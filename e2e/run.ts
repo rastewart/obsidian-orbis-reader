@@ -5,7 +5,7 @@
 //
 //   --update   rewrite the golden files from this run's output, after checking the change is right
 //   --keep     keep the run's vault and user data afterwards, to look at what a test left
-//   <text>     run only the tests whose name contains it
+//   <text>...  run only the tests whose name contains one of these
 //
 // A failed test leaves a screenshot of the window in e2e/.out/, beside any output that differed from its golden file.
 // See docs/design/end-to-end-tests.md.
@@ -13,42 +13,81 @@
 import { mkdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { within } from './cdp';
+import { closeEveryTab, restoreSettings, settingsSnapshot } from './in-page';
 import { launchObsidian, ROOT } from './launch';
 import { dismissDialogs, type E2eTest, goldenCheck, TestFailure } from './runner';
 import { bookTests } from './tests/books';
 import { checkTests } from './tests/checks';
 import { commandTests } from './tests/commands';
 import { conversionTests } from './tests/conversions';
+import { displayTests } from './tests/display';
+import { epubTests } from './tests/epubs';
+import { existsTests } from './tests/exists';
+import { libraryTests } from './tests/library';
+import { linkTests } from './tests/links';
 import { marksTests } from './tests/marks';
+import { navigationTests } from './tests/navigation';
 import { notesTests } from './tests/notes';
 import { placeTests } from './tests/place';
+import { recordsTests } from './tests/records';
+import { resilienceTests } from './tests/resilience';
 import { searchTests } from './tests/search';
+import { syncTests } from './tests/sync';
 
 // The commands run last: a command can change a setting, and the other tests start from the defaults.
 const ALL: E2eTest[] = [
   ...bookTests,
   ...placeTests,
+  ...navigationTests,
   ...notesTests,
   ...marksTests,
   ...conversionTests,
+  ...epubTests,
+  ...existsTests,
   ...searchTests,
   ...checkTests,
+  ...linkTests,
+  ...displayTests,
+  ...resilienceTests,
+  ...recordsTests,
+  ...libraryTests,
+  ...syncTests,
   ...commandTests,
 ];
 const DEFAULT_TIMEOUT_MS = 60_000;
+
+/**
+ * Settings Orbis changes by itself, which the runner leaves as they are after a test: the version it last greeted
+ * this device with, the clock its sync keeps (which only ever moves forward), and the shipped preset it installs
+ * again whenever it loads. Putting them back would only make Orbis write them again.
+ */
+const OWN_BOOKKEEPING = ['orbis-seen-version', 'orbis-sync-clock', 'annotationPresets'];
 
 /**
  * Errors Orbis is known to report that are not yet fixed, by a part of their text. One of these is printed as seen,
  * not counted as a failure, so the run stays a reliable yes or no while the bug stays in view. Each names where it is
  * tracked; remove it with the fix.
  */
-const KNOWN_ISSUES: { text: string; issue: string }[] = [];
+const KNOWN_ISSUES: { text: string; issue: string }[] = [
+  {
+    text: "Failed to execute 'unobserve' on 'ResizeObserver'",
+    issue:
+      "foliate's View.destroy unobserves a section document that has no body yet, when a book closes while a section " +
+      'is still loading (docs/design/end-to-end-tests.md, Known issues)',
+  },
+  {
+    text: "Cannot read properties of undefined (reading 'cfi')",
+    issue:
+      "foliate's paginator, resized as a book's tab closes, reports a place in a section the view no longer has, and " +
+      'View.getCFI reads it (docs/design/end-to-end-tests.md, Known issues)',
+  },
+];
 
 const args = process.argv.slice(2);
 const update = args.includes('--update');
 const keep = args.includes('--keep');
-const filter = args.find((a) => !a.startsWith('--'));
-const selected = filter ? ALL.filter((t) => t.name.includes(filter)) : ALL;
+const filters = args.filter((a) => !a.startsWith('--'));
+const selected = filters.length ? ALL.filter((t) => filters.some((f) => t.name.includes(f))) : ALL;
 
 const OUT = join(ROOT, 'e2e', '.out');
 rmSync(OUT, { recursive: true, force: true });
@@ -68,7 +107,7 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
 
 async function main(): Promise<number> {
   if (!selected.length) {
-    console.error(`No test name contains "${filter}".`);
+    console.error(`No test name contains ${filters.map((f) => `"${f}"`).join(' or ')}.`);
     return 1;
   }
   console.log(`Starting Obsidian for ${selected.length} test(s)…`);
@@ -78,7 +117,9 @@ async function main(): Promise<number> {
     for (const test of selected) {
       const started = Date.now();
       await dismissDialogs(obsidian.page);
+      await obsidian.page.run(closeEveryTab);
       obsidian.page.takeErrors();
+      const settings = await obsidian.page.run(settingsSnapshot);
       let problem: string | null = null;
       try {
         await withTimeout(
@@ -119,6 +160,13 @@ async function main(): Promise<number> {
       } else {
         console.log(`  ✓ ${test.name} (${seconds} s)`);
       }
+      // Whatever settings the test changed go back, so the next test starts from the same ones. After the screenshot,
+      // which shows the window as the test left it, and never after a freeze, which ended the run above.
+      const restored = await obsidian.page
+        .run(restoreSettings, settings, OWN_BOOKKEEPING)
+        .catch((e: Error) => [`(could not put them back: ${e.message})`]);
+      if (process.env.ORBIS_E2E_SHOW_RESTORED && restored.length)
+        console.log(`    settings put back: ${restored.join(', ')}`);
     }
   } finally {
     await obsidian.close();

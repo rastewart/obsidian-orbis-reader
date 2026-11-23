@@ -1,0 +1,92 @@
+=== with a note in front
+Orbis Reader: About Orbis Reader
+Orbis Reader: Manage annotation presets…
+Orbis Reader: Read in Orbis Reader
+Orbis Reader: Save note as EPUB…
+Orbis Reader: Show pronunciation glossary…
+Orbis Reader: Toggle debug button
+Orbis Reader: Toggle developer options
+Orbis Reader: Toggle link preview
+Orbis Reader: Toggle writing the debug log to a note
+=== with a book in front
+Orbis Reader: About Orbis Reader
+Orbis Reader: Annotation marks for this book…
+Orbis Reader: Apply mark 1
+Orbis Reader: Apply mark 2
+Orbis Reader: Apply mark 3
+Orbis Reader: Apply mark 4
+Orbis Reader: Apply mark 5
+Orbis Reader: Apply mark 6
+Orbis Reader: Apply mark 7
+Orbis Reader: Apply mark 8
+Orbis Reader: Apply mark 9
+Orbis Reader: Apply no mark (note editor)
+Orbis Reader: Choose listening voice…
+Orbis Reader: Clear navigation history
+Orbis Reader: Clear selection
+Orbis Reader: Copy bookmarks to clipboard
+Orbis Reader: Copy link to current location
+Orbis Reader: Copy notes to clipboard
+Orbis Reader: Copy passage selections to clipboard
+Orbis Reader: Cycle reading progress display
+Orbis Reader: Cycle text alignment
+Orbis Reader: Decrease brightness
+Orbis Reader: Decrease font size
+Orbis Reader: Decrease line spacing
+Orbis Reader: Decrease text margins
+Orbis Reader: Delete the selected mark or note
+Orbis Reader: Extend selection by a sentence
+Orbis Reader: Generate notes…
+Orbis Reader: Go back
+Orbis Reader: Go forward
+Orbis Reader: Go to location
+Orbis Reader: Go to next chapter
+Orbis Reader: Go to next mark or note
+Orbis Reader: Go to next note
+Orbis Reader: Go to next page
+Orbis Reader: Go to next passage selection
+Orbis Reader: Go to previous chapter
+Orbis Reader: Go to previous mark or note
+Orbis Reader: Go to previous note
+Orbis Reader: Go to previous page
+Orbis Reader: Go to previous passage selection
+Orbis Reader: Increase brightness
+Orbis Reader: Increase font size
+Orbis Reader: Increase line spacing
+Orbis Reader: Increase text margins
+Orbis Reader: Manage annotation presets…
+Orbis Reader: Manage recordings and mixes…
+Orbis Reader: Open Annotations tab
+Orbis Reader: Open Contents tab
+Orbis Reader: Open Linked vault notes tab
+Orbis Reader: Open Stats tab
+Orbis Reader: Open book
+Orbis Reader: Open notes
+Orbis Reader: Open search
+Orbis Reader: Reading record for this book…
+Orbis Reader: Remove records of deleted content…
+Orbis Reader: Save as Markdown…
+Orbis Reader: Save as PDF…
+Orbis Reader: Scan annotation data for problems
+Orbis Reader: Select marks for listening and notes
+Orbis Reader: Select paragraph
+Orbis Reader: Select previous sentence
+Orbis Reader: Select sentence
+Orbis Reader: Show pronunciation glossary…
+Orbis Reader: Show reading data for this book
+Orbis Reader: Show reading locations on all devices
+Orbis Reader: Shrink selection by a sentence
+Orbis Reader: Switch display style
+Orbis Reader: Toggle bookmark on current location
+Orbis Reader: Toggle column layout
+Orbis Reader: Toggle debug button
+Orbis Reader: Toggle debug log
+Orbis Reader: Toggle developer options
+Orbis Reader: Toggle focus mode
+Orbis Reader: Toggle full-screen audio player
+Orbis Reader: Toggle link preview
+Orbis Reader: Toggle listening bar
+Orbis Reader: Toggle note icons
+Orbis Reader: Toggle scrolled mode
+Orbis Reader: Toggle writing the debug log to a note
+Orbis Reader: Write this book's reading record…
