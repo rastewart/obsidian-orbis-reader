@@ -193,7 +193,7 @@ Every row of `fixtures/link-checks.epub` says under its link what to expect. The
 
 - [ ] `each` Rows 15 and 16, script links: no dialog. Each shows the notice *Orbis Reader doesn’t open links that run scripts.*
 
-- [ ] `each` Row 17: **Link type** reads *Not a valid address*, there is no **Domain** row, and there is no **Open** button, only **Cancel**; the copy button is still beside the address.
+- [ ] `each` Row 17: **Link type** reads *Not a valid address*, there is no **Domain** row, and there is no **Open** button, only **Cancel**; the copy button is still beside the address. *This address can't be opened.* shows above the buttons.
 
 - [ ] `each` Row 18: no dialog; `fixtures/hostile-scripts.epub` opens in the same tab. Go back to `link-checks.epub` with Obsidian's back arrow.
 

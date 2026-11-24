@@ -161,7 +161,7 @@ const ROWS: Row[] = [
     href: 'https://exa mple.com/',
     content: esc('A broken address'),
     expect:
-      'Link type: Not a valid address, and no Domain row. Link address shows it as written. There is no Open button, only Cancel, and the copy button beside the address.',
+      'Link type: Not a valid address, and no Domain row. Link address shows it as written. Above the buttons, a line says this address can’t be opened. There is no Open button, only Cancel, and the copy button beside the address.',
   },
   {
     title: 'A link to another book',

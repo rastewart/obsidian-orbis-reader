@@ -143,6 +143,8 @@ These lines state facts. Many such links are harmless, such as a publisher's sho
 
 Characters you can't see in the book, such as one that reverses the direction of text, show in **Link text** as their code, such as `[U+202E]`, with a grey note that explains it. In a link address, the browser removes or encodes them, so **Link address** shows the address as it will be opened. These don't change where the link goes, so they don't turn **Open** red.
 
+A link whose address no browser can open, such as one with a space in its domain, shows *Not a valid address* as its **Link type**. The dialog says *This address can't be opened.* above the buttons, and offers only **Cancel**.
+
 To copy the address without opening it, select the copy button beside **Link address**. To leave the link closed, select **Cancel** or press Escape.
 
 This check can't be turned off, and **Link preview** doesn't change it. Links to another place in the book, and links between the books of a converted set, open without it.

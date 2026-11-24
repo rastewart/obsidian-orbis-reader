@@ -108,8 +108,11 @@ export class LinkCheck {
     if (hidden.address)
       addressCell.createDiv({ cls: 'orbis-link-check-note', text: t('open_link_popup.hidden_address_note') });
 
-    // Beside the buttons, not in the scroll: it is about the decision they make.
-    if (deviations.length)
+    // Beside the buttons, not in the scroll: it is about the decision they make. An address no browser can open says so
+    // where Open would be, so the missing button is explained; "may be unsafe… Open it only if" would offer what is gone.
+    if (kind === 'invalid')
+      popupEl.createEl('p', { cls: 'orbis-link-check-caution', text: t('open_link_popup.cannot_open') });
+    else if (deviations.length)
       popupEl.createEl('p', { cls: 'orbis-link-check-caution', text: t('open_link_popup.may_be_unsafe') });
 
     const footer = actionRow(popupEl, { placement: 'footer' });

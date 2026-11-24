@@ -666,6 +666,8 @@ const en = {
   // Under the lines, only when there are any: "may", because none of them proves a link unsafe — measured, nearly every
   // one is a publisher's short domain or a typo. The lines sit just above, so this does not point at them.
   'open_link_popup.may_be_unsafe': 'This link may be unsafe. Open it only if you trust the book’s source.',
+  // In place of the line above, for a Not a valid address link, which has no Open button.
+  'open_link_popup.cannot_open': 'This address can’t be opened.',
   'open_link_popup.no_text': '(no text)',
   'open_link_popup.picture': '(a picture)',
   'open_link_popup.picture_alt': '(a picture: {{alt}})',

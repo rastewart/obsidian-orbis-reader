@@ -183,6 +183,7 @@ Link text
 A broken address
 Link address
 https://exa mple.com/
+This address can’t be opened.
 Cancel
 buttons: Cancel
 --- row 19
