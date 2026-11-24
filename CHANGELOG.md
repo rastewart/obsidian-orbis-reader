@@ -9,6 +9,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 ---
 
+## [0.1.8] — Unreleased
+
+### Changed
+
+- The display style bar's **Spacing** tab shows **Margins**, **Line spacing** and **Alignment**. **Hyphenation** is now behind **More**, a second page of the tab, with **Back** in the same place to return. **Spacing** on the tab is now named **Line spacing**.
+
+### Fixed
+
+- On a phone turned sideways, a tab of the display style bar no longer runs under Obsidian's toolbar at the bottom of the screen. Its controls sit two across, and a tab still taller than the room left stops above the toolbar and scrolls.
+
 ## [0.1.7] — 2026-11-24
 
 ### Fixed

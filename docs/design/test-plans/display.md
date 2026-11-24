@@ -63,6 +63,10 @@ The display style bar and **Settings → Appearance** change the same values. Fo
 
 - [ ] `each` **Text alignment** (display style bar: **Spacing**, where it is **Alignment**). Choose **Justified**: both edges of each paragraph line up. **Left**: the right edge goes ragged. **Follow the book**: back to the book's own. The chapter title stays centered throughout.
 
+- [ ] `each` On the **Spacing** tab, the first page holds **Margins**, **Line spacing** and **Alignment**, and **More** at the right: at the end of the line on a wide pane, on a short row of its own above the controls where they stack, as on a phone held upright, and beside them on a phone turned sideways. On a phone held upright, the sliders run most of the screen's width. Select **More**: **Hyphenation** shows instead, and **Back** is where **More** was. Select **Back**: the first page again, and the keyboard is on **More**. Select **More**, then the **Font** tab, then **Spacing**: it opens on the first page.
+
+- [ ] `phone` Turn the phone sideways and open the **Spacing** tab, then **Theme** and **Font**. The controls sit two across, **Margins** beside **Line spacing**, and no row of any tab is hidden under Obsidian's toolbar at the bottom of the screen: a tab still taller than the room left stops above the toolbar, and its last row scrolls into view. On **Spacing**, **More** and **Back** are in the same place.
+
 - [ ] `each` **Reading mode** and **Two-column layout** (display style bar: **Layout**). Set **Reading mode** to **Scrolled mode**: the two-column control disappears from both surfaces. Set it back to **Paged mode**: it is back on both, as it was.
 
 - [ ] `desktop` On a wide pane, turn **Two-column layout** off: one column. Turn it on: two. The bar's button is lit exactly when the Settings switch is on.

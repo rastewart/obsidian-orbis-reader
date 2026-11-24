@@ -161,6 +161,11 @@ const en = {
   // On, marked where `autoHyphenates` finds it can do nothing here. The select's tooltip explains the asterisk.
   'display_menu.hyphenation_on_unsupported': 'On *',
   'display_menu.two_column_layout': 'Two-column layout',
+  // The Spacing tab's button to its second page — short, since it shares the first row with the controls when they
+  // stack — and the names a screen reader gives the button on each page. On the second page it shows `action.back`.
+  'display_menu.more': 'More',
+  'display_menu.more_spacing': 'More spacing settings',
+  'display_menu.back_to_spacing': 'Back to spacing',
   'standalone_search_bar.search': 'Search…',
   'standalone_search_bar.previous_result': 'Previous result',
   'standalone_search_bar.next_result': 'Next result',

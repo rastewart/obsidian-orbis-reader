@@ -22,8 +22,12 @@ The display style bar has four tabs:
 |---|---|
 | **Theme** | **Reader theme**, **Brightness** |
 | **Layout** | **Mode** (**Paged mode** or **Scrolled mode**), and the **Two-column layout** button. The button shows two columns of lines, and it is highlighted when the layout is enabled |
-| **Spacing** | **Margins**, **Spacing** (line spacing), **Alignment**, **Hyphenation** |
+| **Spacing** | **Margins**, **Line spacing**, **Alignment**. Select **More** for **Hyphenation** |
 | **Font** | **Font**, **Size** |
+
+On the **Spacing** tab, **More** opens the tab's second page. **Back**, in the same place, returns to the first. When you choose the **Spacing** tab again, it opens on the first page.
+
+On a phone turned sideways, a tab's controls sit two across, so they fit under the toolbar. If a tab is still taller than the room, the tab stops above Obsidian's own toolbar and you can scroll it.
 
 The left and right arrow keys move between the tabs. The up and down arrow keys move between the tabs, the toolbar above them and the controls below them. See [Using the toolbar from the keyboard](reading-a-book.md#using-the-toolbar-from-the-keyboard).
 

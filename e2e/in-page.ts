@@ -1470,6 +1470,153 @@ export function focusState(): { focus: boolean; toolbar: boolean; exit: boolean 
   return { focus: view.focusMode, toolbar: !!view.toolbarEl?.offsetParent, exit: !!exit?.offsetParent };
 }
 
+/** What a display style tab shows — see `openDisplayTab`. */
+export interface DrawerShown {
+  /** Each row's visible labels and buttons, joined with " + "; the page button counts as a row. */
+  rows: string[];
+  /** The visible text of what has the keyboard. */
+  focused: string;
+  /** The open tab's top and bottom, and whether it scrolls. */
+  top: number;
+  bottom: number;
+  scrolls: boolean;
+  /** Where the More/Back button is, if the tab has one, and whether all of it is inside the tab as shown. */
+  toggle: { x: number; y: number; inView: boolean } | null;
+  /** Each row's top, the page button's included, in `rows` order. */
+  tops: number[];
+}
+
+/**
+ * Opens the display style bar's tab `id` (`theme`, `structure`, `spacing`, `font`) on the open book, as a reader does:
+ * the toolbar's Display style button if the bar is closed, then the tab. With `scrollToEnd`, scrolls the tab to its
+ * end first. Returns what the tab shows.
+ */
+export function openDisplayTab(id: string, scrollToEnd = false): DrawerShown {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as {
+    displayStyleBtn: HTMLElement | null;
+    displayMenuWrapper?: HTMLElement;
+  };
+  if (!view?.displayStyleBtn) throw new Error('no book is open, or it has no Display style button');
+  if (!view.displayMenuWrapper?.offsetParent) view.displayStyleBtn.click();
+  const tab = document.getElementById(`orbis-drawer-tab-${id}`);
+  if (!tab) throw new Error(`the display style bar has no ${id} tab`);
+  tab.click();
+  return drawerShown(id, scrollToEnd);
+
+  // In-page functions cross as source text and cannot call each other, so `pressInDrawer` has its own copy.
+  function drawerShown(drawerId: string, toEnd: boolean): DrawerShown {
+    const drawer = document.getElementById(`orbis-drawer-${drawerId}`);
+    const container = drawer?.parentElement;
+    if (!drawer || !container) throw new Error(`no ${drawerId} drawer`);
+    if (toEnd) container.scrollTop = container.scrollHeight;
+    const shown = (el: Element) => el.getClientRects().length > 0;
+    const text = (el: Element | null) => ((el as HTMLElement | null)?.innerText ?? '').replace(/\s+/g, ' ').trim();
+    const rows = Array.from(drawer.children)
+      .filter(shown)
+      .map((row) =>
+        row.matches('button')
+          ? text(row)
+          : Array.from(row.querySelectorAll('.orbis-drawer-label, button'))
+              .filter(shown)
+              .map(text)
+              .filter(Boolean)
+              .join(' + ')
+      );
+    const box = container.getBoundingClientRect();
+    const button = drawer.querySelector('.orbis-drawer-page-btn')?.getBoundingClientRect();
+    return {
+      rows,
+      tops: Array.from(drawer.children)
+        .filter(shown)
+        .map((row) => Math.round(row.getBoundingClientRect().top)),
+      focused: text(document.activeElement),
+      top: box.top,
+      bottom: box.bottom,
+      scrolls: container.scrollHeight > container.clientHeight + 1,
+      toggle: button
+        ? {
+            x: Math.round(button.left),
+            y: Math.round(button.top),
+            inView: button.top >= box.top - 1 && button.bottom <= box.bottom + 1,
+          }
+        : null,
+    };
+  }
+}
+
+/** Presses the button reading `text` in the open display style tab `id`, and returns what the tab then shows. */
+export function pressInDrawer(id: string, text: string): DrawerShown {
+  const drawer = document.getElementById(`orbis-drawer-${id}`);
+  const container = drawer?.parentElement;
+  if (!drawer || !container) throw new Error(`no ${id} drawer`);
+  const shown = (el: Element) => el.getClientRects().length > 0;
+  const label = (el: Element | null) => ((el as HTMLElement | null)?.innerText ?? '').replace(/\s+/g, ' ').trim();
+  const button = Array.from(drawer.querySelectorAll('button')).find((b) => shown(b) && label(b) === text);
+  if (!button) throw new Error(`the ${id} tab shows no ${text} button`);
+  button.click();
+  const rows = Array.from(drawer.children)
+    .filter(shown)
+    .map((row) =>
+      row.matches('button')
+        ? label(row)
+        : Array.from(row.querySelectorAll('.orbis-drawer-label, button'))
+            .filter(shown)
+            .map(label)
+            .filter(Boolean)
+            .join(' + ')
+    );
+  const box = container.getBoundingClientRect();
+  const toggle = drawer.querySelector('.orbis-drawer-page-btn')?.getBoundingClientRect();
+  return {
+    rows,
+    tops: Array.from(drawer.children)
+      .filter(shown)
+      .map((row) => Math.round(row.getBoundingClientRect().top)),
+    focused: label(document.activeElement),
+    top: box.top,
+    bottom: box.bottom,
+    scrolls: container.scrollHeight > container.clientHeight + 1,
+    toggle: toggle
+      ? {
+          x: Math.round(toggle.left),
+          y: Math.round(toggle.top),
+          inView: toggle.top >= box.top - 1 && toggle.bottom <= box.bottom + 1,
+        }
+      : null,
+  };
+}
+
+/**
+ * Stands in for Obsidian's mobile toolbar at the bottom of the window, its top `top` pixels from the window's top, or
+ * removes it (null). What a phone's floating navbar is to the display style bar (`navbarClearance`), on a desktop.
+ */
+export function fakeMobileNavbar(top: number | null): void {
+  document.querySelector('.orbis-e2e-navbar')?.remove();
+  if (top === null) return;
+  const bar = document.createElement('div');
+  bar.className = 'mobile-navbar orbis-e2e-navbar';
+  Object.assign(bar.style, {
+    position: 'fixed',
+    left: '0',
+    right: '0',
+    bottom: '0',
+    top: `${top}px`,
+    pointerEvents: 'none',
+  });
+  document.body.appendChild(bar);
+}
+
+/** Makes the open book's display style bar `width` pixels wide, as on a phone, or as wide as the pane again (null). */
+export function narrowDisplayBar(width: number | null): void {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as {
+    displayMenuWrapper?: HTMLElement;
+  };
+  if (!view?.displayMenuWrapper) throw new Error('no book is open, or it has no display style bar');
+  view.displayMenuWrapper.style.width = width === null ? '' : `${width}px`;
+}
+
 /** Selects the row labelled `label` in the open pick list (a reading status, a rating), as a click on it does. */
 export async function pickRow(label: string): Promise<void> {
   const find = () =>

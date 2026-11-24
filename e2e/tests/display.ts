@@ -5,13 +5,18 @@
 import {
   closeBooks,
   computedText,
+  type DrawerShown,
+  fakeMobileNavbar,
   focusState,
   getDisplay,
   goToSectionWith,
+  narrowDisplayBar,
   noticeCount,
   noticesSince,
   openBook,
+  openDisplayTab,
   pressInBook,
+  pressInDrawer,
   readingPos,
   runCommand,
   setDeviceValue,
@@ -176,6 +181,106 @@ export const displayTests: E2eTest[] = [
           !faint.length,
           `in ${theme}, ${faint.length} line(s) are below 3 : 1\n  ${faint.map((r) => `${r.contrast} : 1  ${r.text}`).join('\n  ')}`
         );
+      }
+    },
+  },
+  {
+    name: "the Spacing tab's More page, and a tab that stops above the phone's toolbar",
+    async run(context) {
+      const { page } = context;
+      await open(context, 'fixtures/annotation-workhorse.epub');
+      // The rows without the page button, which is first or last depending on the layout — see `buttonAt`.
+      const show = (s: { rows: string[] }) => JSON.stringify(s.rows.filter((row) => row !== 'More' && row !== 'Back'));
+      /** Where the page button is in the keyboard's order, which is where it shows: first above the rows, else last. */
+      const buttonAt = (s: { rows: string[] }) =>
+        ['More', 'Back'].includes(s.rows[0])
+          ? 'first'
+          : ['More', 'Back'].includes(s.rows.at(-1) ?? '')
+            ? 'last'
+            : 'missing';
+      const at = (s: DrawerShown) => JSON.stringify(s.toggle && [s.toggle.x, s.toggle.y]);
+      const first = JSON.stringify(['Margins', 'Line spacing', 'Alignment']);
+      const more = JSON.stringify(['Hyphenation']);
+
+      // A window wide enough for the bar on one line, and for a phone on its side below: the test window's pane is
+      // 680px, and a bar narrowed wider than its pane is scrolled sideways to show the button.
+      await page.send('Emulation.setDeviceMetricsOverride', {
+        width: 1600,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+      });
+      try {
+        // On one line and stacked, a phone's width: More and Back are one button, in one place, and keep the keyboard.
+        // 393 is an iPhone 15 upright, where the first page stacks and the More page alone would fit on one line.
+        for (const width of [null, 393, 360]) {
+          const where = width ? `stacked at ${width}px` : 'on one line';
+          await page.run(narrowDisplayBar, width);
+          try {
+            const main = await page.run(openDisplayTab, 'spacing', false);
+            expect(show(main) === first, `${where}, the Spacing tab shows ${show(main)}`);
+            // Stacked with room to spare, the button has a row of its own above the rows, which then have the width.
+            const expected = width ? 'first' : 'last';
+            expect(buttonAt(main) === expected, `${where}, More is ${buttonAt(main)}, not ${expected}`);
+            const second = await page.run(pressInDrawer, 'spacing', 'More');
+            expect(show(second) === more, `${where}, its More page shows ${show(second)}`);
+            expect(second.focused === 'Back', `${where}, More left the keyboard on "${second.focused}", not Back`);
+            expect(at(second) === at(main), `${where}, Back is at ${at(second)} and More at ${at(main)}`);
+            const back = await page.run(pressInDrawer, 'spacing', 'Back');
+            expect(show(back) === first, `${where}, Back shows ${show(back)}`);
+            expect(back.focused === 'More', `${where}, Back left the keyboard on "${back.focused}", not More`);
+          } finally {
+            await page.run(narrowDisplayBar, null);
+          }
+        }
+        // Another tab and back again opens on the first page.
+        await page.run(pressInDrawer, 'spacing', 'More');
+        await page.run(openDisplayTab, 'font', false);
+        const again = await page.run(openDisplayTab, 'spacing', false);
+        expect(show(again) === first, `chosen again, the Spacing tab shows ${show(again)}`);
+
+        // A toolbar standing 100 pixels below the tab's top, as Obsidian's does on a phone in landscape, with the bar a
+        // phone's width so its rows stack: the tab stops above the toolbar and scrolls, and More stays in view at its
+        // end. Without one, the tab is as tall as its rows.
+        try {
+          await page.run(narrowDisplayBar, 360);
+          const top = Math.round(again.top + 100);
+          await page.run(fakeMobileNavbar, top);
+          const covered = await page.run(openDisplayTab, 'spacing', true);
+          expect(
+            covered.bottom <= top + 1 && covered.scrolls,
+            `with a toolbar at ${top}, the tab ends at ${covered.bottom} and ${covered.scrolls ? 'scrolls' : 'does not scroll'}`
+          );
+          expect(
+            !!covered.toggle?.inView,
+            `scrolled to its end, More is out of view: ${JSON.stringify(covered.toggle)}`
+          );
+
+          // As wide as a phone on its side, with the same room: the rows go two across, Margins beside Line spacing,
+          // and fit without scrolling. More and Back are still one button in one place.
+          await page.run(narrowDisplayBar, 760);
+          const across = await page.run(openDisplayTab, 'spacing', false);
+          expect(
+            across.tops[0] === across.tops[1] && across.tops[2] > across.tops[0] && !across.scrolls,
+            `on its side, the rows' tops are ${JSON.stringify(across.tops)} and the tab ${across.scrolls ? 'scrolls' : 'fits'}`
+          );
+          const acrossMore = await page.run(pressInDrawer, 'spacing', 'More');
+          expect(at(acrossMore) === at(across), `on its side, Back is at ${at(acrossMore)} and More at ${at(across)}`);
+          await page.run(pressInDrawer, 'spacing', 'Back');
+          await page.run(narrowDisplayBar, 360);
+
+          await page.run(fakeMobileNavbar, null);
+          const free = await page.run(openDisplayTab, 'spacing', false);
+          expect(
+            !free.scrolls && free.bottom > top + 1,
+            `with no toolbar, the tab ends at ${free.bottom} and ${free.scrolls ? 'scrolls' : 'does not scroll'}`
+          );
+        } finally {
+          await page.run(fakeMobileNavbar, null);
+          await page.run(narrowDisplayBar, null);
+        }
+      } finally {
+        await page.send('Emulation.clearDeviceMetricsOverride');
       }
     },
   },

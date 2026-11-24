@@ -475,7 +475,9 @@ body {
 
 /* Flat like the primary toolbar and the level-2 bar: a single bottom border and no drop shadow.
    A shadow would read as an outline around the drawer, especially under the light theme,
-   making the third level look like a raised box rather than another bar. */
+   making the third level look like a raised box rather than another bar.
+   No taller than the room above whatever covers the bottom of the pane, which `fitHeight` measures, and scrolled
+   inside when the tab is taller: on a phone in landscape a tab reached under Obsidian's own toolbar. */
 .orbis-level3-container {
   display: flex;
   background: var(--background-primary);
@@ -483,6 +485,11 @@ body {
   flex-shrink: 0;
   z-index: 201;
   position: relative;
+  max-height: var(--orbis-drawer-max-height, none);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* The drawer keeps its own height rather than being stretched to the tab's, so what does not fit scrolls. */
+  align-items: flex-start;
 }
 
 .orbis-level3-drawer {
@@ -529,9 +536,109 @@ body {
 .orbis-form-drawer.is-form .orbis-unit-suffix {
   margin-left: 0;
 }
+/* As a form, a field only as wide as the most it holds, three characters (1.5, 300), so the slider has the rest: less
+   of a phone's wide padding, and centred. The text keeps the size Obsidian gives it, so the field is narrowed by its
+   padding, not by smaller digits. */
+.orbis-form-drawer.is-form .orbis-num-input-sm {
+  width: 56px;
+  padding-left: 6px;
+  padding-right: 6px;
+  text-align: center;
+}
 .orbis-form-drawer.is-form .orbis-dropdown {
   grid-column: 2 / -1;
   min-width: 0;
+}
+
+/* A drawer with two pages, the Spacing tab's (`pageToggle`): only the rows of the page showing. */
+.orbis-form-drawer:not(.is-more) > .orbis-drawer-more,
+.orbis-form-drawer.is-more > .orbis-drawer-main {
+  display: none;
+}
+/* More and Back: one button, its two labels drawn in the same place and the other page's hidden, so it is as wide as
+   the wider and does not move as the page changes. Flat like the drawer's other buttons. */
+.orbis-level3-drawer .orbis-drawer-page-btn {
+  display: inline-grid;
+  align-items: center;
+  flex: none;
+}
+.orbis-drawer-page-label {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.orbis-form-drawer:not(.is-more) .is-back-label,
+.orbis-form-drawer.is-more .is-more-label {
+  visibility: hidden;
+}
+.orbis-drawer-page-icon {
+  display: inline-flex;
+}
+/* Stacked, a drawer with pages is a grid: its rows in the first column, the button alone in the second at the top
+   right, held there as the tab scrolls. It spans every row (`--orbis-form-rows`, counted by `fitDrawer`), since a
+   sticky box cannot leave its own grid area. Wider than a form without pages by about the button, so the rows keep
+   their width. */
+.orbis-level3-drawer.orbis-form-drawer.is-form.has-pages {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px 12px;
+  align-items: center;
+  width: min(100%, 560px);
+}
+.orbis-form-drawer.is-form.has-pages > .orbis-slider-drawer {
+  grid-column: 1;
+}
+.orbis-form-drawer.is-form.has-pages > .orbis-drawer-page-btn {
+  grid-column: 2;
+  grid-row: 1 / span var(--orbis-form-rows, 1);
+  align-self: start;
+  position: sticky;
+  top: 0;
+}
+/* As tall as the page's first row, measured by `fitDrawer`, so on either page and in either layout the button sits
+   level with that row: centred in the line, or at the top of the form. */
+.orbis-level3-drawer.has-pages .orbis-drawer-page-btn:not(#orbis#important) {
+  min-height: 0;
+  height: var(--orbis-first-row, auto);
+}
+/* With height to spare (`fitDrawer`), as on a phone held upright: the button has a short row of its own above the
+   rows, at the right, and the rows the drawer's whole width. */
+.orbis-level3-drawer.orbis-form-drawer.is-form.has-pages.is-button-row {
+  grid-template-columns: minmax(0, 1fr);
+}
+.orbis-form-drawer.is-form.has-pages.is-button-row > .orbis-drawer-page-btn {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: end;
+  position: static;
+}
+.orbis-level3-drawer.has-pages.is-button-row .orbis-drawer-page-btn:not(#orbis#important) {
+  height: auto;
+}
+/* Two across (`fitDrawer`): a form too tall for the room, in a drawer wide enough, as on a phone on its side. The rows
+   fill two columns, left to right, and a page button keeps a third of its own. Closer together, and its fields a
+   little shorter than a phone's 44px, since the room is a phone's height on its side: an iPhone 15's leaves about
+   100px, and two lines of 44px fields with the usual gaps took 114. */
+.orbis-level3-drawer.orbis-form-drawer.is-form.is-two-across {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6px 24px;
+  align-items: center;
+  width: 100%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  --input-height: 38px;
+}
+.orbis-level3-drawer.orbis-form-drawer.is-form.is-two-across.has-pages {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+}
+.orbis-form-drawer.is-form.is-two-across > .orbis-slider-drawer {
+  grid-column: auto;
+}
+.orbis-form-drawer.is-form.is-two-across.has-pages > .orbis-drawer-page-btn {
+  grid-column: 3;
 }
 
 /* The measuring boxes for `autoHyphenates` (hyphenation.ts): two copies of three long words, four letters wide,

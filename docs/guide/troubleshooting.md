@@ -133,7 +133,7 @@ On Android, when you select the first word of a paragraph that has a hyphenated 
 To prevent the problem, set **Hyphenation** to **Off**:
 
 1. On the toolbar, select **Display style**.
-2. Select the **Spacing** tab.
+2. Select the **Spacing** tab, then **More**.
 3. In **Hyphenation**, select **Off**.
 
 You can also change **Hyphenation** in **Settings → Orbis Reader → Appearance**. The setting is saved in the active display style. If your Android device uses its **This device** display style, the change applies to that device only. See [Display styles](display-settings.md#display-styles).

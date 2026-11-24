@@ -1,6 +1,7 @@
 import { setTooltip } from 'obsidian';
 import { autoHyphenates, HYPHENATION_LABELS } from './hyphenation';
 import { t } from './i18n';
+import { navbarClearance } from './reader/viewport-insets';
 import { resolveThemeId, type ThemeSettings, themeChoices } from './reader-themes';
 import { DisplaySettings, Flow, FONT_FAMILY_OPTIONS, parseHyphenation, parseTextAlign } from './settings';
 import { isSliderDragging } from './slider-input';
@@ -49,32 +50,139 @@ function unitAfter(wrap: HTMLElement, unit: string): void {
   wrap.createSpan({ text: unit, cls: 'orbis-unit-suffix' });
 }
 
+/** A drawer at least this wide may put its form's rows two across when they are too tall for the room (`fitDrawer`). */
+const TWO_ACROSS_WIDTH = 680;
+
 /**
  * **A form drawer's rows on one line while they fit, and lined up as a form once they do not.** On one line they read
  * as a bar. Wrapped, each row is as wide as its own label and control and the bar pushes them to the right, so no
  * two labels, sliders or fields start at the same place. As a form (`is-form`) the labels make one column and the
  * controls the next, and the number fields, the units and the dropdowns' right edges line up.
  *
+ * **Two across when the form is too tall and the drawer is wide** (`is-two-across`): a phone on its side has the width
+ * for two rows side by side and not the height for them stacked, so its form is half as tall rather than scrolled.
+ *
+ * **Both pages of a drawer with two are laid out alike** (`pageToggle`): each is measured, and a layout either needs
+ * is the one both get, so the button between them is in the same place on each — a page that fits on one line beside
+ * one that does not would put it in two.
+ *
  * Measured rather than set by a width in the stylesheet, since where the rows wrap depends on the labels' language,
  * the interface font and which drawer it is. Measured on one line each time, so widening the pane brings the bar back.
+ * `room` is the height the tab may have (`roomBelow`).
  */
-function fitDrawer(drawer: HTMLElement): void {
+function fitDrawer(drawer: HTMLElement, room: number): void {
   if (!drawer.hasClass('orbis-form-drawer') || !drawer.isShown()) return;
-  drawer.removeClass('is-form');
-  const rows = Array.from(drawer.children);
-  const first = rows[0]?.getBoundingClientRect();
-  if (!first?.height) return;
-  // Each row is its own grid, so the columns that vary, the label and the unit, are set to the widest of the drawer.
+  const onMore = drawer.hasClass('is-more');
+  const pages = drawer.hasClass('has-pages') ? [false, true] : [onMore];
+  const rowsShown = () =>
+    Array.from(drawer.children).filter(
+      (row) => row.getClientRects().length > 0 && !row.hasClass('orbis-drawer-page-btn')
+    ) as HTMLElement[];
+  // Each row is its own grid, so the columns that vary, the label and the unit, are the widest of either page.
   const widest = (selector: string) =>
-    Math.ceil(Math.max(0, ...Array.from(drawer.querySelectorAll(selector), (el) => el.getBoundingClientRect().width)));
+    Math.max(0, ...Array.from(drawer.querySelectorAll(selector), (el) => el.getBoundingClientRect().width));
+  let label = 0;
+  let unit = 0;
+  let form = false;
+  drawer.removeClass('is-form', 'is-two-across', 'is-button-row');
+  for (const page of pages) {
+    drawer.toggleClass('is-more', page);
+    const rows = rowsShown();
+    const first = rows[0]?.getBoundingClientRect();
+    if (!first?.height) continue;
+    label = Math.max(label, widest('.orbis-drawer-label'));
+    unit = Math.max(unit, widest('.orbis-unit-suffix'));
+    const button = drawer.querySelector('.orbis-drawer-page-btn')?.getBoundingClientRect();
+    if ([...rows.map((row) => row.getBoundingClientRect()), button].some((box) => box && box.top >= first.bottom)) {
+      form = true;
+    }
+  }
+  drawer.setCssProps({ '--orbis-form-label': `${Math.ceil(label)}px`, '--orbis-form-unit': `${Math.ceil(unit)}px` });
+  const pageButton = drawer.querySelector<HTMLElement>('.orbis-drawer-page-btn');
+  const tooTall = () =>
+    pages.some((page) => {
+      drawer.toggleClass('is-more', page);
+      return drawer.getBoundingClientRect().height > room;
+    });
+  let twoAcross = false;
+  let buttonRow = false;
+  if (form) {
+    drawer.addClass('is-form');
+    // With height to spare, as on a phone held upright, a page button has a short row of its own above the rows, which
+    // then have the drawer's whole width for their sliders. Without it, the button keeps a column beside them.
+    if (pageButton) {
+      drawer.addClass('is-button-row');
+      buttonRow = !tooTall();
+      if (!buttonRow) drawer.removeClass('is-button-row');
+    }
+    if (!buttonRow && (drawer.parentElement?.clientWidth ?? 0) >= TWO_ACROSS_WIDTH && tooTall()) twoAcross = true;
+  }
+  drawer.toggleClass('is-more', onMore);
+  drawer.toggleClass('is-two-across', twoAcross);
+  // The keyboard meets the button where it shows: first when it is above the rows, last beside or after them.
+  if (pageButton && (drawer.firstElementChild === pageButton) !== buttonRow) {
+    const focused = pageButton.doc.activeElement === pageButton;
+    if (buttonRow) drawer.prepend(pageButton);
+    else drawer.append(pageButton);
+    if (focused) pageButton.focus();
+  }
+  const rows = rowsShown();
   drawer.setCssProps({
-    '--orbis-form-label': `${widest('.orbis-drawer-label')}px`,
-    '--orbis-form-unit': `${widest('.orbis-unit-suffix')}px`,
+    // The lines of rows a page button spans as a form, so it can stay at the top as they scroll (`pageToggle`).
+    '--orbis-form-rows': String(twoAcross ? Math.ceil(rows.length / 2) : rows.length),
+    // The first row's height, which the button takes so it sits level with that row on either page.
+    '--orbis-first-row': rows[0] ? `${Math.ceil(rows[0].getBoundingClientRect().height)}px` : '',
   });
-  drawer.toggleClass(
-    'is-form',
-    rows.some((row) => row.getBoundingClientRect().top >= first.bottom)
-  );
+}
+
+/** The least the open tab is given, so a screen with almost no room still shows a row to scroll from. */
+const MIN_DRAWER_HEIGHT = 96;
+
+/**
+ * **The open tab stops above whatever covers the bottom of the pane, and scrolls inside when it is taller.** The bar
+ * hangs below the toolbar, over the book, and on a phone in landscape a tab of four rows reaches under Obsidian's own
+ * toolbar at the bottom of the screen. Measured, as the dialogs measure it (`navbarClearance`): 0 where there is no
+ * navbar, a desktop or focus mode, so there only the pane's own bottom limits it.
+ */
+function roomBelow(container: HTMLElement, pane: HTMLElement): number {
+  const win = container.win;
+  const bottom = Math.min(pane.getBoundingClientRect().bottom, win.innerHeight - navbarClearance(win));
+  return Math.max(Math.floor(bottom - container.getBoundingClientRect().top), MIN_DRAWER_HEIGHT);
+}
+
+/** The chevron on More and Back, pointing where the button goes. */
+const chevron = (direction: 'left' | 'right') =>
+  `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${direction === 'right' ? 'm9 18 6-6-6-6' : 'm15 18-6-6 6-6'}"/></svg>`;
+
+/**
+ * **One button for both pages of a drawer: More › on the first, ‹ Back on the second, in the same place.** The same
+ * element, relabelled, so the two cannot end up apart and the keyboard stays on it as the page changes. Last in the
+ * drawer, so on one line it is at the far right and the keyboard reaches it after the controls; when the rows stack it
+ * has a column of its own at the top right, held there as the tab scrolls (styles.css, `.has-pages`). As wide as the
+ * wider of its two labels, both drawn in one place and one hidden, so the rows do not move as it changes.
+ *
+ * `firstPages` collects how to put the drawer back on its first page, which choosing a tab does.
+ */
+function pageToggle(drawer: HTMLElement, firstPages: Array<() => void>, relayout: () => void): void {
+  const btn = drawer.createEl('button', { cls: 'orbis-drawer-btn orbis-drawer-page-btn' });
+  const more = btn.createSpan({ cls: 'orbis-drawer-page-label is-more-label' });
+  more.createSpan({ text: t('display_menu.more') });
+  setSvgIcon(more.createSpan({ cls: 'orbis-drawer-page-icon' }), chevron('right'));
+  const back = btn.createSpan({ cls: 'orbis-drawer-page-label is-back-label' });
+  setSvgIcon(back.createSpan({ cls: 'orbis-drawer-page-icon' }), chevron('left'));
+  back.createSpan({ text: t('action.back') });
+  const show = (onMore: boolean) => {
+    drawer.toggleClass('is-more', onMore);
+    btn.setAttribute('aria-label', t(onMore ? 'display_menu.back_to_spacing' : 'display_menu.more_spacing'));
+  };
+  show(false);
+  btn.addEventListener('click', () => {
+    show(!drawer.hasClass('is-more'));
+    relayout();
+    // Kept on the button, which a click does not do everywhere (WebKit), so the keyboard goes on from where it was.
+    btn.focus();
+  });
+  firstPages.push(() => show(false));
 }
 
 export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): void {
@@ -105,7 +213,13 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     setSvgIcon(iconSpan, svg);
     btn.createSpan({ cls: 'orbis-display-tab-label', text: title });
     view.displayTabBtns[id] = btn;
-    btn.addEventListener('click', () => view.activateDisplayTab(id));
+    btn.addEventListener('click', () => openTab(id));
+  };
+  /** A tab opens on its first page, so Spacing's More page is never what a tab shows when it is chosen again. */
+  const firstPages: Array<() => void> = [];
+  const openTab = (id: string) => {
+    for (const firstPage of firstPages) firstPage();
+    view.activateDisplayTab(id);
   };
 
   addTab(
@@ -141,7 +255,7 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
       }
       const nextId = keys[nextIndex];
       if (nextId) {
-        view.activateDisplayTab(nextId);
+        openTab(nextId);
         view.displayTabBtns[nextId]?.focus();
       }
       e.preventDefault();
@@ -301,11 +415,18 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     view.saveSetting('fontSize', val);
   });
 
-  // --- Spacing Drawer ---
-  const spacingDrawer = createDrawer('spacing', 'orbis-flex-wrap orbis-form-drawer');
+  /**
+   * --- Spacing Drawer ---
+   *
+   * **Two pages in one tab.** Margins, line spacing and alignment, which most readers change, are its first page; the
+   * rest is behind **More**, a second page in the same place rather than a dialog, so the book stays in view while a
+   * setting is dragged. Each row says which page it is on (`orbis-drawer-main`, `orbis-drawer-more`), and the drawer
+   * which page shows (`is-more`). The button between them is `pageToggle`, below.
+   */
+  const spacingDrawer = createDrawer('spacing', 'orbis-flex-wrap orbis-form-drawer has-pages');
 
   // Margins
-  const marginsWrap = spacingDrawer.createDiv({ cls: 'orbis-slider-drawer' });
+  const marginsWrap = spacingDrawer.createDiv({ cls: 'orbis-slider-drawer orbis-drawer-main' });
   marginsWrap.createSpan({
     text: t('display_menu.margins'),
     cls: 'orbis-drawer-label',
@@ -324,12 +445,9 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
   });
 
   // Line Height
-  const lhWrap = spacingDrawer.createDiv({ cls: 'orbis-slider-drawer' });
-  lhWrap.createSpan({
-    text: t('display_menu.spacing'),
-    cls: 'orbis-drawer-label',
-    attr: { 'aria-label': t('display_menu.line_spacing') },
-  });
+  // Named in full: "Spacing" was enough while it was the tab's only spacing, and the More page has three more.
+  const lhWrap = spacingDrawer.createDiv({ cls: 'orbis-slider-drawer orbis-drawer-main' });
+  lhWrap.createSpan({ text: t('display_menu.line_spacing'), cls: 'orbis-drawer-label' });
   const lhSlider = lhWrap.createEl('input');
   lhSlider.type = 'range';
   lhSlider.min = '10';
@@ -356,7 +474,7 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
    * Not two buttons with "neither lit" meaning the book's: two controls for one state read as two settings. Its own
    * row, like the Layout tab's Mode, and the same three answers as Settings.
    */
-  const alignWrap = spacingDrawer.createDiv({ cls: 'orbis-slider-drawer' });
+  const alignWrap = spacingDrawer.createDiv({ cls: 'orbis-slider-drawer orbis-drawer-main' });
   alignWrap.createSpan({ text: t('display_menu.alignment'), cls: 'orbis-drawer-label' });
   const alignSelect = alignWrap.createEl('select', { cls: 'dropdown orbis-dropdown' });
   alignSelect.setAttribute('aria-label', t('appearance_page.text_alignment'));
@@ -377,8 +495,8 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
   });
   syncAlign();
 
-  // Hyphenation, the row after alignment and the same shape: Settings' three answers (`Hyphenation`).
-  const hyphenWrap = spacingDrawer.createDiv({ cls: 'orbis-slider-drawer' });
+  // Hyphenation, on the More page: Settings' three answers (`Hyphenation`).
+  const hyphenWrap = spacingDrawer.createDiv({ cls: 'orbis-slider-drawer orbis-drawer-more' });
   const hyphenLabel = hyphenWrap.createSpan({ text: t('display_menu.hyphenation'), cls: 'orbis-drawer-label' });
   const hyphenSelect = hyphenWrap.createEl('select', { cls: 'dropdown orbis-dropdown' });
   hyphenSelect.setAttribute('aria-label', t('appearance_page.hyphenation'));
@@ -406,6 +524,8 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     view.saveSetting('hyphenation', next);
   });
   syncHyphenation();
+
+  pageToggle(spacingDrawer, firstPages, () => view.fitDisplayDrawer?.());
 
   // Number inputs are skipped while focused — this runs both on menu open and
   // reactively on every incoming orbis:settings-change event (including ones
@@ -437,8 +557,12 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
   };
 
   view.fitDisplayDrawer = () => {
+    const container = view.level3Container;
     const open = view.activeDisplayTab ? view.displayDrawers[view.activeDisplayTab] : undefined;
-    if (open) fitDrawer(open);
+    if (!container?.isShown()) return;
+    const room = roomBelow(container, view.contentEl);
+    container.setCssProps({ '--orbis-drawer-max-height': `${room}px` });
+    if (open) fitDrawer(open, room);
   };
   // The reading pane, not the drawer: the drawer floats over the book, so the pane keeps its size whatever the drawer
   // does, and laying the drawer out again cannot set this off again.
