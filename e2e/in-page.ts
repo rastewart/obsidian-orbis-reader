@@ -1486,6 +1486,30 @@ export function spacingOf(
     });
 }
 
+/** CSS property `property` as the shown section's first `max` `selector` elements holding text are drawn with it. */
+export function styleOf(selector: string, property: string, max = 10): string[] {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
+  const doc = view?.foliateView?.renderer.getContents()[0]?.doc;
+  if (!doc) throw new Error('no book is open');
+  const win = doc.defaultView as Window;
+  return Array.from(doc.querySelectorAll<HTMLElement>(selector))
+    .filter((el) => (el.textContent ?? '').trim().length > 0)
+    .slice(0, max)
+    .map((el) => win.getComputedStyle(el).getPropertyValue(property));
+}
+
+/** Whether the open book's paginator has the attribute `name` — `animated`, which makes foliate slide a page. */
+export function paginatorHas(name: string): boolean {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as {
+    foliateView?: { renderer?: Element };
+  };
+  const renderer = view?.foliateView?.renderer;
+  if (!renderer) throw new Error('no book is open');
+  return renderer.hasAttribute(name);
+}
+
 /** Whether the open book is in Focus mode, its toolbar shows, and Focus mode's own × is there. */
 export function focusState(): { focus: boolean; toolbar: boolean; exit: boolean } {
   const app = (window as unknown as { app: PageApp }).app;

@@ -13,6 +13,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 ### Added
 
+- **Bold text**, on the display style bar's **Font** tab and in Settings → Appearance. It draws all of the book's text heavier, and words the book makes bold stay bolder.
+- **Page turn**, on the display style bar's **Layout** tab and in Settings → Appearance. **Slide** moves the page across as it turns in **Paged mode**; **None**, the default, changes it at once, as before. Pages change at once when the device is set to reduce motion.
 - **Character spacing**, **Word spacing** and **Paragraph spacing**, on the display style bar's **Spacing** tab under **More**, and in Settings → Appearance. Each adds space to body text, in percent of the font size, and 0% keeps the book's own spacing. Headings, centered lines and code keep the book's spacing, and character spacing is not added to languages whose letters join, such as Arabic.
 
 ### Changed

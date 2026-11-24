@@ -6,7 +6,7 @@
   "src/GenerateNotesModal.ts": 1190,
   "src/LibraryView.ts": 2363,
   "src/MarksPdfModal.ts": 925,
-  "src/OrbisReaderView.ts": 5095,
+  "src/OrbisReaderView.ts": 5106,
   "src/OrbisSettings.ts": 4439,
   "src/RecordingsModal.ts": 1803,
   "src/annotation-presets.ts": 1582,
@@ -20,6 +20,6 @@
   "src/reader/TtsController.ts": 3585,
   "src/reader/export-format.ts": 905,
   "src/reader/tts/recording.ts": 1225,
-  "src/settings.ts": 1468,
+  "src/settings.ts": 1485,
   "src/ui-utils.ts": 2307
 }

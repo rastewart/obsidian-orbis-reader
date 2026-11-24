@@ -89,6 +89,7 @@ Most settings on this page change the display style that is selected in **Displa
 | **Brightness** | Dims the page without changing the brightness of your screen, from 20% to 100% |
 | **Reading mode** | Sets **Paged mode** or **Scrolled mode** |
 | **Two-column layout** | Shows two columns when the window is wide enough. Hidden in **Scrolled mode** |
+| **Page turn** | **None** or **Slide**: how a page turns in **Paged mode**. Hidden in **Scrolled mode** |
 | **Text margins** | Sets the space around book text, from 0% to 12% |
 | **Line spacing** | Sets the space between lines, from 1.0× to 3.0× |
 | **Text alignment** | Sets the alignment of body text: **Follow the book**, **Left** or **Justified** |
@@ -98,6 +99,7 @@ Most settings on this page change the display style that is selected in **Displa
 | **Hyphenation** | Sets whether long words break across lines with a hyphen. The values are **Follow the book**, **On** and **Off** |
 | **Font** | Sets the font for book text |
 | **Font size** | Sets the size of book text, from 80% to 300% |
+| **Bold text** | Draws the book's text heavier. Words the book makes bold stay bolder |
 | **Preview** | Shows a sample of book text with your changes |
 
 **Brightness**, **Text margins**, **Line spacing** and **Font size** have a slider and a number field.

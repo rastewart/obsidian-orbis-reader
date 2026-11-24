@@ -1,6 +1,8 @@
-import { setTooltip } from 'obsidian';
+import { setTooltip, ToggleComponent } from 'obsidian';
+import { parseBoldText } from './bold-text';
 import { autoHyphenates, HYPHENATION_LABELS } from './hyphenation';
 import { t } from './i18n';
+import { PAGE_TURN_LABELS, parsePageTurn } from './page-turn';
 import { navbarClearance } from './reader/viewport-insets';
 import { resolveThemeId, type ThemeSettings, themeChoices } from './reader-themes';
 import { DisplaySettings, Flow, FONT_FAMILY_OPTIONS, parseHyphenation, parseTextAlign } from './settings';
@@ -311,10 +313,10 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
   });
 
   // --- Structure Drawer ---
-  const structureDrawer = createDrawer('structure', 'orbis-flex-wrap');
+  const structureDrawer = createDrawer('structure', 'orbis-flex-wrap orbis-form-drawer');
 
   // Flow mode dropdown
-  const modeWrap = structureDrawer.createDiv({ cls: 'orbis-slider-drawer' });
+  const modeWrap = structureDrawer.createDiv({ cls: 'orbis-slider-drawer orbis-has-button' });
   modeWrap.createSpan({
     text: t('display_menu.mode'),
     cls: 'orbis-drawer-label',
@@ -341,12 +343,34 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="10" y2="6"/><line x1="3" y1="12" x2="10" y2="12"/><line x1="3" y1="18" x2="10" y2="18"/><line x1="14" y1="6" x2="21" y2="6"/><line x1="14" y1="12" x2="21" y2="12"/><line x1="14" y1="18" x2="21" y2="18"/></svg>'
   );
 
+  /**
+   * **Page turn, under Mode**: how a page turns in Paged mode, None or Slide (`page-turn.ts`). Hidden while scrolling,
+   * as the two-column button is, since a scrolled book has no pages to turn; the choice is kept for paged mode.
+   */
+  const turnWrap = structureDrawer.createDiv({ cls: 'orbis-slider-drawer' });
+  turnWrap.createSpan({ text: t('appearance_page.page_turn'), cls: 'orbis-drawer-label' });
+  const turnSelect = turnWrap.createEl('select', { cls: 'dropdown orbis-dropdown' });
+  turnSelect.setAttribute('aria-label', t('appearance_page.page_turn'));
+  for (const [value, key] of Object.entries(PAGE_TURN_LABELS)) turnSelect.createEl('option', { value, text: t(key) });
+  turnSelect.addEventListener('change', () => {
+    const next = parsePageTurn(turnSelect.value);
+    view.settings.pageTurn = next;
+    view.saveSetting('pageTurn', next);
+  });
+
   const updateStructureBtns = () => {
     modeSelect.value = view.settings.flow;
+    turnSelect.value = view.settings.pageTurn;
     const on = view.settings.columns === 2;
     colBtn.classList.toggle('is-active', on);
     colBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
-    colBtn.toggle(view.settings.flow !== 'scrolled');
+    const paged = view.settings.flow !== 'scrolled';
+    colBtn.toggle(paged);
+    // A row coming or going changes the tab's shape, so it is laid out again — only then, not on every sync.
+    if (turnWrap.isShown() !== paged) {
+      turnWrap.toggle(paged);
+      view.fitDisplayDrawer?.();
+    }
   };
 
   modeSelect.addEventListener('change', () => {
@@ -397,6 +421,19 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
   view.bindRealTimeSlider(fsNum, fsSlider, 80, 300, view.settings.fontSize, (val: number) => {
     view.settings.fontSize = val;
     view.saveSetting('fontSize', val);
+  });
+
+  // Bold text, under Size: Obsidian's own switch, as on Settings → Appearance (`bold-text.ts`).
+  const boldWrap = fontDrawer.createDiv({ cls: 'orbis-slider-drawer' });
+  boldWrap.createSpan({ text: t('appearance_page.bold_text'), cls: 'orbis-drawer-label' });
+  const boldToggle = new ToggleComponent(boldWrap);
+  boldToggle.toggleEl.querySelector('input')?.setAttribute('aria-label', t('appearance_page.bold_text'));
+  boldToggle.setValue(view.settings.boldText === 'on').onChange((on) => {
+    // `setValue` runs this too, as the sync below writes an outside change: only a change is saved.
+    const next = parseBoldText(on ? 'on' : 'off');
+    if (view.settings.boldText === next) return;
+    view.settings.boldText = next;
+    view.saveSetting('boldText', next);
   });
 
   /**
@@ -551,6 +588,7 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     if (!isFocused(brightNum)) brightNum.value = String(view.settings.brightness);
     updateStructureBtns();
     fontSelect.value = view.settings.fontFamily || 'default';
+    boldToggle.setValue(view.settings.boldText === 'on');
     if (!isSliderDragging(fsSlider)) fsSlider.value = String(view.settings.fontSize);
     if (!isFocused(fsNum)) fsNum.value = String(view.settings.fontSize);
     syncAlign();

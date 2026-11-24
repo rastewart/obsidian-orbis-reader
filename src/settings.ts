@@ -1,10 +1,12 @@
 import { App, Plugin } from 'obsidian';
 import type { AnnotationPreset, BookPreset, PromotedPreset, RemapChoice } from './annotation-presets';
+import { type BoldText, boldTextCss, parseBoldText, STORAGE_KEY_BOLD_TEXT } from './bold-text';
 import { type Hyphenation, hyphenationCss, parseHyphenation, STORAGE_KEY_HYPHENATION } from './hyphenation';
 import { TranslationKey } from './i18n/en';
 import type { FieldValues, GroupKey, GroupOrder, SortSpec } from './library/arrange';
 import type { TimeFrame } from './library/dates';
 import type { FieldDefinition } from './library/fields';
+import { type PageTurn, parsePageTurn, STORAGE_KEY_PAGE_TURN } from './page-turn';
 import { BODY_TEXT, KEEP_FONT } from './reader/body-text';
 import type { Dictionaries } from './reader/lookup/DictionaryService';
 import type { Pronouncer, Pronunciation } from './reader/tts/pronunciations';
@@ -276,6 +278,9 @@ export interface DisplayStyle {
     letterSpacing?: number;
     wordSpacing?: number;
     paragraphSpacing?: number;
+    /** Absent from a style saved before these settings existed, which read as off and none. */
+    boldText?: BoldText;
+    pageTurn?: PageTurn;
     margins: number;
     brightness: number;
     flow: Flow;
@@ -1307,10 +1312,12 @@ export interface DisplaySettings {
   letterSpacing: number; // percent of the font size, 0 the book's — see `text-spacing.ts`
   wordSpacing: number;
   paragraphSpacing: number;
+  boldText: BoldText;
+  pageTurn: PageTurn;
 }
 
 /**
- * The thirteen display values a book uses when nothing is stored.
+ * The fifteen display values a book uses when nothing is stored.
  *
  * **Exported because the settings page has to agree with the book.** Sliders falling back to their own `min`
  * would show a fresh vault brightness 20 over a book rendering at 100.
@@ -1328,6 +1335,8 @@ export const DISPLAY_DEFAULTS = {
   textAlign: 'book' as TextAlign,
   hyphenation: 'book' as Hyphenation,
   ...TEXT_SPACING_DEFAULTS,
+  boldText: 'off' as BoldText,
+  pageTurn: 'none' as PageTurn,
 };
 
 export function loadSettings(app: App, _ps: OrbisPluginSettings): DisplaySettings {
@@ -1353,6 +1362,8 @@ export function loadSettings(app: App, _ps: OrbisPluginSettings): DisplaySetting
     textAlign: parseTextAlign(ls(STORAGE_KEY_TEXT_ALIGN)),
     hyphenation: parseHyphenation(ls(STORAGE_KEY_HYPHENATION)),
     ...readSpacing((key) => ls(key)),
+    boldText: parseBoldText(ls(STORAGE_KEY_BOLD_TEXT)),
+    pageTurn: parsePageTurn(ls(STORAGE_KEY_PAGE_TURN)),
   };
 }
 
@@ -1370,6 +1381,8 @@ export function readCurrentDisplaySettings(app: App): DisplayStyle['settings'] {
     textAlign: parseTextAlign(ls(STORAGE_KEY_TEXT_ALIGN)),
     hyphenation: parseHyphenation(ls(STORAGE_KEY_HYPHENATION)),
     ...readSpacing(ls),
+    boldText: parseBoldText(ls(STORAGE_KEY_BOLD_TEXT)),
+    pageTurn: parsePageTurn(ls(STORAGE_KEY_PAGE_TURN)),
     margins: parseInt(ls(STORAGE_KEY_MARGINS) ?? String(DISPLAY_DEFAULTS.margins)),
     brightness: parseInt(ls(STORAGE_KEY_BRIGHTNESS) ?? String(DISPLAY_DEFAULTS.brightness)),
     flow: (ls(STORAGE_KEY_FLOW) ?? DISPLAY_DEFAULTS.flow) as Flow,
@@ -1393,6 +1406,8 @@ export function displayStyleEntries(settings: DisplayStyle['settings']): [string
     [STORAGE_KEY_TEXT_ALIGN, parseTextAlign(settings.textAlign)],
     [STORAGE_KEY_HYPHENATION, parseHyphenation(settings.hyphenation)],
     ...spacingEntries(settings),
+    [STORAGE_KEY_BOLD_TEXT, parseBoldText(settings.boldText)],
+    [STORAGE_KEY_PAGE_TURN, parsePageTurn(settings.pageTurn)],
     [STORAGE_KEY_MARGINS, String(settings.margins)],
     [STORAGE_KEY_BRIGHTNESS, String(settings.brightness)],
     [STORAGE_KEY_FLOW, settings.flow],
@@ -1456,6 +1471,8 @@ export function buildBookCss(
   const hyphens = hyphenationCss(settings.hyphenation, BODY_TEXT);
   if (hyphens) lines.push(hyphens);
   lines.push(...textSpacingCss(settings));
+  const bold = boldTextCss(settings.boldText);
+  if (bold) lines.push(bold);
   // On iPad and iPhone, ordinary line breaking instead of WebKit's whole-paragraph `pretty` — see `textWrapCss`.
   const wrap = textWrapCss(webkit, BODY_TEXT);
   if (wrap) lines.push(wrap);

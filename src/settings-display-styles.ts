@@ -15,11 +15,13 @@ import {
   setIcon,
   ToggleComponent,
 } from 'obsidian';
+import { parseBoldText, STORAGE_KEY_BOLD_TEXT } from './bold-text';
 import { confirmThen } from './ConfirmModal';
 import { deviceSetting, setDeviceSetting } from './device-settings';
 import { getOrCreateDeviceId } from './device-store';
 import { autoHyphenates, HYPHENATION_LABELS } from './hyphenation';
 import { t } from './i18n';
+import { PAGE_TURN_LABELS, parsePageTurn, STORAGE_KEY_PAGE_TURN } from './page-turn';
 import { LS_DEVICE_NAME } from './progress';
 import { resolveThemeId, themeChoices, themeColors } from './reader-themes';
 import { StyleNameModal } from './StyleNameModal';
@@ -89,6 +91,9 @@ export class DisplayStylesPage {
     colToggle?: ToggleComponent;
     align?: DropdownComponent;
     hyphenation?: DropdownComponent;
+    pageTurn?: DropdownComponent;
+    pageTurnRow?: Setting;
+    bold?: ToggleComponent;
     slider: Record<string, { slider: SliderComponent; num: HTMLInputElement }>;
   } = { slider: {} };
 
@@ -275,6 +280,23 @@ export class DisplayStylesPage {
         },
       },
       {
+        // After two columns, and like it hidden while scrolling: a scrolled book has no pages to turn (`page-turn.ts`).
+        name: t('appearance_page.page_turn'),
+        desc: t('appearance_page.page_turn_desc'),
+        render: (setting) => {
+          h.pageTurnRow = setting;
+          setting.addDropdown((d) => {
+            h.pageTurn = d;
+            const options: Record<string, string> = {};
+            for (const [value, key] of Object.entries(PAGE_TURN_LABELS)) options[value] = t(key);
+            d.addOptions(options)
+              .setValue(parsePageTurn(ls(STORAGE_KEY_PAGE_TURN)))
+              .onChange((value) => dispatchStr(STORAGE_KEY_PAGE_TURN, value));
+          });
+          setColShown((ls(STORAGE_KEY_FLOW) ?? 'paginated') !== 'scrolled');
+        },
+      },
+      {
         name: t('appearance_page.text_margins'),
         desc: t('appearance_page.text_padding_desc'),
         render: (setting) =>
@@ -359,6 +381,22 @@ export class DisplayStylesPage {
       },
       values.font,
       values.size,
+      {
+        // After font size, as on the display toolbar's Font tab (`bold-text.ts`).
+        name: t('appearance_page.bold_text'),
+        desc: t('appearance_page.bold_text_desc'),
+        render: (setting) => {
+          setting.addToggle((tg) => {
+            h.bold = tg;
+            // Only a change the stored value does not already hold, as the two-column switch does.
+            tg.setValue(parseBoldText(ls(STORAGE_KEY_BOLD_TEXT)) === 'on').onChange((on) => {
+              const next = on ? 'on' : 'off';
+              if (parseBoldText(ls(STORAGE_KEY_BOLD_TEXT)) !== next) dispatchStr(STORAGE_KEY_BOLD_TEXT, next);
+              applyPreview();
+            });
+          });
+        },
+      },
       values.sample,
     ];
   }
@@ -714,6 +752,12 @@ export class DisplayStylesPage {
       case STORAGE_KEY_HYPHENATION:
         h.hyphenation?.setValue(parseHyphenation(value));
         break;
+      case STORAGE_KEY_PAGE_TURN:
+        h.pageTurn?.setValue(parsePageTurn(value));
+        break;
+      case STORAGE_KEY_BOLD_TEXT:
+        h.bold?.setValue(parseBoldText(value) === 'on');
+        break;
       case STORAGE_KEY_MARGINS:
         syncSlider(key, parseInt(value));
         break;
@@ -789,6 +833,7 @@ export class DisplayStylesPage {
    */
   setColumnRowShown(shown: boolean): void {
     this.styleHandles.col?.settingEl.toggle(shown);
+    this.styleHandles.pageTurnRow?.settingEl.toggle(shown);
   }
 
   /**

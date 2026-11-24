@@ -24,6 +24,8 @@ const base: DisplaySettings = {
   letterSpacing: 0,
   wordSpacing: 0,
   paragraphSpacing: 0,
+  boldText: 'off',
+  pageTurn: 'none',
 };
 // Which theme gives which colors is `reader-themes.test.ts`; here the colors are given.
 const light = { bg: '#ffffff', fg: '#000000' };

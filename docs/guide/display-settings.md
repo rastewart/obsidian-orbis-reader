@@ -21,9 +21,9 @@ The display style bar has four tabs:
 | Tab | Controls |
 |---|---|
 | **Theme** | **Reader theme**, **Brightness** |
-| **Layout** | **Mode** (**Paged mode** or **Scrolled mode**), and the **Two-column layout** button. The button shows two columns of lines, and it is highlighted when the layout is enabled |
+| **Layout** | **Mode** (**Paged mode** or **Scrolled mode**), and the **Two-column layout** button. The button shows two columns of lines, and it is highlighted when the layout is enabled. **Page turn**, in **Paged mode** only |
 | **Spacing** | **Margins**, **Line spacing**, **Alignment**. Select **More** for **Character spacing**, **Word spacing**, **Paragraph spacing** and **Hyphenation** |
-| **Font** | **Font**, **Size** |
+| **Font** | **Font**, **Size**, **Bold text** |
 
 On the **Spacing** tab, **More** opens the tab's second page. **Back**, in the same place, returns to the first. When you choose the **Spacing** tab again, it opens on the first page.
 
@@ -236,6 +236,7 @@ These settings are in **Settings → Orbis Reader → Appearance**. They are sav
 | **Brightness** | Dims the page, from 20% to 100%. It does not change your screen brightness. The default is 100% |
 | **Reading mode** | Sets **Paged mode** or **Scrolled mode**. The default is **Paged mode** |
 | **Two-column layout** | Shows two columns in Paged mode when the reading area is wider than it is tall, and wide enough for two columns. Enabled by default |
+| **Page turn** | Sets how a page turns in Paged mode: **None** shows the next page at once, and **Slide** moves the page across. The default is **None** |
 | **Text margins** | Sets the space at the sides of the text, from 0% to 12%. A higher value gives a narrower column. The default is 3% |
 | **Line spacing** | Sets the space between lines of body text, from 1.0× to 3.0×. Headings keep the book's spacing. The default is 1.5× |
 | **Text alignment** | Sets the alignment of body text: **Follow the book**, **Left** or **Justified**. The default is **Follow the book** |
@@ -244,11 +245,14 @@ These settings are in **Settings → Orbis Reader → Appearance**. They are sav
 | **Paragraph spacing** | Sets the space between paragraphs, from 0% to 200% of the font size. At 0%, the book's own spacing shows. The default is 0% |
 | **Hyphenation** | Sets whether long words break across lines with a hyphen. The values are **Follow the book**, **On** and **Off**. The default is **Follow the book** |
 | **Font** | Sets the font of body text. The default is **Default (use book fonts)**. See [Fonts](#fonts) |
+| **Bold text** | Draws all of the book's text heavier. Words that the book makes bold stay bolder. Off by default |
 | **Font size** | Scales all the book's text, from 80% to 300%. The default is 100% |
 
 **Two-column layout** usually shows two columns on a computer, or on a tablet or phone turned sideways. In other conditions it can be enabled while the page shows one column. In Scrolled mode, the page always has one column and the setting is hidden. When you go back to Paged mode, the setting is as you left it.
 
 In a CBZ book or a fixed-layout EPUB, where each page is a picture, **Two-column layout** shows two pages side by side when the reading area is wider than it is tall. When it is turned off, you see one page at a time at any size.
+
+**Page turn** set to **Slide** slides the page across when you turn it with a key or the page buttons, or when you let go of a swipe. Moving into the next chapter shows its first page at once. In **Scrolled mode** the setting is hidden, because a scrolled book has no pages. When your device is set to reduce motion, pages turn at once whatever the setting says.
 
 **Left** text alignment gives a ragged right edge. **Justified** aligns the text to both margins. With either value, text that the book centers or right-aligns keeps its alignment, such as title lines, verse and signatures.
 

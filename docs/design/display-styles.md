@@ -27,6 +27,8 @@ interface DisplayStyle {
     letterSpacing?: number;   // % of the font size, 0–25; 0 or absent is the book's — see text-spacing.ts
     wordSpacing?: number;     // % of the font size, 0–50
     paragraphSpacing?: number; // % of the font size, 0–200
+    boldText?:   'on' | 'off';            // absent in older styles: off — see bold-text.ts
+    pageTurn?:   'none' | 'slide';        // absent in older styles: none — see page-turn.ts
     margins:     number;      // renderer gap %, 0–12
     brightness:  number;      // percentage, 20–100
     flow:        'paginated' | 'scrolled';
@@ -56,6 +58,8 @@ Display settings are **applied** via `localStorage` so that every open reader vi
 | `orbis-letter-spacing` | string | integer percentage of the font size, `0` the book's |
 | `orbis-word-spacing` | string | integer percentage of the font size, `0` the book's |
 | `orbis-paragraph-spacing` | string | integer percentage of the font size, `0` the book's |
+| `orbis-bold-text` | string | `'on'` \| `'off'` |
+| `orbis-page-turn` | string | `'none'` \| `'slide'` |
 | `orbis-margins` | string | integer |
 | `orbis-brightness` | string | integer percentage |
 | `orbis-flow` | string | `'paginated'` \| `'scrolled'` |

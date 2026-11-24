@@ -69,7 +69,13 @@ The display style bar and **Settings → Appearance** change the same values. Fo
 
 - [ ] `phone` Turn the phone sideways and open the **Spacing** tab, then **Theme** and **Font**. The controls sit two across, **Margins** beside **Line spacing**, and no row of any tab is hidden under Obsidian's toolbar at the bottom of the screen: a tab still taller than the room left stops above the toolbar, and its last row scrolls into view. On **Spacing**, **More** and **Back** are in the same place.
 
-- [ ] `each` **Reading mode** and **Two-column layout** (display style bar: **Layout**). Set **Reading mode** to **Scrolled mode**: the two-column control disappears from both surfaces. Set it back to **Paged mode**: it is back on both, as it was.
+- [ ] `each` **Bold text** (display style bar: **Font**). Turn it on: all of the book's text, headings included, is heavier, and words the book makes bold are still bolder than the words around them. Turn it off: the text is as it was. Settings → Appearance follows the switch.
+
+- [ ] `each` **Page turn** (display style bar: **Layout**). Set it to **Slide** and turn a page with the arrow key, the page button and a swipe: each time the page slides across. Turn into the next chapter: its first page shows at once. Set it to **None**: pages change at once again.
+
+- [ ] `phone` With **Page turn** on **Slide**, turn on the device's reduce-motion setting (iPhone: **Settings → Accessibility → Motion → Reduce Motion**; Android: **Remove animations**) and reopen the book: pages change at once. Turn the device setting off again.
+
+- [ ] `each` **Reading mode** and **Two-column layout** (display style bar: **Layout**). Set **Reading mode** to **Scrolled mode**: the two-column control and **Page turn** disappear from both surfaces. Set it back to **Paged mode**: it is back on both, as it was.
 
 - [ ] `desktop` On a wide pane, turn **Two-column layout** off: one column. Turn it on: two. The bar's button is lit exactly when the Settings switch is on.
 

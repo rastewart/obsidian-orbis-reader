@@ -16,6 +16,7 @@ import {
   noticesSince,
   openBook,
   openDisplayTab,
+  paginatorHas,
   pressInBook,
   pressInDrawer,
   readingPos,
@@ -24,6 +25,7 @@ import {
   setDisplay,
   settledPlace,
   spacingOf,
+  styleOf,
   turnTo,
 } from '../in-page';
 import { dismissDialogs, type E2eTest, expect, type TestContext } from '../runner';
@@ -197,6 +199,60 @@ export const displayTests: E2eTest[] = [
       await sleep(800);
       const back = await page.run(spacingOf, 'p', 10);
       expect(JSON.stringify(back) === JSON.stringify(own), `at 0, the paragraphs are ${JSON.stringify(back)}`);
+    },
+  },
+  {
+    name: "bold text thickens all the book's text, and is gone when off",
+    async run(context) {
+      const { page } = context;
+      await open(context, 'fixtures/annotation-workhorse.epub');
+      await page.run(goToSectionWith, 'Nobody in Marrowgate', 40);
+      const stroke = async (selector: string) =>
+        (await page.run(styleOf, selector, '-webkit-text-stroke-width', 5)).map((w) => Number.parseFloat(w) || 0);
+      await page.run(setDisplay, 'orbis-bold-text', 'off');
+      await sleep(800);
+      const off = await stroke('p');
+      expect(off.length > 0 && off.every((w) => w === 0), `with Bold text off, paragraphs have outlines ${off}`);
+      await page.run(setDisplay, 'orbis-bold-text', 'on');
+      await sleep(800);
+      for (const selector of ['p', 'h1, h2, h3']) {
+        const on = await stroke(selector);
+        expect(on.length > 0 && on.every((w) => w > 0), `with Bold text on, ${selector} have outlines ${on}`);
+      }
+      await page.run(setDisplay, 'orbis-bold-text', 'off');
+      await sleep(800);
+      const again = await stroke('p');
+      expect(
+        again.every((w) => w === 0),
+        `with Bold text off again, paragraphs have outlines ${again}`
+      );
+    },
+  },
+  {
+    name: 'page turn slides in paged mode only, and the page still turns',
+    async run(context) {
+      const { page } = context;
+      await open(context, 'fixtures/annotation-workhorse.epub');
+      await page.run(goToSectionWith, 'Nobody in Marrowgate', 40);
+      expect(!(await page.run(paginatorHas, 'animated')), 'with Page turn at its default, None, the page slides');
+      await page.run(setDisplay, 'orbis-page-turn', 'slide');
+      expect(await page.run(paginatorHas, 'animated'), 'with Page turn on Slide, foliate is not told to slide');
+      const before = await page.run(readingPos);
+      expect(await page.run(runCommand, 'orbis-reader:orbis-go-to-next-page'), 'Go to next page was not offered');
+      await sleep(800);
+      const after = await page.run(readingPos);
+      expect(
+        after.section > before.section || (after.section === before.section && after.pos > before.pos),
+        `sliding, the next page went from ${JSON.stringify(before)} to ${JSON.stringify(after)}`
+      );
+      await page.run(setDisplay, 'orbis-flow', 'scrolled');
+      await sleep(800);
+      expect(!(await page.run(paginatorHas, 'animated')), 'in Scrolled mode, foliate is still told to slide');
+      await page.run(setDisplay, 'orbis-flow', 'paginated');
+      await sleep(800);
+      expect(await page.run(paginatorHas, 'animated'), 'back in Paged mode, Slide is not back');
+      await page.run(setDisplay, 'orbis-page-turn', 'none');
+      expect(!(await page.run(paginatorHas, 'animated')), 'with Page turn back on None, the page still slides');
     },
   },
   {

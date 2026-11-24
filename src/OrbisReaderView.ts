@@ -19,6 +19,7 @@ import {
   type RemapChoice,
 } from './annotation-presets';
 import { BookExportModal } from './BookExportModal';
+import { parseBoldText, STORAGE_KEY_BOLD_TEXT } from './bold-text';
 import {
   type ChapterPart,
   type ChapterSource,
@@ -59,6 +60,7 @@ import { openMarkRoles } from './MarkRolesPopup';
 import type { MarksPdfScope } from './marks-pdf';
 import { MarksPdfSource } from './marks-pdf-source';
 import { dialogIsOpen } from './OrbisModal';
+import { applyPageTurn, parsePageTurn, STORAGE_KEY_PAGE_TURN } from './page-turn';
 import { openNoteBeside } from './panes';
 import {
   bookAudioFolderPath,
@@ -1088,6 +1090,8 @@ export class OrbisReaderView
       textAlign: STORAGE_KEY_TEXT_ALIGN,
       hyphenation: STORAGE_KEY_HYPHENATION,
       ...textSpacingKeys(),
+      boldText: STORAGE_KEY_BOLD_TEXT,
+      pageTurn: STORAGE_KEY_PAGE_TURN,
       theme: 'orbis-theme',
       fontFamily: 'orbis-font-family',
       flow: 'orbis-flow',
@@ -1259,6 +1263,7 @@ export class OrbisReaderView
     // set here. Normal mode keeps foliate's own 48px, which is what holds an open search bar off the first line;
     // focus mode narrows it on the way in and clears it on the way out. See `FOCUS_PAGE_MARGIN`.
     r.setAttribute('gap', `${this.settings.margins}%`);
+    applyPageTurn(r, this.settings.pageTurn, this.settings.flow);
   }
 
   // Map a TOC item href (may include #anchor) to a spine section index — Kindle `kindle:pos:` and MOBI `filepos:`
@@ -4705,6 +4710,12 @@ export class OrbisReaderView
       } else if (key === STORAGE_KEY_HYPHENATION) {
         this.settings.hyphenation = parseHyphenation(newValue);
         this.reinjectAllDocs();
+      } else if (key === STORAGE_KEY_BOLD_TEXT) {
+        this.settings.boldText = parseBoldText(newValue);
+        this.reinjectAllDocs();
+      } else if (key === STORAGE_KEY_PAGE_TURN) {
+        this.settings.pageTurn = parsePageTurn(newValue);
+        applyPageTurn(this.foliateView?.renderer, this.settings.pageTurn, this.settings.flow);
       } else if (spacingForKey(key)) {
         const name = spacingForKey(key) as keyof TextSpacing;
         this.settings[name] = parseSpacing(name, newValue);
