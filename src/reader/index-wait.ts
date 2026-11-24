@@ -3,8 +3,8 @@
 // **Why an export waits.** Which files continue the chapter before them (`OrbisReaderView.sectionContinues`) is read
 // from the location index, which a book builds in the background the first time it is opened. Until it lands no
 // file continues anything, so Save as Markdown and Save as PDF opened before then list a continuation as a chapter
-// of its own and write it as one (`Section 13`). The recording list already waits for the same measurement; the two
-// exports wait here.
+// of its own and write it as one (`Section 13`). The recording list does not wait, since `chapterParts` works its
+// list out again once the index is measured. An export writes what it listed, so the two exports wait here.
 //
 // **How long.** For as long as the index is being built, up to `maxMs`: a large book on a slow phone is the case this
 // is for, so a short limit would cut off the very build it waits for. When nothing is building — the index failed,

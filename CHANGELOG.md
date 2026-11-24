@@ -17,7 +17,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 - A paragraph marked from the listening player while a recording played, with the mark button set to Paragraph, is now marked in the book. Before, the mark or note was saved but showed nothing. **Scan annotation data for problems** now offers **Repair** for marks and notes saved this way, and puts them back on their paragraph.
 - A long chapter that Calibre split into two files is now one chapter in Save as Markdown, Save as PDF and the recording list. Before, the second half was a chapter of its own, named by the chapter and the book's title.
 - **Open this link?** now calls a link with a space in its web address's host *Not a valid address* on desktop and Android, and offers only **Cancel**, as on iPhone and iPad. Before, it called the link a web page, showed the space as `%20` and offered **Open**.
-- Save as Markdown and Save as PDF now wait, with the notice *Preparing the chapter list…*, when they are opened on a book still being read for the first time. Before, a chapter that continues in a second file could be listed and saved as a separate chapter named **Section** and a number. This was most likely with a large book on a phone.
+- Save as Markdown and Save as PDF, selected soon after a book is first opened, now open their dialog only once Orbis has finished indexing the book. Until then, the notice *Preparing the chapter list…* shows.
 
 ## [0.1.6] — 2026-11-21
 
