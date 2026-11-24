@@ -5105,6 +5105,16 @@ body.orbis-listen-locked .orbis-recording-chip:not(#orbis#important) {
   text-align: var(--orbis-preview-text-align, left);
   padding-left: var(--orbis-preview-padding-left, 0);
   padding-right: var(--orbis-preview-padding-right, 0);
+  letter-spacing: var(--orbis-preview-letter-spacing, normal);
+  word-spacing: var(--orbis-preview-word-spacing, normal);
+  -webkit-text-stroke: var(--orbis-preview-stroke, 0) currentColor;
+}
+/* The sample's two paragraphs: a book's usual gap between them, or Paragraph spacing's (`applyStylePreview`). */
+.orbis-style-preview p {
+  margin: var(--orbis-preview-paragraph, 0.6em) 0;
+}
+.orbis-style-preview p:first-child {
+  margin-top: 0;
 }
 /* settings-themes.ts / ThemeModal.ts — a line of book text in a theme's colors, under the theme's name in the
    Theme designer and under the colors in its dialog. Bordered, because a theme the same color as the settings

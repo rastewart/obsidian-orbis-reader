@@ -906,8 +906,11 @@ const en = {
    *
    * Written for Orbis, so no book's text is quoted.
    */
+  // The settings sample, two paragraphs so Paragraph spacing has a gap to show.
   'appearance_page.preview_sample_text':
-    'The ferry left the north shore a little after seven, low in the water with the week’s post and a crate of lamp oil. By the time it reached the island the rain had stopped, and the harbor smelled of wet rope and woodsmoke.',
+    'The ferry left the north shore a little after seven, low in the water with the week’s post and a crate of lamp oil.',
+  'appearance_page.preview_sample_text_2':
+    'By the time it reached the island the rain had stopped, and the harbor smelled of wet rope and woodsmoke.',
   // **Which one, and nothing else.** Not what happens next (the device goes back to its own style), nor a
   // reassurance (your books are untouched) — commentary nobody needs, because nobody fears that deleting a set of
   // reading preferences deletes their books. The note export styles version keeps its second sentence: there, the

@@ -15,7 +15,7 @@ export function parseBoldText(v: string | null | undefined): BoldText {
  * How much heavier: the width of the outline drawn around every letter, in ems so it grows with the text. Enough
  * to see at a glance on a phone, not so much that a small `e` or `a` fills in.
  */
-const STROKE = '0.04em';
+export const BOLD_STROKE = '0.04em';
 
 /**
  * The rule that makes the book's text bold, or none when off.
@@ -30,5 +30,5 @@ const STROKE = '0.04em';
  */
 export function boldTextCss(boldText: BoldText): string | null {
   if (boldText !== 'on') return null;
-  return `body { -webkit-text-stroke-width: ${STROKE} !important; -webkit-text-stroke-color: currentColor !important; }`;
+  return `body { -webkit-text-stroke-width: ${BOLD_STROKE} !important; -webkit-text-stroke-color: currentColor !important; }`;
 }

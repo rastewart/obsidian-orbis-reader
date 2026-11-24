@@ -15,7 +15,7 @@ import {
   setIcon,
   ToggleComponent,
 } from 'obsidian';
-import { parseBoldText, STORAGE_KEY_BOLD_TEXT } from './bold-text';
+import { BOLD_STROKE, parseBoldText, STORAGE_KEY_BOLD_TEXT } from './bold-text';
 import { confirmThen } from './ConfirmModal';
 import { deviceSetting, setDeviceSetting } from './device-settings';
 import { getOrCreateDeviceId } from './device-store';
@@ -51,6 +51,7 @@ import { PAGE_I18N_KEYS } from './settings-rows';
 import { bindRealTimeSliderInput, isSliderDragging } from './slider-input';
 import {
   parseSpacing,
+  readSpacing,
   SPACING_DESCRIPTIONS,
   SPACING_LABELS,
   spacingForKey,
@@ -606,7 +607,9 @@ export class DisplayStylesPage {
           // inside it, so a shorter passage reclaims no space at all — only a shorter box does. Two controls need
           // less sample than nine: enough lines to see the size and the ground it sits on.
           if (opts.compactSample) el.addClass('is-compact');
-          el.textContent = t('appearance_page.preview_sample_text');
+          // Two paragraphs, so Paragraph spacing has a gap between them to show.
+          el.createEl('p', { text: t('appearance_page.preview_sample_text') });
+          el.createEl('p', { text: t('appearance_page.preview_sample_text_2') });
           h.preview = el;
           this.applyStylePreview();
         },
@@ -813,7 +816,16 @@ export class DisplayStylesPage {
     // The sample has no book behind it, so following the book previews as the browser's own left.
     const justify = parseTextAlign(ls(STORAGE_KEY_TEXT_ALIGN)) === 'justify';
     const margins = parseInt(ls(STORAGE_KEY_MARGINS) ?? String(DISPLAY_DEFAULTS.margins));
+    // The spacings and Bold text as the book draws them (`textSpacingCss`, `boldTextCss`): 0 and off leave the sample
+    // its own spacing and weight, as they leave a book its own.
+    const spacing = readSpacing(ls);
+    const em = (percent: number) => `${percent / 100}em`;
+    const bold = parseBoldText(ls(STORAGE_KEY_BOLD_TEXT)) === 'on';
     previewEl.setCssProps({
+      '--orbis-preview-letter-spacing': spacing.letterSpacing ? em(spacing.letterSpacing) : 'normal',
+      '--orbis-preview-word-spacing': spacing.wordSpacing ? em(spacing.wordSpacing) : 'normal',
+      '--orbis-preview-paragraph': spacing.paragraphSpacing ? em(spacing.paragraphSpacing) : '',
+      '--orbis-preview-stroke': bold ? BOLD_STROKE : '0',
       '--orbis-preview-bg': background,
       '--orbis-preview-color': color,
       '--orbis-preview-font-family': fontFamily,
