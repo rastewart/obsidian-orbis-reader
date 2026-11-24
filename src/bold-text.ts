@@ -22,13 +22,14 @@ export const BOLD_STROKE = '0.04em';
  *
  * **An outline, not a heavier weight.** Most book fonts come in two weights, regular and bold, so asking for 600
  * draws the body in bold — and then a word the book bolds for emphasis is no bolder than the words around it. A thin
- * outline in the text's own colour thickens every letter alike, so the book's bold stays bolder than its body.
+ * outline in the text's own color thickens every letter alike, so the book's bold stays bolder than its body.
  *
- * **On `body`, inherited by everything**: headings, captions and notes as well as paragraphs, since a reader who needs
- * heavier letters needs them everywhere. `currentColor` resolves per element, so a coloured link is outlined in its
- * own colour. `-webkit-text-stroke` is prefixed in Chromium and WebKit alike, and unprefixed in neither.
+ * **On every element, not inherited from `body`**: headings, captions and notes as well as paragraphs, since a reader
+ * who needs heavier letters needs them everywhere. Inherited, the width would be `body`'s in pixels, and a heading twice
+ * the size would be thickened half as much. `currentColor` resolves per element, so a colored link is outlined in its
+ * own color. `-webkit-text-stroke` is prefixed in Chromium and WebKit alike, and unprefixed in neither.
  */
 export function boldTextCss(boldText: BoldText): string | null {
   if (boldText !== 'on') return null;
-  return `body { -webkit-text-stroke-width: ${BOLD_STROKE} !important; -webkit-text-stroke-color: currentColor !important; }`;
+  return `body, body * { -webkit-text-stroke-width: ${BOLD_STROKE} !important; -webkit-text-stroke-color: currentColor !important; }`;
 }

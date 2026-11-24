@@ -8,10 +8,10 @@ describe('Bold text', () => {
     for (const v of ['off', 'true', '', null, undefined]) expect(parseBoldText(v)).toBe('off');
   });
 
-  it('outlines the text in its own colour when on, and adds nothing when off', () => {
+  it('outlines the text of every element in its own color when on, and adds nothing when off', () => {
     expect(boldTextCss('off')).toBeNull();
     const css = boldTextCss('on') ?? '';
-    expect(css).toMatch(/^body \{/);
+    expect(css).toMatch(/^body, body \* \{/);
     expect(css).toContain('-webkit-text-stroke-width: 0.04em !important');
     expect(css).toContain('-webkit-text-stroke-color: currentColor !important');
   });

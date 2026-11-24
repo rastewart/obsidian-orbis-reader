@@ -25,7 +25,7 @@ The display style bar has four tabs:
 | **Spacing** | **Margins**, **Line spacing**, **Alignment**. Select **More** for **Character spacing**, **Word spacing**, **Paragraph spacing** and **Hyphenation** |
 | **Font** | **Font**, **Size**, **Bold text** |
 
-On the **Spacing** tab, **More** opens the tab's second page. **Back**, in the same place, returns to the first. When you choose the **Spacing** tab again, it opens on the first page.
+On the **Spacing** tab, **More** opens the tab's second page. **Back**, in the same place, returns to the first. When you select the **Spacing** tab again, it opens on the first page.
 
 On a phone turned sideways, a tab's controls sit two across, so they fit under the toolbar. If a tab is still taller than the room, the tab stops above Obsidian's own toolbar and you can scroll it.
 
@@ -236,7 +236,7 @@ These settings are in **Settings → Orbis Reader → Appearance**. They are sav
 | **Brightness** | Dims the page, from 20% to 100%. It does not change your screen brightness. The default is 100% |
 | **Reading mode** | Sets **Paged mode** or **Scrolled mode**. The default is **Paged mode** |
 | **Two-column layout** | Shows two columns in Paged mode when the reading area is wider than it is tall, and wide enough for two columns. Enabled by default |
-| **Page turn** | Sets how a page turns in Paged mode: **None** shows the next page at once, and **Slide** moves the page across. The default is **None** |
+| **Page turn** | Sets how a page turns in Paged mode. **None** shows the next page at once, and **Slide** moves the page across. The default is **None** |
 | **Text margins** | Sets the space at the sides of the text, from 0% to 12%. A higher value gives a narrower column. The default is 3% |
 | **Line spacing** | Sets the space between lines of body text, from 1.0× to 3.0×. Headings keep the book's spacing. The default is 1.5× |
 | **Text alignment** | Sets the alignment of body text: **Follow the book**, **Left** or **Justified**. The default is **Follow the book** |
@@ -254,9 +254,11 @@ In a CBZ book or a fixed-layout EPUB, where each page is a picture, **Two-column
 
 **Page turn** set to **Slide** slides the page across when you turn it with a key or the page buttons, or when you let go of a swipe. Moving into the next chapter shows its first page at once. In **Scrolled mode** the setting is hidden, because a scrolled book has no pages. When your device is set to reduce motion, pages turn at once whatever the setting says.
 
+With **Slide**, a key or page button pressed while a page is still sliding is ignored. To move quickly through many pages, use **None**. **Page turn** has no effect in a CBZ book or a fixed-layout EPUB.
+
 **Left** text alignment gives a ragged right edge. **Justified** aligns the text to both margins. With either value, text that the book centers or right-aligns keeps its alignment, such as title lines, verse and signatures.
 
-**Character spacing**, **Word spacing** and **Paragraph spacing** change body text only. Headings, centered lines and code keep the book's spacing. Character spacing is not added to languages whose letters join, such as Arabic, Persian and Urdu. Some readers find text easier to read with more space: the accessibility guideline WCAG 1.4.12 uses 12% for characters, 16% for words and 200% for paragraphs.
+**Character spacing**, **Word spacing** and **Paragraph spacing** change body text only. Headings, centered lines and code keep the book's spacing. Character spacing is not added to languages whose letters join, such as Arabic, Persian and Urdu. Some readers find text easier to read with more space. The accessibility guideline WCAG 1.4.12 uses 12% for characters, 16% for words and 200% for paragraphs.
 
 **Hyphenation** set to **On** hyphenates body text. Headings keep the book's hyphenation. **Off** removes all hyphenation, including the hyphens that the book puts in its words.
 

@@ -1,4 +1,4 @@
-// Character, word and paragraph spacing: three sliders on the Spacing tab's Advanced page and in Settings →
+// Character, word and paragraph spacing: three sliders on the Spacing tab's More page and in Settings →
 // Appearance, each in percent of the font size, where 0 leaves the book's own spacing.
 //
 // **Why these three.** With line spacing they are the four adjustments WCAG 1.4.12 (Text Spacing) names: letter
@@ -9,7 +9,7 @@
 // stands, as Follow the book does for alignment and hyphenation. Any other value replaces it on body text.
 
 import type { TranslationKey } from './i18n/en';
-import { BODY_TEXT } from './reader/body-text';
+import { BODY_TEXT, KEEP_FONT } from './reader/body-text';
 
 export const STORAGE_KEY_LETTER_SPACING = 'orbis-letter-spacing';
 export const STORAGE_KEY_WORD_SPACING = 'orbis-word-spacing';
@@ -92,13 +92,20 @@ export function spacingForKey(key: string): keyof TextSpacing | undefined {
  * Syriac, N'Ko and Mongolian. CSS Text asks a browser not to space them, and not every one obeys, so they are left
  * out by language.
  */
-const JOINED = ['ar', 'fa', 'ur', 'ps', 'sd', 'ug', 'ckb', 'ks', 'syr', 'nqo', 'mn-Mong'];
+const JOINED_LANGUAGES = ['ar', 'fa', 'ur', 'ps', 'sd', 'ug', 'ckb', 'ks', 'syr', 'nqo', 'mn-Mong'];
+
+const JOINED = JOINED_LANGUAGES.map((lang) => `:lang(${lang})`).join(', ');
+
+/** Code inside a paragraph, and text in the fonts `keepsOwnFont` keeps. */
+const CODE = `code, kbd, samp, tt, pre, .${KEEP_FONT}`;
 
 /**
  * The rules that set `spacing` in a book's document, none for a value of 0.
  *
  * **On body text, as line spacing is** (`buildBookCss`): the paragraphs `tagBodyText` marks, so a centered title, a
- * heading or code keeps the book's. Words and characters inherit into the paragraph's spans. Paragraph spacing goes on
+ * heading or a block of code keeps the book's. Words and characters inherit into the paragraph's spans, except code and
+ * (for characters) a joined script, which start from normal spacing again: in `:where`, so a book's own rule for them
+ * wins. Paragraph spacing goes on
  * paragraphs only, `p` and the `div`s some books use for them, as a margin above and below that collapses to one gap
  * between two; a list item or a table cell keeps its own.
  */
@@ -106,10 +113,17 @@ export function textSpacingCss(spacing: TextSpacing): string[] {
   const em = (percent: number) => `${percent / 100}em`;
   const lines: string[] = [];
   if (spacing.letterSpacing) {
-    const joined = JOINED.map((lang) => `:lang(${lang})`).join(', ');
-    lines.push(`.${BODY_TEXT}:not(${joined}) { letter-spacing: ${em(spacing.letterSpacing)} !important; }`);
+    lines.push(
+      `.${BODY_TEXT}:not(${JOINED}) { letter-spacing: ${em(spacing.letterSpacing)} !important; }`,
+      `:where(.${BODY_TEXT}:not(${JOINED})) :where(${CODE}, ${JOINED}) { letter-spacing: normal; }`
+    );
   }
-  if (spacing.wordSpacing) lines.push(`.${BODY_TEXT} { word-spacing: ${em(spacing.wordSpacing)} !important; }`);
+  if (spacing.wordSpacing) {
+    lines.push(
+      `.${BODY_TEXT} { word-spacing: ${em(spacing.wordSpacing)} !important; }`,
+      `:where(.${BODY_TEXT}) :where(${CODE}) { word-spacing: normal; }`
+    );
+  }
   if (spacing.paragraphSpacing) {
     const gap = em(spacing.paragraphSpacing);
     lines.push(`p.${BODY_TEXT}, div.${BODY_TEXT} { margin-top: ${gap} !important; margin-bottom: ${gap} !important; }`);

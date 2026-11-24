@@ -672,6 +672,11 @@ export async function restoreSettings(snapshot: string, ownBookkeeping: string[]
     'orbis-line-height',
     'orbis-text-align',
     'orbis-hyphenation',
+    'orbis-letter-spacing',
+    'orbis-word-spacing',
+    'orbis-paragraph-spacing',
+    'orbis-bold-text',
+    'orbis-page-turn',
     'orbis-margins',
     'orbis-brightness',
     'orbis-flow',
@@ -1499,6 +1504,66 @@ export function styleOf(selector: string, property: string, max = 10): string[] 
     .map((el) => win.getComputedStyle(el).getPropertyValue(property));
 }
 
+/**
+ * The letter and word spacing, in pixels, of code and of Arabic inside the shown section's first paragraph of body text,
+ * with an element of each put there to measure and taken away again.
+ */
+export function spacingInside(): { tag: string; letter: number; word: number }[] {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
+  const doc = view?.foliateView?.renderer.getContents()[0]?.doc;
+  const p = doc?.querySelector('p.orbis-body-text');
+  if (!doc || !p) throw new Error('no paragraph of body text is shown');
+  const px = (v: string) => (v === 'normal' ? 0 : Number.parseFloat(v) || 0);
+  return ['code', 'span'].map((tag) => {
+    const el = doc.createElementNS('http://www.w3.org/1999/xhtml', tag) as HTMLElement;
+    if (tag === 'span') {
+      el.setAttributeNS('http://www.w3.org/XML/1998/namespace', 'xml:lang', 'ar');
+      el.setAttribute('lang', 'ar');
+    }
+    el.textContent = 'sample text';
+    p.appendChild(el);
+    const style = (doc.defaultView as Window).getComputedStyle(el);
+    const found = { tag, letter: px(style.letterSpacing), word: px(style.wordSpacing) };
+    el.remove();
+    return found;
+  });
+}
+
+/**
+ * Goes to the last page of the shown section, turns to the next, and returns how long, in milliseconds, any of the empty
+ * page at the section's end was on screen before the next section.
+ */
+export async function emptyPageAtSectionEnd(): Promise<number> {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as {
+    foliateView?: {
+      next(): Promise<void>;
+      renderer: { page: number; pages: number; start: number; size: number; getContents(): { index: number }[] };
+    };
+  };
+  const fv = view?.foliateView;
+  if (!fv) throw new Error('no book is open');
+  const r = fv.renderer;
+  for (let i = 0; i < 60 && r.page < r.pages - 2; i++) await fv.next();
+  const section = r.getContents()[0]?.index;
+  let since = 0;
+  let shown = 0;
+  let watching = true;
+  const watch = () => {
+    const now = r.getContents()[0]?.index;
+    if (now === section && !since && r.start > (r.pages - 2) * r.size + 1) since = performance.now();
+    if (now !== undefined && now !== section && !shown) shown = performance.now();
+    if (watching) requestAnimationFrame(watch);
+  };
+  watch();
+  await fv.next();
+  await new Promise((done) => setTimeout(done, 500));
+  watching = false;
+  if (!shown) throw new Error('the next section did not show');
+  return since ? Math.round(shown - since) : 0;
+}
+
 /** Whether the open book's paginator has the attribute `name` — `animated`, which makes foliate slide a page. */
 export function paginatorHas(name: string): boolean {
   const app = (window as unknown as { app: PageApp }).app;
@@ -1675,6 +1740,53 @@ export function fakeMobileNavbar(top: number | null): void {
     pointerEvents: 'none',
   });
   document.body.appendChild(bar);
+}
+
+/** The height the open display style tab may have, as laid out, and the room there is for it now, in pixels. */
+export function drawerRoom(): { allowed: number; room: number } {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as {
+    contentEl: HTMLElement;
+    level3Container: HTMLElement;
+  };
+  const container = view.level3Container;
+  return {
+    allowed: Number.parseInt(container.style.getPropertyValue('--orbis-drawer-max-height')),
+    room: Math.floor(view.contentEl.getBoundingClientRect().bottom - container.getBoundingClientRect().top),
+  };
+}
+
+/** How many times the open tab is laid out while the book's margins change `times` times. */
+export async function layoutsPerChange(times: number): Promise<number> {
+  const app = (
+    window as unknown as {
+      app: PageApp & {
+        saveLocalStorage(k: string, v: string): void;
+        workspace: { trigger(n: string, ...a: unknown[]): void };
+      };
+    }
+  ).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as { fitDisplayDrawer(): void };
+  const own = view.fitDisplayDrawer;
+  let count = 0;
+  view.fitDisplayDrawer = () => {
+    count++;
+    own();
+  };
+  for (let i = 1; i <= times; i++) {
+    app.saveLocalStorage('orbis-margins', String(i));
+    app.workspace.trigger('orbis:settings-change', 'orbis-margins', String(i));
+  }
+  await new Promise((done) => setTimeout(done, 300));
+  view.fitDisplayDrawer = own;
+  return count;
+}
+
+/** Closes the open book's display style bar, as its button or Escape does. */
+export function closeDisplayBar(): void {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as { closeDisplayMenu(): void };
+  view.closeDisplayMenu();
 }
 
 /** Makes the open book's display style bar `width` pixels wide, as on a phone, or as wide as the pane again (null). */

@@ -4,13 +4,17 @@
 
 import {
   closeBooks,
+  closeDisplayBar,
   computedText,
   type DrawerShown,
+  drawerRoom,
+  emptyPageAtSectionEnd,
   fakeMobileNavbar,
   firstSlider,
   focusState,
   getDisplay,
   goToSectionWith,
+  layoutsPerChange,
   narrowDisplayBar,
   noticeCount,
   noticesSince,
@@ -24,6 +28,7 @@ import {
   setDeviceValue,
   setDisplay,
   settledPlace,
+  spacingInside,
   spacingOf,
   styleOf,
   turnTo,
@@ -188,6 +193,11 @@ export const displayTests: E2eTest[] = [
         expect(near(p.word, 0.16 * p.size), `a paragraph's words are ${p.word}px apart at ${p.size}px, not 16%`);
         expect(near(p.above, 2 * p.size), `a paragraph has ${p.above}px above it at ${p.size}px, not 200%`);
       }
+      for (const inside of await page.run(spacingInside)) {
+        // Code keeps its letters and words; in Arabic only the words are spaced, since its letters join.
+        const kept = inside.letter === 0 && (inside.tag !== 'code' || inside.word === 0);
+        expect(kept, `inside a paragraph, ${JSON.stringify(inside)} is spaced`);
+      }
       const spacedHeadings = await page.run(spacingOf, 'h1, h2, h3', 5);
       expect(
         JSON.stringify(spacedHeadings) === JSON.stringify(headings),
@@ -218,6 +228,12 @@ export const displayTests: E2eTest[] = [
       for (const selector of ['p', 'h1, h2, h3']) {
         const on = await stroke(selector);
         expect(on.length > 0 && on.every((w) => w > 0), `with Bold text on, ${selector} have outlines ${on}`);
+        // As wide for a heading's size as for a paragraph's.
+        const sizes = (await page.run(styleOf, selector, 'font-size', 5)).map((s) => Number.parseFloat(s));
+        expect(
+          on.every((w, i) => Math.abs(w - 0.04 * sizes[i]) < 0.1),
+          `with Bold text on, ${selector} of ${sizes} have outlines ${on}`
+        );
       }
       await page.run(setDisplay, 'orbis-bold-text', 'off');
       await sleep(800);
@@ -245,12 +261,23 @@ export const displayTests: E2eTest[] = [
         after.section > before.section || (after.section === before.section && after.pos > before.pos),
         `sliding, the next page went from ${JSON.stringify(before)} to ${JSON.stringify(after)}`
       );
+      const empty = await page.run(emptyPageAtSectionEnd);
+      expect(empty < 200, `sliding, the empty page at a chapter's end showed for ${empty}ms`);
+      // The setting is on the Layout tab in Paged mode only, also when the mode changes while the bar is closed.
+      const layout = async () => {
+        const { rows } = await page.run(openDisplayTab, 'structure', false);
+        await page.run(closeDisplayBar);
+        return rows.includes('Page turn');
+      };
+      expect(await layout(), 'in Paged mode, the Layout tab has no Page turn');
       await page.run(setDisplay, 'orbis-flow', 'scrolled');
       await sleep(800);
+      expect(!(await layout()), 'in Scrolled mode, the Layout tab has Page turn');
       expect(!(await page.run(paginatorHas, 'animated')), 'in Scrolled mode, foliate is still told to slide');
       await page.run(setDisplay, 'orbis-flow', 'paginated');
       await sleep(800);
       expect(await page.run(paginatorHas, 'animated'), 'back in Paged mode, Slide is not back');
+      expect(await layout(), 'back in Paged mode, the Layout tab has no Page turn');
       await page.run(setDisplay, 'orbis-page-turn', 'none');
       expect(!(await page.run(paginatorHas, 'animated')), 'with Page turn back on None, the page still slides');
     },
@@ -445,6 +472,29 @@ export const displayTests: E2eTest[] = [
         expect(
           Math.abs(margins.to - margins.expected) <= 1,
           `dragged, Margins went from ${margins.from} to ${margins.to}, not about ${margins.expected}`
+        );
+        const layouts = await page.run(layoutsPerChange, 5);
+        expect(layouts === 0, `five changes of a value laid the tab out ${layouts} times`);
+
+        // A pane that grows during a drag, as when a phone's keyboard closes: the tab has the room once it is let go.
+        const size = (height: number) =>
+          page.send('Emulation.setDeviceMetricsOverride', { width: 1600, height, deviceScaleFactor: 1, mobile: false });
+        await size(330);
+        await sleep(500);
+        const held = await page.run(firstSlider, 'spacing');
+        const mouse = (type: string) =>
+          page.send('Input.dispatchMouseEvent', { type, x: held.x + 20, y: held.y, button: 'left', clickCount: 1 });
+        await mouse('mousePressed');
+        await size(900);
+        await sleep(500);
+        const during = await page.run(drawerRoom);
+        expect(during.allowed < during.room - 1, `the tab was laid out during the drag: ${JSON.stringify(during)}`);
+        await mouse('mouseReleased');
+        await sleep(500);
+        const { allowed, room } = await page.run(drawerRoom);
+        expect(
+          Math.abs(allowed - room) <= 1,
+          `after the pane grew, the tab may be ${allowed}px in a room of ${room}px`
         );
       } finally {
         await page.run(narrowDisplayBar, null);

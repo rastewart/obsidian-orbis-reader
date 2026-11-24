@@ -3533,7 +3533,7 @@ export class OrbisSettings extends PluginSettingTab {
    * The Reading behavior page: how the book behaves, as opposed to how it looks.
    *
    * Small, and kept as its own top-level entry rather than folded into Display styles, because the two are
-   * different things — the thirteen display properties belong to a *style*, and these belong to nobody. It is also
+   * different things — the fifteen display properties belong to a *style*, and these belong to nobody. It is also
    * where the arrow keys and the progress indicator belong — the Toolbar page is where you turn the indicator on,
    * not what it is.
    *

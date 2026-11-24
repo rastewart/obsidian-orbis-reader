@@ -358,6 +358,8 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     view.saveSetting('pageTurn', next);
   });
 
+  // Remembered, not read from the page: in a tab that is not open the row is never shown, whatever the mode.
+  let turnShown = true;
   const updateStructureBtns = () => {
     modeSelect.value = view.settings.flow;
     turnSelect.value = view.settings.pageTurn;
@@ -367,7 +369,8 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     const paged = view.settings.flow !== 'scrolled';
     colBtn.toggle(paged);
     // A row coming or going changes the tab's shape, so it is laid out again — only then, not on every sync.
-    if (turnWrap.isShown() !== paged) {
+    if (turnShown !== paged) {
+      turnShown = paged;
       turnWrap.toggle(paged);
       view.fitDisplayDrawer?.();
     }
@@ -603,6 +606,23 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     if (!isFocused(lhNum)) lhNum.value = String(view.settings.lineHeight);
   };
 
+  /** Lays the tab out once the drag under way ends, after the slider's own `change`, which follows the release. */
+  let layoutOwed = false;
+  const layoutAfterDrag = (win: Window) => {
+    if (layoutOwed) return;
+    layoutOwed = true;
+    const released = () => {
+      win.removeEventListener('pointerup', released, true);
+      win.removeEventListener('pointercancel', released, true);
+      win.setTimeout(() => {
+        layoutOwed = false;
+        view.fitDisplayDrawer?.();
+      }, 100);
+    };
+    win.addEventListener('pointerup', released, true);
+    win.addEventListener('pointercancel', released, true);
+  };
+
   view.fitDisplayDrawer = () => {
     const container = view.level3Container;
     const open = view.activeDisplayTab ? view.displayDrawers[view.activeDisplayTab] : undefined;
@@ -611,10 +631,13 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
      * **Never while a slider is dragged.** Laying the tab out again starts from one line, and a stacked tab's rows
      * changing their display for that moment rebuilds the slider under the pointer, which ends the drag in Chromium: a
      * slider on the stacked More page moved one step and stopped. Nothing a slider changes moves the layout, so the
-     * tab is laid out when it opens, changes page or is resized, and not when a value changes.
+     * tab is laid out when it opens, changes page or is resized, and not when a value changes. A pane resized during a
+     * drag, as by a phone's keyboard closing, is laid out once the slider is let go.
      */
-    if (open && Array.from(open.querySelectorAll<HTMLInputElement>('input[type="range"]')).some(isSliderDragging))
+    if (open && Array.from(open.querySelectorAll<HTMLInputElement>('input[type="range"]')).some(isSliderDragging)) {
+      layoutAfterDrag(container.win);
       return;
+    }
     const room = roomBelow(container, view.contentEl);
     container.setCssProps({ '--orbis-drawer-max-height': `${room}px` });
     if (open) fitDrawer(open, room);

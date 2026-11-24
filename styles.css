@@ -476,7 +476,7 @@ body {
 /* Flat like the primary toolbar and the level-2 bar: a single bottom border and no drop shadow.
    A shadow would read as an outline around the drawer, especially under the light theme,
    making the third level look like a raised box rather than another bar.
-   No taller than the room above whatever covers the bottom of the pane, which `fitHeight` measures, and scrolled
+   No taller than the room above whatever covers the bottom of the pane, which `roomBelow` measures, and scrolled
    inside when the tab is taller: on a phone in landscape a tab reached under Obsidian's own toolbar. */
 .orbis-level3-container {
   display: flex;
@@ -537,7 +537,7 @@ body {
   margin-left: 0;
 }
 /* As a form, a field only as wide as the most it holds, three characters (1.5, 300), so the slider has the rest: less
-   of a phone's wide padding, and centred. The text keeps the size Obsidian gives it, so the field is narrowed by its
+   of a phone's wide padding, and centered. The text keeps the size Obsidian gives it, so the field is narrowed by its
    padding, not by smaller digits. */
 .orbis-form-drawer.is-form .orbis-num-input-sm {
   width: 56px;
@@ -612,7 +612,7 @@ body {
   top: 0;
 }
 /* As tall as the page's first row, measured by `fitDrawer`, so on either page and in either layout the button sits
-   level with that row: centred in the line, or at the top of the form. */
+   level with that row: centered in the line, or at the top of the form. */
 .orbis-level3-drawer.has-pages .orbis-drawer-page-btn:not(#orbis#important) {
   min-height: 0;
   height: var(--orbis-first-row, auto);

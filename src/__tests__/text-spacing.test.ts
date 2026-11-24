@@ -31,9 +31,17 @@ describe('textSpacingCss', () => {
     for (const lang of ['ar', 'fa', 'ur', 'syr']) expect(rule).toContain(`:lang(${lang})`);
   });
 
+  it('gives code, and a joined script, inside a paragraph normal spacing that a book can override', () => {
+    const [, letters] = textSpacingCss({ letterSpacing: 10, wordSpacing: 0, paragraphSpacing: 0 });
+    expect(letters).toMatch(/^:where\(.*:where\(code, .*:lang\(ar\).*\) \{ letter-spacing: normal; \}$/);
+    const [, words] = textSpacingCss({ letterSpacing: 0, wordSpacing: 10, paragraphSpacing: 0 });
+    expect(words).toMatch(/^:where\(.*:where\(code, .*\) \{ word-spacing: normal; \}$/);
+    expect(words).not.toContain(':lang');
+  });
+
   it('writes only the spacings that are set', () => {
     const rules = textSpacingCss({ letterSpacing: 0, wordSpacing: 25, paragraphSpacing: 0 });
-    expect(rules).toHaveLength(1);
-    expect(rules[0]).toContain('word-spacing: 0.25em');
+    expect(rules.join('\n')).toContain('word-spacing: 0.25em');
+    expect(rules.join('\n')).not.toMatch(/letter-spacing|margin/);
   });
 });
