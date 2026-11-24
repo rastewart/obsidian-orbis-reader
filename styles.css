@@ -603,8 +603,8 @@ body {
   min-height: 0;
   height: var(--orbis-first-row, auto);
 }
-/* With height to spare (`fitDrawer`), as on a phone held upright: the button has a short row of its own above the
-   rows, at the right, and the rows the drawer's whole width. */
+/* With height to spare (`fitDrawer`), as on a phone held upright: the button has a row of its own above the rows, at
+   the right, as tall as the first row so it is where it is in every other layout, and the rows the whole width. */
 .orbis-level3-drawer.orbis-form-drawer.is-form.has-pages.is-button-row {
   grid-template-columns: minmax(0, 1fr);
 }
@@ -613,9 +613,6 @@ body {
   grid-row: 1;
   justify-self: end;
   position: static;
-}
-.orbis-level3-drawer.has-pages.is-button-row .orbis-drawer-page-btn:not(#orbis#important) {
-  height: auto;
 }
 /* Two across (`fitDrawer`): a form too tall for the room, in a drawer wide enough, as on a phone on its side. The rows
    fill two columns, left to right, and a page button keeps a third of its own. Closer together, and its fields a

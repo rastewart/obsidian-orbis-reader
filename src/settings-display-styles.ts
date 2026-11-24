@@ -47,6 +47,14 @@ import {
 } from './settings';
 import { PAGE_I18N_KEYS } from './settings-rows';
 import { bindRealTimeSliderInput, isSliderDragging } from './slider-input';
+import {
+  parseSpacing,
+  SPACING_DESCRIPTIONS,
+  SPACING_LABELS,
+  spacingForKey,
+  TEXT_SPACING,
+  type TextSpacing,
+} from './text-spacing';
 import { OBSIDIAN_TOOLTIP_GAP, TOOLTIP_GAP_MAX } from './tooltip-gap';
 import { sliderStart } from './ui-utils';
 
@@ -127,7 +135,7 @@ export class DisplayStylesPage {
        * about your collection. It belongs with how the reading view looks; it just is not part of the book, which is
        * why this page is *Appearance* rather than *Book appearance*.
        *
-       * A sub-page rather than a section on this page: the display selector, nine typography controls and a live
+       * A sub-page rather than a section on this page: the display selector, twelve typography controls and a live
        * sample already make this the longest page in settings. Sub-page links come first here, as they do on
        * Listening.
        */
@@ -316,6 +324,20 @@ export class DisplayStylesPage {
           });
         },
       },
+      // Character, word and paragraph spacing, then hyphenation: the display toolbar's More page on its Spacing tab, in
+      // its order, after the first page's margins, line spacing and alignment. Each from 0, the book's own.
+      ...(Object.keys(TEXT_SPACING) as (keyof TextSpacing)[]).map((name) => ({
+        name: t(SPACING_LABELS[name]),
+        desc: t(SPACING_DESCRIPTIONS[name]),
+        render: (setting: Setting) =>
+          sliderRow(setting, {
+            storageKey: TEXT_SPACING[name].key,
+            min: 0,
+            max: TEXT_SPACING[name].max,
+            unit: '%',
+            fallback: 0,
+          }),
+      })),
       {
         // After alignment, as on the display toolbar's Spacing tab. The same shape: the book's answer first.
         name: t('appearance_page.hyphenation'),
@@ -661,6 +683,12 @@ export class DisplayStylesPage {
       if (!isSliderDragging(pair.slider.sliderEl)) pair.slider.setValue(decimals ? Math.round(n * 10) : n);
       if (!isFocused(pair.num)) pair.num.value = decimals ? n.toFixed(decimals) : String(n);
     };
+    const spacing = spacingForKey(key);
+    if (spacing) {
+      syncSlider(key, parseSpacing(spacing, value));
+      this.applyStylePreview();
+      return;
+    }
     switch (key) {
       case STORAGE_KEY_ACTIVE_STYLE:
         // The whole page, not the dropdown alone: the style decides whether rename and delete are offered. Only when

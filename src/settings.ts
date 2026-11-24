@@ -14,6 +14,7 @@ import type { RecordKinds, RecordsMode } from './record-config';
 import type { DeviceInfo } from './sync/devices';
 import type { VersionMap } from './sync/stamp';
 import { parseTextAlign, STORAGE_KEY_TEXT_ALIGN, type TextAlign } from './text-align';
+import { readSpacing, spacingEntries, TEXT_SPACING_DEFAULTS, textSpacingCss } from './text-spacing';
 import { textWrapCss } from './text-wrap';
 
 /**
@@ -271,6 +272,10 @@ export interface DisplayStyle {
     textAlign: TextAlign;
     /** Absent from a style saved before the setting existed, which reads as the book's — see `parseHyphenation`. */
     hyphenation?: Hyphenation;
+    /** Absent from a style saved before these settings existed, which read as the book's — see `parseSpacing`. */
+    letterSpacing?: number;
+    wordSpacing?: number;
+    paragraphSpacing?: number;
     margins: number;
     brightness: number;
     flow: Flow;
@@ -1299,10 +1304,13 @@ export interface DisplaySettings {
   lineHeight: number; // e.g. 1.5
   textAlign: TextAlign;
   hyphenation: Hyphenation;
+  letterSpacing: number; // percent of the font size, 0 the book's — see `text-spacing.ts`
+  wordSpacing: number;
+  paragraphSpacing: number;
 }
 
 /**
- * The ten display values a book uses when nothing is stored.
+ * The thirteen display values a book uses when nothing is stored.
  *
  * **Exported because the settings page has to agree with the book.** Sliders falling back to their own `min`
  * would show a fresh vault brightness 20 over a book rendering at 100.
@@ -1319,6 +1327,7 @@ export const DISPLAY_DEFAULTS = {
   lineHeight: 1.5,
   textAlign: 'book' as TextAlign,
   hyphenation: 'book' as Hyphenation,
+  ...TEXT_SPACING_DEFAULTS,
 };
 
 export function loadSettings(app: App, _ps: OrbisPluginSettings): DisplaySettings {
@@ -1343,6 +1352,7 @@ export function loadSettings(app: App, _ps: OrbisPluginSettings): DisplaySetting
     lineHeight: getFloat(STORAGE_KEY_LINE_HEIGHT, DISPLAY_DEFAULTS.lineHeight),
     textAlign: parseTextAlign(ls(STORAGE_KEY_TEXT_ALIGN)),
     hyphenation: parseHyphenation(ls(STORAGE_KEY_HYPHENATION)),
+    ...readSpacing((key) => ls(key)),
   };
 }
 
@@ -1359,6 +1369,7 @@ export function readCurrentDisplaySettings(app: App): DisplayStyle['settings'] {
     lineHeight: parseFloat(ls(STORAGE_KEY_LINE_HEIGHT) ?? String(DISPLAY_DEFAULTS.lineHeight)),
     textAlign: parseTextAlign(ls(STORAGE_KEY_TEXT_ALIGN)),
     hyphenation: parseHyphenation(ls(STORAGE_KEY_HYPHENATION)),
+    ...readSpacing(ls),
     margins: parseInt(ls(STORAGE_KEY_MARGINS) ?? String(DISPLAY_DEFAULTS.margins)),
     brightness: parseInt(ls(STORAGE_KEY_BRIGHTNESS) ?? String(DISPLAY_DEFAULTS.brightness)),
     flow: (ls(STORAGE_KEY_FLOW) ?? DISPLAY_DEFAULTS.flow) as Flow,
@@ -1381,6 +1392,7 @@ export function displayStyleEntries(settings: DisplayStyle['settings']): [string
     [STORAGE_KEY_LINE_HEIGHT, String(settings.lineHeight)],
     [STORAGE_KEY_TEXT_ALIGN, parseTextAlign(settings.textAlign)],
     [STORAGE_KEY_HYPHENATION, parseHyphenation(settings.hyphenation)],
+    ...spacingEntries(settings),
     [STORAGE_KEY_MARGINS, String(settings.margins)],
     [STORAGE_KEY_BRIGHTNESS, String(settings.brightness)],
     [STORAGE_KEY_FLOW, settings.flow],
@@ -1443,6 +1455,7 @@ export function buildBookCss(
 
   const hyphens = hyphenationCss(settings.hyphenation, BODY_TEXT);
   if (hyphens) lines.push(hyphens);
+  lines.push(...textSpacingCss(settings));
   // On iPad and iPhone, ordinary line breaking instead of WebKit's whole-paragraph `pretty` — see `textWrapCss`.
   const wrap = textWrapCss(webkit, BODY_TEXT);
   if (wrap) lines.push(wrap);

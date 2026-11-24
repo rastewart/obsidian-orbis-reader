@@ -200,6 +200,7 @@ import {
 import { bindRealTimeSliderInput } from './slider-input';
 import { ANNOTATIONS_ICON_ID, annotationsSvg, CONVERSION_ICON_ID } from './system-glyphs';
 import { openRatingDialog, openStatusDialog } from './TitleFieldModal';
+import { parseSpacing, spacingForKey, type TextSpacing, textSpacingKeys } from './text-spacing';
 import {
   type FlatTocChapter,
   flattenTocWithDisambiguation,
@@ -1086,6 +1087,7 @@ export class OrbisReaderView
       lineHeight: 'orbis-line-height',
       textAlign: STORAGE_KEY_TEXT_ALIGN,
       hyphenation: STORAGE_KEY_HYPHENATION,
+      ...textSpacingKeys(),
       theme: 'orbis-theme',
       fontFamily: 'orbis-font-family',
       flow: 'orbis-flow',
@@ -4702,6 +4704,10 @@ export class OrbisReaderView
         this.reinjectAllDocs();
       } else if (key === STORAGE_KEY_HYPHENATION) {
         this.settings.hyphenation = parseHyphenation(newValue);
+        this.reinjectAllDocs();
+      } else if (spacingForKey(key)) {
+        const name = spacingForKey(key) as keyof TextSpacing;
+        this.settings[name] = parseSpacing(name, newValue);
         this.reinjectAllDocs();
       } else if (key === STORAGE_KEY_THEME) {
         this.settings.theme = newValue ?? MATCH_OBSIDIAN_MODE;

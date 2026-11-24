@@ -119,6 +119,6 @@ describe('applyStyleToLocalStorage', () => {
     applyStyleToLocalStorage(app as never, style);
     expect(announced).toEqual([[DISPLAY_STYLE_APPLIED, '']]);
     for (const [key, value] of displayStyleEntries(style)) expect(stored.get(key)).toBe(value);
-    expect(stored.size).toBe(10);
+    expect(stored.size).toBe(13);
   });
 });

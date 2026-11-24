@@ -22,6 +22,7 @@ import {
   setDeviceValue,
   setDisplay,
   settledPlace,
+  spacingOf,
   turnTo,
 } from '../in-page';
 import { dismissDialogs, type E2eTest, expect, type TestContext } from '../runner';
@@ -160,6 +161,44 @@ export const displayTests: E2eTest[] = [
     },
   },
   {
+    name: 'character, word and paragraph spacing reach the paragraphs, and not the headings',
+    async run(context) {
+      const { page } = context;
+      await open(context, 'fixtures/annotation-workhorse.epub');
+      await page.run(goToSectionWith, 'Nobody in Marrowgate', 40);
+      const keys = ['orbis-letter-spacing', 'orbis-word-spacing', 'orbis-paragraph-spacing'];
+      for (const key of keys) await page.run(setDisplay, key, '0');
+      await sleep(800);
+      const own = await page.run(spacingOf, 'p', 10);
+      const headings = await page.run(spacingOf, 'h1, h2, h3', 5);
+      expect(own.length > 2, `the section shows ${own.length} paragraphs to measure`);
+
+      // WCAG 1.4.12's figures: letters 12%, words 16%, paragraphs 200% of the font size.
+      await page.run(setDisplay, 'orbis-letter-spacing', '12');
+      await page.run(setDisplay, 'orbis-word-spacing', '16');
+      await page.run(setDisplay, 'orbis-paragraph-spacing', '200');
+      await sleep(800);
+      const spaced = await page.run(spacingOf, 'p', 10);
+      const near = (a: number, b: number) => Math.abs(a - b) < 0.6;
+      for (const p of spaced) {
+        expect(near(p.letter, 0.12 * p.size), `a paragraph's letters are ${p.letter}px apart at ${p.size}px, not 12%`);
+        expect(near(p.word, 0.16 * p.size), `a paragraph's words are ${p.word}px apart at ${p.size}px, not 16%`);
+        expect(near(p.above, 2 * p.size), `a paragraph has ${p.above}px above it at ${p.size}px, not 200%`);
+      }
+      const spacedHeadings = await page.run(spacingOf, 'h1, h2, h3', 5);
+      expect(
+        JSON.stringify(spacedHeadings) === JSON.stringify(headings),
+        `the headings changed: ${JSON.stringify(headings)} became ${JSON.stringify(spacedHeadings)}`
+      );
+
+      // Back to 0, the book's own again.
+      for (const key of keys) await page.run(setDisplay, key, '0');
+      await sleep(800);
+      const back = await page.run(spacingOf, 'p', 10);
+      expect(JSON.stringify(back) === JSON.stringify(own), `at 0, the paragraphs are ${JSON.stringify(back)}`);
+    },
+  },
+  {
     name: "text on a book's own backgrounds stays readable in Light, Sepia and Dark",
     async run(context) {
       const { page } = context;
@@ -200,7 +239,7 @@ export const displayTests: E2eTest[] = [
             : 'missing';
       const at = (s: DrawerShown) => JSON.stringify(s.toggle && [s.toggle.x, s.toggle.y]);
       const first = JSON.stringify(['Margins', 'Line spacing', 'Alignment']);
-      const more = JSON.stringify(['Hyphenation']);
+      const more = JSON.stringify(['Character spacing', 'Word spacing', 'Paragraph spacing', 'Hyphenation']);
 
       // A window wide enough for the bar on one line, and for a phone on its side below: the test window's pane is
       // 680px, and a bar narrowed wider than its pane is scrolled sideways to show the button.

@@ -5,6 +5,7 @@ import { navbarClearance } from './reader/viewport-insets';
 import { resolveThemeId, type ThemeSettings, themeChoices } from './reader-themes';
 import { DisplaySettings, Flow, FONT_FAMILY_OPTIONS, parseHyphenation, parseTextAlign } from './settings';
 import { isSliderDragging } from './slider-input';
+import { SPACING_LABELS, TEXT_SPACING, type TextSpacing } from './text-spacing';
 import { setSvgIcon } from './ui-utils';
 
 export interface DisplayMenuView {
@@ -62,9 +63,10 @@ const TWO_ACROSS_WIDTH = 680;
  * **Two across when the form is too tall and the drawer is wide** (`is-two-across`): a phone on its side has the width
  * for two rows side by side and not the height for them stacked, so its form is half as tall rather than scrolled.
  *
- * **Both pages of a drawer with two are laid out alike** (`pageToggle`): each is measured, and a layout either needs
- * is the one both get, so the button between them is in the same place on each — a page that fits on one line beside
- * one that does not would put it in two.
+ * **A page button, at the top right in every layout** (`pageToggle`): at the end of the line, on a short row of its own
+ * above a form that fits the room (`is-button-row`), so the rows have the width, or in a column beside one that does
+ * not. Always as tall as the page's first row, so it is in the same place on each page whatever layout each has: a
+ * page of three controls can fit on one line where one of four cannot.
  *
  * Measured rather than set by a width in the stylesheet, since where the rows wrap depends on the labels' language,
  * the interface font and which drawer it is. Measured on one line each time, so widening the pane brings the bar back.
@@ -72,53 +74,35 @@ const TWO_ACROSS_WIDTH = 680;
  */
 function fitDrawer(drawer: HTMLElement, room: number): void {
   if (!drawer.hasClass('orbis-form-drawer') || !drawer.isShown()) return;
-  const onMore = drawer.hasClass('is-more');
-  const pages = drawer.hasClass('has-pages') ? [false, true] : [onMore];
-  const rowsShown = () =>
-    Array.from(drawer.children).filter(
-      (row) => row.getClientRects().length > 0 && !row.hasClass('orbis-drawer-page-btn')
-    ) as HTMLElement[];
-  // Each row is its own grid, so the columns that vary, the label and the unit, are the widest of either page.
-  const widest = (selector: string) =>
-    Math.max(0, ...Array.from(drawer.querySelectorAll(selector), (el) => el.getBoundingClientRect().width));
-  let label = 0;
-  let unit = 0;
-  let form = false;
-  drawer.removeClass('is-form', 'is-two-across', 'is-button-row');
-  for (const page of pages) {
-    drawer.toggleClass('is-more', page);
-    const rows = rowsShown();
-    const first = rows[0]?.getBoundingClientRect();
-    if (!first?.height) continue;
-    label = Math.max(label, widest('.orbis-drawer-label'));
-    unit = Math.max(unit, widest('.orbis-unit-suffix'));
-    const button = drawer.querySelector('.orbis-drawer-page-btn')?.getBoundingClientRect();
-    if ([...rows.map((row) => row.getBoundingClientRect()), button].some((box) => box && box.top >= first.bottom)) {
-      form = true;
-    }
-  }
-  drawer.setCssProps({ '--orbis-form-label': `${Math.ceil(label)}px`, '--orbis-form-unit': `${Math.ceil(unit)}px` });
   const pageButton = drawer.querySelector<HTMLElement>('.orbis-drawer-page-btn');
-  const tooTall = () =>
-    pages.some((page) => {
-      drawer.toggleClass('is-more', page);
-      return drawer.getBoundingClientRect().height > room;
-    });
-  let twoAcross = false;
+  const rowsShown = () =>
+    Array.from(drawer.children).filter((row) => row.getClientRects().length > 0 && row !== pageButton) as HTMLElement[];
+  drawer.removeClass('is-form', 'is-two-across', 'is-button-row');
+  const rows = rowsShown();
+  const first = rows[0]?.getBoundingClientRect();
+  if (!first?.height) return;
+  // Each row is its own grid, so the columns that vary, the label and the unit, are the widest of the page shown.
+  const widest = (selector: string) =>
+    Math.ceil(Math.max(0, ...Array.from(drawer.querySelectorAll(selector), (el) => el.getBoundingClientRect().width)));
+  drawer.setCssProps({
+    '--orbis-form-label': `${widest('.orbis-drawer-label')}px`,
+    '--orbis-form-unit': `${widest('.orbis-unit-suffix')}px`,
+  });
+  const boxes = [...rows, ...(pageButton ? [pageButton] : [])].map((el) => el.getBoundingClientRect());
+  const form = boxes.some((box) => box.top >= first.bottom);
+  const tooTall = () => drawer.getBoundingClientRect().height > room;
   let buttonRow = false;
   if (form) {
     drawer.addClass('is-form');
-    // With height to spare, as on a phone held upright, a page button has a short row of its own above the rows, which
-    // then have the drawer's whole width for their sliders. Without it, the button keeps a column beside them.
     if (pageButton) {
       drawer.addClass('is-button-row');
       buttonRow = !tooTall();
       if (!buttonRow) drawer.removeClass('is-button-row');
     }
-    if (!buttonRow && (drawer.parentElement?.clientWidth ?? 0) >= TWO_ACROSS_WIDTH && tooTall()) twoAcross = true;
+    if (!buttonRow && (drawer.parentElement?.clientWidth ?? 0) >= TWO_ACROSS_WIDTH && tooTall()) {
+      drawer.addClass('is-two-across');
+    }
   }
-  drawer.toggleClass('is-more', onMore);
-  drawer.toggleClass('is-two-across', twoAcross);
   // The keyboard meets the button where it shows: first when it is above the rows, last beside or after them.
   if (pageButton && (drawer.firstElementChild === pageButton) !== buttonRow) {
     const focused = pageButton.doc.activeElement === pageButton;
@@ -126,12 +110,12 @@ function fitDrawer(drawer: HTMLElement, room: number): void {
     else drawer.append(pageButton);
     if (focused) pageButton.focus();
   }
-  const rows = rowsShown();
+  const twoAcross = drawer.hasClass('is-two-across');
   drawer.setCssProps({
-    // The lines of rows a page button spans as a form, so it can stay at the top as they scroll (`pageToggle`).
+    // The lines of rows a page button spans beside a form, so it can stay at the top as they scroll.
     '--orbis-form-rows': String(twoAcross ? Math.ceil(rows.length / 2) : rows.length),
-    // The first row's height, which the button takes so it sits level with that row on either page.
-    '--orbis-first-row': rows[0] ? `${Math.ceil(rows[0].getBoundingClientRect().height)}px` : '',
+    // The first row's height, which the page button takes so it is level with that row in every layout.
+    '--orbis-first-row': `${Math.ceil(rows[0].getBoundingClientRect().height)}px`,
   });
 }
 
@@ -495,6 +479,28 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
   });
   syncAlign();
 
+  /**
+   * Character, word and paragraph spacing, on the More page, each in percent of the font size from 0, the book's own
+   * (`text-spacing.ts`). The same shape as margins, and the same three rows as Settings → Appearance.
+   */
+  const spacingSliders = (Object.keys(TEXT_SPACING) as (keyof TextSpacing)[]).map((name) => {
+    const wrap = spacingDrawer.createDiv({ cls: 'orbis-slider-drawer orbis-drawer-more' });
+    wrap.createSpan({ text: t(SPACING_LABELS[name]), cls: 'orbis-drawer-label' });
+    const slider = wrap.createEl('input');
+    slider.type = 'range';
+    slider.min = '0';
+    slider.max = String(TEXT_SPACING[name].max);
+    slider.value = String(view.settings[name]);
+    slider.setAttribute('aria-label', t(SPACING_LABELS[name]));
+    const num = wrap.createEl('input', { type: 'number', cls: 'orbis-num-input-sm' });
+    unitAfter(wrap, '%');
+    view.bindRealTimeSlider(num, slider, 0, TEXT_SPACING[name].max, view.settings[name], (val: number) => {
+      view.settings[name] = val;
+      view.saveSetting(name, val);
+    });
+    return { name, slider, num };
+  });
+
   // Hyphenation, on the More page: Settings' three answers (`Hyphenation`).
   const hyphenWrap = spacingDrawer.createDiv({ cls: 'orbis-slider-drawer orbis-drawer-more' });
   const hyphenLabel = hyphenWrap.createSpan({ text: t('display_menu.hyphenation'), cls: 'orbis-drawer-label' });
@@ -549,6 +555,10 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     if (!isFocused(fsNum)) fsNum.value = String(view.settings.fontSize);
     syncAlign();
     syncHyphenation();
+    for (const { name, slider, num } of spacingSliders) {
+      if (!isSliderDragging(slider)) slider.value = String(view.settings[name]);
+      if (!isFocused(num)) num.value = String(view.settings[name]);
+    }
     if (!isSliderDragging(marginsSlider)) marginsSlider.value = String(view.settings.margins);
     if (!isFocused(marginsNum)) marginsNum.value = String(view.settings.margins);
     if (!isSliderDragging(lhSlider)) lhSlider.value = String(Math.round(view.settings.lineHeight * 10));

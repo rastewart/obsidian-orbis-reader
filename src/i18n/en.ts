@@ -2389,6 +2389,16 @@ const en = {
   'appearance_page.hyphenation_off': 'Off',
   // Added to the description, and the display menu's tooltip, where `autoHyphenates` finds On can do nothing.
   'appearance_page.hyphenation_unsupported': 'This device does not hyphenate words automatically.',
+  // Character, word and paragraph spacing: each in percent of the font size, 0 leaving the book's own (`text-spacing.ts`).
+  // The descriptions say what 0 means, since a slider at 0 reads as "none" and here it means "as the book has it".
+  'appearance_page.character_spacing': 'Character spacing',
+  'appearance_page.character_spacing_desc':
+    'Extra space between letters, 0–25% of the font size. 0 keeps the book’s spacing.',
+  'appearance_page.word_spacing': 'Word spacing',
+  'appearance_page.word_spacing_desc': 'Extra space between words, 0–50% of the font size. 0 keeps the book’s spacing.',
+  'appearance_page.paragraph_spacing': 'Paragraph spacing',
+  'appearance_page.paragraph_spacing_desc':
+    'Space between paragraphs, 0–200% of the font size. 0 keeps the book’s spacing.',
   'appearance_page.text_margins': 'Text margins',
   'appearance_page.text_padding_desc':
     'Extra space around book text beyond the navigation buttons (0–12%). 0% = widest text; higher values add breathing room.',

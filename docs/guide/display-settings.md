@@ -22,7 +22,7 @@ The display style bar has four tabs:
 |---|---|
 | **Theme** | **Reader theme**, **Brightness** |
 | **Layout** | **Mode** (**Paged mode** or **Scrolled mode**), and the **Two-column layout** button. The button shows two columns of lines, and it is highlighted when the layout is enabled |
-| **Spacing** | **Margins**, **Line spacing**, **Alignment**. Select **More** for **Hyphenation** |
+| **Spacing** | **Margins**, **Line spacing**, **Alignment**. Select **More** for **Character spacing**, **Word spacing**, **Paragraph spacing** and **Hyphenation** |
 | **Font** | **Font**, **Size** |
 
 On the **Spacing** tab, **More** opens the tab's second page. **Back**, in the same place, returns to the first. When you choose the **Spacing** tab again, it opens on the first page.
@@ -239,6 +239,9 @@ These settings are in **Settings → Orbis Reader → Appearance**. They are sav
 | **Text margins** | Sets the space at the sides of the text, from 0% to 12%. A higher value gives a narrower column. The default is 3% |
 | **Line spacing** | Sets the space between lines of body text, from 1.0× to 3.0×. Headings keep the book's spacing. The default is 1.5× |
 | **Text alignment** | Sets the alignment of body text: **Follow the book**, **Left** or **Justified**. The default is **Follow the book** |
+| **Character spacing** | Adds space between the letters of body text, from 0% to 25% of the font size. At 0%, the book's own spacing shows. The default is 0% |
+| **Word spacing** | Adds space between the words of body text, from 0% to 50% of the font size. At 0%, the book's own spacing shows. The default is 0% |
+| **Paragraph spacing** | Sets the space between paragraphs, from 0% to 200% of the font size. At 0%, the book's own spacing shows. The default is 0% |
 | **Hyphenation** | Sets whether long words break across lines with a hyphen. The values are **Follow the book**, **On** and **Off**. The default is **Follow the book** |
 | **Font** | Sets the font of body text. The default is **Default (use book fonts)**. See [Fonts](#fonts) |
 | **Font size** | Scales all the book's text, from 80% to 300%. The default is 100% |
@@ -248,6 +251,8 @@ These settings are in **Settings → Orbis Reader → Appearance**. They are sav
 In a CBZ book or a fixed-layout EPUB, where each page is a picture, **Two-column layout** shows two pages side by side when the reading area is wider than it is tall. When it is turned off, you see one page at a time at any size.
 
 **Left** text alignment gives a ragged right edge. **Justified** aligns the text to both margins. With either value, text that the book centers or right-aligns keeps its alignment, such as title lines, verse and signatures.
+
+**Character spacing**, **Word spacing** and **Paragraph spacing** change body text only. Headings, centered lines and code keep the book's spacing. Character spacing is not added to languages whose letters join, such as Arabic, Persian and Urdu. Some readers find text easier to read with more space: the accessibility guideline WCAG 1.4.12 uses 12% for characters, 16% for words and 200% for paragraphs.
 
 **Hyphenation** set to **On** hyphenates body text. Headings keep the book's hyphenation. **Off** removes all hyphenation, including the hyphens that the book puts in its words.
 

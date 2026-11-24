@@ -21,6 +21,9 @@ const base: DisplaySettings = {
   lineHeight: 1.5,
   textAlign: 'book',
   hyphenation: 'book',
+  letterSpacing: 0,
+  wordSpacing: 0,
+  paragraphSpacing: 0,
 };
 // Which theme gives which colors is `reader-themes.test.ts`; here the colors are given.
 const light = { bg: '#ffffff', fg: '#000000' };
@@ -76,6 +79,22 @@ describe('buildBookCss — typography', () => {
     );
     expect(buildBookCss({ ...base, hyphenation: 'off' }, light)).toContain(
       'html, body, body * { -webkit-hyphens: none !important; hyphens: none !important; }'
+    );
+  });
+
+  it('leaves character, word and paragraph spacing to the book at 0', () => {
+    const css = buildBookCss(base, light);
+    expect(css).not.toContain('letter-spacing');
+    expect(css).not.toContain('word-spacing');
+    expect(css).not.toContain('margin-top');
+  });
+
+  it('puts character, word and paragraph spacing on body text, in ems of its font size', () => {
+    const css = buildBookCss({ ...base, letterSpacing: 12, wordSpacing: 16, paragraphSpacing: 200 }, light);
+    expect(css).toMatch(/\.orbis-body-text:not\([^)]*:lang\(ar\)[^{]*\{ letter-spacing: 0\.12em !important; \}/);
+    expect(css).toContain('.orbis-body-text { word-spacing: 0.16em !important; }');
+    expect(css).toContain(
+      'p.orbis-body-text, div.orbis-body-text { margin-top: 2em !important; margin-bottom: 2em !important; }'
     );
   });
 

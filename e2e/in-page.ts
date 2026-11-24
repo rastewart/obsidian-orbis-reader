@@ -1457,6 +1457,35 @@ export function computedText(
   return out;
 }
 
+/**
+ * The spacing the shown section's `selector` elements are drawn with, in pixels: between letters, between words and
+ * above each, with each one's font size, for the first `max` that hold text.
+ */
+export function spacingOf(
+  selector: string,
+  max = 20
+): { tag: string; letter: number; word: number; above: number; size: number }[] {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
+  const doc = view?.foliateView?.renderer.getContents()[0]?.doc;
+  if (!doc) throw new Error('no book is open');
+  const win = doc.defaultView as Window;
+  const px = (v: string) => (v === 'normal' ? 0 : Number.parseFloat(v) || 0);
+  return Array.from(doc.querySelectorAll<HTMLElement>(selector))
+    .filter((el) => (el.textContent ?? '').trim().length > 20)
+    .slice(0, max)
+    .map((el) => {
+      const style = win.getComputedStyle(el);
+      return {
+        tag: el.localName,
+        letter: px(style.letterSpacing),
+        word: px(style.wordSpacing),
+        above: px(style.marginTop),
+        size: px(style.fontSize),
+      };
+    });
+}
+
 /** Whether the open book is in Focus mode, its toolbar shows, and Focus mode's own × is there. */
 export function focusState(): { focus: boolean; toolbar: boolean; exit: boolean } {
   const app = (window as unknown as { app: PageApp }).app;

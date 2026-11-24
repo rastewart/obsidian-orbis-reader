@@ -11,6 +11,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 ## [0.1.8] — Unreleased
 
+### Added
+
+- **Character spacing**, **Word spacing** and **Paragraph spacing**, on the display style bar's **Spacing** tab under **More**, and in Settings → Appearance. Each adds space to body text, in percent of the font size, and 0% keeps the book's own spacing. Headings, centered lines and code keep the book's spacing, and character spacing is not added to languages whose letters join, such as Arabic.
+
 ### Changed
 
 - The display style bar's **Spacing** tab shows **Margins**, **Line spacing** and **Alignment**. **Hyphenation** is now behind **More**, a second page of the tab, with **Back** in the same place to return. **Spacing** on the tab is now named **Line spacing**.

@@ -23,6 +23,10 @@ interface DisplayStyle {
     fontSize:    number;      // percentage, 80–300
     lineHeight:  number;      // 1.0–3.0
     textAlign:   'book' | 'left' | 'justify';
+    hyphenation?: 'book' | 'on' | 'off';     // absent in older styles: the book's
+    letterSpacing?: number;   // % of the font size, 0–25; 0 or absent is the book's — see text-spacing.ts
+    wordSpacing?: number;     // % of the font size, 0–50
+    paragraphSpacing?: number; // % of the font size, 0–200
     margins:     number;      // renderer gap %, 0–12
     brightness:  number;      // percentage, 20–100
     flow:        'paginated' | 'scrolled';
@@ -48,6 +52,10 @@ Display settings are **applied** via `localStorage` so that every open reader vi
 | `orbis-font-size` | string | integer percentage |
 | `orbis-line-height` | string | float |
 | `orbis-text-align` | string | `'book'` \| `'left'` \| `'justify'` (an `orbis-justify` value is carried across at load) |
+| `orbis-hyphenation` | string | `'book'` \| `'on'` \| `'off'` |
+| `orbis-letter-spacing` | string | integer percentage of the font size, `0` the book's |
+| `orbis-word-spacing` | string | integer percentage of the font size, `0` the book's |
+| `orbis-paragraph-spacing` | string | integer percentage of the font size, `0` the book's |
 | `orbis-margins` | string | integer |
 | `orbis-brightness` | string | integer percentage |
 | `orbis-flow` | string | `'paginated'` \| `'scrolled'` |
