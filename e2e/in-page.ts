@@ -1616,6 +1616,23 @@ export function pressInDrawer(id: string, text: string): DrawerShown {
   };
 }
 
+/** The first slider the open display style tab `id` shows: where it is on screen, its value and its range. */
+export function firstSlider(id: string): { x: number; y: number; width: number; value: number; max: number } {
+  const drawer = document.getElementById(`orbis-drawer-${id}`);
+  const slider = Array.from(drawer?.querySelectorAll<HTMLInputElement>('input[type="range"]') ?? []).find(
+    (el) => el.getClientRects().length > 0
+  );
+  if (!slider) throw new Error(`the ${id} tab shows no slider`);
+  const box = slider.getBoundingClientRect();
+  return {
+    x: box.left,
+    y: box.top + box.height / 2,
+    width: box.width,
+    value: Number(slider.value),
+    max: Number(slider.max),
+  };
+}
+
 /**
  * Stands in for Obsidian's mobile toolbar at the bottom of the window, its top `top` pixels from the window's top, or
  * removes it (null). What a phone's floating navbar is to the display style bar (`navbarClearance`), on a desktop.

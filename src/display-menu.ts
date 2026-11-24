@@ -563,13 +563,20 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     if (!isFocused(marginsNum)) marginsNum.value = String(view.settings.margins);
     if (!isSliderDragging(lhSlider)) lhSlider.value = String(Math.round(view.settings.lineHeight * 10));
     if (!isFocused(lhNum)) lhNum.value = String(view.settings.lineHeight);
-    view.fitDisplayDrawer?.();
   };
 
   view.fitDisplayDrawer = () => {
     const container = view.level3Container;
     const open = view.activeDisplayTab ? view.displayDrawers[view.activeDisplayTab] : undefined;
     if (!container?.isShown()) return;
+    /**
+     * **Never while a slider is dragged.** Laying the tab out again starts from one line, and a stacked tab's rows
+     * changing their display for that moment rebuilds the slider under the pointer, which ends the drag in Chromium: a
+     * slider on the stacked More page moved one step and stopped. Nothing a slider changes moves the layout, so the
+     * tab is laid out when it opens, changes page or is resized, and not when a value changes.
+     */
+    if (open && Array.from(open.querySelectorAll<HTMLInputElement>('input[type="range"]')).some(isSliderDragging))
+      return;
     const room = roomBelow(container, view.contentEl);
     container.setCssProps({ '--orbis-drawer-max-height': `${room}px` });
     if (open) fitDrawer(open, room);

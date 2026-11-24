@@ -7,6 +7,7 @@ import {
   computedText,
   type DrawerShown,
   fakeMobileNavbar,
+  firstSlider,
   focusState,
   getDisplay,
   goToSectionWith,
@@ -319,6 +320,78 @@ export const displayTests: E2eTest[] = [
           await page.run(narrowDisplayBar, null);
         }
       } finally {
+        await page.send('Emulation.clearDeviceMetricsOverride');
+      }
+    },
+  },
+  {
+    name: 'a slider on a stacked tab follows a drag',
+    async run(context) {
+      const { page } = context;
+      await open(context, 'fixtures/annotation-workhorse.epub');
+      // A drag is a press, moves and a release, as a mouse makes them. Each move changes the value, and laying the tab
+      // out again on each change ended the drag after one step on a tab whose rows stack.
+      const drag = async (by: number) => {
+        const from = await page.run(firstSlider, 'spacing');
+        const x = from.x + 8 + (from.value / from.max) * (from.width - 16);
+        await page.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y: from.y });
+        await page.send('Input.dispatchMouseEvent', {
+          type: 'mousePressed',
+          x,
+          y: from.y,
+          button: 'left',
+          clickCount: 1,
+        });
+        for (let step = 1; step <= 10; step++) {
+          const at = x + (by * step) / 10;
+          await page.send('Input.dispatchMouseEvent', {
+            type: 'mouseMoved',
+            x: at,
+            y: from.y,
+            button: 'left',
+            buttons: 1,
+          });
+          await sleep(30);
+        }
+        await page.send('Input.dispatchMouseEvent', {
+          type: 'mouseReleased',
+          x: x + by,
+          y: from.y,
+          button: 'left',
+          clickCount: 1,
+        });
+        await sleep(300);
+        const to = await page.run(firstSlider, 'spacing');
+        const expected = Math.min(from.max, from.value + Math.round((by / (from.width - 16)) * from.max));
+        return { from: from.value, to: to.value, expected };
+      };
+      await page.send('Emulation.setDeviceMetricsOverride', {
+        width: 1600,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+      });
+      try {
+        // The More page stacks on a wide pane; its first slider is Character spacing.
+        await page.run(openDisplayTab, 'spacing', false);
+        await page.run(pressInDrawer, 'spacing', 'More');
+        const more = await drag(150);
+        expect(
+          Math.abs(more.to - more.expected) <= 1,
+          `dragged, Character spacing went from ${more.from} to ${more.to}, not about ${more.expected}`
+        );
+        // The first page stacks at a phone's width; its first slider is Margins.
+        await page.run(pressInDrawer, 'spacing', 'Back');
+        await page.run(narrowDisplayBar, 393);
+        await page.run(openDisplayTab, 'spacing', false);
+        await page.run(setDisplay, 'orbis-margins', '0');
+        const margins = await drag(80);
+        expect(
+          Math.abs(margins.to - margins.expected) <= 1,
+          `dragged, Margins went from ${margins.from} to ${margins.to}, not about ${margins.expected}`
+        );
+      } finally {
+        await page.run(narrowDisplayBar, null);
         await page.send('Emulation.clearDeviceMetricsOverride');
       }
     },
