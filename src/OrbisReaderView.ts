@@ -490,6 +490,7 @@ export class OrbisReaderView
   public displayTabBtns: Record<string, HTMLButtonElement> = {};
   public displayDrawers: Record<string, HTMLElement> = {};
   public syncDisplayMenu?: () => void;
+  public fitDisplayDrawer?: () => void;
   public activeDisplayTab: string | null = null;
   bookMeta = { title: '', author: '', publisher: '', language: '', pubdate: '', description: '' };
 
@@ -1071,10 +1072,9 @@ export class OrbisReaderView
       btn.setAttribute('tabindex', isActive ? '0' : '-1');
     });
 
-    // Toggle drawer visibility
-    Object.entries(this.displayDrawers).forEach(([id, drawer]) => {
-      drawer.style.display = id === tabId ? 'flex' : 'none';
-    });
+    // Shown with the stylesheet's own display, not a written `flex`, so a form drawer can lay out as one (`fitDrawer`).
+    Object.entries(this.displayDrawers).forEach(([id, drawer]) => drawer.toggle(id === tabId));
+    this.fitDisplayDrawer?.();
   }
 
   saveSetting(key: string, value: unknown) {

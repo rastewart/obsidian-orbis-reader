@@ -21,6 +21,9 @@ export interface DisplayMenuView {
   displayMenuOverlay: HTMLElement | null;
   displayStyleBtn: HTMLElement | null;
   syncDisplayMenu?: () => void;
+  /** Lays the open drawer out again for its width — see `fitDrawer`. */
+  fitDisplayDrawer?: () => void;
+  register: (cb: () => void) => void;
   activateDisplayTab: (id: string) => void;
   closeDisplayMenu: () => void;
   toggleDisplayMenu: () => void;
@@ -44,6 +47,34 @@ export interface DisplayMenuView {
  */
 function unitAfter(wrap: HTMLElement, unit: string): void {
   wrap.createSpan({ text: unit, cls: 'orbis-unit-suffix' });
+}
+
+/**
+ * **A form drawer's rows on one line while they fit, and lined up as a form once they do not.** On one line they read
+ * as a bar. Wrapped, each row is as wide as its own label and control and the bar pushes them to the right, so no
+ * two labels, sliders or fields start at the same place. As a form (`is-form`) the labels make one column and the
+ * controls the next, and the number fields, the units and the dropdowns' right edges line up.
+ *
+ * Measured rather than set by a width in the stylesheet, since where the rows wrap depends on the labels' language,
+ * the interface font and which drawer it is. Measured on one line each time, so widening the pane brings the bar back.
+ */
+function fitDrawer(drawer: HTMLElement): void {
+  if (!drawer.hasClass('orbis-form-drawer') || !drawer.isShown()) return;
+  drawer.removeClass('is-form');
+  const rows = Array.from(drawer.children);
+  const first = rows[0]?.getBoundingClientRect();
+  if (!first?.height) return;
+  // Each row is its own grid, so the columns that vary, the label and the unit, are set to the widest of the drawer.
+  const widest = (selector: string) =>
+    Math.ceil(Math.max(0, ...Array.from(drawer.querySelectorAll(selector), (el) => el.getBoundingClientRect().width)));
+  drawer.setCssProps({
+    '--orbis-form-label': `${widest('.orbis-drawer-label')}px`,
+    '--orbis-form-unit': `${widest('.orbis-unit-suffix')}px`,
+  });
+  drawer.toggleClass(
+    'is-form',
+    rows.some((row) => row.getBoundingClientRect().top >= first.bottom)
+  );
 }
 
 export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): void {
@@ -140,7 +171,7 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
   };
 
   // --- Theme & Brightness Drawer ---
-  const themeDrawer = createDrawer('theme', 'orbis-flex-wrap');
+  const themeDrawer = createDrawer('theme', 'orbis-flex-wrap orbis-form-drawer');
 
   // Theme selection
   const themeWrap = themeDrawer.createDiv({ cls: 'orbis-slider-drawer' });
@@ -236,7 +267,7 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
   updateStructureBtns();
 
   // --- Font Drawer ---
-  const fontDrawer = createDrawer('font', 'orbis-flex-wrap');
+  const fontDrawer = createDrawer('font', 'orbis-flex-wrap orbis-form-drawer');
 
   const fontSelectWrap = fontDrawer.createDiv({ cls: 'orbis-slider-drawer' });
   fontSelectWrap.createSpan({
@@ -271,7 +302,7 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
   });
 
   // --- Spacing Drawer ---
-  const spacingDrawer = createDrawer('spacing', 'orbis-flex-wrap');
+  const spacingDrawer = createDrawer('spacing', 'orbis-flex-wrap orbis-form-drawer');
 
   // Margins
   const marginsWrap = spacingDrawer.createDiv({ cls: 'orbis-slider-drawer' });
@@ -402,7 +433,18 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     if (!isFocused(marginsNum)) marginsNum.value = String(view.settings.margins);
     if (!isSliderDragging(lhSlider)) lhSlider.value = String(Math.round(view.settings.lineHeight * 10));
     if (!isFocused(lhNum)) lhNum.value = String(view.settings.lineHeight);
+    view.fitDisplayDrawer?.();
   };
+
+  view.fitDisplayDrawer = () => {
+    const open = view.activeDisplayTab ? view.displayDrawers[view.activeDisplayTab] : undefined;
+    if (open) fitDrawer(open);
+  };
+  // The reading pane, not the drawer: the drawer floats over the book, so the pane keeps its size whatever the drawer
+  // does, and laying the drawer out again cannot set this off again.
+  const resized = new ResizeObserver(() => view.fitDisplayDrawer?.());
+  resized.observe(view.contentEl);
+  view.register(() => resized.disconnect());
 
   // Connect Display Menu toggling
   view.displayStyleBtn?.addEventListener('click', () => view.toggleDisplayMenu());

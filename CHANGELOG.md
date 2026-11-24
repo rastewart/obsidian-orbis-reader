@@ -18,6 +18,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 - A long chapter that Calibre split into two files is now one chapter in Save as Markdown, Save as PDF and the recording list. Before, the second half was a chapter of its own, named by the chapter and the book's title.
 - **Open this link?** now calls a link with a space in its web address's host *Not a valid address* on desktop and Android, and offers only **Cancel**, as on iPhone and iPad. Before, it called the link a web page, showed the space as `%20` and offered **Open**. On every device, the dialog now says *This address can't be opened.* when it offers no **Open**.
 - Save as Markdown and Save as PDF, selected soon after a book is first opened, now open their dialog only once Orbis has finished indexing the book. Until then, the notice *Preparing the chapter list…* shows.
+- On a phone or in a narrow pane, the display style bar's Theme, Font and Spacing tabs line up their labels, sliders and dropdowns in columns.
 
 ## [0.1.6] — 2026-11-21
 
