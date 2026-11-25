@@ -4034,6 +4034,9 @@ export class OrbisReaderView
      */
     this.prevBtn.tabIndex = -1;
     this.nextBtn.tabIndex = -1;
+    // A swipe across a page button is a reader aiming at the page, not at Obsidian's side panels (see the function).
+    ignoreObsidianSwipe(this.prevBtn);
+    ignoreObsidianSwipe(this.nextBtn);
     this.annot.noteIcons.buildColumn(this.filterWrapperEl);
 
     /**

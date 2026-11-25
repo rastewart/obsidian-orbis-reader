@@ -597,7 +597,7 @@ export const displayTests: E2eTest[] = [
     },
   },
   {
-    name: "Obsidian's swipe is off on the secondary bars, and on in the rest of the reader",
+    name: "Obsidian's swipe is off on the secondary bars and the page buttons, and on in the rest of the reader",
     async run(context) {
       const { page } = context;
       await open(context, 'fixtures/annotation-workhorse.epub');
@@ -610,8 +610,10 @@ export const displayTests: E2eTest[] = [
         '.orbis-goto-bar',
         '.orbis-tts-bar',
         '.orbis-highlight-drawer-row',
+        '.orbis-nav-prev',
+        '.orbis-nav-next',
       ];
-      const on = ['.orbis-toolbar-left', '.orbis-nav-prev', '.orbis-toc-panel', '.orbis-tts-player'];
+      const on = ['.orbis-toolbar-left', '.orbis-filter-wrapper', '.orbis-toc-panel', '.orbis-tts-player'];
       const seen = await page.run(swipeIgnored, [...off, ...on]);
       for (const selector of off)
         expect(seen[selector] === true, `${selector} still takes Obsidian's swipe (${seen[selector]})`);

@@ -13,7 +13,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 ### Changed
 
-- On a phone or tablet, a swipe that starts on a bar under the toolbar no longer opens Obsidian's side panels or command palette, so a slider or button on the bar can't open a panel by mistake. The bars are the display style bar, the search bar, the Go to bar, the listening bar and the marks bar. Swipes from the toolbar and the edges of the page work as before.
+- On a phone or tablet, a swipe that starts on a bar under the toolbar no longer opens Obsidian's side panels or command palette, so a slider or button on the bar can't open a panel by mistake. The bars are the display style bar, the search bar, the Go to bar, the listening bar and the marks bar. A swipe across the ‹ or › page button doesn't open them either. Swipes from the toolbar, and from the edges of the page above and below the page buttons, work as before.
 - **Two-column layout** on the display style bar's **Layout** tab is now a labelled switch under **Page turn**, like **Bold text** on the **Font** tab, in place of the icon button beside **Mode**. Like **Page turn**, it shows in **Paged mode** only.
 
 ## [0.1.8] — 2026-11-24

@@ -30,7 +30,7 @@ The toolbar is at the top of the reader. To hide a button, go to **Settings → 
 | **Annotation marks** | Opens the **Marks manager** for this book. See [Annotations and Presets](annotations-and-presets.md) |
 | **Focus mode** | Hides the toolbar. See [Focus mode](#focus-mode) |
 
-On a phone or tablet, a swipe that starts on a bar under the toolbar doesn't open Obsidian's side panels or command palette. The bars are the display style bar, the search bar, the Go to bar, the listening bar and the marks bar. This keeps a slider or a button from opening a panel by mistake. To open a side panel or the command palette with a swipe, start the swipe on the toolbar or at the edge of the page.
+On a phone or tablet, a swipe that starts on a bar under the toolbar, or on the ‹ or › page button, doesn't open Obsidian's side panels or command palette. The bars are the display style bar, the search bar, the Go to bar, the listening bar and the marks bar. This keeps a slider or a button from opening a panel by mistake. To open a side panel or the command palette with a swipe, start the swipe on the toolbar, or at the edge of the page above or below the page buttons.
 
 ---
 
