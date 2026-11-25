@@ -142,9 +142,9 @@ These settings are in **Settings → Orbis Reader → Fonts**. They set where fo
 |---|---|
 | **Vault folder for fonts** | Sets the folder for the fonts that you import. The default is `!orbis-data/fonts`. When you change the folder, Orbis Reader moves the fonts into it |
 | **Import fonts** | **Import…** opens your device's file picker. Select the TrueType or OpenType files (`.ttf` or `.otf`) of a font, or the zip file that you downloaded them in |
-| **Fonts in your vault** | Lists each font in the fonts folder with the faces it has, and a line of sample text in the font. The trash button moves the font's files to the trash. The switch shows or hides the font in the **Font** list |
-| **Fonts to download** | Lists the fonts that Orbis Reader offers and that are not in your vault yet, with what each is for and its size. **Download** puts the font in the fonts folder. See [Downloading a font](#downloading-a-font) |
+| **Vault fonts** | Lists each font in the fonts folder with the faces it has, and a line of sample text in the font. The trash button moves the font's files to the trash. The switch shows or hides the font in the **Font** list |
 | **System fonts** | Lists the fonts that come with devices, in alphabetical order, with a line of sample text in each font. Each says whether this device has the font. The switch shows or hides the font in the **Font** list |
+| **Downloadable fonts** | Lists the open source fonts that Orbis Reader offers and that are not in your vault yet, with what each is for and its size. **Download** puts the font in the fonts folder. See [Downloading a font](#downloading-a-font) |
 
 All fonts are shown in the **Font** list by default. A font that is in use stays in the list when you hide it.
 
@@ -172,11 +172,11 @@ Orbis Reader copies each font to its own folder in the fonts folder, named for t
 | **EB Garamond** | A classic book font |
 | **DejaVu** | The expanded character set for PDFs: the characters that other fonts lack, such as arrows, mathematical symbols, Greek and Cyrillic. See [Save as PDF](save-as-pdf.md#the-expanded-character-set) |
 
-Orbis Reader downloads each font from its releases on GitHub, as one zip file with the font's files and its licence. It compares the zip with a checksum that is fixed in the plugin, and does not save a font that is different. The font goes into its own folder in the fonts folder, and then shows under **Fonts in your vault**.
+Orbis Reader downloads each font from its releases on GitHub, as one zip file with the font's files and its licence. It compares the zip with a checksum that is fixed in the plugin, and does not save a font that is different. The font goes into its own folder in the fonts folder, and then shows under **Vault fonts**.
 
 Every font in this list is free to use, including in a PDF or EPUB that you share. Each font's licence file is in its folder.
 
-DejaVu is three fonts: DejaVu Serif, DejaVu Sans and DejaVu Sans Mono. Under **Fonts in your vault**, their rows say *Used for PDF exports*. You can also read in them.
+DejaVu is three fonts: DejaVu Serif, DejaVu Sans and DejaVu Sans Mono. Under **Vault fonts**, their rows say *Used for PDF exports*. You can also read in them.
 
 ### Fonts on other devices
 

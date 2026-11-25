@@ -120,7 +120,7 @@ You can download it in three places:
 
 - **Settings → Orbis Reader → Setup → Expanded PDF character set**.
 - The **Save as PDF** or **Save annotations as PDF** dialog, with **Download the expanded character set**. It is checked by default and shows only when the download is not on this device.
-- **Settings → Orbis Reader → Fonts**, under **Fonts to download**. See [Fonts](settings-reference.md#fonts).
+- **Settings → Orbis Reader → Fonts**, under **Downloadable fonts**. See [Fonts](settings-reference.md#fonts).
 
 If you do not download it, the PDF is still saved, with the smaller set of characters.
 

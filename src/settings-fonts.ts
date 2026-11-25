@@ -80,9 +80,21 @@ export function buildFontsPage(el: HTMLElement, host: FontsPageHost): void {
   if (fonts.length === 0) vaultHeading.setDesc(t('fonts.none_in_vault'));
   for (const font of fonts) vaultFontRow(el, host, font);
 
+  // ── The system's ──
+  new Setting(el).setName(t('fonts.system')).setHeading();
+  const system = SYSTEM_FONTS.map((option) => ({ ...option, name: t(option.labelKey) })).sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
+  for (const option of system) {
+    const status = systemFontStatus(option.value, el.doc);
+    const row = new Setting(el).setName(option.name).setDesc(withSample(t(STATUS_TEXT[status]), option.value));
+    shownToggle(row, host, option.value);
+  }
+
   // ── To download ──
+  // Last, since it is mostly used once, when setting up: the two lists a reader keeps coming back to come first.
   // Each font not yet in the vault, with what it is for and its size. A download lands in the fonts folder, so the
-  // font moves up to the section above. See `font-downloads.ts`.
+  // font moves up to the vault's section. See `font-downloads.ts`.
   const toGet = FONT_PACKAGES.filter((pkg) => !packageInstalled(pkg, fonts));
   new Setting(el)
     .setName(t('fonts.downloads'))
@@ -107,17 +119,6 @@ export function buildFontsPage(el: HTMLElement, host: FontsPageHost): void {
           host.redraw();
         })
       );
-  }
-
-  // ── The system's ──
-  new Setting(el).setName(t('fonts.system')).setHeading();
-  const system = SYSTEM_FONTS.map((option) => ({ ...option, name: t(option.labelKey) })).sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
-  for (const option of system) {
-    const status = systemFontStatus(option.value, el.doc);
-    const row = new Setting(el).setName(option.name).setDesc(withSample(t(STATUS_TEXT[status]), option.value));
-    shownToggle(row, host, option.value);
   }
 
   // A look at the folder in the background: a font synced in since the page opened shows on the next draw.

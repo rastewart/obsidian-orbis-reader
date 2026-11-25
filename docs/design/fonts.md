@@ -98,8 +98,10 @@ body, and `fonts.ready`).
 
 ## The Fonts page
 
-Two sections, the vault's fonts and the system's, because their rows differ: only a vault font can be deleted. The
-system fonts are in alphabetical order, as the vault's are.
+Three sections, **Vault fonts**, **System fonts** and **Downloadable fonts**, because their rows differ: only a
+vault font can be deleted, and a download has a button rather than a switch. The system fonts are in alphabetical
+order, as the vault's are. The downloads come last: they are mostly used once, when setting up, and the two lists a
+reader keeps coming back to should not sit below them.
 
 **Names in Obsidian's font, a sample in the font.** Each row's description ends with a line of sample text drawn in
 the font. A name in its own typeface was tried first and dropped: a symbol or decorative font cannot draw its own
@@ -167,8 +169,9 @@ licence, so it lands beside the font in the vault, as the OFL asks.
 
 **Downloading** (`downloadFontPackage`) checks the size and SHA-256 against the pin and writes nothing on a mismatch,
 then unpacks into the fonts folder keeping the zip's folder. A font counts as downloaded when every one of its
-families is in the vault, however it got there. The heading of the section says where the fonts come from — the one
-network request on the page — and the README's network table lists GitHub for it.
+families is in the vault, however it got there, and then it leaves this section for **Vault fonts**. The section's
+description says what the fonts are and where they come from — the one network request on the page — and the
+README's network table lists GitHub for it.
 
 **Embedding.** Every font offered allows it: the OS/2 `fsType` of each file is 0 (installable) or, for OpenDyslexic,
 8 (editable), and each is under the SIL Open Font License 1.1 (DejaVu under the Bitstream Vera licence).

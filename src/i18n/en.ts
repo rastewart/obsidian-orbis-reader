@@ -655,7 +655,7 @@ const en = {
   // The four faces are not asked for here: the import dialog shows which a font is missing.
   'fonts.import_desc': 'TTF or OTF files, or a zip of them.',
   'fonts.import_choose': 'Import…',
-  'fonts.in_vault': 'Fonts in your vault',
+  'fonts.in_vault': 'Vault fonts',
   'fonts.none_in_vault': 'No fonts imported yet.',
   'fonts.system': 'System fonts',
   'fonts.on_this_device': 'On this device',
@@ -692,9 +692,9 @@ const en = {
   'fonts.move_inside': 'The fonts folder cannot move from {{from}} to {{to}}, because one folder is inside the other.',
   // The fonts Orbis offers to download — see `font-downloads.ts`. The heading says where they come from: the one
   // network request on this page.
-  'fonts.downloads': 'Fonts to download',
-  'fonts.downloads_desc': "From Orbis Reader's releases on GitHub.",
-  'fonts.downloads_all': "All downloaded. From Orbis Reader's releases on GitHub.",
+  'fonts.downloads': 'Downloadable fonts',
+  'fonts.downloads_desc': "Open source fonts from Orbis Reader's releases on GitHub.",
+  'fonts.downloads_all': "All downloaded. Open source fonts from Orbis Reader's releases on GitHub.",
   'fonts.download': 'Download',
   'fonts.downloading': 'Downloading…',
   'fonts.download_desc': '{{purpose}} {{size}} MB.',
