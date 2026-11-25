@@ -196,6 +196,15 @@ async function readyWithPlugin(page: Page): Promise<void> {
   // The trust prompt and the welcome are closed by the runner before the first test, as every dialog is.
 }
 
+/**
+ * Chromium's switches for a window that is drawn although another covers it.
+ *
+ * **A covered window is a hidden page.** Once a window covers it (a maximized terminal is enough), Chromium stops its
+ * frames, and mouse input waits for a frame: the slider drag hung, and a test that counts frames saw none. On Windows
+ * the cover is found by `CalculateNativeWinOcclusion`. A minimized window is still hidden, so leave it open.
+ */
+const STAY_VISIBLE = ['--disable-backgrounding-occluded-windows', '--disable-features=CalculateNativeWinOcclusion'];
+
 export async function launchObsidian(opts: { keep?: boolean } = {}): Promise<Obsidian> {
   const runDir = mkdtempSync(join(tmpdir(), 'orbis-e2e-'));
   const vault = join(runDir, 'vault');
@@ -207,7 +216,7 @@ export async function launchObsidian(opts: { keep?: boolean } = {}): Promise<Obs
   // The executable itself, never `open -a` on a Mac: `open` hands the flags to an Obsidian that is already running.
   const child: ChildProcess = spawn(
     obsidianBinary(),
-    [`--user-data-dir=${userData}`, `--remote-debugging-port=${port}`],
+    [`--user-data-dir=${userData}`, `--remote-debugging-port=${port}`, ...STAY_VISIBLE],
     {
       stdio: 'ignore',
     }

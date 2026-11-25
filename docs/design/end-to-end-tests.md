@@ -57,6 +57,10 @@ open and shares nothing with it, neither its vault list nor its settings nor its
 vaults. Each run gets a new folder under the system's temporary folder, deleted at the end. Its window opens and
 closes by itself, and on a Mac it shows as a second Obsidian icon in the Dock while it runs.
 
+**You can work in other windows while it runs**, and cover the test window with them, but leave it open. A minimized
+window draws no frames, and the tests that use the mouse or count frames then fail or do not finish. A covered window
+would be the same without the switches `launch.ts` starts Obsidian with (`STAY_VISIBLE`).
+
 **The Obsidian version you use.** Obsidian installs updates as an app file, `obsidian-<version>.asar`, in its own
 settings folder. The run copies the newest one, so the tests run the version you run rather than the one the
 installer came with.
