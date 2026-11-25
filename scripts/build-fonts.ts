@@ -22,6 +22,7 @@
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -280,7 +281,9 @@ async function main(): Promise<void> {
   ];
   writeFileSync(PINS, lines.join('\n'));
   // Through Biome, so the file is as the checks expect it however the lines above are laid out.
-  execFileSync('pnpm', ['exec', 'biome', 'format', '--write', PINS], { cwd: ROOT, stdio: 'ignore' });
+  // Run by Node from its own file: on Windows `pnpm` is a script, which `execFileSync` cannot start by name.
+  const biome = createRequire(import.meta.url).resolve('@biomejs/biome/bin/biome');
+  execFileSync(process.execPath, [biome, 'format', '--write', PINS], { cwd: ROOT, stdio: 'ignore' });
   console.log(`wrote ${path.relative(ROOT, PINS)} and ${pins.length} zips in ${path.relative(ROOT, OUT)}`);
 }
 

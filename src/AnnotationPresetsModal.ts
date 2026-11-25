@@ -55,6 +55,7 @@ import {
 import { byName } from './by-name';
 import { confirmThen } from './ConfirmModal';
 import { actionButton, actionRow, choiceGroup } from './controls';
+import { useFontFor } from './fonts';
 import { t } from './i18n';
 import type { TranslationKey } from './i18n/en';
 import { OrbisModal, openOrbisDialog } from './OrbisModal';
@@ -136,6 +137,7 @@ function renderPreview(host: HTMLElement, m: MarkAppearance, surface: ReadingSur
   cell.style.setProperty('background-color', surface.bg);
   cell.style.setProperty('color', surface.fg);
   cell.style.setProperty('font-family', surface.font);
+  void useFontFor(cell, surface.font); // a vault font has to be put in this window's document
   applyMarkPreview(cell.createSpan({ text }), m);
   return cell;
 }

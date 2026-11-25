@@ -18,7 +18,7 @@
 
 import type { App, DataAdapter, TFile } from 'obsidian';
 import { downloadFontPackage, packageMegabytes } from './font-downloads';
-import { fontFilesIn, fontsFolderOf } from './fonts';
+import { fontFilesIn, fontInfoOf, fontsFolderOf } from './fonts';
 
 /** The faces the writer draws with. Mirrors `FontName` in `pdf-writer.ts`. */
 export type FontSlot = 'body' | 'italic' | 'bodyBold' | 'bodyBoldItalic' | 'bold' | 'sans' | 'mono';
@@ -48,11 +48,18 @@ export function legacyFontDir(app: App): string {
   return `${app.vault.configDir}/plugins/orbis-reader/font-cache`;
 }
 
-/** The seven files in the vault's fonts folder, by slot, or null when any is missing. */
-function inVault(app: App, folderSetting: string): Record<FontSlot, TFile> | null {
+/**
+ * The seven files in the vault's fonts folder, by slot, or null when any is missing or is not a whole font — one that
+ * has not finished syncing. An export cannot embed half a font, and the old copy is still needed until it is whole.
+ */
+async function inVault(app: App, folderSetting: string): Promise<Record<FontSlot, TFile> | null> {
   const byName = new Map(fontFilesIn(app, fontsFolderOf(folderSetting)).map((f) => [f.name, f]));
-  const found = FONT_ASSETS.map((a) => [a.slot, byName.get(a.file)] as const);
-  if (found.some(([, file]) => !file)) return null;
+  const found: [FontSlot, TFile][] = [];
+  for (const { slot, file: name } of FONT_ASSETS) {
+    const file = byName.get(name);
+    if (!file || !(await fontInfoOf(app, file))) return null;
+    found.push([slot, file]);
+  }
   return Object.fromEntries(found) as Record<FontSlot, TFile>;
 }
 
@@ -67,7 +74,7 @@ async function inLegacyCache(adapter: DataAdapter, dir: string): Promise<boolean
  * means the set is incomplete — a partial set would embed some faces and fall back for others, mid-document.
  */
 export async function pdfFontsReady(app: App, folderSetting: string): Promise<boolean> {
-  return inVault(app, folderSetting) !== null || (await inLegacyCache(app.vault.adapter, legacyFontDir(app)));
+  return (await inVault(app, folderSetting)) !== null || (await inLegacyCache(app.vault.adapter, legacyFontDir(app)));
 }
 
 /**
@@ -76,7 +83,7 @@ export async function pdfFontsReady(app: App, folderSetting: string): Promise<bo
  */
 export async function loadPdfFonts(app: App, folderSetting: string): Promise<FontBytes | undefined> {
   try {
-    const files = inVault(app, folderSetting);
+    const files = await inVault(app, folderSetting);
     if (files) {
       const entries = await Promise.all(
         FONT_ASSETS.map(async (a) => [a.slot, new Uint8Array(await app.vault.readBinary(files[a.slot]))] as const)
@@ -108,7 +115,7 @@ export async function downloadPdfFonts(app: App, folderSetting: string): Promise
 export async function forgetLegacyPdfFonts(app: App, folderSetting: string): Promise<void> {
   const dir = legacyFontDir(app);
   try {
-    if (!inVault(app, folderSetting) || !(await app.vault.adapter.exists(dir))) return;
+    if (!(await inVault(app, folderSetting)) || !(await app.vault.adapter.exists(dir))) return;
     await app.vault.adapter.rmdir(dir, true);
   } catch (err) {
     console.error('[Orbis] could not remove the old PDF font cache —', err);

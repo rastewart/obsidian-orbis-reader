@@ -22,6 +22,7 @@ describe('settleSettingsShapes', () => {
     ['a collection that is a number', { libraryCollections: [5] }, 'libraryCollections', []],
     ['a dashboard without widgets', { libraryDashboards: [{ id: 'd', name: 'x' }] }, 'libraryDashboards', []],
     ['a preset without marks', { annotationPresets: [{ id: 'p', name: 'x' }] }, 'annotationPresets', []],
+    ['a hidden font that is a number', { hiddenFonts: [5, '"Lexend"'] }, 'hiddenFonts', ['"Lexend"']],
   ])('drops %s and keeps the rest of its list', (_what, raw, key, expected) => {
     const settings = settingsWith(raw);
     expect(settleSettingsShapes(settings).length).toBe(1);
@@ -32,6 +33,7 @@ describe('settleSettingsShapes', () => {
     ['annotationPresets', null],
     ['styles', null],
     ['bookSources', 'x'],
+    ['hiddenFonts', { a: 1 }],
   ])('puts back the default for %s when it is %j, not a list', (key, value) => {
     const settings = settingsWith({ [key]: value });
     expect(settleSettingsShapes(settings)).toEqual([`${key}: not a list — the default instead`]);

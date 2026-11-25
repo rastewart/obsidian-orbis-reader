@@ -1,5 +1,5 @@
 {
-  "src/AnnotationPresetsModal.ts": 2231,
+  "src/AnnotationPresetsModal.ts": 2233,
   "src/CatalogModal.ts": 928,
   "src/CollectionModal.ts": 1241,
   "src/EpubExportModal.ts": 1442,
@@ -12,9 +12,9 @@
   "src/annotation-presets.ts": 1582,
   "src/book-extractor.ts": 1227,
   "src/commands.ts": 1435,
-  "src/main.ts": 2682,
+  "src/main.ts": 2685,
   "src/markdown-epub.ts": 1293,
-  "src/pdf-writer.ts": 991,
+  "src/pdf-writer.ts": 996,
   "src/reader/AnnotationController.ts": 2795,
   "src/reader/SearchController.ts": 1256,
   "src/reader/TtsController.ts": 3585,

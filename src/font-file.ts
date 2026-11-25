@@ -23,6 +23,11 @@ export interface FontFileInfo {
   /** A variable font's weight axis, `[min, max]`, or null for a static font. */
   weightRange: [number, number] | null;
   /**
+   * How wide the letters are, in percent of the family's normal width, as CSS `font-stretch` has it: 75 for a
+   * Condensed face. A family can hold both, in the same weight and style, and only this tells them apart.
+   */
+  width: number;
+  /**
    * The OS/2 `fsType` embedding bits. 0 is installable; 2 (restricted) is the one that forbids embedding in a
    * document. Preview-and-print (4) and editable (8) both allow it.
    */
@@ -31,9 +36,17 @@ export interface FontFileInfo {
 }
 
 /** Why a file is not a font this can use. */
-export type FontFileProblem = 'web-font' | 'collection' | 'not-a-font';
+export type FontFileProblem = 'web-font' | 'collection' | 'not-a-font' | 'damaged';
 
 export type FontFileResult = { ok: true; info: FontFileInfo } | { ok: false; problem: FontFileProblem };
+
+/** OS/2 `usWidthClass`, 1 to 9, as the percentages CSS `font-stretch` uses. */
+const WIDTHS = [50, 62.5, 75, 87.5, 100, 112.5, 125, 150, 200];
+
+/** A licence file that comes with fonts, by its name: `OFL.txt`, `LICENSE`, `COPYING.md`. */
+export function isLicenceFile(name: string): boolean {
+  return /^(ofl|licen[cs]e|copying)([._-].*)?$/i.test(name) && /(^[^.]*|\.(txt|md))$/i.test(name);
+}
 
 interface TableEntry {
   offset: number;
@@ -66,6 +79,10 @@ function parse(bytes: Uint8Array): FontFileResult {
     const name = String.fromCharCode(bytes[at], bytes[at + 1], bytes[at + 2], bytes[at + 3]);
     tables.set(name, { offset: view.getUint32(at + 8), length: view.getUint32(at + 12) });
   }
+  // A file cut short, as one still being synced is: its directory is whole, and a table it names is not all there.
+  for (const { offset, length } of tables.values()) {
+    if (offset + length > bytes.length) return { ok: false, problem: 'damaged' };
+  }
   const nameTable = tables.get('name');
   if (!nameTable) return { ok: false, problem: 'not-a-font' };
   const names = readNames(view, nameTable);
@@ -75,10 +92,12 @@ function parse(bytes: Uint8Array): FontFileResult {
 
   let weight = 400;
   let italic = false;
+  let width = 100;
   let fsType = 0;
   const os2 = tables.get('OS/2');
   if (os2 && os2.length >= 64) {
     weight = view.getUint16(os2.offset + 4) || 400;
+    width = WIDTHS[view.getUint16(os2.offset + 6) - 1] ?? 100;
     fsType = view.getUint16(os2.offset + 8);
     const fsSelection = view.getUint16(os2.offset + 62);
     // Bit 0 is italic, bit 9 oblique: a reader asking for italic text wants either.
@@ -94,7 +113,16 @@ function parse(bytes: Uint8Array): FontFileResult {
 
   return {
     ok: true,
-    info: { family, subfamily, weight, italic, weightRange: readWeightAxis(view, tables.get('fvar')), fsType, format },
+    info: {
+      family,
+      subfamily,
+      weight,
+      italic,
+      weightRange: readWeightAxis(view, tables.get('fvar')),
+      width,
+      fsType,
+      format,
+    },
   };
 }
 

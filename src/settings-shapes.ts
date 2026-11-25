@@ -40,6 +40,9 @@ const LISTS: Record<string, Shape> = {
   syncDevices: { strings: ['id'] },
 };
 
+/** The lists of text. */
+const TEXT_LISTS = ['hiddenFonts'];
+
 /**
  * Why `entry` cannot be kept, or null when it can. An inner list keeps only its entries that are objects, and `note`
  * hears about any it lost.
@@ -68,7 +71,17 @@ export function settleSettingsShapes(settings: OrbisPluginSettings): string[] {
   const held = settings as unknown as Record<string, unknown>;
   const defaults = DEFAULT_PLUGIN_SETTINGS as unknown as Record<string, unknown>;
   const changed: string[] = [];
-  for (const [key, shape] of Object.entries(LISTS)) {
+  const faultIn: [string, (entry: unknown, i: number) => string | null][] = [
+    ...Object.entries(LISTS).map(([key, shape]): [string, (entry: unknown, i: number) => string | null] => [
+      key,
+      (entry, i) => fault(entry, shape, (line) => changed.push(`${key}[${i}].${line}`)),
+    ]),
+    ...TEXT_LISTS.map((key): [string, (entry: unknown) => string | null] => [
+      key,
+      (entry) => (typeof entry === 'string' ? null : 'not text'),
+    ]),
+  ];
+  for (const [key, why] of faultIn) {
     const value = held[key];
     if (value === undefined) continue;
     if (!Array.isArray(value)) {
@@ -77,9 +90,9 @@ export function settleSettingsShapes(settings: OrbisPluginSettings): string[] {
       continue;
     }
     const kept = value.filter((entry, i) => {
-      const why = fault(entry, shape, (line) => changed.push(`${key}[${i}].${line}`));
-      if (why) changed.push(`${key}[${i}] dropped: ${why}`);
-      return !why;
+      const reason = why(entry, i);
+      if (reason) changed.push(`${key}[${i}] dropped: ${reason}`);
+      return !reason;
     });
     if (kept.length !== value.length) held[key] = kept;
   }

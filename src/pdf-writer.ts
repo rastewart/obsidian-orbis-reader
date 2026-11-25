@@ -248,20 +248,25 @@ export async function createPdfWriter(
 
   let covers: (font: FontName, code: number) => boolean = (_f, code) => winAnsi(code);
   const fonts = {} as Record<FontName, PDFFont>;
+  let drawsEmbedded = false;
   if (embedded) {
     const fontkit = (await import('@pdf-lib/fontkit')).default;
     doc.registerFontkit(fontkit);
-    // fontkit is asked directly about coverage: pdf-lib's own font object cannot answer "do you have this
-    // character", and the answer is what decides which face draws each run.
-    const cmaps = {} as Record<FontName, { hasGlyphForCodePoint(code: number): boolean }>;
-    for (const slot of SLOTS) {
-      fonts[slot] = await doc.embedFont(embedded[slot], { subset: true });
-      cmaps[slot] = fontkit.create(embedded[slot]);
+    try {
+      // fontkit is asked directly about coverage: pdf-lib's own font object cannot answer "do you have this
+      // character", and the answer is what decides which face draws each run.
+      const cmaps = {} as Record<FontName, { hasGlyphForCodePoint(code: number): boolean }>;
+      // All read before any is embedded, so a file that is not a font leaves nothing half-done in the document.
+      for (const slot of SLOTS) cmaps[slot] = fontkit.create(embedded[slot]);
+      for (const slot of SLOTS) fonts[slot] = await doc.embedFont(embedded[slot], { subset: true });
+      covers = (font, code) => cmaps[font].hasGlyphForCodePoint(code);
+      drawsEmbedded = true;
+    } catch (err) {
+      // A font file that cannot be read is a plainer PDF, not a failed export.
+      console.error('[Orbis] could not embed the expanded character set; drawing with the built-in fonts —', err);
     }
-    covers = (font, code) => cmaps[font].hasGlyphForCodePoint(code);
-  } else {
-    for (const slot of SLOTS) fonts[slot] = await doc.embedFont(STANDARD[slot]);
   }
+  if (!drawsEmbedded) for (const slot of SLOTS) fonts[slot] = await doc.embedFont(STANDARD[slot]);
 
   /**
    * A character no face can draw is replaced; a character only ANOTHER face can draw switches face for that run.

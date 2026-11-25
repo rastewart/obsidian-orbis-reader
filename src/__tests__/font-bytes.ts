@@ -5,6 +5,8 @@ export interface Spec {
   tag?: string;
   names?: Record<number, string>;
   weight?: number;
+  /** `usWidthClass`: 5 is normal, 3 Condensed. */
+  widthClass?: number;
   fsSelection?: number;
   fsType?: number;
   wght?: [number, number];
@@ -47,6 +49,7 @@ export function fontBytes(spec: Spec = {}): Uint8Array {
     const os2 = new Uint8Array(78);
     const ov = new DataView(os2.buffer);
     ov.setUint16(4, spec.weight ?? 400);
+    ov.setUint16(6, spec.widthClass ?? 5);
     ov.setUint16(8, spec.fsType ?? 0);
     ov.setUint16(62, spec.fsSelection ?? 0x40);
     tables.push(['OS/2', os2]);

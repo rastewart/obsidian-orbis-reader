@@ -11,7 +11,14 @@
 // Kept free of Obsidian, so it can be tested. See docs/design/fonts.md § Importing.
 
 import { unzipSync } from 'fflate';
-import { type FaceSlot, type FontFileInfo, type FontFileProblem, facesCovered, readFontFile } from './font-file';
+import {
+  type FaceSlot,
+  type FontFileInfo,
+  type FontFileProblem,
+  facesCovered,
+  isLicenceFile,
+  readFontFile,
+} from './font-file';
 
 /** A file as the picker gives it, or as a zip holds it. */
 export interface ChosenSource {
@@ -55,7 +62,6 @@ export interface Gathered {
 }
 
 const FONT_FILE = /\.(ttf|otf)$/i;
-const LICENCE_FILE = /^(ofl|licen[cs]e|copying)([._-].*)?(\.(txt|md))?$/i;
 
 /** The last part of a path in a zip. */
 function baseName(path: string): string {
@@ -101,14 +107,14 @@ export function gatherImport(sources: readonly ChosenSource[]): Gathered {
     let entries: Record<string, Uint8Array>;
     try {
       entries = unzipSync(source.data, {
-        filter: (f) => !macJunk(f.name) && (FONT_FILE.test(f.name) || LICENCE_FILE.test(baseName(f.name))),
+        filter: (f) => !macJunk(f.name) && (FONT_FILE.test(f.name) || isLicenceFile(baseName(f.name))),
       });
     } catch {
       refused.push({ name: source.name, problem: 'bad-zip' });
       continue;
     }
     const licences = Object.entries(entries)
-      .filter(([path]) => LICENCE_FILE.test(baseName(path)))
+      .filter(([path]) => isLicenceFile(baseName(path)))
       .map(([path, data]) => ({ name: baseName(path), data }));
     const fonts = Object.entries(entries).filter(([path]) => FONT_FILE.test(path));
     for (const [path, data] of fonts) addFont(`${source.name}/${path}`, data, licences);

@@ -7,6 +7,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   bookFontState,
+  bookFontWeights,
   deleteVaultFolder,
   fontListShown,
   getDisplay,
@@ -79,6 +80,42 @@ export const fontTests: E2eTest[] = [
           `the font is loaded in ${JSON.stringify(state.loaded)}`
         );
         expect(state.paragraphFont.includes(FAMILY), `the book's text is drawn in ${state.paragraphFont}`);
+      } finally {
+        await page.run(setDisplay, 'orbis-font-family', before ?? 'default');
+        await page.run(deleteVaultFolder, FOLDER);
+        await dismissDialogs(page);
+      }
+    },
+  },
+  {
+    name: 'a face that arrives after its font reaches the chapter already open',
+    timeoutMs: 60_000,
+    async run({ page }) {
+      const before = await page.run(getDisplay, 'orbis-font-family');
+      const write = (face: string) => {
+        const file = `${FAMILY}-${face}.ttf`;
+        const data = readFileSync(join(katexFonts(), file)).toString('base64');
+        return page.run(writeVaultBinary, `${FOLDER}/KaTeX Main/${file}`, data);
+      };
+      /** The weights loaded, once they are `wanted` or five seconds have passed. */
+      const weights = async (wanted: string) => {
+        let got = await page.run(bookFontWeights, FAMILY);
+        for (let i = 0; i < 20 && got.join(' ') !== wanted; i++) {
+          await sleep(250);
+          got = await page.run(bookFontWeights, FAMILY);
+        }
+        return got.join(' ');
+      };
+      try {
+        await write('Regular');
+        await page.run(openBook, BOOK, 30_000);
+        await dismissDialogs(page);
+        await page.run(setDisplay, 'orbis-font-family', `"${FAMILY}"`);
+        const one = await weights('400');
+        expect(one === '400', `with Regular alone, the chapter has weights ${one}`);
+        await write('Bold');
+        const both = await weights('400 700');
+        expect(both === '400 700', `with Bold added, the chapter has weights ${both}`);
       } finally {
         await page.run(setDisplay, 'orbis-font-family', before ?? 'default');
         await page.run(deleteVaultFolder, FOLDER);

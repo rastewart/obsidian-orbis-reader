@@ -2,7 +2,7 @@
 // the reader depends on is set on purpose.
 
 import { describe, expect, it } from 'vitest';
-import { embeddingAllowed, facesCovered, readFontFile } from '../font-file';
+import { embeddingAllowed, facesCovered, isLicenceFile, readFontFile } from '../font-file';
 import { fontBytes, type Spec } from './font-bytes';
 
 const info = (spec: Spec) => {
@@ -40,6 +40,17 @@ describe('readFontFile', () => {
 
   it('reads a variable font’s weight axis', () => {
     expect(info({ wght: [100, 900] }).weightRange).toEqual([100, 900]);
+  });
+
+  it('reads how wide the letters are, so a Condensed face is told from the normal one of its family', () => {
+    expect(info({}).width).toBe(100);
+    expect(info({ widthClass: 3 }).width).toBe(75);
+    expect(info({ widthClass: 0 }).width).toBe(100);
+  });
+
+  it('calls a file cut short damaged', () => {
+    const whole = fontBytes();
+    expect(readFontFile(whole.slice(0, whole.length - 10))).toEqual({ ok: false, problem: 'damaged' });
   });
 
   it('reads an OpenType file', () => {
@@ -83,6 +94,17 @@ describe('facesCovered', () => {
       'italic',
       'regular',
     ]);
+  });
+});
+
+describe('isLicenceFile', () => {
+  it('knows the names licences come under, and not a document that only starts the same', () => {
+    for (const name of ['OFL.txt', 'LICENSE', 'licence.md', 'OFL-1.1.txt', 'COPYING']) {
+      expect(isLicenceFile(name), name).toBe(true);
+    }
+    for (const name of ['License agreement.docx', 'license.pdf', 'Licensing notes.md', 'My note.md']) {
+      expect(isLicenceFile(name), name).toBe(false);
+    }
   });
 });
 

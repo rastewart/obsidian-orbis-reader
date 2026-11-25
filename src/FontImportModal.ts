@@ -32,6 +32,7 @@ const PROBLEM_LABEL: Record<ImportProblem, Parameters<typeof t>[0]> = {
   'web-font': 'fonts.problem_web_font',
   collection: 'fonts.problem_collection',
   'not-a-font': 'fonts.problem_not_a_font',
+  damaged: 'fonts.problem_damaged',
   'bad-zip': 'fonts.problem_bad_zip',
   'empty-zip': 'fonts.problem_empty_zip',
 };

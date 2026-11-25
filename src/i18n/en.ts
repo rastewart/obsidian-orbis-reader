@@ -689,6 +689,8 @@ const en = {
   'fonts.moved_one': '1 font moved to {{to}}.',
   'fonts.move_skipped': '{{count}} fonts stayed in {{from}}: fonts with the same names are already in the new folder.',
   'fonts.move_skipped_one': '1 font stayed in {{from}}: a font with the same name is already in the new folder.',
+  'fonts.move_failed': '{{count}} fonts could not be moved and stayed in {{from}}.',
+  'fonts.move_failed_one': '1 font could not be moved and stayed in {{from}}.',
   'fonts.move_inside': 'The fonts folder cannot move from {{from}} to {{to}}, because one folder is inside the other.',
   // The fonts Orbis offers to download — see `font-downloads.ts`. The heading says where they come from: the one
   // network request on this page.
@@ -717,6 +719,7 @@ const en = {
   'fonts.problem_web_font': 'a web font (WOFF or WOFF2). Import the TTF or OTF file instead.',
   'fonts.problem_collection': 'a font collection (.ttc). Import the fonts in it as separate files.',
   'fonts.problem_not_a_font': 'not a font file.',
+  'fonts.problem_damaged': 'a damaged font file.',
   'fonts.problem_bad_zip': 'a zip file that could not be opened.',
   'fonts.problem_empty_zip': 'a zip file with no TTF or OTF fonts in it.',
   'fonts.import_licence': 'With its licence: {{files}}',

@@ -35,7 +35,7 @@ import { openEpubExport, openFolderEpubExport, openSeparateEpubExport } from './
 import { checkReplace, setReplaceMessage, setSavedNotice } from './epub-replace';
 import { greetingFor, markSeenVersion, seenVersion } from './first-run';
 import { removeFoliatePatches } from './foliate-patches';
-import { fontsFolderOf, initFonts, onFontsChanged, watchFonts } from './fonts';
+import { fontsFolderOf, initFonts, onFontsChanged, scanFonts, watchFonts } from './fonts';
 import { initI18n, t } from './i18n';
 import type { TranslationKey } from './i18n/en';
 import { LibraryView, openLibraryView, refreshLibraryViews, VIEW_TYPE_ORBIS_LIBRARY } from './LibraryView';
@@ -1229,6 +1229,7 @@ export default class OrbisReaderPlugin extends Plugin {
         // command that a plain save does not touch.
         if (changed.includes('libraryEnabled')) this.applyLibraryEnabled();
         if (changed.includes('bookSources')) this.forgetDepartedCredentials(heldSources);
+        if (changed.includes('fontsFolder')) void scanFonts();
         this.refreshViews();
         refreshLibraryViews(this);
       }
@@ -2072,6 +2073,7 @@ export default class OrbisReaderPlugin extends Plugin {
     // feature that is off, which is exactly the state `ribbonIcon` exists to prevent.
     this.applyLibraryEnabled();
     this.applyBookSourcesEnabled();
+    void scanFonts(); // the fonts folder may have moved
     this.refreshViews();
   }
 
@@ -2493,6 +2495,7 @@ export default class OrbisReaderPlugin extends Plugin {
         );
         await this.loadSettings(); // adopts the other device's file + refreshes the fingerprint
         this.pronouncerCache = undefined;
+        void scanFonts(); // the fonts folder may have moved
         this.refreshViews();
         // Said out loud, because the alternative is an edit vanishing with no account of itself.
         new Notice(t('stale_settings.taken'));

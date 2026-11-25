@@ -2053,6 +2053,19 @@ export function bookFontState(family: string): { loaded: boolean[]; paragraphFon
   return { loaded, paragraphFont: el ? (el.ownerDocument.defaultView?.getComputedStyle(el).fontFamily ?? '') : '' };
 }
 
+/** The weights of `family` loaded in the first chapter shown, lightest first. */
+export function bookFontWeights(family: string): string[] {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as {
+    foliateView: { renderer: { getContents(): { doc: Document }[] } };
+  };
+  const doc = view.foliateView.renderer.getContents()[0]?.doc;
+  return Array.from((doc?.fonts ?? []) as unknown as Iterable<FontFace>)
+    .filter((f) => f.family.replace(/"/g, '') === family && f.status === 'loaded')
+    .map((f) => f.weight)
+    .sort();
+}
+
 /** Renames a file or folder through Obsidian's file manager, as moving it in the file explorer does. */
 export async function renameVaultPath(from: string, to: string): Promise<void> {
   const app = (

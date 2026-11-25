@@ -35,8 +35,9 @@ reader themes are.
 
 - **`name`**: the typographic family (ID 16) or else the legacy one (ID 1), so a Light face joins its family rather
   than becoming *Family Light*.
-- **`OS/2`**: the weight, italic or oblique (`fsSelection`), and the embedding bits (`fsType`). Without `OS/2`, the
-  style comes from `head.macStyle`.
+- **`OS/2`**: the weight, the width (`usWidthClass`), italic or oblique (`fsSelection`), and the embedding bits
+  (`fsType`). Without `OS/2`, the style comes from `head.macStyle`. The width tells a Condensed face from the normal one
+  of its family, which can have the same weight and style (DejaVu Sans does).
 - **`fvar`**: a variable font's weight axis, so one file can be both regular and bold.
 
 **TrueType and OpenType only.** Those are what the reader, a PDF (pdf-lib through fontkit) and an EPUB can all use.
@@ -82,13 +83,16 @@ A vault font's value is its family, quoted: `"Literata"`. A system font's value 
 
 ## How a book gets the font
 
-A book's chapters are separate documents, each with its own set of fonts. `useFontIn(doc, value)` reads the
-family's files once (kept in memory by path and modification time), and adds a `FontFace` for each face to the
-document, made with that document's own `FontFace` constructor. Called:
+A book's chapters are separate documents, each with its own set of fonts. `useFontIn(doc, value)` adds a `FontFace`
+for each of the family's faces to the document, made with that document's own `FontFace` constructor. Called again, it
+brings the document up to date: a face added since is given, one whose file changed is given again, one whose file is
+gone is taken back, and one that failed to load is tried again. The files of the two fonts last read in stay in
+memory, for the chapters still to come; a look through the folder keeps no others. Called:
 
 - from `applyDocStyles`, as each chapter is styled;
 - from `applyPluginSettings`, for the chapters already open when a font arrives;
-- from the settings preview and the Fonts page, in the settings window's document.
+- from the settings preview, the Fonts page and the mark samples of the annotation presets, in their own window's
+  document.
 
 **`FontFace`, not `@font-face` with a file address.** Nothing has to resolve a URL inside the book's frame, which
 behaves the same on every platform. The engine already relays out when fonts finish loading (a resize observer on the
@@ -132,15 +136,24 @@ should not have to read the list in every other one. If a font cannot draw the s
 ## Keeping current
 
 `watchFonts` registers vault events: a font file created, deleted, renamed or changed in the folder starts a new look,
-and a look that finds something different tells every open book (`refreshViews`). A request during a look is
-answered by one more look, not the one under way: moving the folder fires an event per file before the one for the
-folder, and the setting follows only on the last.
+and a look that finds something different tells every open book (`refreshViews`). So does a fonts folder that another
+device changed. However many requests arrive during a look, one more look answers them, not the one under way: moving
+the folder fires an event per file before the one for the folder, and the setting follows only on the last.
 
-**Moving the folder.** The Fonts page moves what the old folder holds when the setting changes, through Obsidian's
-file manager so a sync tool sees a move: the whole folder when the new one does not exist, else entry by entry,
-leaving any whose name is taken. Only the device that changed the setting moves anything. **A folder moved in the file
-explorer** is followed: the setting changes to match. A move made by the Fonts page changes the setting first, so it
-is not followed twice.
+**A file that cannot be read is left out, and only that file.** A sync tool can list a file before its contents are
+here, or while only part of them is. A font whose tables run past the end of the file is *damaged*, and the next change
+to the file looks again.
+
+**Moving the folder.** When the setting changes, the Fonts page moves the fonts and their licences, and nothing else:
+the setting can name any folder of the vault, one with books and notes in it too. The move goes through Obsidian's file
+manager so a sync tool sees a move. A folder that holds only fonts and licences moves whole; from any other the fonts
+move one at a time, and the rest stays. A file whose name is taken in the new folder stays, and so does one that could
+not be moved, and a notice says how many. Only the device that changed the setting moves anything. **A folder moved in
+the file explorer** is followed: the setting changes to match. A move made by the Fonts page changes the setting first,
+so it is not followed twice.
+
+**Deleting a font** moves its files to the trash. A folder goes as a whole only when all it holds, at any depth, is
+that family and licences; from any other folder only the family's files go, and the fonts folder itself always stays.
 
 ---
 
@@ -179,7 +192,9 @@ README's network table lists GitHub for it.
 ### DejaVu
 
 DejaVu moved from the PDF settings, where each device downloaded it into the plugin's own `font-cache` folder, to the
-Fonts page and the vault (`pdf-fonts.ts`). The PDF export finds its seven files by name anywhere in the fonts folder.
+Fonts page and the vault (`pdf-fonts.ts`). The PDF export finds its seven files by name anywhere in the fonts folder,
+and counts them only when all seven are whole. If one still cannot be embedded, the PDF is drawn with the built-in
+fonts.
 
 - **The old copy is used, not moved.** Until DejaVu is in the vault, the export reads the old cache. Moving it into the
   vault on every device would be several devices writing the same files into a synced folder at once, which is how

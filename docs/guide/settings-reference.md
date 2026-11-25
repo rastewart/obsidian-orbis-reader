@@ -140,9 +140,9 @@ These settings are in **Settings → Orbis Reader → Fonts**. They set where fo
 
 | Setting | What it does |
 |---|---|
-| **Vault folder for fonts** | Sets the folder for the fonts that you import. The default is `!orbis-data/fonts`. When you change the folder, Orbis Reader moves the fonts into it |
+| **Vault folder for fonts** | Sets the folder for the fonts that you import. The default is `!orbis-data/fonts`. When you change the folder, Orbis Reader moves the fonts and their licence files into it. Other files stay where they are |
 | **Import fonts** | **Import…** opens your device's file picker. Select the TrueType or OpenType files (`.ttf` or `.otf`) of a font, or the zip file that you downloaded them in |
-| **Vault fonts** | Lists each font in the fonts folder with the faces it has, and a line of sample text in the font. The trash button moves the font's files to the trash. The switch shows or hides the font in the **Font** list |
+| **Vault fonts** | Lists each font in the fonts folder with the faces it has, and a line of sample text in the font. The trash button moves the font's files to the trash, and the font's folder if it contains nothing else. The switch shows or hides the font in the **Font** list |
 | **System fonts** | Lists the fonts that come with devices, in alphabetical order, with a line of sample text in each font. Each says whether this device has the font. The switch shows or hides the font in the **Font** list |
 | **Downloadable fonts** | Lists the open source fonts that Orbis Reader offers and that are not in your vault yet, with what each is for and its size. **Download** puts the font in the fonts folder. See [Downloading a font](#downloading-a-font) |
 

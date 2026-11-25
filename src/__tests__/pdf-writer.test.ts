@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import type { FontBytes } from '../pdf-fonts';
 import { createPdfWriter, MARGIN, PAGE } from '../pdf-writer';
 
 describe('the page cursor', () => {
@@ -30,6 +31,19 @@ describe('the page cursor', () => {
       w.text(`Block ${i}`, { font: 'body', size: 11 });
     }
     expect(w.doc.getPageCount()).toBe(3);
+  });
+});
+
+describe('the expanded character set', () => {
+  it('draws with the built-in fonts when a font file cannot be read, rather than failing', async () => {
+    const said = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const half = new Uint8Array([0, 1, 0, 0, 0, 9, 0, 0]);
+    const slots = ['body', 'italic', 'bodyBold', 'bodyBoldItalic', 'bold', 'sans', 'mono'];
+    const w = await createPdfWriter(Object.fromEntries(slots.map((s) => [s, half])) as FontBytes);
+    w.text('Still a page', { font: 'body', size: 11 });
+    expect((await w.save()).length).toBeGreaterThan(500);
+    expect(said).toHaveBeenCalledOnce();
+    said.mockRestore();
   });
 });
 

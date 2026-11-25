@@ -74,7 +74,6 @@ Orbis Reader reads and writes vault files through Obsidian. It gets the list of 
 | Look-up | Finds the vault notes that match the selected text |
 | Book sources | Finds a free file name for a book that you download |
 | Read in Orbis Reader | Finds the book that was made from a note |
-| Fonts | Finds the font files in the fonts folder |
 | Reading data from earlier versions | Once in each vault, finds the reading data files named differently by earlier versions of the plugin, and renames them so they can be used by the current release |
 
 Orbis Reader does not send the list of files, or the files, to any other place.

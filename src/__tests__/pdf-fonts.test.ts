@@ -2,11 +2,12 @@
 // cache let go once the vault has all seven faces. And the download that puts them there: pinned, and refused whole.
 
 import { zipSync } from 'fflate';
-import { type App, TFile } from 'obsidian';
+import { type App, TFile, TFolder } from 'obsidian';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FONT_PACKAGES, installFontZip, packageInstalled } from '../font-downloads';
 import { FONT_PINS } from '../font-pins';
 import { downloadPdfFonts, FONT_ASSETS, forgetLegacyPdfFonts, loadPdfFonts, pdfFontsReady } from '../pdf-fonts';
+import { fontBytes } from './font-bytes';
 
 const requestUrl = vi.hoisted(() => vi.fn());
 vi.mock('obsidian', async (original) => ({ ...(await original<typeof import('obsidian')>()), requestUrl }));
@@ -20,13 +21,26 @@ function fakeApp() {
   const folders = new Set<string>();
   const fileOf = (path: string) => {
     const name = path.slice(path.lastIndexOf('/') + 1);
-    return Object.assign(new TFile(), { path, name, extension: name.split('.').pop() ?? '' });
+    const data = vault.get(path) as Uint8Array;
+    // Dated by what is in it, so a file that changes is a newer one.
+    const stat = { ctime: 0, mtime: data.reduce((n, b) => n + b, 0), size: data.length };
+    return Object.assign(new TFile(), { path, name, extension: name.split('.').pop() ?? '', stat });
   };
+  /** A folder of every file under it: deep enough for a look through it. */
+  const folderOf = (path: string) =>
+    Object.assign(new TFolder(), {
+      path,
+      children: [...vault.keys()].filter((k) => k.startsWith(`${path}/`)).map(fileOf),
+    });
   const app = {
     vault: {
       configDir: '.obsidian',
-      getFiles: () => [...vault.keys()].map(fileOf),
-      getAbstractFileByPath: (p: string) => (vault.has(p) ? fileOf(p) : folders.has(p) ? {} : null),
+      getAbstractFileByPath: (p: string) =>
+        vault.has(p)
+          ? fileOf(p)
+          : folders.has(p) || [...vault.keys()].some((k) => k.startsWith(`${p}/`))
+            ? folderOf(p)
+            : null,
       createFolder: async (p: string) => void folders.add(p),
       createBinary: async (p: string, d: ArrayBuffer) => void vault.set(p, new Uint8Array(d)),
       modifyBinary: async (f: TFile, d: ArrayBuffer) => void vault.set(f.path, new Uint8Array(d)),
@@ -47,8 +61,11 @@ function fakeApp() {
   return { app, vault, device };
 }
 
-const allSeven = (into: Map<string, Uint8Array>, dir: string, byte: number) => {
-  for (const a of FONT_ASSETS) into.set(`${dir}/${a.file}`, new Uint8Array([byte]));
+/** A whole font, told from another by its weight. */
+const font = (weight: number) => fontBytes({ weight });
+
+const allSeven = (into: Map<string, Uint8Array>, dir: string, weight: number) => {
+  for (const a of FONT_ASSETS) into.set(`${dir}/${a.file}`, font(weight));
 };
 
 describe('where the PDF export finds DejaVu', () => {
@@ -57,10 +74,10 @@ describe('where the PDF export finds DejaVu', () => {
   it('is ready only with all seven faces, anywhere in the fonts folder', async () => {
     const { app, vault } = fakeApp();
     expect(await pdfFontsReady(app, '')).toBe(false);
-    for (const a of FONT_ASSETS.slice(0, -1)) vault.set(`!orbis-data/fonts/DejaVu/${a.file}`, new Uint8Array([1]));
+    for (const a of FONT_ASSETS.slice(0, -1)) vault.set(`!orbis-data/fonts/DejaVu/${a.file}`, font(1));
     // Six of seven is not ready: a partial set would embed some faces and fall back for others, mid-page.
     expect(await pdfFontsReady(app, '')).toBe(false);
-    vault.set(`!orbis-data/fonts/Moved by hand/${FONT_ASSETS.at(-1)?.file}`, new Uint8Array([1]));
+    vault.set(`!orbis-data/fonts/Moved by hand/${FONT_ASSETS.at(-1)?.file}`, font(1));
     expect(await pdfFontsReady(app, '')).toBe(true);
   });
 
@@ -75,9 +92,22 @@ describe('where the PDF export finds DejaVu', () => {
     const { app, vault, device } = fakeApp();
     allSeven(device, LEGACY, 2);
     expect(await pdfFontsReady(app, '')).toBe(true);
-    expect((await loadPdfFonts(app, ''))?.body).toEqual(new Uint8Array([2]));
+    expect((await loadPdfFonts(app, ''))?.body).toEqual(font(2));
     allSeven(vault, '!orbis-data/fonts/DejaVu', 3);
-    expect((await loadPdfFonts(app, ''))?.body).toEqual(new Uint8Array([3]));
+    expect((await loadPdfFonts(app, ''))?.body).toEqual(font(3));
+  });
+
+  it('does not count a set with a file cut short, and keeps using the old cache until it is whole', async () => {
+    const { app, vault, device } = fakeApp();
+    allSeven(device, LEGACY, 2);
+    allSeven(vault, '!orbis-data/fonts/DejaVu', 3);
+    vault.set('!orbis-data/fonts/DejaVu/DejaVuSans.ttf', font(3).slice(0, 90));
+    expect((await loadPdfFonts(app, ''))?.body).toEqual(font(2));
+    await forgetLegacyPdfFonts(app, '');
+    expect(device.size).toBe(7);
+    device.clear();
+    expect(await pdfFontsReady(app, '')).toBe(false);
+    expect(await loadPdfFonts(app, '')).toBeUndefined();
   });
 
   it('loads nothing when no complete set is anywhere — the signal to use the built-in fonts', async () => {

@@ -3,7 +3,7 @@
 // Its own file, like the display styles page, so the settings tab only has to say where the page goes. See
 // docs/design/fonts.md.
 
-import { type App, Notice, Setting, TFile, TFolder } from 'obsidian';
+import { type App, Notice, Setting } from 'obsidian';
 import { askToConfirm } from './ConfirmModal';
 import { faceNames, importFonts } from './FontImportModal';
 import { folderPickerRow } from './folder-picker';
@@ -11,6 +11,7 @@ import { downloadFontPackage, FONT_PACKAGES, packageInstalled, packageMegabytes,
 import { FACE_SLOTS } from './font-file';
 import {
   DEFAULT_FONTS_FOLDER,
+  deleteFontFiles,
   fontsFolderOf,
   forgetFontFiles,
   knownFonts,
@@ -208,7 +209,7 @@ async function changeFolder(host: FontsPageHost, path: string): Promise<void> {
   host.settings.fontsFolder = path;
   await host.save();
   if (from !== to) {
-    const { moved, skipped } = await moveFontsFolder(host.app, from, to);
+    const { moved, skipped, failed } = await moveFontsFolder(host.app, from, to);
     forgetFontFiles();
     await scanFonts();
     host.refreshViews();
@@ -218,16 +219,14 @@ async function changeFolder(host: FontsPageHost, path: string): Promise<void> {
         skipped === 1 ? t('fonts.move_skipped_one', { from }) : t('fonts.move_skipped', { count: skipped, from })
       );
     }
+    if (failed > 0) {
+      new Notice(failed === 1 ? t('fonts.move_failed_one', { from }) : t('fonts.move_failed', { count: failed, from }));
+    }
   }
   host.redraw();
 }
 
-/**
- * Move a family's files to the trash, after asking.
- *
- * A folder holding only this family goes as a whole, so its licence file goes with it; files of the family elsewhere
- * go one at a time. The trash is Obsidian's, so the reader's own trash setting decides where they land.
- */
+/** Move a family's files to the trash, after asking. See `deleteFontFiles` for what goes with them. */
 async function deleteFont(host: FontsPageHost, font: VaultFont): Promise<void> {
   const ok = await askToConfirm(host.app, {
     title: t('fonts.delete_title', { name: font.family }),
@@ -235,26 +234,7 @@ async function deleteFont(host: FontsPageHost, font: VaultFont): Promise<void> {
     confirmText: t('fonts.delete_confirm'),
   });
   if (!ok) return;
-  const { app } = host;
-  const paths = new Set(font.faces.map((f) => f.path));
-  const folders = new Set<TFolder>();
-  for (const path of paths) {
-    const file = app.vault.getAbstractFileByPath(path);
-    if (file instanceof TFile && file.parent) folders.add(file.parent);
-  }
-  const root = fontsFolderOf(host.settings.fontsFolder);
-  for (const folder of folders) {
-    const fontsHere = folder.children.filter((c) => c instanceof TFile && ['ttf', 'otf'].includes(c.extension));
-    const onlyThisFamily = fontsHere.every((c) => paths.has(c.path));
-    if (folder.path !== root && onlyThisFamily) {
-      await app.fileManager.trashFile(folder);
-      for (const c of fontsHere) paths.delete(c.path);
-    }
-  }
-  for (const path of paths) {
-    const file = app.vault.getAbstractFileByPath(path);
-    if (file) await app.fileManager.trashFile(file);
-  }
+  await deleteFontFiles(host.app, fontsFolderOf(host.settings.fontsFolder), font);
   forgetFontFiles();
   await scanFonts();
   host.refreshViews();
