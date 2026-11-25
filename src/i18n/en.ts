@@ -693,8 +693,8 @@ const en = {
   'fonts.move_failed': '{{count}} fonts could not be moved and stayed in {{from}}.',
   'fonts.move_failed_one': '1 font could not be moved and stayed in {{from}}.',
   'fonts.move_inside': 'The fonts folder cannot move from {{from}} to {{to}}, because one folder is inside the other.',
-  // The fonts Orbis offers to download — see `font-downloads.ts`. The heading says where they come from: the one
-  // network request on this page.
+  // The fonts Orbis offers to download — see `font-downloads.ts`. The section's description says what they are and
+  // where they come from: the one network request on this page.
   'fonts.downloads': 'Downloadable fonts',
   'fonts.downloads_desc': "Open source fonts from Orbis Reader's releases on GitHub.",
   'fonts.downloads_all': "All downloaded. Open source fonts from Orbis Reader's releases on GitHub.",

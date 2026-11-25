@@ -374,6 +374,25 @@ export async function pickInDialog(text: string): Promise<void> {
 }
 
 /**
+ * Turns off the PDF dialog's download of the expanded character set, when the dialog offers it, and returns whether
+ * it did. The download is on by default and fetches DejaVu from GitHub into the vault: a test that left it on would
+ * depend on the network, and leave fonts behind for the tests after it.
+ */
+export async function declinePdfFontDownload(): Promise<boolean> {
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  const ready = () => document.querySelector('.modal-container button.mod-cta, .orbis-popup button.mod-cta');
+  // A dialog can draw itself a moment after the command that opens it returns.
+  for (let wait = 0; !ready() && wait < 50; wait++) await sleep(200);
+  const toggle = document.querySelector<HTMLElement>(
+    '.modal-container .checkbox-container[data-orbis-focus="fonts"], .orbis-popup .checkbox-container[data-orbis-focus="fonts"]'
+  );
+  if (!toggle) return false;
+  if (toggle.classList.contains('is-enabled')) toggle.click();
+  if (toggle.classList.contains('is-enabled')) throw new Error('the PDF font download could not be turned off');
+  return true;
+}
+
+/**
  * Presses the open dialog's main button once it can be pressed (a dialog can fill itself in first), and waits until
  * the dialog has closed, which is when the work it does is done.
  */

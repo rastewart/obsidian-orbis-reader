@@ -8,6 +8,7 @@ import { FONT_PINS } from '../../src/font-pins';
 import {
   closeBooks,
   copyVaultFile,
+  declinePdfFontDownload,
   deleteInVault,
   deleteVaultFolder,
   dialogsOpen,
@@ -56,6 +57,8 @@ async function saveWith(context: TestContext, command: string, ext: string, choi
  */
 async function pressSave({ page }: TestContext, before: Set<string>, ext: string, choice?: string): Promise<string[]> {
   if (choice) await page.run(pickInDialog, choice);
+  // Never from GitHub: the tests draw with the built-in fonts, or with DejaVu put in the vault on purpose.
+  if (ext === '.pdf') await page.run(declinePdfFontDownload);
   await page.run(saveDialog, 60_000);
   let written: string[] = [];
   for (let waited = 0, sameFor = 0; waited < 60_000 && !(written.length && sameFor >= 1000); waited += 250) {
@@ -211,6 +214,8 @@ export const conversionTests: E2eTest[] = [
         await page.run(copyVaultFile, 'fixtures/numbered-chapters.epub', book, null);
         await page.run(openBook, book, 30_000);
         await dismissDialogs(page);
+        // Only the files written here: a font folder left by anything before would be a different test.
+        await page.run(deleteVaultFolder, '!orbis-data/fonts');
         for (const [name, bytes] of Object.entries(unzipSync(readFileSync(zip)))) {
           await page.run(writeVaultBinary, `!orbis-data/fonts/${name}`, Buffer.from(bytes).toString('base64'));
         }
