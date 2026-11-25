@@ -36,6 +36,7 @@ import {
 import { getOrCreateDeviceId, LS_DEVICE_ID } from './device-store';
 import { displayStyleLabel } from './device-style';
 import { openDownloadedVoicesDialog } from './downloaded-voices-dialog';
+import { epubFontRow } from './epub-font';
 import { FieldModal, fieldPurpose } from './FieldModal';
 import { folderPickerRow } from './folder-picker';
 import { aboutRow } from './guide';
@@ -3897,6 +3898,7 @@ export class OrbisSettings extends PluginSettingTab {
           },
         },
       },
+      epubFontRow(this.plugin.settings, () => this.plugin.saveSettings()),
     ];
   }
 

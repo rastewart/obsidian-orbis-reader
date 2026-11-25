@@ -298,6 +298,7 @@ export default class OrbisReaderPlugin extends Plugin {
         folder: this.settings.epubFolder,
         fetchRemoteImages: deviceSetting('epubFetchRemoteImages'),
         defaultType: this.settings.epubDefaultType,
+        font: this.settings.epubFont,
         // Only the single-note conversion takes this. The two folder ones default to one section per note for a
         // correctness reason rather than a taste one — see `folderDefaults`.
         splitLevel: this.settings.epubSplitLevel,
@@ -467,6 +468,7 @@ export default class OrbisReaderPlugin extends Plugin {
         folder: this.settings.epubFolder,
         fetchRemoteImages: deviceSetting('epubFetchRemoteImages'),
         defaultType: this.settings.epubDefaultType,
+        font: this.settings.epubFont,
         libraryOn: this.settings.libraryEnabled,
       },
       (conv, target) => {
@@ -572,6 +574,7 @@ export default class OrbisReaderPlugin extends Plugin {
         folder: this.settings.epubFolder,
         fetchRemoteImages: deviceSetting('epubFetchRemoteImages'),
         defaultType: this.settings.epubDefaultType,
+        font: this.settings.epubFont,
         libraryOn: this.settings.libraryEnabled,
       },
       (conv) => {

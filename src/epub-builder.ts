@@ -34,6 +34,25 @@ export interface EpubImage {
   data: Uint8Array;
 }
 
+/**
+ * A font embedded in the book: its family, and a file per face. The book's text is set in it, and a reading app that
+ * honors the publisher's font draws it — Orbis among them, when the display style's font is the book's own.
+ */
+export interface EpubFont {
+  family: string;
+  faces: readonly EpubFontFace[];
+}
+
+export interface EpubFontFace {
+  /** Path inside the archive, relative to the OPF — e.g. `fonts/Literata-Regular.ttf`. */
+  href: string;
+  /** `font/ttf` or `font/otf`, the EPUB 3.3 core media types. */
+  mediaType: string;
+  data: Uint8Array;
+  weight: number;
+  italic: boolean;
+}
+
 export interface EpubMeta {
   title: string;
   author: string;
@@ -97,7 +116,9 @@ ${bodyXhtml}
  * that matters: a book hardcoding dark-on-white reads badly in dark mode, and unlike a plugin bug it is baked into
  * every book already generated and cannot be fixed by updating the plugin.
  *
- * So this is only what keeps structure legible when the reader's own styles say nothing about it.
+ * So this is only what keeps structure legible when the reader's own styles say nothing about it. The one exception
+ * is a font the person making the book chose for it (`fontCss`): asked for, it is set, and Orbis still draws the
+ * display style's own font over it unless that font is the book's.
  */
 const EPUB_STYLESHEET = `/* Minimal by design — the reader supplies typography, colour and margins. */
 /* Anything that cannot fit a column must BREAK, not overflow. The paginator lays the book out in CSS columns, so
@@ -130,7 +151,26 @@ const CONTAINER_XML = `<?xml version="1.0" encoding="utf-8"?>
 
 const sectionHref = (id: string): string => `${id}.xhtml`;
 
-function contentOpf(meta: EpubMeta, sections: readonly EpubSection[], images: readonly EpubImage[]): string {
+/**
+ * The stylesheet's rules for an embedded font: an `@font-face` per file, and the body set in it. Code keeps its
+ * monospace rule above, which is more specific. The family is quoted as a CSS string; a family's name never holds a
+ * quote or backslash (`readFontFile` takes them out).
+ */
+function fontCss(font: EpubFont): string {
+  const family = `"${font.family}"`;
+  const faces = font.faces.map(
+    (f) =>
+      `@font-face { font-family: ${family}; font-weight: ${f.weight}; font-style: ${f.italic ? 'italic' : 'normal'}; src: url("${f.href}"); }`
+  );
+  return `\n/* The font chosen when the book was made. A reading app may still offer its own. */\n${faces.join('\n')}\nbody { font-family: ${family}; }\n`;
+}
+
+function contentOpf(
+  meta: EpubMeta,
+  sections: readonly EpubSection[],
+  images: readonly EpubImage[],
+  font?: EpubFont
+): string {
   const manifest = [
     '    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>',
     '    <item id="style" href="style.css" media-type="text/css"/>',
@@ -140,6 +180,9 @@ function contentOpf(meta: EpubMeta, sections: readonly EpubSection[], images: re
     ),
     ...images.map(
       (img, i) => `    <item id="img${i}" href="${escapeXml(img.href)}" media-type="${escapeXml(img.mediaType)}"/>`
+    ),
+    ...(font?.faces ?? []).map(
+      (f, i) => `    <item id="font${i}" href="${escapeXml(f.href)}" media-type="${escapeXml(f.mediaType)}"/>`
     ),
   ];
   return `<?xml version="1.0" encoding="utf-8"?>
@@ -224,19 +267,22 @@ const ZIP_EPOCH = Date.UTC(1980, 6, 1, 12);
 export function buildEpub(
   meta: EpubMeta,
   sections: readonly EpubSection[],
-  images: readonly EpubImage[] = []
+  images: readonly EpubImage[] = [],
+  /** A font to embed and set the book's text in — see `epub-font.ts`. */
+  font?: EpubFont
 ): Uint8Array {
   const enc = new TextEncoder();
   const at = { mtime: ZIP_EPOCH };
   const files: Record<string, [Uint8Array, { level?: 0; mtime: number }]> = {
     mimetype: [enc.encode('application/epub+zip'), { level: 0, mtime: ZIP_EPOCH }],
     'META-INF/container.xml': [enc.encode(CONTAINER_XML), at],
-    [`${ROOT}/content.opf`]: [enc.encode(contentOpf(meta, sections, images)), at],
+    [`${ROOT}/content.opf`]: [enc.encode(contentOpf(meta, sections, images, font)), at],
     [`${ROOT}/nav.xhtml`]: [enc.encode(navXhtml(meta, sections)), at],
-    [`${ROOT}/style.css`]: [enc.encode(EPUB_STYLESHEET), at],
+    [`${ROOT}/style.css`]: [enc.encode(EPUB_STYLESHEET + (font ? fontCss(font) : '')), at],
   };
   for (const s of sections) files[`${ROOT}/${sectionHref(s.id)}`] = [enc.encode(s.xhtml), at];
   for (const img of images) files[`${ROOT}/${img.href}`] = [img.data, at];
+  for (const f of font?.faces ?? []) files[`${ROOT}/${f.href}`] = [f.data, at];
   return zipSync(files);
 }
 

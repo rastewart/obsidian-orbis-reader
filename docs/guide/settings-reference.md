@@ -428,6 +428,7 @@ These settings are in **Settings → Orbis Reader → Conversions → Save as EP
 | **Fetch remote images by default** | Downloads the images that notes link to on the web, and adds them to the EPUB. Disabled by default, because it contacts servers outside your vault |
 | **Type for converted books** | Sets the `type` property of a converted book's title note. The default is `book`. Shown only when Library dashboards is enabled |
 | **Chapter breaks** | Sets the heading level that starts a new chapter: **None — one chapter**, or **Heading 1** to **Heading 6**. The default is **Heading 2**. If the content has no heading at that level, Orbis Reader uses the nearest level |
+| **Font** | Sets the font that a converted book carries and is set in. Lists **None (the reading app chooses)** and the fonts in your vault that a book can carry. See [Notes to EPUB](notes-to-epub.md#the-books-font) |
 
 ---
 

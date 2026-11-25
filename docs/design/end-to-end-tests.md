@@ -205,6 +205,7 @@ The tests run in the order below. Running every command is last, because it chan
 | `epubs.ts` | converting a note again when nothing changed writes nothing | "already up to date", and the book's file untouched |
 | | read in Orbis Reader keeps one book per note | Twice on one note leaves one book; a very long note name gives a book name of 80 characters or fewer |
 | | a folder of notes becomes one book, a set of books | The folder's book in its index note's order (`folder-epub-contents.txt`); the set's six books and a contents note, and "already up to date" the second time |
+| | a note saved as EPUB carries the font chosen for EPUBs, and the book is read in it | With KaTeX_Main chosen in the settings, the book holds it, and opened with the Default font its text is drawn in it |
 | `exists.ts` | generating notes again, saving a book as Markdown again | *Save as new version* writes a numbered copy and leaves the first alone; *Replace* (confirmed, for notes) writes over it |
 | `search.ts` | search finds a word and a result lands on it | The results match `search-boathouse.txt`, the next Enter shows a page holding a result, and the book then closes without an error |
 | | a search with no match finds none, and a new search replaces the last | |

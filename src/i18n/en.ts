@@ -3343,6 +3343,10 @@ const en = {
   'pdf_font.default_dejavu': 'Default (DejaVu Serif)',
   'pdf_font.default_times': 'Default (Times)',
   'pdf_font.missing': '{{name}} (not in the vault)',
+  // The font a converted EPUB is set in and carries — see `epub-font.ts`. On the Save as EPUB page and in each dialog.
+  'epub_font.name': 'Font',
+  'epub_font.desc': 'Embedded in the book, and used for its text. Reading apps can still use their own font.',
+  'epub_font.default': 'None (the reading app chooses)',
   // Book page only, by the rule that a control with one possible outcome should not exist: a digest of the marks
   // with the marks left out is not an artifact, and a digest prints its byline and legend inline rather than on a
   // cover sheet there is anything to turn off.
@@ -3522,6 +3526,7 @@ const en = {
   'notices.pdf_fonts_downloading': 'Downloading the expanded character set…',
   'notices.pdf_fonts_failed': 'Could not download the fonts. The PDF will use the built-in ones.',
   'notices.pdf_font_missing': '{{name}} is not in the vault on this device, so the PDF uses the default font.',
+  'notices.epub_font_missing': '{{name}} is not in the vault on this device, so the book has no font of its own.',
   'notices.marks_pdf_saved': 'Saved {{name}}',
   'notices.marks_pdf_failed': 'Could not write the PDF: {{error}}',
   'epub_export.save_to_label': 'Save to:',

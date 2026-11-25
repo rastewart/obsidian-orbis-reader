@@ -1045,6 +1045,11 @@ export interface OrbisPluginSettings {
    */
   epubDefaultType: string;
   /**
+   * The vault font a converted EPUB is set in and carries, by family; empty for none, which leaves the font to the
+   * reading app. A default the dialogs start from, like the rest. See `epub-font.ts`.
+   */
+  epubFont: string;
+  /**
    * The Type written onto a book *Read in Orbis Reader* makes — its own, not `epubDefaultType`.
    *
    * **The settings fork where the conversions differ, and this is one of the places they do.** A book made by
@@ -1181,6 +1186,7 @@ export const DEFAULT_PLUGIN_SETTINGS: OrbisPluginSettings = {
   epubSameFolderAsNote: true,
   epubFolder: '/',
   epubDefaultType: 'book',
+  epubFont: '',
   readInOrbisType: 'obsidian-note',
   // H2: an article's own H1 is usually its title, so cutting there yields one section and nothing gained.
   epubSplitLevel: 2,

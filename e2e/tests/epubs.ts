@@ -1,8 +1,12 @@
 // Notes made into books: converting again when nothing changed writes nothing, Read in Orbis Reader keeps one book
 // per note, and a folder of notes becomes one book or a set of books, in the order its index note gives.
 
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import {
+  bookFontState,
   closeBooks,
+  deleteVaultFolder,
   modifiedTime,
   notesProblems,
   noticeCount,
@@ -10,12 +14,16 @@ import {
   openBook,
   openFolderConversion,
   openInNewTab,
+  removeVaultPath,
   runCommand,
   saveDialog,
+  setPluginSetting,
   shownBook,
   vaultFiles,
+  writeVaultBinary,
 } from '../in-page';
 import { dismissDialogs, type E2eTest, expect, type TestContext, until } from '../runner';
+import { katexFonts } from './fonts';
 
 const DIR = 'fixtures/notes-to-epub';
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -137,6 +145,55 @@ export const epubTests: E2eTest[] = [
         said.some((n) => /^Every EPUB in .*Field Guide-EPUB.* is already up to date\.$/.test(n)),
         `saving the set again said ${JSON.stringify(said)}`
       );
+    },
+  },
+  {
+    name: 'a note saved as EPUB carries the font chosen for EPUBs, and the book is read in it',
+    timeoutMs: 120_000,
+    async run(context) {
+      const { page } = context;
+      // KaTeX_Main's four static faces, from the documentation site's packages — see `fonts.ts`.
+      const FAMILY = 'KaTeX_Main';
+      const note = `${DIR}/Font Sample.md`;
+      const book = `${DIR}/Font Sample.epub`;
+      const text = '# Font Sample\n\nA paragraph in the chosen font, with *italic* and **bold** words.\n';
+      try {
+        await page.run(deleteVaultFolder, '!orbis-data/fonts');
+        for (const face of ['Regular', 'Italic', 'Bold', 'BoldItalic']) {
+          const file = `${FAMILY}-${face}.ttf`;
+          const data = readFileSync(join(katexFonts(), file)).toString('base64');
+          await page.run(writeVaultBinary, `!orbis-data/fonts/KaTeX Main/${file}`, data);
+        }
+        await page.run(writeVaultBinary, note, Buffer.from(text).toString('base64'));
+        await page.run(setPluginSetting, 'epubFont', FAMILY);
+        await sleep(500);
+        await saveNoteAsEpub(context, note);
+        await until(
+          () => page.run(modifiedTime, book),
+          (t) => t !== null,
+          30_000,
+          'Save note as EPUB wrote no book'
+        );
+        await page.run(closeBooks);
+        await page.run(openBook, book, 30_000);
+        await dismissDialogs(page);
+        const state = await until(
+          () => page.run(bookFontState, FAMILY),
+          (s) => s.loaded.some(Boolean),
+          10_000,
+          'the book never loaded its own font'
+        );
+        expect(
+          state.paragraphFont.includes(FAMILY),
+          `the book's text is drawn in ${state.paragraphFont}, not ${FAMILY}`
+        );
+      } finally {
+        await page.run(setPluginSetting, 'epubFont', '');
+        await page.run(closeBooks);
+        await page.run(removeVaultPath, book);
+        await page.run(removeVaultPath, note);
+        await page.run(deleteVaultFolder, '!orbis-data/fonts');
+      }
     },
   },
 ];

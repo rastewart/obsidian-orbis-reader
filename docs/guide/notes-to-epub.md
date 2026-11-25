@@ -128,14 +128,27 @@ For the folder that the **Save to:** section starts with, see [Where the files g
 1. In the dialog, open the **Book details** section.
 2. Change the fields that you want: **Title**, **Author**, **Language**, **Publisher** or **Publication date**.
 3. Optional: In **Type**, select a type, or select **Add a type** to make a new one.
+4. Optional: In **Font**, select a font for the book. See [The book's font](#the-books-font).
 
 **Type** shows only when [Library Dashboards](library-dashboards.md) is enabled. It sets the `type` property of the book's title note.
 
-For **Save folder notes as EPUBs**, **Book details** has **Author**, **Language** and **Type**. The author applies to each note that does not name its own author.
+For **Save folder notes as EPUBs**, **Book details** has **Author**, **Language**, **Type** and **Font**. The author applies to each note that does not name its own author. The font applies to every book.
 
-The header of **Book details** lists the author, publisher and publication date that are filled in. The title shows on its own line at the top of the dialog, after **Title:**.
+The header of **Book details** lists the author, publisher, publication date and font that are filled in. The title shows on its own line at the top of the dialog, after **Title:**.
 
 For where the book's title comes from, see [How the book is named](#how-the-book-is-named).
+
+### The book's font
+
+**Font** puts a font from your vault into the book, and sets the book's text in it, headings included. Code stays in a monospaced font. The default is **None (the reading app chooses)**, which adds no font. The dialog opens with the font from your settings, and a font that you select in the dialog is used for that conversion only.
+
+The list has the fonts in your vault's fonts folder that a book can carry, including fonts that you hid from the **Font** list on the display style bar. These are the same fonts that [Save as PDF](save-as-pdf.md#the-font) lists: a font with a Regular face in a file of its own, whose license lets it be embedded. See [Fonts](settings-reference.md#fonts).
+
+The font's files go into the EPUB, so the book looks the same on every device. Most reading apps use the book's font unless you choose another one. In Orbis Reader, the book's font shows when **Font** in the display style is **Default**.
+
+If the font in your settings is not on this device, for example because it has not synced yet, the book is made without a font and a notice tells you.
+
+Read in Orbis Reader does not add a font.
 
 ---
 
@@ -282,6 +295,7 @@ These settings are in **Settings → Orbis Reader → Conversions → Save as EP
 | **Fetch remote images by default** | Enables the remote images option in the dialog when the dialog opens |
 | **Type for converted books** | Sets the `type` property of a converted book's title note. Shown only when Library dashboards is enabled |
 | **Chapter breaks** | Sets the heading level that starts a new chapter. The default is **Heading 2**. [Read in Orbis Reader](read-in-orbis-reader.md) uses the same setting |
+| **Font** | Sets the font that a converted book carries. The default is **None (the reading app chooses)**. See [The book's font](#the-books-font) |
 
 **Fetch remote images by default** applies only to the device you set it on. The other settings are shared with your other devices. See [Sync and Devices](sync-and-devices.md#settings-shared-between-devices).
 

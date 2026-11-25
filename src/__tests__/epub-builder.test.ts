@@ -183,6 +183,50 @@ describe('images', () => {
   });
 });
 
+describe('an embedded font', () => {
+  const ttf = new Uint8Array([0, 1, 0, 0]);
+  const font = {
+    family: 'Literata',
+    faces: [
+      { href: 'fonts/Literata-Regular.ttf', mediaType: 'font/ttf', data: ttf, weight: 400, italic: false },
+      { href: 'fonts/Literata-BoldItalic.ttf', mediaType: 'font/ttf', data: ttf, weight: 700, italic: true },
+    ],
+  };
+  const files = open(buildEpub(meta, sections, [], font));
+  const css = text(files['OEBPS/style.css']);
+
+  it('lands in the archive, manifested as a core font type', () => {
+    expect(files['OEBPS/fonts/Literata-Regular.ttf']).toEqual(ttf);
+    const opf = text(files['OEBPS/content.opf']);
+    expect(opf).toContain('<item id="font0" href="fonts/Literata-Regular.ttf" media-type="font/ttf"/>');
+    expect(opf).toContain('<item id="font1" href="fonts/Literata-BoldItalic.ttf" media-type="font/ttf"/>');
+  });
+
+  it('is declared face by face, and sets the body', () => {
+    expect(css).toContain(
+      '@font-face { font-family: "Literata"; font-weight: 400; font-style: normal; src: url("fonts/Literata-Regular.ttf"); }'
+    );
+    expect(css).toContain('font-weight: 700; font-style: italic; src: url("fonts/Literata-BoldItalic.ttf");');
+    expect(css).toContain('body { font-family: "Literata"; }');
+  });
+
+  it('still declares no colour, and leaves code monospace', () => {
+    expect(css).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);
+    expect(css).toContain('code { font-family: monospace;');
+  });
+
+  it('is left out entirely when none is chosen', () => {
+    const plain = open(buildEpub(meta, sections));
+    expect(Object.keys(plain).some((k) => k.includes('fonts/'))).toBe(false);
+    expect(text(plain['OEBPS/style.css'])).not.toContain('@font-face');
+  });
+
+  it('changes the book without moving a saved position', () => {
+    // Positions point into the chapters, which a font does not touch: replacing the book need not ask.
+    expect(compareEpubs(buildEpub(meta, sections), buildEpub(meta, sections, [], font)).change).toBe('same-text');
+  });
+});
+
 describe('escapeXml', () => {
   it('covers all five, so an attribute value is safe too', () => {
     expect(escapeXml(`&<>"'`)).toBe('&amp;&lt;&gt;&quot;&apos;');

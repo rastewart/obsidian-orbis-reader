@@ -5,10 +5,9 @@
 Fonts the reader can choose beyond the system's: where their files live, how a display style names one, how a book
 gets it, and what the Font list offers. The code is `src/fonts.ts` (the library), `src/font-file.ts` (reading a
 font file), `src/settings-fonts.ts` (the Fonts page), `src/FontImportModal.ts` (importing) and
-`src/pdf-text-font.ts` (the PDF font).
+`src/pdf-text-font.ts` (the PDF font) and `src/epub-font.ts` (the EPUB font).
 
-Built in steps: the folder, importing and the reader; downloads; the PDF font. The step still to come is listed at
-the end.
+Built in four steps: the folder, importing and the reader; downloads; the PDF font; the EPUB font.
 
 ---
 
@@ -242,12 +241,29 @@ dialog that changes it for one export. It travels with the other PDF settings.
 
 ---
 
-## Later steps
+## The EPUB font
 
-1. ~~The folder, importing, and the reader.~~
-2. ~~Downloads.~~
-3. ~~A font for Save as PDF and Save annotations as PDF.~~
-4. A font for Save as EPUB and Notes to EPUB, embedded in the book.
+`epubFont`, a **Font** row on the Save as EPUB page, and a field in **Book details** of each of the three conversion
+dialogs that changes it for one conversion. It travels with the other EPUB settings. Read in Orbis Reader adds no
+font: it makes a book to read here, where the display style decides.
+
+- **The whole book.** An EPUB holds no words of the reader's to set apart, so the body takes the font and the
+  headings with it. Code keeps its monospace rule, which is more specific.
+- **The same fonts as the PDF** (`readFaces`, shared): static files, embeddable. An EPUB could carry a variable font,
+  but a reading app that cannot draw one draws nothing, and a book travels to more apps than it is made in.
+- **Embedded.** Each face's file goes in `fonts/` with a name an archive path can hold, manifested as `font/ttf` or
+  `font/otf` (EPUB 3.3's core types), and `style.css` gains an `@font-face` per face, at the face's own weight and
+  style, and `body { font-family }`. No generic fallback is named: a reading app that refuses the font uses its own.
+- **The license travels in the font.** The OFL asks for its notice with every copy, and accepts it in the font's
+  own metadata. Each of the seven downloads carries its copyright and license text in its `name` table (checked
+  when this was built); a font the reader imported may not, and is theirs to judge. No license file is added: a
+  manifest item of a type EPUB does not know needs a fallback, and nothing in the book refers to it.
+- **The stylesheet's rule bent once.** It declares no typography so the reading app's settings win; a font the
+  maker chose is the exception, since it was asked for. A reading app still lets the reader override it, and Orbis
+  draws the display style's font over it unless that font is the book's (Default).
+- **Changing the font does not move a saved position.** Positions point into the chapters, which a font does not
+  touch, so `compareEpubs` calls the rebuilt book `same-text` and it is replaced without asking.
+- **A font not on this device** makes a book without one, and a notice says so; a folder of books says it once.
 
 ---
 
@@ -269,3 +285,5 @@ dialog that changes it for one export. It travels with the other PDF settings.
 | What the PDF font sets | The book's text | Serif for the book, sans for the reader's words, kept |
 | A face or character it lacks | The default face beneath it | Missing glyphs print as `?` otherwise |
 | Variable files in a PDF | Not used | pdf-lib draws one at its default weight only |
+| What the EPUB font sets | The whole book, code aside | The book is all the book's own words |
+| Variable files in an EPUB | Not used | Not every reading app draws one |

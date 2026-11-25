@@ -128,6 +128,7 @@ describe('epubTargetPath', () => {
     language: 'en',
     splitLevel: 2,
     fetchRemoteImages: false,
+    font: '',
     ...over,
   });
 

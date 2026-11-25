@@ -61,6 +61,7 @@ export const SHARED_SETTINGS_KEYS = [
   'epubSameFolderAsNote',
   'epubFolder',
   'epubDefaultType',
+  'epubFont',
   // *Read in Orbis Reader*'s own Type. Its two companions — how the book opens, and which bar comes with it —
   // are per device on purpose; this one travels because it lands in a title note every device reads.
   'readInOrbisType',

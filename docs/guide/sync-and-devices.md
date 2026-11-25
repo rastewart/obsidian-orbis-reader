@@ -199,13 +199,13 @@ When **Share Orbis Reader configuration in the vault** is enabled on two devices
 | **Reading behavior → Read in Orbis Reader** | **Type**, which sets the `type` property of the book's title note |
 | **Listening** | **How much the mark button marks** and **How much the note button captures** |
 | **Annotations → Reading records** | **Write a reading record for each book as you read**, **Where each book's reading record goes**, **Folder for reading records**, **Create one base covering every book**, **Folder for the base covering every book**, and the settings under **What gets added to the vault** |
-| **Annotations → Save annotations as PDF** | **Default folder for PDF files**, **PDF folder path** and **Marked up by** |
+| **Annotations → Save annotations as PDF** | **Default folder for PDF files**, **PDF folder path**, **Marked up by** and **Font** |
 | **Look-up** | **Look-up sections** and **Search destinations** |
 | **Library dashboards** | **Enable the library**, **Folder for new title notes**, **Save cover images** and **Covers folder** |
 | **Book sources** | **Downloads folder**, and the feeds in **OPDS feeds** |
 | **Conversions → Save as Markdown** | **Default folder for Markdown files**, **Markdown folder path**, **Default format**, **Include images** and **Link format** |
-| **Conversions → Save as PDF** | **Default folder for PDF files**, **PDF folder path**, **Marked up by**, **Include marks and notes** and **Cover sheet** |
-| **Conversions → Save as EPUB** | **Default folder for EPUB files**, **EPUB folder path**, **Type for converted books** and **Chapter breaks** |
+| **Conversions → Save as PDF** | **Default folder for PDF files**, **PDF folder path**, **Marked up by**, **Font**, **Include marks and notes** and **Cover sheet** |
+| **Conversions → Save as EPUB** | **Default folder for EPUB files**, **EPUB folder path**, **Type for converted books**, **Chapter breaks** and **Font** |
 | **Devices** | **Vault folder for configuration files** |
 
 Your answers to the setup questions for Library dashboards and Reading records are also shared. On your other devices, these tasks on the **Setup** page show **Ready**, and Orbis Reader does not prompt you for their folders again.

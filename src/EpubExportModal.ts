@@ -14,6 +14,7 @@ import {
   pickListHeader,
   pickRow,
 } from './controls';
+import { epubFontOptions } from './epub-font';
 import { orderNotes } from './folder-epub';
 import { destinationGrid, type FilingState } from './folder-picker';
 import { t } from './i18n';
@@ -314,6 +315,8 @@ export function openEpubExport(
     folder: string;
     fetchRemoteImages: boolean;
     defaultType?: string;
+    /** The font to embed, from settings — see `epub-font.ts`. */
+    font?: string;
     splitLevel?: number;
     libraryOn?: boolean;
   },
@@ -471,6 +474,23 @@ function knownTypes(app: App): string[] {
  * for the ninth time is nine chances to write "blog Post" and split the group. The `+` is the same escape hatch
  * the folder rows have, for the first time a type exists.
  */
+/**
+ * The font the book is set in and carries, a cell of the details grid like the type: from the settings, for this
+ * conversion only. Every vault font a book can embed, switched on for reading or not — see `epub-font.ts`.
+ */
+function renderFontRow(grid: HTMLElement, conv: { font: string }, repaint: () => void): void {
+  const cell = fieldCell(grid, t('epub_font.name'));
+  const select = cell.createEl('select', { cls: 'dropdown' });
+  for (const [value, text] of Object.entries(epubFontOptions(conv.font))) select.createEl('option', { value, text });
+  select.value = conv.font;
+  select.setAttribute('aria-label', t('epub_font.name'));
+  select.addEventListener('change', () => {
+    conv.font = select.value;
+    // The fold's header names the font, so it changes with it.
+    repaint();
+  });
+}
+
 function renderTypeRow(app: App, grid: HTMLElement, conv: EpubConversion, rerender: () => void): void {
   // A cell of the metadata grid, like every field beside it — the select and its "+" share the control column
   // the way the folder picker and its "+" do in the destination fold.
@@ -591,7 +611,8 @@ function renderBookDetails(
      * they are edited.
      */
     value: () =>
-      [conv.author, conv.publisher, conv.publicationDate]
+      // The font too, when there is one: like an author, it is often absent, so its presence says something.
+      [conv.author, conv.publisher, conv.publicationDate, conv.font]
         .map((value) => value.trim())
         .filter(Boolean)
         .join(' \u00b7 '),
@@ -658,6 +679,7 @@ function renderBookDetails(
   // **The medium, and only when the library is on**, because it exists for the title note and there is no title
   // note otherwise.
   if (libraryOn) renderTypeRow(app, grid, conv, rerender);
+  renderFontRow(grid, conv, paint);
 }
 
 /**
@@ -781,6 +803,8 @@ export function openFolderEpubExport(
     folder: string;
     fetchRemoteImages: boolean;
     defaultType?: string;
+    /** The font to embed, from settings — see `epub-font.ts`. */
+    font?: string;
     libraryOn?: boolean;
   },
   onConfirm: (conv: FolderConversion, target?: OutsideTarget) => void,
@@ -1110,7 +1134,11 @@ function renderSeparateDetails(
     label: t('epub_export.book_details'),
     // Language and type left out for the reason `renderBookDetails` gives: both are set on every conversion, so
     // neither summarizes anything by being present. The author is the one value here that is often blank.
-    value: () => conv.author.trim(),
+    value: () =>
+      [conv.author, conv.font]
+        .map((v) => v.trim())
+        .filter(Boolean)
+        .join(' \u00b7 '),
     empty: t('epub_export.no_details'),
     open,
   });
@@ -1147,6 +1175,7 @@ function renderSeparateDetails(
   // already has, with `+` for one it does not. Thirty-four books from one folder are thirty-four of the same kind
   // of thing, so it is asked once.
   if (libraryOn) renderTypeRow(app, grid, conv as unknown as EpubConversion, rerender);
+  renderFontRow(grid, conv, paint);
 }
 
 /** One row of the chapter list: a note in the folder, and whether it is in the book. */
@@ -1288,6 +1317,8 @@ export function openSeparateEpubExport(
     folder: string;
     fetchRemoteImages: boolean;
     defaultType?: string;
+    /** The font to embed, from settings — see `epub-font.ts`. */
+    font?: string;
     libraryOn?: boolean;
   },
   onConfirm: (conv: SeparateConversion) => void
@@ -1306,6 +1337,7 @@ export function openSeparateEpubExport(
     type: conv.type,
     splitLevel: conv.splitLevel,
     fetchRemoteImages: conv.fetchRemoteImages,
+    font: conv.font,
     notes: conv.notes,
     orderSource: conv.orderSource,
   });

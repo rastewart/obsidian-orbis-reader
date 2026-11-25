@@ -13,7 +13,16 @@ import {
   type TFolder,
 } from 'obsidian';
 import { sanitizeName } from './book-extractor';
-import { buildEpub, type EpubImage, type EpubMeta, type EpubSection, escapeXml, xhtmlDocument } from './epub-builder';
+import {
+  buildEpub,
+  type EpubFont,
+  type EpubImage,
+  type EpubMeta,
+  type EpubSection,
+  escapeXml,
+  xhtmlDocument,
+} from './epub-builder';
+import { loadEpubFont } from './epub-font';
 import {
   type BookNote,
   bookTitleOf,
@@ -76,6 +85,11 @@ export interface EpubConversion {
    * provenance.
    */
   type: string;
+  /**
+   * The vault font the book is set in and carries, by family, or empty for none — see `epub-font.ts`. From the
+   * settings' `epubFont`; the dialog may change it for one conversion.
+   */
+  font: string;
 }
 
 /**
@@ -100,6 +114,8 @@ export function epubDefaults(
     defaultType?: string;
     /** Preferred heading level, from settings. Resolved against the note's own headings by the dialog. */
     splitLevel?: number;
+    /** The font to embed, from settings. */
+    font?: string;
   }
 ): EpubConversion {
   const fm = app.metadataCache.getFileCache(file)?.frontmatter;
@@ -126,6 +142,7 @@ export function epubDefaults(
     // From settings, so a clipping workflow can have it on without toggling per note. The dialog still offers it,
     // and still only when a note actually has remote images.
     fetchRemoteImages: opts.fetchRemoteImages,
+    font: opts.font ?? '',
   };
 }
 
@@ -660,7 +677,12 @@ export async function buildNoteEpub(
   file: TFile,
   conv: EpubConversion,
   now: number,
-  opts?: { resolveNote?: NoteLinkResolver; targetPath?: string }
+  opts?: {
+    resolveNote?: NoteLinkResolver;
+    targetPath?: string;
+    /** The font, already read for a set of books — read once, and its absence said once. */
+    font?: EpubFont;
+  }
 ): Promise<BuiltEpub> {
   const meta: EpubMeta = {
     ...conv,
@@ -674,7 +696,8 @@ export async function buildNoteEpub(
   await images.addFrom(host, file);
   const { sections, losses } = toSections(host, conv, linksToSelf(app, file.path), opts?.resolveNote);
   host.remove();
-  const bytes = buildEpub(meta, sections, images.images());
+  const font = opts && 'font' in opts ? opts.font : await conversionFont(app, conv.font);
+  const bytes = buildEpub(meta, sections, images.images(), font);
   return { path: opts?.targetPath ?? epubTargetPath(conv), bytes, losses };
 }
 
@@ -690,6 +713,17 @@ export async function writeBuiltEpub(app: App, built: BuiltEpub): Promise<boolea
     return false;
   }
   return true;
+}
+
+/**
+ * The font a conversion names, read for embedding, or undefined for none. A font this device does not have — not
+ * synced yet, or deleted — makes a book without one, and a notice says so: the book is still the book.
+ */
+export async function conversionFont(app: App, family: string): Promise<EpubFont | undefined> {
+  if (!family) return undefined;
+  const font = await loadEpubFont(app, family);
+  if (!font) new Notice(t('notices.epub_font_missing', { name: family }));
+  return font;
 }
 
 // ── A folder of notes ─────────────────────────────────────────────────────────
@@ -755,6 +789,7 @@ export function folderDefaults(
     folder: string;
     fetchRemoteImages: boolean;
     defaultType?: string;
+    font?: string;
   }
 ): FolderConversion {
   const { notes, index } = folderOrder(app, folder);
@@ -777,6 +812,7 @@ export function folderDefaults(
     // CFI after it in the book.
     splitLevel: 0,
     fetchRemoteImages: opts.fetchRemoteImages,
+    font: opts.font ?? '',
     notes: notes.map((n) => n.path),
     orderSource: index?.path ?? null,
   };
@@ -868,7 +904,7 @@ export async function buildFolderEpub(
   }
 
   const meta: EpubMeta = { ...conv, identifier: newIdentifier(), modified: isoSeconds(now) };
-  const bytes = buildEpub(meta, sections, images.images());
+  const bytes = buildEpub(meta, sections, images.images(), await conversionFont(app, conv.font));
   return { path: epubTargetPath(conv), bytes, losses, sections: sections.length, notes: notes.length };
 }
 
@@ -1063,6 +1099,8 @@ export interface SeparateConversion {
   type: string;
   splitLevel: number;
   fetchRemoteImages: boolean;
+  /** One font for every book in the set, like the type. */
+  font: string;
   notes: string[];
 }
 
@@ -1088,6 +1126,7 @@ export function separateDefaults(
     /** The same destination question the other two dialogs ask. */
     sameFolderAsNote: boolean;
     folder: string;
+    font?: string;
   }
 ): SeparateConversion {
   const { notes, index } = folderOrder(app, folder);
@@ -1111,6 +1150,7 @@ export function separateDefaults(
     type: opts.defaultType || 'book',
     splitLevel: 0,
     fetchRemoteImages: opts.fetchRemoteImages,
+    font: opts.font ?? '',
     notes: notes.map((n) => n.path),
   };
 }
@@ -1184,6 +1224,8 @@ export async function buildSeparateEpubs(
 
   const losses: XhtmlLosses = { links: 0, images: 0, svg: 0, emptyBlocks: 0 };
   const built: { note: TFile; epub: BuiltEpub }[] = [];
+  // Read once for the set, and its absence said once rather than once a book.
+  const font = await conversionFont(app, conv.font);
   for (const note of notes) {
     const book = books.get(note.path);
     if (!book) continue;
@@ -1204,6 +1246,7 @@ export async function buildSeparateEpubs(
       type: conv.type,
       splitLevel: conv.splitLevel,
       fetchRemoteImages: conv.fetchRemoteImages,
+      font: conv.font,
     };
     // A deep link rather than an intra-book href: the target is a different EPUB, and Orbis already answers this
     // URL by opening the book. `id` is deliberately absent — see the note above about fragments.
@@ -1218,7 +1261,7 @@ export async function buildSeparateEpubs(
     // At `bookPathIn`'s path, not `epubTargetPath`'s: the contents note links to this file by `bookPathIn`, and the
     // two capped a long name at different lengths — a 100-character note's book was written whole and linked to cut
     // short.
-    const epub = await buildNoteEpub(app, note, conversion, now, { resolveNote, targetPath: book.path });
+    const epub = await buildNoteEpub(app, note, conversion, now, { resolveNote, targetPath: book.path, font });
     built.push({ note, epub });
     losses.links += epub.losses.links;
     losses.images += epub.losses.images;

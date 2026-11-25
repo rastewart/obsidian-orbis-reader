@@ -76,32 +76,55 @@ export function pdfFontChoices(fonts: readonly VaultFont[] = knownFonts()): stri
   return fonts.filter((f) => pdfFacesOf(f).regular).map((f) => f.family);
 }
 
+/** One face of a family as a document embeds it: which of the four, its file's name, its bytes and its outlines. */
+export interface ReadFace {
+  slot: FaceSlot;
+  face: VaultFace;
+  name: string;
+  data: Uint8Array;
+  format: 'ttf' | 'otf';
+}
+
 /**
- * The faces of `family`, read from the vault, or undefined when this device does not have a Regular face of it that
- * a PDF can use — not synced yet, deleted, or variable files only. Never throws: a font that cannot be read is a PDF
- * in the default font, not a failed export.
+ * The faces of `family` a document can embed, read from the vault (`pdfFacesOf`), or undefined when this device does
+ * not have a Regular one — not synced yet, deleted, or variable files only. For the PDF and the EPUB alike.
+ *
+ * Never throws: a font that cannot be read is a document in the default font, not a failed export.
  */
-export async function loadTextFaces(app: App, family: string): Promise<TextFaces | undefined> {
+export async function readFaces(app: App, family: string): Promise<ReadFace[] | undefined> {
   const key = family.toLowerCase();
   const find = (fonts: readonly VaultFont[]) => fonts.find((f) => f.family.toLowerCase() === key);
   try {
     const font = find(knownFonts()) ?? find(await scanFonts());
     if (!font) return undefined;
-    const text: TextFaces = {};
+    const faces: ReadFace[] = [];
     for (const [slot, face] of Object.entries(pdfFacesOf(font)) as [FaceSlot, VaultFace][]) {
       const file = app.vault.getAbstractFileByPath(face.path);
       const info = file instanceof TFile ? await fontInfoOf(app, file) : null;
       if (!(file instanceof TFile) || !info) continue;
-      text[TEXT_SLOT_OF[slot]] = {
+      faces.push({
+        slot,
+        face,
+        name: file.name,
         data: new Uint8Array(await app.vault.readBinary(file)),
-        subset: info.format === 'ttf',
-      };
+        format: info.format,
+      });
     }
-    return text.body ? text : undefined;
+    return faces.some((f) => f.slot === 'regular') ? faces : undefined;
   } catch (err) {
-    console.error(`[Orbis] could not read the font ${family} for a PDF —`, err);
+    console.error(`[Orbis] could not read the font ${family} —`, err);
     return undefined;
   }
+}
+
+/** The faces of `family` for a PDF, by the writer's slots, or undefined as `readFaces` says. */
+export async function loadTextFaces(app: App, family: string): Promise<TextFaces | undefined> {
+  const faces = await readFaces(app, family);
+  if (!faces) return undefined;
+  const text: TextFaces = {};
+  // Subset when the outlines are TrueType; a CFF file is embedded whole — see `createPdfWriter`.
+  for (const f of faces) text[TEXT_SLOT_OF[f.slot]] = { data: f.data, subset: f.format === 'ttf' };
+  return text;
 }
 
 /**
