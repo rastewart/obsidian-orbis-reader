@@ -35,7 +35,7 @@ describe('aboutRow', () => {
     expect(row.desc).toBe('Version 1.2.3');
   });
 
-  it('opens the guide in the browser from a labelled button', () => {
+  it('opens the guide in the browser from a labeled button', () => {
     const open = vi.spyOn(window, 'open').mockReturnValue(null);
     const button = renderedButton(aboutRow('Orbis Reader', '1.2.3', () => {}) as Row);
     expect(button.textContent).toBe('User guide');
@@ -50,7 +50,7 @@ describe('aboutRow', () => {
     expect(aliases?.every((word) => word === word.trim() && word.length > 0)).toBe(true);
   });
 
-  it("opens What's new from a labelled button before the guide's, and is found by searching for release notes", () => {
+  it("opens What's new from a labeled button before the guide's, and is found by searching for release notes", () => {
     const open = vi.fn();
     const row = aboutRow('Orbis Reader', '1.2.3', open) as Row;
     const host = document.createElement('div');

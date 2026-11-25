@@ -20,7 +20,7 @@ so for every file Orbis writes.
 
 **The folder is looked through, not listed in a setting.** Every `.ttf` and `.otf` file in it, at any depth, is a
 font, and a family is whatever the files say they are. A reader who drops files in by hand has imported them. The
-import copies each family into a folder of its own name, so a licence file can sit beside its fonts, but nothing
+import copies each family into a folder of its own name, so a license file can sit beside its fonts, but nothing
 depends on that arrangement.
 
 **Both settings travel** (`SHARED_SETTINGS_KEYS`): the folder, and `hiddenFonts`. A display style that travels names
@@ -55,8 +55,8 @@ A file picker, then a dialog that shows each family with the faces its files cov
 `gatherImport` (`src/font-import.ts`) sorts what was chosen into families, with no Obsidian in it so it can be tested.
 
 - **A zip is opened, not refused**, since a font is usually downloaded as one. Its `.ttf` and `.otf` files are read
-  at any depth, macOS's `__MACOSX` and `._` copies are skipped, and a licence file in it (`OFL.txt`, `LICENSE…`) is
-  copied with every family the zip held, so the licence sits beside the font in the vault.
+  at any depth, macOS's `__MACOSX` and `._` copies are skipped, and a license file in it (`OFL.txt`, `LICENSE…`) is
+  copied with every family the zip held, so the license sits beside the font in the vault.
 - **Static files win over a variable copy of the same family.** Google's zip of a variable family holds the variable
   files and a `static` folder of every weight. Both would give the browser two descriptions of the same faces, and
   the static ones are what a PDF can use.
@@ -144,16 +144,16 @@ the folder fires an event per file before the one for the folder, and the settin
 here, or while only part of them is. A font whose tables run past the end of the file is *damaged*, and the next change
 to the file looks again.
 
-**Moving the folder.** When the setting changes, the Fonts page moves the fonts and their licences, and nothing else:
+**Moving the folder.** When the setting changes, the Fonts page moves the fonts and their licenses, and nothing else:
 the setting can name any folder of the vault, one with books and notes in it too. The move goes through Obsidian's file
-manager so a sync tool sees a move. A folder that holds only fonts and licences moves whole; from any other the fonts
+manager so a sync tool sees a move. A folder that holds only fonts and licenses moves whole; from any other the fonts
 move one at a time, and the rest stays. A file whose name is taken in the new folder stays, and so does one that could
 not be moved, and a notice says how many. Only the device that changed the setting moves anything. **A folder moved in
 the file explorer** is followed: the setting changes to match. A move made by the Fonts page changes the setting first,
 so it is not followed twice.
 
 **Deleting a font** moves its files to the trash. A folder goes as a whole only when all it holds, at any depth, is
-that family and licences; from any other folder only the family's files go, and the fonts folder itself always stays.
+that family and licenses; from any other folder only the family's files go, and the fonts folder itself always stays.
 
 ---
 
@@ -165,7 +165,7 @@ Literata, Source Serif 4, EB Garamond, and DejaVu for the PDF export.
 **One zip per font, in this repository's `fonts` release.** A reader downloads only the fonts they want, and one font
 can be updated without the others. A zip is all or nothing: one download, one checksum, and every file unpacked or
 none, where loose files could leave three faces of four after a dropped connection. The zip carries the font's
-licence, so it lands beside the font in the vault, as the OFL asks.
+license, so it lands beside the font in the vault, as the OFL asks.
 
 **Built by `pnpm build:fonts`** (`scripts/build-fonts.ts`):
 
@@ -187,7 +187,7 @@ description says what the fonts are and where they come from — the one network
 README's network table lists GitHub for it.
 
 **Embedding.** Every font offered allows it: the OS/2 `fsType` of each file is 0 (installable) or, for OpenDyslexic,
-8 (editable), and each is under the SIL Open Font License 1.1 (DejaVu under the Bitstream Vera licence).
+8 (editable), and each is under the SIL Open Font License 1.1 (DejaVu under the Bitstream Vera license).
 
 ### DejaVu
 
@@ -228,7 +228,7 @@ fonts.
 | Loading | `FontFace` per chapter document | No file addresses inside the book's frame |
 | Missing faces | Regular required, others wanted | Text needs Regular; the rest can be imitated |
 | The list | Switches off, all on by default | A font that arrives is offered without a step |
-| Downloads | One zip per font, from this repository's release | Pick what you want; all-or-nothing; licence travels with it |
+| Downloads | One zip per font, from this repository's release | Pick what you want; all-or-nothing; license travels with it |
 | Faces in a download | The project's own static files | A PDF embeds a variable font at its default weight |
 | DejaVu's old copy | Used until DejaVu is in the vault, then deleted | Moving it on every device would race in the synced folder |
 | What the switches cover | The reading Font list only | Exports offer every vault font; a font hidden for reading may still be wanted in a PDF |

@@ -15,14 +15,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 ### Added
 
 - **Fonts**, a new page in Orbis Reader settings. **Import…** adds a font's TrueType or OpenType files, or the zip file they came in, from your device to a fonts folder in the vault, `!orbis-data/fonts`, so the font reaches your other devices with the rest of the vault. Imported fonts are offered in the **Font** list of display styles. A switch for each font, imported or a system font, shows or hides it in the **Font** list. A font that this device does not have is marked *not on this device*. Changing **Vault folder for fonts** moves the fonts into the new folder.
-- **Downloadable fonts**, on the Fonts page: OpenDyslexic, for readers with dyslexia; Atkinson Hyperlegible, for readers with low vision; Lexend; Literata; Source Serif 4; and EB Garamond. Each downloads from Orbis Reader's releases on GitHub with its licence, into the fonts folder, and is free to use in a PDF or EPUB you share.
+- **Downloadable fonts**, on the Fonts page. They are OpenDyslexic for readers with dyslexia, Atkinson Hyperlegible for readers with low vision, Lexend, Literata, Source Serif 4 and EB Garamond. Each downloads from Orbis Reader's releases on GitHub with its license, into the fonts folder, and is free to use in a PDF or EPUB you share.
 - **What's new**, a button on the last row of Orbis Reader settings, shows the changes in each release. After an update, a notice says that Orbis Reader was updated, with a link to what is new. To stop the notice on a device, turn off **Show what's new after an update** at the foot of the dialog.
 
 ### Changed
 
 - The **Expanded character set** for PDFs (the DejaVu fonts) now downloads into your vault's fonts folder, from Orbis Reader's releases on GitHub, so your sync tool copies it to your other devices. It is listed on the Fonts page, where you can also delete it, and no longer on the Save as PDF settings page. A copy that an earlier version downloaded into the plugin folder is used until the fonts are in the vault, then deleted.
 - On a phone or tablet, a swipe that starts on a bar under the toolbar no longer opens Obsidian's side panels or command palette, so a slider or button on the bar can't open a panel by mistake. The bars are the display style bar, the search bar, the Go to bar, the listening bar and the marks bar. A swipe across the ‹ or › page button doesn't open them either. Swipes from the toolbar, and from the edges of the page above and below the page buttons, work as before.
-- **Two-column layout** on the display style bar's **Layout** tab is now a labelled switch under **Page turn**, like **Bold text** on the **Font** tab, in place of the icon button beside **Mode**. Like **Page turn**, it shows in **Paged mode** only.
+- **Two-column layout** on the display style bar's **Layout** tab is now a labeled switch under **Page turn**, like **Bold text** on the **Font** tab, in place of the icon button beside **Mode**. Like **Page turn**, it shows in **Paged mode** only.
 - A slider on the display style bar is longer when a tab's controls are on one line, so **Size** and **Brightness** are easier to set. A tab without room for the longer slider stacks its controls in rows, as the **Font** tab now does on an iPad mini held upright.
 
 ### Maintenance

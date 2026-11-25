@@ -219,7 +219,7 @@ The progress indicator modes show the book or chapter as a percentage, as locati
 | Show reading data for this book | Opens the reading data of the book's .orbis file: the cover, reading activity, contents, passage selections, notes and linked vault notes |
 | Scan annotation data for problems | Opens the **Annotation data check** dialog. It lists passage selections and annotation notes that cannot be shown or gone to, and you can remove them. For those marked *can be repaired*, **Repair** puts them back where they were made |
 
-**Scan annotation data for problems** finds annotations with a broken range, and exact duplicates. Some annotations with a broken range can be repaired: a mark or note made from the full-screen audio player while a recording played, with **How much the mark button marks** or **How much the note button captures** set to **Paragraph**, before version 0.1.7. These were saved but did not show. **Repair** puts each one back on its paragraph, with its mark and note.
+**Scan annotation data for problems** finds annotations with a broken range, and exact duplicates. Some annotations with a broken range can be repaired. These are marks and notes made from the full-screen audio player while a recording played, with **How much the mark button marks** or **How much the note button captures** set to **Paragraph**, before version 0.1.7. They were saved but did not show. **Repair** puts each one back on its paragraph, with its mark and note.
 
 ### Advanced
 

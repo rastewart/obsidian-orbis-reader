@@ -20,6 +20,7 @@ import { fontsFolderOf, knownFonts, scanFonts } from './fonts';
 import { t } from './i18n';
 import { OrbisModal } from './OrbisModal';
 import { ensureVaultFolder } from './reader/record-move';
+import { sanitizeVaultName } from './vault-names';
 
 const SLOT_LABEL: Record<FaceSlot, Parameters<typeof t>[0]> = {
   regular: 'fonts.face_regular',
@@ -47,9 +48,9 @@ export function faceNames(slots: Iterable<FaceSlot>, or = false): string {
   return names.join(', ');
 }
 
-/** A folder name for a family: the name, without the characters a file system refuses. */
+/** A folder name for a family: one a vault can hold and Obsidian shows, whatever the font calls itself. */
 export function familyFolderName(family: string): string {
-  return family.replace(/[\\/:*?"<>|]/g, '').trim() || 'Font';
+  return sanitizeVaultName(family, { max: 80, fallback: 'Font' });
 }
 
 /**
@@ -117,10 +118,10 @@ class FontImportModal extends OrbisModal {
           text: t('fonts.import_missing', { faces: faceNames(missing, true) }),
         });
       }
-      if (family.licences.length > 0) {
+      if (family.licenses.length > 0) {
         block.createDiv({
           cls: 'orbis-font-import-note',
-          text: t('fonts.import_licence', { files: family.licences.map((l) => l.name).join(', ') }),
+          text: t('fonts.import_license', { files: family.licenses.map((l) => l.name).join(', ') }),
         });
       }
       if (knownFonts().some((f) => f.family.toLowerCase() === family.family.toLowerCase())) {
@@ -170,7 +171,7 @@ class FontImportModal extends OrbisModal {
           await this.write(`${dir}/${file.name}`, file.data);
           count++;
         }
-        for (const licence of family.licences) await this.write(`${dir}/${licence.name}`, licence.data);
+        for (const license of family.licenses) await this.write(`${dir}/${license.name}`, license.data);
       }
       await scanFonts();
       new Notice(count === 1 ? t('fonts.imported_one') : t('fonts.imported', { count }));

@@ -43,8 +43,8 @@ export type FontFileResult = { ok: true; info: FontFileInfo } | { ok: false; pro
 /** OS/2 `usWidthClass`, 1 to 9, as the percentages CSS `font-stretch` uses. */
 const WIDTHS = [50, 62.5, 75, 87.5, 100, 112.5, 125, 150, 200];
 
-/** A licence file that comes with fonts, by its name: `OFL.txt`, `LICENSE`, `COPYING.md`. */
-export function isLicenceFile(name: string): boolean {
+/** A license file that comes with fonts, by its name: `OFL.txt`, `LICENSE`, `COPYING.md`. */
+export function isLicenseFile(name: string): boolean {
   return /^(ofl|licen[cs]e|copying)([._-].*)?$/i.test(name) && /(^[^.]*|\.(txt|md))$/i.test(name);
 }
 
@@ -86,7 +86,8 @@ function parse(bytes: Uint8Array): FontFileResult {
   const nameTable = tables.get('name');
   if (!nameTable) return { ok: false, problem: 'not-a-font' };
   const names = readNames(view, nameTable);
-  const family = (names.get(16) || names.get(1) || '').trim();
+  // Without the characters a quoted CSS name cannot hold as they are: a display style names the font by this.
+  const family = (names.get(16) || names.get(1) || '').replace(/["\\]/g, '').trim();
   if (!family) return { ok: false, problem: 'not-a-font' };
   const subfamily = (names.get(17) || names.get(2) || 'Regular').trim();
 
@@ -200,10 +201,4 @@ export function facesCovered(faces: readonly Pick<FontFileInfo, 'weight' | 'ital
     if (bold) covered.add(face.italic ? 'boldItalic' : 'bold');
   }
   return covered;
-}
-
-/** Whether the file's embedding bits allow it in a document someone else may receive. */
-export function embeddingAllowed(fsType: number): boolean {
-  // Restricted License embedding (bit 1) with none of the permissive bits set is the one refusal.
-  return !((fsType & 0x000f) === 0x0002);
 }

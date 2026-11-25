@@ -1,7 +1,7 @@
 // The fonts Orbis offers to download: which they are, what each is for, and getting one into the vault.
 //
 // **One zip per font, from this repository's `fonts` release** — built by `scripts/build-fonts.ts`, which packs each
-// project's own static files with its licence. The zip's size and SHA-256 are pinned in `font-pins.ts`, so a download
+// project's own static files with its license. The zip's size and SHA-256 are pinned in `font-pins.ts`, so a download
 // is refused unless it is exactly the file this build was made with, and nothing is written when it is not.
 //
 // **Unpacked into the fonts folder**, a folder per font, so a download is a font in the vault like any other: it

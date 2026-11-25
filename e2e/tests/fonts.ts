@@ -1,13 +1,14 @@
 // Fonts from the vault's fonts folder: found when their files arrive, offered in the Font list, and drawn in the book.
 //
 // The font is KaTeX_Main, from the KaTeX package installed for the documentation site: four static faces under the
-// MIT licence, written into the test vault through Obsidian, as sync or an import would put them there.
+// MIT license, written into the test vault through Obsidian, as sync or an import would put them there.
 
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   bookFontState,
   bookFontWeights,
+  closeOtherWindows,
   deleteVaultFolder,
   fontListShown,
   getDisplay,
@@ -191,6 +192,7 @@ export const fontTests: E2eTest[] = [
           `the font is loaded in ${JSON.stringify(state.loaded)}`
         );
       } finally {
+        await page.run(closeOtherWindows);
         await page.run(setDisplay, 'orbis-font-family', before ?? 'default');
         await page.run(deleteVaultFolder, FOLDER);
         await dismissDialogs(page);

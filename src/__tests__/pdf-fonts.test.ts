@@ -146,7 +146,7 @@ describe('the downloads', () => {
     const { app, vault } = fakeApp();
     const zip = zipSync({
       'Literata/Literata-Regular.ttf': new Uint8Array([1]),
-      'Literata/OFL.txt': new TextEncoder().encode('licence'),
+      'Literata/OFL.txt': new TextEncoder().encode('license'),
     });
     const written = await installFontZip(app, zip, 'Assets/Fonts');
     expect(written.sort()).toEqual(['Assets/Fonts/Literata/Literata-Regular.ttf', 'Assets/Fonts/Literata/OFL.txt']);

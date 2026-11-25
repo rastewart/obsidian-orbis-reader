@@ -15,6 +15,11 @@ pnpm e2e --keep          # keep the run's vault and Obsidian data afterwards, to
 A failed test leaves a screenshot of the window in `e2e/.out/`, beside any output that differed from its golden
 file.
 
+**Once on each computer, run `pnpm build:fonts` first.** It downloads the fonts Orbis offers into `dist/fonts/`, which
+git ignores, and *save as PDF draws with DejaVu from the fonts folder* reads DejaVu from there. Without it that test
+fails and says so. It is not skipped, since a skipped test is easy to miss. Run it again when `src/font-pins.ts`
+changes.
+
 ---
 
 ## Where it fits
@@ -188,6 +193,7 @@ The tests run in the order below. Running every command is last, because it chan
 | `conversions.ts` | save as Markdown | Twelve exports of eight books in four formats, including the Conversions plan's hard books, each matching its `markdown-*.md`; every note has frontmatter Obsidian reads and no link that leads nowhere |
 | | save as Markdown waits for a book being measured | Asked for while the book's location index is held unbuilt, the dialog waits with its notice, and the omnibus's notes still match `markdown-omnibus-epub.md` |
 | | save as PDF, save annotations as PDF | Each writes a PDF with pages |
+| | save as PDF draws with DejaVu from the fonts folder | With DejaVu unpacked into the fonts folder, as a download does, the PDF embeds DejaVu Serif. Needs `pnpm build:fonts` |
 | | save as PDF carries the marks, with a cover sheet and a comment per note | Neither appears for a book with no marks |
 | | save note as EPUB makes a book that opens | The book's contents match `note-as-epub-contents.txt` |
 | | read in Orbis Reader opens a note as a book | The note's prose is in the book shown |
@@ -216,6 +222,11 @@ The tests run in the order below. Running every command is last, because it chan
 | | a slider on a one-line tab is long enough to set, and a tab without the room for one stacks | Wide, Theme, Spacing and Font are each on one line with no slider under 180px; at 700px, where the Font tab fit on one line with a 100px slider, it stacks |
 | | the Two-column layout switch turns two columns on and off, and follows a change made elsewhere | Selecting the switch stores one column and then two; after a change made outside the bar, the switch shows it |
 | | Obsidian's swipe is off on the secondary bars and the page buttons, and on in the rest of the reader | The display style bar's tabs and sliders, the search, Go to and listening bars, the marks bar and the ‹ › page buttons are inside a `data-ignore-swipe`; the primary toolbar, the page, the Navigator and the full-screen player are not |
+| `fonts.ts` | a font put in the fonts folder is offered in the Font list and draws the book | Four faces written into the vault, as sync or an import writes them |
+| | a face that arrives after its font reaches the chapter already open | Regular, then Bold, with the book open. The chapter has both weights |
+| | a font in use that is not in the vault is offered as not on this device | |
+| | moving the fonts folder in the file explorer moves the setting with it, and its fonts stay offered | |
+| | a vault font draws a book in an Obsidian window of its own | |
 | `resilience.ts` | a renamed or moved book keeps its marks and place | Its reading data takes the new name and the new folder, and the book reopens with its mark at its place |
 | | a deleted book takes its reading data with it | With the notice the plan quotes |
 | | damaged reading data is written again from the marks | A `.orbis` emptied or not JSON is written again with its marks; a damaged place opens the book at its start |
@@ -226,6 +237,7 @@ The tests run in the order below. Running every command is last, because it chan
 | `records.ts` | reading records follow the marks and notes, and keep what the reader wrote | A record per mark and note, with its bases; a changed mark updates it and keeps the reader's line; a record nobody wrote in goes with its mark, one they did stays, orphaned |
 | `library.ts` | a book is cataloged, and its status and rating set from the reader | The title note matches `catalog-title-note.md`; status and rating are written to it, and a rating cleared |
 | `sync.ts` | another device's mark appears in the open book | A device file written under another device's id, as the Sync plan's first run does. The mark appears without reopening, on its text |
+| `whats-new.ts` | the update notice opens What's new, which pages through the releases at one size and leaves out Maintenance | From the developer command's notice, the dates, Older and Newer, the switch, and the keyboard on Close |
 | `commands.ts` | every command runs without an error | Each command the palette offers with a book open, toggles twice. Three are left out, each with its reason in `SKIP` |
 
 Each of the first set of tests was made to fail first, on the code it guards; for the hostile book that needs both of

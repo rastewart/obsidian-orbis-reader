@@ -97,7 +97,7 @@ describe('releasesFor', () => {
     expect(versions(releasesFor(all, '0.2.0'))).toEqual(['0.1.0']);
   });
 
-  it("gives a beta its version's unreleased section, labelled with the beta, above the releases before it", () => {
+  it("gives a beta its version's unreleased section, labeled with the beta, above the releases before it", () => {
     const rs = releasesFor(all, '0.4.0-beta.2');
     expect(versions(rs)).toEqual(['0.4.0-beta.2', '0.3.0', '0.1.0']);
     expect(rs[0].date).toBeNull();

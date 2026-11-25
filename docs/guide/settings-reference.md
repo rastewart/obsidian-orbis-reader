@@ -136,11 +136,11 @@ If you hide a button, you can still run its command from the command palette.
 
 ## Fonts
 
-These settings are in **Settings → Orbis Reader → Fonts**. They set where fonts are kept, add fonts from your device, and choose which fonts the **Font** list for reading offers.
+These settings are in **Settings → Orbis Reader → Fonts**. They set where fonts are kept, add fonts from your device, and set which fonts the **Font** list for reading offers.
 
 | Setting | What it does |
 |---|---|
-| **Vault folder for fonts** | Sets the folder for the fonts that you import. The default is `!orbis-data/fonts`. When you change the folder, Orbis Reader moves the fonts and their licence files into it. Other files stay where they are |
+| **Vault folder for fonts** | Sets the folder for the fonts that you import. The default is `!orbis-data/fonts`. When you change the folder, Orbis Reader moves the fonts and their license files into it. Other files stay where they are |
 | **Import fonts** | **Import…** opens your device's file picker. Select the TrueType or OpenType files (`.ttf` or `.otf`) of a font, or the zip file that you downloaded them in |
 | **Vault fonts** | Lists each font in the fonts folder with the faces it has, and a line of sample text in the font. The trash button moves the font's files to the trash, and the font's folder if it contains nothing else. The switch shows or hides the font in the **Font** list |
 | **System fonts** | Lists the fonts that come with devices, in alphabetical order, with a line of sample text in each font. Each says whether this device has the font. The switch shows or hides the font in the **Font** list |
@@ -150,15 +150,15 @@ All fonts are shown in the **Font** list by default. A font that is in use stays
 
 ### Importing a font
 
-A font usually has four files, one for each face: Regular, Italic, Bold and Bold Italic. Select all four at once in the file picker, or select the zip file that the font came in. Before it copies the files, Orbis Reader shows each font with the faces that it found:
+A font usually has four files, one for each face. The faces are Regular, Italic, Bold and Bold Italic. Select all four at once in the file picker, or select the zip file that the font came in. Before it copies the files, Orbis Reader shows each font with the faces that it found:
 
 - A font needs a Regular face. Without one, the font is not imported.
 - A font without an Italic, Bold or Bold Italic face is imported. Text in a missing face is drawn by slanting or thickening Regular.
 - A file that is not a TrueType or OpenType font is not imported. Web fonts (`.woff` and `.woff2`) and font collections (`.ttc`) are not imported.
-- From a zip file, Orbis Reader takes the `.ttf` and `.otf` files in any of its folders, and the font's licence file, such as `OFL.txt`. Other files in the zip are left out.
+- From a zip file, Orbis Reader takes the `.ttf` and `.otf` files in any of its folders, and the font's license file, such as `OFL.txt`. Other files in the zip are left out.
 - If a zip file has both a variable font and separate files for each face, such as a download from Google Fonts, Orbis Reader imports the separate files only.
 
-Orbis Reader copies each font to its own folder in the fonts folder, named for the font, with its licence file if there is one. The font's name and faces come from the font files, not from their file names. You can also copy font files into the fonts folder yourself.
+Orbis Reader copies each font to its own folder in the fonts folder, named for the font, with its license file if there is one. The font's name and faces come from the font files, not from their file names. You can also copy font files into the fonts folder yourself.
 
 ### Downloading a font
 
@@ -170,11 +170,11 @@ Orbis Reader copies each font to its own folder in the fonts folder, named for t
 | **Literata** | Made for reading on screens. It covers Greek, Cyrillic and Vietnamese |
 | **Source Serif 4** | A clear, traditional book font |
 | **EB Garamond** | A classic book font |
-| **DejaVu** | The expanded character set for PDFs: the characters that other fonts lack, such as arrows, mathematical symbols, Greek and Cyrillic. See [Save as PDF](save-as-pdf.md#the-expanded-character-set) |
+| **DejaVu** | The expanded character set for PDFs. It has characters that other fonts lack, such as arrows, mathematical symbols, Greek and Cyrillic. See [Save as PDF](save-as-pdf.md#the-expanded-character-set) |
 
-Orbis Reader downloads each font from its releases on GitHub, as one zip file with the font's files and its licence. It compares the zip with a checksum that is fixed in the plugin, and does not save a font that is different. The font goes into its own folder in the fonts folder, and then shows under **Vault fonts**.
+Orbis Reader downloads each font from its releases on GitHub, as one zip file with the font's files and its license. It compares the zip with a checksum that is fixed in the plugin, and does not save a font that is different. The font goes into its own folder in the fonts folder, and then shows under **Vault fonts**.
 
-Every font in this list is free to use, including in a PDF or EPUB that you share. Each font's licence file is in its folder.
+Every font in this list is free to use, including in a PDF or EPUB that you share. Each font's license file is in its folder.
 
 DejaVu is three fonts: DejaVu Serif, DejaVu Sans and DejaVu Sans Mono. Under **Vault fonts**, their rows say *Used for PDF exports*. You can also read in them.
 
@@ -182,7 +182,7 @@ DejaVu is three fonts: DejaVu Serif, DejaVu Sans and DejaVu Sans Mono. Under **V
 
 The fonts folder is part of your vault, so your sync tool copies the fonts to your other devices. The **Vault folder for fonts** setting and which fonts are shown are shared too. See [Sync and Devices](sync-and-devices.md#settings-shared-between-devices).
 
-Until a font's files reach a device, the **Font** list on that device shows the font as *not on this device*, and books use the default font. A system font that a device does not have is shown the same way. A missing system font is drawn in a similar font that the device has: the device's serif font in place of Georgia, Palatino or Times New Roman, and its sans-serif font in place of Arial, Trebuchet MS or Verdana.
+Until a font's files reach a device, the **Font** list on that device shows the font as *not on this device*, and books use the default font. A system font that a device does not have is shown the same way. A missing system font is drawn in a similar font that the device has. Georgia, Palatino and Times New Roman are drawn in the device's serif font, and Arial, Trebuchet MS and Verdana in its sans-serif font.
 
 Android answers some system font names with its own fonts. There, Georgia, Palatino and Times New Roman are drawn in the same serif font, and Arial and Verdana in the same sans-serif font. On Android, the **Fonts** page says *Same as the device's serif font* or *Same as the device's sans-serif font* for these, and the **Font** list adds *(device serif)* or *(device sans-serif)*. Trebuchet MS is not on Android.
 

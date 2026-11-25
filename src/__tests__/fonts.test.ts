@@ -242,7 +242,7 @@ describe('moveFontsFolder', () => {
     expect(v.trashed).toEqual(['old']);
   });
 
-  it('moves only the fonts and their licences out of a folder that holds other things, and keeps that folder', async () => {
+  it('moves only the fonts and their licenses out of a folder that holds other things, and keeps that folder', async () => {
     const paths = [
       'Books/A book.epub',
       'Books/Note.md',
@@ -252,7 +252,7 @@ describe('moveFontsFolder', () => {
       'Books/Literata/OFL.txt',
       'Books/Mixed/Lexend.TTF',
       'Books/Mixed/Why I like it.md',
-      'Books/Licences/LICENSE.md',
+      'Books/Licenses/LICENSE.md',
     ];
     for (const there of [[], ['Fonts/readme.md']]) {
       const v = fakeVault([...paths, ...there]);
@@ -304,7 +304,7 @@ describe('deleteFontFiles', () => {
     })),
   });
 
-  it('trashes a folder that holds only the family and its licence, whole, and the one around it', async () => {
+  it('trashes a folder that holds only the family and its license, whole, and the one around it', async () => {
     const v = fakeVault(['F/Lit/OFL.txt', 'F/Lit/static/Lit-Regular.ttf', 'F/Lit/static/Lit-Bold.ttf']);
     await deleteFontFiles(v.app, 'F', fontOf('Lit', 'F/Lit/static/Lit-Regular.ttf', 'F/Lit/static/Lit-Bold.ttf'));
     expect(v.trashed).toEqual(['F/Lit']);

@@ -1,9 +1,9 @@
-// Sorting chosen files into families: loose font files, zips of them with their licences, macOS's zip leftovers,
+// Sorting chosen files into families: loose font files, zips of them with their licenses, macOS's zip leftovers,
 // a variable copy beside static files, and the reasons anything is left out.
 
 import { zipSync } from 'fflate';
 import { describe, expect, it } from 'vitest';
-import { faceNames } from '../FontImportModal';
+import { faceNames, familyFolderName } from '../FontImportModal';
 import { gatherImport } from '../font-import';
 import { fontBytes } from './font-bytes';
 
@@ -17,7 +17,26 @@ const four = (family: string) => ({
   [`${family}-BoldItalic.ttf`]: face(family, 700, true),
 });
 
+describe('familyFolderName', () => {
+  it('is the family, made a folder that a vault can hold and Obsidian shows', () => {
+    expect(familyFolderName('Source Serif 4')).toBe('Source Serif 4');
+    expect(familyFolderName('..')).toBe('Font');
+    expect(familyFolderName('.SF NS Text')).toBe('SF NS Text');
+    expect(familyFolderName('A/B: C')).toBe('A B C');
+    expect(familyFolderName('Con')).toBe('_Con');
+  });
+});
+
 describe('gatherImport', () => {
+  it('names a file by the last part of its path, with either slash, and without a dot in front', () => {
+    const zip = zipSync({
+      '..\\..\\Up\\Test-Regular.ttf': face('Test', 400, false),
+      'fonts/.Hidden-Bold.ttf': face('Test', 700, false),
+    });
+    const { families } = gatherImport([{ name: 'Test.zip', data: zip }]);
+    expect(families[0].files.map((f) => f.name).sort()).toEqual(['Hidden-Bold.ttf', 'Test-Regular.ttf']);
+  });
+
   it('sorts loose files into families by what the files say', () => {
     const { families, refused } = gatherImport(
       Object.entries(four('Test Serif')).map(([name, data]) => ({ name, data }))
@@ -28,10 +47,10 @@ describe('gatherImport', () => {
     ]);
   });
 
-  it('opens a zip, keeps the folders out of the names, and brings its licence to every family in it', () => {
-    const licence = new TextEncoder().encode('SIL Open Font License');
+  it('opens a zip, keeps the folders out of the names, and brings its license to every family in it', () => {
+    const license = new TextEncoder().encode('SIL Open Font License');
     const zip = zipSync({
-      'Test-Serif/OFL.txt': licence,
+      'Test-Serif/OFL.txt': license,
       'Test-Serif/fonts/ttf': {},
       ...Object.fromEntries(Object.entries(four('Test Serif')).map(([n, d]) => [`Test-Serif/fonts/ttf/${n}`, d])),
       'Test-Serif/fonts/webfonts/TestSerif-Regular.woff2': new Uint8Array([0x77, 0x4f, 0x46, 0x32]),
@@ -47,7 +66,7 @@ describe('gatherImport', () => {
       'Test Serif-Italic.ttf',
       'Test Serif-Regular.ttf',
     ]);
-    expect(families[0].licences.map((l) => [l.name, new TextDecoder().decode(l.data)])).toEqual([
+    expect(families[0].licenses.map((l) => [l.name, new TextDecoder().decode(l.data)])).toEqual([
       ['OFL.txt', 'SIL Open Font License'],
     ]);
   });

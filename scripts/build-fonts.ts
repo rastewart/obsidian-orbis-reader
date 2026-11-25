@@ -1,4 +1,4 @@
-// Build the zips of the `fonts` release: one per font, holding its four faces and its licence.
+// Build the zips of the `fonts` release: one per font, holding its four faces and its license.
 //
 // Usage:
 //   pnpm build:fonts
@@ -9,7 +9,7 @@
 //
 // **Every input is pinned.** Each file comes from a fixed commit of the font's own repository (DejaVu from a fixed npm
 // version), and is checked against the SHA-256 recorded here before it is packed — see `pinned-download.ts`. The
-// files are packed unchanged, so no font is a modified version under its licence.
+// files are packed unchanged, so no font is a modified version under its license.
 //
 // **Static faces only.** A PDF (pdf-lib) embeds a variable font at its default weight, so each zip holds the separate
 // Regular, Italic, Bold and Bold Italic files the project publishes. Lexend has no italic, so it has two.
@@ -45,7 +45,7 @@ interface FontSource {
   version: string;
   /** The folder the zip unpacks into, inside the vault's fonts folder. */
   folder: string;
-  /** The files, by the name each has in the zip. The licence is one of them. */
+  /** The files, by the name each has in the zip. The license is one of them. */
   files: Record<string, Pinned>;
 }
 

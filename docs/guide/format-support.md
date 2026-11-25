@@ -70,7 +70,7 @@ An FB2 book is one XML file. It works like the other text formats.
 
 ### CBZ
 
-You turn pages, and reading progress and deep links work, as in other formats. In a right-to-left book, such as manga, a swipe turns the page in the book's own direction. **Two-column layout** decides whether you see two pages side by side or one at a time: see [Display Settings](display-settings.md). **Page turn** has no effect. The other features rely on text, which a CBZ book does not have. See [Text formats and image formats](#text-formats-and-image-formats).
+You turn pages, and reading progress and deep links work, as in other formats. In a right-to-left book, such as manga, a swipe turns the page in the book's own direction. **Two-column layout** decides whether you see two pages side by side or one at a time. See [Display Settings](display-settings.md). **Page turn** has no effect. The other features rely on text, which a CBZ book does not have. See [Text formats and image formats](#text-formats-and-image-formats).
 
 The cover of a CBZ book is the first image in the file. This is almost always the cover.
 

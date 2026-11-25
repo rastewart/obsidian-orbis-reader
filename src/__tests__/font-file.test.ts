@@ -2,7 +2,7 @@
 // the reader depends on is set on purpose.
 
 import { describe, expect, it } from 'vitest';
-import { embeddingAllowed, facesCovered, isLicenceFile, readFontFile } from '../font-file';
+import { facesCovered, isLicenseFile, readFontFile } from '../font-file';
 import { fontBytes, type Spec } from './font-bytes';
 
 const info = (spec: Spec) => {
@@ -28,6 +28,10 @@ describe('readFontFile', () => {
     const font = info({ names: { 1: 'Test Sans Light', 2: 'Regular', 16: 'Test Sans', 17: 'Light' }, weight: 300 });
     expect(font.family).toBe('Test Sans');
     expect(font.subfamily).toBe('Light');
+  });
+
+  it('leaves out of the family what a quoted CSS name cannot hold', () => {
+    expect(info({ names: { 1: 'Odd"Na\\me', 2: 'Regular' } }).family).toBe('OddName');
   });
 
   it('counts oblique as italic', () => {
@@ -97,23 +101,13 @@ describe('facesCovered', () => {
   });
 });
 
-describe('isLicenceFile', () => {
-  it('knows the names licences come under, and not a document that only starts the same', () => {
+describe('isLicenseFile', () => {
+  it('knows the names licenses come under, and not a document that only starts the same', () => {
     for (const name of ['OFL.txt', 'LICENSE', 'licence.md', 'OFL-1.1.txt', 'COPYING']) {
-      expect(isLicenceFile(name), name).toBe(true);
+      expect(isLicenseFile(name), name).toBe(true);
     }
     for (const name of ['License agreement.docx', 'license.pdf', 'Licensing notes.md', 'My note.md']) {
-      expect(isLicenceFile(name), name).toBe(false);
+      expect(isLicenseFile(name), name).toBe(false);
     }
-  });
-});
-
-describe('embeddingAllowed', () => {
-  it('refuses only Restricted License embedding', () => {
-    expect(embeddingAllowed(0)).toBe(true);
-    expect(embeddingAllowed(2)).toBe(false);
-    expect(embeddingAllowed(4)).toBe(true);
-    expect(embeddingAllowed(8)).toBe(true);
-    expect(embeddingAllowed(0x0102)).toBe(false);
   });
 });

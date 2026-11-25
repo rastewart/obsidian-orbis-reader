@@ -1897,7 +1897,7 @@ export function swipeIgnored(selectors: string[]): Record<string, boolean | null
 }
 
 /**
- * Selects the switch on the row labelled `label` in the display style tab `id`, as a reader does, and returns whether
+ * Selects the switch on the row labeled `label` in the display style tab `id`, as a reader does, and returns whether
  * it is on afterwards. The tab must be open — see `openDisplayTab`.
  */
 export function flipDrawerSwitch(id: string, label: string): boolean {
@@ -2106,6 +2106,30 @@ export async function openBookInNewWindow(path: string, timeoutMs: number): Prom
   while (Date.now() < end && !view()?.foliateView?.renderer?.getContents?.()?.length) {
     await new Promise((r) => setTimeout(r, 200));
   }
+}
+
+/**
+ * Closes every Obsidian window but the main one, and returns how many were open. `closeEveryTab` closes the main
+ * window's tabs only, and a window left open is where the next notice shows.
+ */
+export async function closeOtherWindows(): Promise<number> {
+  const app = (window as unknown as { app: { workspace: { iterateAllLeaves(fn: (leaf: Leaf) => void): void } } }).app;
+  interface Leaf {
+    view: { containerEl: HTMLElement };
+    detach(): void;
+  }
+  const away = new Map<Window, Leaf[]>();
+  app.workspace.iterateAllLeaves((leaf) => {
+    const win = leaf.view.containerEl.ownerDocument.defaultView;
+    if (win && win !== window) away.set(win, [...(away.get(win) ?? []), leaf]);
+  });
+  for (const leaves of away.values()) for (const leaf of leaves) leaf.detach();
+  const other = () => (window as unknown as { activeWindow: Window }).activeWindow !== window;
+  for (let i = 0; i < 20 && (i === 0 || other()); i++) {
+    window.focus();
+    await new Promise((r) => setTimeout(r, 100));
+  }
+  return away.size;
 }
 
 /** Whether the book in a window of its own has `family` loaded in every chapter on screen. */

@@ -1,8 +1,8 @@
-// What a set of chosen files holds: font files, zips of them, and the licences that came with them.
+// What a set of chosen files holds: font files, zips of them, and the licenses that came with them.
 //
 // **A zip is opened, not refused.** A font is usually downloaded as one: Google Fonts' "Download all", a foundry's
-// release. The fonts inside it are read like files chosen one by one, at any depth, and a licence file in the zip
-// (`OFL.txt`, `LICENSE…`) goes with every family the zip held, so the licence is beside the font in the vault.
+// release. The fonts inside it are read like files chosen one by one, at any depth, and a license file in the zip
+// (`OFL.txt`, `LICENSE…`) goes with every family the zip held, so the license is beside the font in the vault.
 //
 // **Static files win over a variable copy of the same family.** Google's zip of a variable family holds the variable
 // files and a `static` folder of every weight. Both would give the browser two descriptions of the same faces; the
@@ -16,7 +16,7 @@ import {
   type FontFileInfo,
   type FontFileProblem,
   facesCovered,
-  isLicenceFile,
+  isLicenseFile,
   readFontFile,
 } from './font-file';
 
@@ -34,8 +34,8 @@ export interface ChosenFont {
   info: FontFileInfo;
 }
 
-/** A licence file that came with fonts. */
-export interface ChosenLicence {
+/** A license file that came with fonts. */
+export interface ChosenLicense {
   name: string;
   data: Uint8Array;
 }
@@ -48,11 +48,11 @@ export interface Refused {
   problem: ImportProblem;
 }
 
-/** The chosen files of one family, and the licences that came with them. */
+/** The chosen files of one family, and the licenses that came with them. */
 export interface ImportFamily {
   family: string;
   files: ChosenFont[];
-  licences: ChosenLicence[];
+  licenses: ChosenLicense[];
   covered: Set<FaceSlot>;
 }
 
@@ -63,9 +63,14 @@ export interface Gathered {
 
 const FONT_FILE = /\.(ttf|otf)$/i;
 
-/** The last part of a path in a zip. */
+/** The last part of a path in a zip, whichever slash the zip was made with. */
 function baseName(path: string): string {
-  return path.split('/').pop() ?? path;
+  return path.split(/[\\/]/).pop() ?? path;
+}
+
+/** A file's name as the vault will have it: never one that starts with a dot, which Obsidian does not show. */
+function fileName(path: string): string {
+  return baseName(path).replace(/^[\s.]+/, '');
 }
 
 /** Whether a path in a zip is one of the copies macOS adds when it makes a zip. */
@@ -78,7 +83,7 @@ export function gatherImport(sources: readonly ChosenSource[]): Gathered {
   const byFamily = new Map<string, ImportFamily>();
   const refused: Refused[] = [];
 
-  const addFont = (name: string, data: Uint8Array, licences: ChosenLicence[]): boolean => {
+  const addFont = (name: string, data: Uint8Array, licenses: ChosenLicense[]): boolean => {
     const result = readFontFile(data);
     if (!result.ok) {
       refused.push({ name, problem: result.problem });
@@ -88,12 +93,12 @@ export function gatherImport(sources: readonly ChosenSource[]): Gathered {
     const family = byFamily.get(key) ?? {
       family: result.info.family,
       files: [],
-      licences: [],
+      licenses: [],
       covered: new Set<FaceSlot>(),
     };
-    family.files.push({ name: baseName(name), data, info: result.info });
-    for (const licence of licences) {
-      if (!family.licences.some((l) => l.name === licence.name)) family.licences.push(licence);
+    family.files.push({ name: fileName(name), data, info: result.info });
+    for (const license of licenses) {
+      if (!family.licenses.some((l) => l.name === license.name)) family.licenses.push(license);
     }
     byFamily.set(key, family);
     return true;
@@ -107,17 +112,17 @@ export function gatherImport(sources: readonly ChosenSource[]): Gathered {
     let entries: Record<string, Uint8Array>;
     try {
       entries = unzipSync(source.data, {
-        filter: (f) => !macJunk(f.name) && (FONT_FILE.test(f.name) || isLicenceFile(baseName(f.name))),
+        filter: (f) => !macJunk(f.name) && (FONT_FILE.test(f.name) || isLicenseFile(baseName(f.name))),
       });
     } catch {
       refused.push({ name: source.name, problem: 'bad-zip' });
       continue;
     }
-    const licences = Object.entries(entries)
-      .filter(([path]) => isLicenceFile(baseName(path)))
-      .map(([path, data]) => ({ name: baseName(path), data }));
+    const licenses = Object.entries(entries)
+      .filter(([path]) => isLicenseFile(baseName(path)))
+      .map(([path, data]) => ({ name: fileName(path), data }));
     const fonts = Object.entries(entries).filter(([path]) => FONT_FILE.test(path));
-    for (const [path, data] of fonts) addFont(`${source.name}/${path}`, data, licences);
+    for (const [path, data] of fonts) addFont(`${source.name}/${path}`, data, licenses);
     if (fonts.length === 0) refused.push({ name: source.name, problem: 'empty-zip' });
   }
 

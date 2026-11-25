@@ -10,7 +10,7 @@
 // them; the dialog drops them, and a release with nothing else says nothing after an update.
 //
 // **A beta shows its version's section.** A beta has no section of its own: every beta of 0.2.0 writes into
-// `## [0.2.0] — Unreleased`, which `pnpm bump` dates at the release. So a beta shows that section, labelled with the
+// `## [0.2.0] — Unreleased`, which `pnpm bump` dates at the release. So a beta shows that section, labeled with the
 // beta, above the releases before it; a stable version shows releases only. See docs/design/first-run.md.
 //
 // Kept free of Obsidian, so the rules can be tested.
@@ -111,7 +111,7 @@ function compare(a: string, b: string): number {
  *
  * - **A stable version** gets every dated release up to and including itself. An `Unreleased` section is work for
  *   the next version, not part of this one.
- * - **A beta** gets its version's unreleased section, labelled with the beta, and then every release before its
+ * - **A beta** gets its version's unreleased section, labeled with the beta, and then every release before its
  *   version. The section is `## [0.2.0] — Unreleased`, or a bare `## [Unreleased]` when no version is written yet.
  */
 export function releasesFor(all: readonly Release[], current: string): Release[] {

@@ -144,7 +144,7 @@ A mark shows in the PDF with its name, color and treatment, not with its badge. 
 
 A chapter is a top-level entry in the book's table of contents, so a chapter includes the headings under it. An entry that groups chapters, such as a part or one novel of an omnibus, opens into those chapters.
 
-The **Chapters** list also has a row for each section that is not in the table of contents, named from the section's heading. A section with no heading shows as **Section *n***. A section that continues the chapter before it, such as the second half of a chapter that Calibre split into two files, has no row of its own: it is part of that chapter, and its marks count toward it. The rules are the same as in Save as Markdown. See [Sections that are not in the table of contents](save-as-markdown.md#sections-that-are-not-in-the-table-of-contents).
+The **Chapters** list also has a row for each section that is not in the table of contents, named from the section's heading. A section with no heading shows as **Section *n***. A section that continues the chapter before it, such as the second half of a chapter that Calibre split into two files, has no row of its own. It is part of that chapter, and its marks count toward it. The rules are the same as in Save as Markdown. See [Sections that are not in the table of contents](save-as-markdown.md#sections-that-are-not-in-the-table-of-contents).
 
 ---
 

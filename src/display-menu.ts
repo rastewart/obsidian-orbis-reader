@@ -346,7 +346,7 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
   });
 
   /**
-   * **Two-column layout, a labelled switch under Page turn** — Obsidian's switch, as Bold text is on the Font tab and
+   * **Two-column layout, a labeled switch under Page turn** — Obsidian's switch, as Bold text is on the Font tab and
    * as Settings → Appearance has it. Not an icon: every other control on the bar says what it is in words. Not a
    * "Columns: 1 / 2" dropdown either, because 2 would promise what a phone held upright never shows.
    * On means the preference is on, not that two columns are showing: they appear only where the reading area is wide

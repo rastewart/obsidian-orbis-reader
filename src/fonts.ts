@@ -16,7 +16,7 @@
 // See docs/design/fonts.md.
 
 import { type App, type EventRef, normalizePath, Platform, TFile, TFolder, Vault } from 'obsidian';
-import { FACE_SLOTS, type FaceSlot, type FontFileInfo, facesCovered, isLicenceFile, readFontFile } from './font-file';
+import { FACE_SLOTS, type FaceSlot, type FontFileInfo, facesCovered, isLicenseFile, readFontFile } from './font-file';
 import { t } from './i18n';
 import { ensureVaultFolder } from './reader/record-move';
 import { FONT_FAMILY_OPTIONS } from './settings';
@@ -508,10 +508,10 @@ export interface FolderMove {
 }
 
 /**
- * Move the fonts in the folder from `from` to `to`, with their licence files, when the reader changes the setting.
+ * Move the fonts in the folder from `from` to `to`, with their license files, when the reader changes the setting.
  *
  * **Only the fonts.** The setting can name any folder of the vault, one with books and notes in it too, and those are
- * not the fonts' to move: a folder that holds nothing but fonts and licences moves whole, and from any other the fonts
+ * not the fonts' to move: a folder that holds nothing but fonts and licenses moves whole, and from any other the fonts
  * move and the rest stays.
  *
  * **Renamed through Obsidian's file manager**, a folder at a time where that can be, so a sync tool sees a move rather
@@ -535,9 +535,9 @@ async function moveFonts(app: App, entry: TFile | TFolder, dest: string, result:
   if (entry instanceof TFolder && (taken || !holdsOnlyFonts(entry))) {
     const hadFonts = entry.children.some((c) => c instanceof TFile && isFontFile(c));
     for (const child of [...entry.children]) {
-      const licence = child instanceof TFile && hadFonts && isLicenceFile(child.name);
+      const license = child instanceof TFile && hadFonts && isLicenseFile(child.name);
       const font = child instanceof TFolder || (child instanceof TFile && isFontFile(child));
-      if (font || licence) await moveFonts(app, child, normalizePath(`${dest}/${child.name}`), result);
+      if (font || license) await moveFonts(app, child, normalizePath(`${dest}/${child.name}`), result);
     }
     // An empty folder left behind is untidy, not a failed move.
     if (entry.children.length === 0) await app.fileManager.trashFile(entry).catch(() => {});
@@ -557,24 +557,24 @@ async function moveFonts(app: App, entry: TFile | TFolder, dest: string, result:
   }
 }
 
-/** Whether a folder holds fonts, their licences, and nothing else. */
+/** Whether a folder holds fonts, their licenses, and nothing else. */
 function holdsOnlyFonts(folder: TFolder): boolean {
-  return filesUnder(folder).every((f) => isFontFile(f) || isLicenceFile(f.name));
+  return filesUnder(folder).every((f) => isFontFile(f) || isLicenseFile(f.name));
 }
 
 // ── Deleting a font ──────────────────────────────────────────────────────────
 
 /**
- * Move a family's files to the trash, and nothing else but the licence that came with them.
+ * Move a family's files to the trash, and nothing else but the license that came with them.
  *
- * **A folder goes as a whole only when all it holds, at any depth, is this family and licences**: the folder an import
+ * **A folder goes as a whole only when all it holds, at any depth, is this family and licenses**: the folder an import
  * or a download made, or the one around it. From any other folder — one with another family in it, or the reader's
  * own files — only this family's files go. The fonts folder itself always stays. The trash is Obsidian's, so the
  * reader's own trash setting decides where they land.
  */
 export async function deleteFontFiles(app: App, root: string, font: VaultFont): Promise<void> {
   const paths = new Set(font.faces.map((f) => f.path));
-  const allOurs = (folder: TFolder) => filesUnder(folder).every((f) => paths.has(f.path) || isLicenceFile(f.name));
+  const allOurs = (folder: TFolder) => filesUnder(folder).every((f) => paths.has(f.path) || isLicenseFile(f.name));
   const doomed = new Map<string, TFile | TFolder>();
   for (const path of paths) {
     const file = app.vault.getAbstractFileByPath(path);
