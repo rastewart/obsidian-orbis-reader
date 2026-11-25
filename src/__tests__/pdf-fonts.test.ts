@@ -5,12 +5,20 @@ import { zipSync } from 'fflate';
 import { type App, TFile, TFolder } from 'obsidian';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FONT_PACKAGES, installFontZip, packageInstalled } from '../font-downloads';
+import { gatherImport } from '../font-import';
 import { FONT_PINS } from '../font-pins';
+import type { VaultFont } from '../fonts';
 import { downloadPdfFonts, FONT_ASSETS, forgetLegacyPdfFonts, loadPdfFonts, pdfFontsReady } from '../pdf-fonts';
 import { fontBytes } from './font-bytes';
 
 const requestUrl = vi.hoisted(() => vi.fn());
 vi.mock('obsidian', async (original) => ({ ...(await original<typeof import('obsidian')>()), requestUrl }));
+
+// Node's own modules at run time, since the plugin's tsconfig has no Node types (see `asset-integrity.test.ts`).
+declare const process: {
+  getBuiltinModule(id: 'node:fs'): { existsSync(p: string): boolean; readFileSync(p: string): Uint8Array };
+};
+const fs = process.getBuiltinModule('node:fs');
 
 const LEGACY = '.obsidian/plugins/orbis-reader/font-cache';
 
@@ -153,11 +161,69 @@ describe('the downloads', () => {
     expect(vault.get('Assets/Fonts/Literata/Literata-Regular.ttf')).toEqual(new Uint8Array([1]));
   });
 
-  it('counts a package as downloaded when every one of its families is in the vault', () => {
-    const dejavu = FONT_PACKAGES.find((p) => p.id === 'dejavu');
-    if (!dejavu) throw new Error('no DejaVu');
-    const font = (family: string) => ({ family, faces: [] });
-    expect(packageInstalled(dejavu, [font('DejaVu Serif'), font('DejaVu Sans')])).toBe(false);
-    expect(packageInstalled(dejavu, [font('DejaVu Serif'), font('DejaVu Sans'), font('dejavu sans mono')])).toBe(true);
+  /** A package as the vault has it, whole: DejaVu's files by their own names, another's by family and face. */
+  const whole = (id: string): VaultFont[] => {
+    const pkg = FONT_PACKAGES.find((p) => p.id === id);
+    if (!pkg) throw new Error(`no ${id}`);
+    const files = [...(pkg.files ?? [])];
+    return Object.entries(pkg.families).map(([family, slots]) => ({
+      family,
+      faces: slots.map((slot) => ({
+        path: `F/${files.shift() ?? `${family}-${slot}.ttf`}`,
+        weight: slot.startsWith('bold') ? 700 : 400,
+        italic: /italic/i.test(slot),
+        weightRange: null,
+        width: 100,
+        fsType: 0,
+        subfamily: slot,
+      })),
+    }));
+  };
+  const installed = (id: string, fonts: VaultFont[]) => {
+    const pkg = FONT_PACKAGES.find((p) => p.id === id);
+    return !!pkg && packageInstalled(pkg, fonts);
+  };
+
+  it('counts a package as downloaded when every face of every one of its families is in the vault', () => {
+    for (const { id } of FONT_PACKAGES) {
+      const fonts = whole(id);
+      expect(installed(id, fonts), id).toBe(true);
+      expect(installed(id, fonts.slice(1)), `${id} without a family`).toBe(false);
+      fonts.forEach((font, f) => {
+        font.faces.forEach((face, i) => {
+          const less = fonts.map((x, n) => (n === f ? { ...x, faces: x.faces.filter((_face, j) => j !== i) } : x));
+          expect(installed(id, less), `${id} without ${font.family} ${face.subfamily}`).toBe(false);
+        });
+      });
+    }
+  });
+
+  it('counts a family however it got there, in any case and as variable files', () => {
+    const [literata] = whole('literata');
+    const variable = [false, true].map((italic) => ({
+      ...literata.faces[0],
+      path: `F/Literata${italic ? '-Italic' : ''}[opsz,wght].ttf`,
+      italic,
+      weightRange: [200, 900] as [number, number],
+    }));
+    expect(installed('literata', [{ family: 'LITERATA', faces: variable }])).toBe(true);
+  });
+
+  // The zips are built by `pnpm build:fonts`, and git ignores them: where they are, as before an end-to-end run.
+  it.skipIf(!fs.existsSync('dist/fonts'))('counts each zip of the fonts release, once unpacked, as downloaded', () => {
+    for (const { id } of FONT_PACKAGES) {
+      const zip = { name: 'font.zip', data: new Uint8Array(fs.readFileSync(`dist/fonts/${FONT_PINS[id].zip}`)) };
+      const fonts = gatherImport([zip]).families.map(({ family, files }) => ({
+        family,
+        faces: files.map((f) => ({ path: `F/${f.name}`, ...f.info })),
+      }));
+      expect(installed(id, fonts), id).toBe(true);
+    }
+  });
+
+  it('counts DejaVu only with the files the PDF export finds by name', () => {
+    const fonts = whole('dejavu');
+    fonts[0].faces[0].path = 'F/Renamed.ttf';
+    expect(installed('dejavu', fonts)).toBe(false);
   });
 });

@@ -112,6 +112,10 @@ function parse(bytes: Uint8Array): FontFileResult {
     }
   }
 
+  // Some files set no italic bit and say it in the name only, as OpenDyslexic's Italic does. Called upright, it would be
+  // a second Regular, and either could draw the book's text.
+  if (/\b(italic|oblique)\b/i.test(subfamily)) italic = true;
+
   return {
     ok: true,
     info: {

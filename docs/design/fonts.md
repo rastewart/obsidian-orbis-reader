@@ -36,8 +36,9 @@ reader themes are.
 - **`name`**: the typographic family (ID 16) or else the legacy one (ID 1), so a Light face joins its family rather
   than becoming *Family Light*.
 - **`OS/2`**: the weight, the width (`usWidthClass`), italic or oblique (`fsSelection`), and the embedding bits
-  (`fsType`). Without `OS/2`, the style comes from `head.macStyle`. The width tells a Condensed face from the normal one
-  of its family, which can have the same weight and style (DejaVu Sans does).
+  (`fsType`). Without `OS/2`, the style comes from `head.macStyle`. A face whose name says Italic or Oblique is italic
+  whatever its bits say, since OpenDyslexic's Italic sets none. The width tells a Condensed face from the normal one of
+  its family, which can have the same weight and style (DejaVu Sans does).
 - **`fvar`**: a variable font's weight axis, so one file can be both regular and bold.
 
 **TrueType and OpenType only.** Those are what the reader, a PDF (pdf-lib through fontkit) and an EPUB can all use.
@@ -181,8 +182,10 @@ license, so it lands beside the font in the vault, as the OFL asks.
   `literata-3.103.zip`) and a new pin, so an older build still downloads the zip it pinned.
 
 **Downloading** (`downloadFontPackage`) checks the size and SHA-256 against the pin and writes nothing on a mismatch,
-then unpacks into the fonts folder keeping the zip's folder. A font counts as downloaded when every one of its
-families is in the vault, however it got there, and then it leaves this section for **Vault fonts**. The section's
+then unpacks into the fonts folder keeping the zip's folder. A font counts as downloaded when every face of every one
+of its families is in the vault, however it got there, and then it leaves this section for **Vault fonts**. DejaVu also
+needs its seven files by name, as the PDF export does. A font that has lost a file, or whose file is damaged, is listed
+again, and the download replaces the files it has in the folder of the same name. The section's
 description says what the fonts are and where they come from — the one network request on the page — and the
 README's network table lists GitHub for it.
 

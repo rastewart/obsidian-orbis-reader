@@ -11,6 +11,7 @@
 
 import { unzipSync } from 'fflate';
 import { type App, normalizePath, requestUrl, TFile } from 'obsidian';
+import { FACE_SLOTS, type FaceSlot, facesCovered } from './font-file';
 import { FONT_PINS, type FontPackageId } from './font-pins';
 import type { VaultFont } from './fonts';
 import { scanFonts } from './fonts';
@@ -26,49 +27,89 @@ export interface FontPackage {
   id: FontPackageId;
   /** The name a reader knows it by. */
   name: string;
-  /** The families its files hold. It is downloaded when every one of them is in the vault. */
-  families: readonly string[];
+  /** The families its files hold, and the faces of each. It is downloaded when every one of them is in the vault. */
+  families: Readonly<Record<string, readonly FaceSlot[]>>;
   /** What it is for, in a line. */
   purpose: TranslationKey;
   /** Used by the PDF export to draw characters the chosen font lacks — said on its row of the Fonts page only. */
   pdf?: true;
+  /** Files it is downloaded only with, by name, for a use that finds them so: the PDF export. */
+  files?: readonly string[];
 }
+
+/** DejaVu's files, which the PDF export finds by these names (`pdf-fonts.ts`). */
+export const DEJAVU_FILES = {
+  body: 'DejaVuSerif.ttf',
+  italic: 'DejaVuSerif-Italic.ttf',
+  bodyBold: 'DejaVuSerif-Bold.ttf',
+  bodyBoldItalic: 'DejaVuSerif-BoldItalic.ttf',
+  bold: 'DejaVuSans-Bold.ttf',
+  sans: 'DejaVuSans.ttf',
+  mono: 'DejaVuSansMono.ttf',
+} as const;
 
 /**
  * The fonts offered, in the order the Fonts page lists them: those made for how a reader reads first, then the book
  * faces, then DejaVu, which is there for the PDF export.
  */
 export const FONT_PACKAGES: readonly FontPackage[] = [
-  { id: 'opendyslexic', name: 'OpenDyslexic', families: ['OpenDyslexic'], purpose: 'fonts.purpose_opendyslexic' },
+  {
+    id: 'opendyslexic',
+    name: 'OpenDyslexic',
+    families: { OpenDyslexic: FACE_SLOTS },
+    purpose: 'fonts.purpose_opendyslexic',
+  },
   {
     id: 'atkinson-hyperlegible',
     name: 'Atkinson Hyperlegible',
-    families: ['Atkinson Hyperlegible'],
+    families: { 'Atkinson Hyperlegible': FACE_SLOTS },
     purpose: 'fonts.purpose_atkinson',
   },
-  { id: 'lexend', name: 'Lexend', families: ['Lexend'], purpose: 'fonts.purpose_lexend' },
-  { id: 'literata', name: 'Literata', families: ['Literata'], purpose: 'fonts.purpose_literata' },
-  { id: 'source-serif-4', name: 'Source Serif 4', families: ['Source Serif 4'], purpose: 'fonts.purpose_source_serif' },
-  { id: 'eb-garamond', name: 'EB Garamond', families: ['EB Garamond'], purpose: 'fonts.purpose_eb_garamond' },
+  { id: 'lexend', name: 'Lexend', families: { Lexend: ['regular', 'bold'] }, purpose: 'fonts.purpose_lexend' },
+  { id: 'literata', name: 'Literata', families: { Literata: FACE_SLOTS }, purpose: 'fonts.purpose_literata' },
+  {
+    id: 'source-serif-4',
+    name: 'Source Serif 4',
+    families: { 'Source Serif 4': FACE_SLOTS },
+    purpose: 'fonts.purpose_source_serif',
+  },
+  {
+    id: 'eb-garamond',
+    name: 'EB Garamond',
+    families: { 'EB Garamond': FACE_SLOTS },
+    purpose: 'fonts.purpose_eb_garamond',
+  },
   {
     id: 'dejavu',
     name: 'DejaVu',
-    families: ['DejaVu Serif', 'DejaVu Sans', 'DejaVu Sans Mono'],
+    families: { 'DejaVu Serif': FACE_SLOTS, 'DejaVu Sans': ['regular', 'bold'], 'DejaVu Sans Mono': ['regular'] },
     purpose: 'fonts.purpose_dejavu',
     pdf: true,
+    files: Object.values(DEJAVU_FILES),
   },
 ];
 
-/** Whether every family of a package is among the vault's fonts. */
+/**
+ * Whether the vault has everything a package holds: every family, and every face of it, whatever files they are in.
+ *
+ * **Every face, so a font that has lost one is offered again.** A file deleted by hand, or damaged by a sync, is not
+ * among the vault's fonts, and downloading again is how the reader gets it back.
+ */
 export function packageInstalled(pkg: FontPackage, fonts: readonly VaultFont[]): boolean {
-  const have = new Set(fonts.map((f) => f.family.toLowerCase()));
-  return pkg.families.every((family) => have.has(family.toLowerCase()));
+  const byFamily = new Map(fonts.map((f) => [f.family.toLowerCase(), f]));
+  const whole = Object.entries(pkg.families).every(([family, slots]) => {
+    const covered = facesCovered(byFamily.get(family.toLowerCase())?.faces ?? []);
+    return slots.every((slot) => covered.has(slot));
+  });
+  if (!whole || !pkg.files) return whole;
+  const names = new Set(fonts.flatMap((f) => f.faces.map((face) => face.path.slice(face.path.lastIndexOf('/') + 1))));
+  return pkg.files.every((name) => names.has(name));
 }
 
 /** The package a family belongs to, if it is one of the downloads. */
 export function packageOf(family: string): FontPackage | undefined {
   const key = family.toLowerCase();
-  return FONT_PACKAGES.find((p) => p.families.some((f) => f.toLowerCase() === key));
+  return FONT_PACKAGES.find((p) => Object.keys(p.families).some((f) => f.toLowerCase() === key));
 }
 
 /** A download's size in megabytes, to one decimal place. */

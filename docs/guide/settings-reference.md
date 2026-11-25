@@ -144,7 +144,7 @@ These settings are in **Settings → Orbis Reader → Fonts**. They set where fo
 | **Import fonts** | **Import…** opens your device's file picker. Select the TrueType or OpenType files (`.ttf` or `.otf`) of a font, or the zip file that you downloaded them in |
 | **Vault fonts** | Lists each font in the fonts folder with the faces it has, and a line of sample text in the font. The trash button moves the font's files to the trash, and the font's folder if it contains nothing else. The switch shows or hides the font in the **Font** list |
 | **System fonts** | Lists the fonts that come with devices, in alphabetical order, with a line of sample text in each font. Each says whether this device has the font. The switch shows or hides the font in the **Font** list |
-| **Downloadable fonts** | Lists the open source fonts that Orbis Reader offers and that are not in your vault yet, with what each is for and its size. **Download** puts the font in the fonts folder. See [Downloading a font](#downloading-a-font) |
+| **Downloadable fonts** | Lists the open source fonts that Orbis Reader offers and that are not in your vault, with what each is for and its size. A font that is missing a face, or has a damaged file, is listed too. **Download** puts the font in the fonts folder. See [Downloading a font](#downloading-a-font) |
 
 All fonts are shown in the **Font** list by default. A font that is in use stays in the list when you hide it.
 

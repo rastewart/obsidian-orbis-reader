@@ -38,6 +38,12 @@ describe('readFontFile', () => {
     expect(info({ fsSelection: 0x200 }).italic).toBe(true);
   });
 
+  it('counts as italic a face whose name says so and whose bits do not', () => {
+    const names = { 1: 'Test Sans Italic', 2: 'Regular', 16: 'Test Sans', 17: 'Italic' };
+    expect(info({ names, fsSelection: 0xc0 })).toMatchObject({ family: 'Test Sans', weight: 400, italic: true });
+    expect(info({ names: { 1: 'Test Italics', 2: 'Regular' } }).italic).toBe(false);
+  });
+
   it('reads the style from the head table when there is no OS/2', () => {
     expect(info({ noOs2: true, macStyle: 3 })).toMatchObject({ weight: 700, italic: true });
   });

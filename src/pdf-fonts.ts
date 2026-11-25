@@ -17,7 +17,7 @@
 // See docs/design/marks-pdf.md §Fonts and docs/design/fonts.md § Downloads.
 
 import type { App, DataAdapter, TFile } from 'obsidian';
-import { downloadFontPackage, packageMegabytes } from './font-downloads';
+import { DEJAVU_FILES, downloadFontPackage, packageMegabytes } from './font-downloads';
 import { fontFilesIn, fontInfoOf, fontsFolderOf } from './fonts';
 
 /** The faces the writer draws with. Mirrors `FontName` in `pdf-writer.ts`. */
@@ -28,15 +28,10 @@ export type FontSlot = 'body' | 'italic' | 'bodyBold' | 'bodyBoldItalic' | 'bold
  * were arranged in, so nothing about the page design changes when these are installed. Found by these file names,
  * which the `dejavu` zip of the `fonts` release keeps, wherever in the fonts folder they are.
  */
-export const FONT_ASSETS: readonly { slot: FontSlot; file: string }[] = [
-  { slot: 'body', file: 'DejaVuSerif.ttf' },
-  { slot: 'italic', file: 'DejaVuSerif-Italic.ttf' },
-  { slot: 'bodyBold', file: 'DejaVuSerif-Bold.ttf' },
-  { slot: 'bodyBoldItalic', file: 'DejaVuSerif-BoldItalic.ttf' },
-  { slot: 'bold', file: 'DejaVuSans-Bold.ttf' },
-  { slot: 'sans', file: 'DejaVuSans.ttf' },
-  { slot: 'mono', file: 'DejaVuSansMono.ttf' },
-];
+export const FONT_ASSETS = (Object.entries(DEJAVU_FILES) as [FontSlot, string][]).map(([slot, file]) => ({
+  slot,
+  file,
+}));
 
 /** What the reader is being asked to download, for the dialog to say out loud. */
 export const FONT_DOWNLOAD_MB = packageMegabytes('dejavu');

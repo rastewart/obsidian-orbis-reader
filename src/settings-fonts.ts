@@ -94,8 +94,8 @@ export function buildFontsPage(el: HTMLElement, host: FontsPageHost): void {
 
   // ── To download ──
   // Last, since it is mostly used once, when setting up: the two lists a reader keeps coming back to come first.
-  // Each font not yet in the vault, with what it is for and its size. A download lands in the fonts folder, so the
-  // font moves up to the vault's section. See `font-downloads.ts`.
+  // Each font not in the vault, or not all of it, with what it is for and its size. A download lands in the fonts
+  // folder, so the font is then in the vault's section only. See `font-downloads.ts`.
   const toGet = FONT_PACKAGES.filter((pkg) => !packageInstalled(pkg, fonts));
   new Setting(el)
     .setName(t('fonts.downloads'))
