@@ -555,14 +555,6 @@ body {
   grid-column: 2 / -1;
   justify-self: start;
 }
-/* As a form, the row with a button after its dropdown (Layout's Mode and two columns) gives the dropdown the slider's
-   column and the button the rest. */
-.orbis-form-drawer.is-form .orbis-slider-drawer.orbis-has-button {
-  grid-template-columns: var(--orbis-form-label, auto) minmax(0, 1fr) auto;
-}
-.orbis-form-drawer.is-form .orbis-has-button .orbis-dropdown {
-  grid-column: 2;
-}
 
 /* A drawer with two pages, the Spacing tab's (`pageToggle`): only the rows of the page showing. */
 .orbis-form-drawer:not(.is-more) > .orbis-drawer-more,
@@ -707,12 +699,6 @@ body {
   .orbis-drawer-btn:hover:not(#orbis#important) {
     background: var(--background-modifier-hover);
   }
-}
-.orbis-drawer-btn.is-active {
-  color: var(--text-on-accent);
-}
-.orbis-drawer-btn.is-active:not(#orbis#important) {
-  background: var(--interactive-accent);
 }
 .orbis-menu-overlay {
   position: absolute;

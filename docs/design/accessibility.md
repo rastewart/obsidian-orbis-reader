@@ -291,14 +291,7 @@ orbis-level3-drawer[structure] role="tabpanel"  id="orbis-drawer-structure"
 ...
 ```
 
-Icon-only buttons inside drawers:
-
-| Button | `aria-label` |
-|---|---|
-| Two Columns | `'Two columns'`, with `aria-pressed` (no Active/Inactive in the name) |
-| Full Justify | `'Full justify'`, with `aria-pressed` |
-
-Use `aria-pressed` (not just `.is-active` CSS class) for all toggle buttons.
+The drawers have no icon-only buttons: every control has a visible label. An on/off setting, such as **Two-column layout** or **Bold text**, is Obsidian's switch (`ToggleComponent`), whose checkbox carries the setting's name as its `aria-label`. An icon-only toggle button would need its name in `aria-label` and its state in `aria-pressed`, never Active/Inactive in the name.
 
 ### Content panel tab bar
 
@@ -334,7 +327,7 @@ No interactive element has `.title` as its only accessible name: each carries an
 Three cases need more than a label:
 
 - **Display Style tabs** (`display-menu.ts`, via `addTab` — Theme, Layout, Spacing, Font) have visible text, which already names them for a screen reader. They carry an `aria-label` anyway, because Obsidian's hover-tooltip UI reads the nearest ancestor's `aria-label` rather than the native `title`: without one on the tab, hovering it shows the tab bar's tooltip ("Display style options") instead of the tab's own name.
-- **Toggle buttons** in the drawers are named for what they do (`Two columns`, `Full justify`) and carry `aria-pressed`, rather than putting Active/Inactive in the name.
+- **Switches** in the drawers (**Two-column layout**, **Bold text**) are named for the setting on their checkbox, and the checkbox's own checked state carries on or off, rather than Active/Inactive in the name.
 - **The panel close button** is labeled `Close panel`, and its × character is hidden from screen readers with `aria-hidden="true"`.
 
 **A tooltip is a label, not a `title`.** A `title` is drawn by Chromium, as macOS draws it, beside the pointer, and a

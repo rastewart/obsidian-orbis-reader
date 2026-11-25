@@ -318,7 +318,7 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
   const structureDrawer = createDrawer('structure', 'orbis-flex-wrap orbis-form-drawer');
 
   // Flow mode dropdown
-  const modeWrap = structureDrawer.createDiv({ cls: 'orbis-slider-drawer orbis-has-button' });
+  const modeWrap = structureDrawer.createDiv({ cls: 'orbis-slider-drawer' });
   modeWrap.createSpan({
     text: t('display_menu.mode'),
     cls: 'orbis-drawer-label',
@@ -330,24 +330,8 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
   modeSelect.value = view.settings.flow;
 
   /**
-   * **Two-column layout, as a toggle beside the mode** — the same lit/unlit button as Justify, because a checkbox
-   * row's long label ("Enable two-column layout on large displays") runs off the edge of a phone.
-   * Lit means the preference is on, not that two columns are showing: they appear only where the reading area is
-   * wide enough, which a phone reaches in landscape — so it is not hidden on phones. Settings and the guide say so.
-   *
-   * **Hidden while scrolling**, not grayed: a scrolled book has one column, so there is nothing for it to do. The
-   * preference is kept rather than reset, so going back to paged mode brings it back — see `applyRenderer`.
-   */
-  const colBtn = modeWrap.createEl('button', { cls: 'orbis-drawer-btn' });
-  colBtn.setAttribute('aria-label', t('display_menu.two_column_layout'));
-  setSvgIcon(
-    colBtn,
-    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="10" y2="6"/><line x1="3" y1="12" x2="10" y2="12"/><line x1="3" y1="18" x2="10" y2="18"/><line x1="14" y1="6" x2="21" y2="6"/><line x1="14" y1="12" x2="21" y2="12"/><line x1="14" y1="18" x2="21" y2="18"/></svg>'
-  );
-
-  /**
    * **Page turn, under Mode**: how a page turns in Paged mode, None or Slide (`page-turn.ts`). Hidden while scrolling,
-   * as the two-column button is, since a scrolled book has no pages to turn; the choice is kept for paged mode.
+   * since a scrolled book has no pages to turn; the choice is kept for paged mode.
    */
   const turnWrap = structureDrawer.createDiv({ cls: 'orbis-slider-drawer' });
   turnWrap.createSpan({ text: t('appearance_page.page_turn'), cls: 'orbis-drawer-label' });
@@ -360,20 +344,40 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     view.saveSetting('pageTurn', next);
   });
 
-  // Remembered, not read from the page: in a tab that is not open the row is never shown, whatever the mode.
-  let turnShown = true;
+  /**
+   * **Two-column layout, a labelled switch under Page turn** — Obsidian's switch, as Bold text is on the Font tab and
+   * as Settings → Appearance has it. Not an icon: every other control on the bar says what it is in words. Not a
+   * "Columns: 1 / 2" dropdown either, because 2 would promise what a phone held upright never shows.
+   * On means the preference is on, not that two columns are showing: they appear only where the reading area is wide
+   * enough, which a phone reaches in landscape — so it is not hidden on phones. Settings and the guide say so.
+   *
+   * **Hidden while scrolling**, as Page turn is, not grayed: a scrolled book has one column, so there is nothing for it
+   * to do. The preference is kept rather than reset, so going back to paged mode brings it back — see `applyRenderer`.
+   */
+  const colWrap = structureDrawer.createDiv({ cls: 'orbis-slider-drawer' });
+  colWrap.createSpan({ text: t('display_menu.two_column_layout'), cls: 'orbis-drawer-label' });
+  const colToggle = new ToggleComponent(colWrap);
+  colToggle.toggleEl.querySelector('input')?.setAttribute('aria-label', t('display_menu.two_column_layout'));
+  colToggle.setValue(view.settings.columns === 2).onChange((on) => {
+    // `setValue` runs this too, as the sync below writes an outside change: only a change is saved.
+    const next = on ? 2 : 1;
+    if (view.settings.columns === next) return;
+    view.settings.columns = next;
+    view.saveSetting('columns', next);
+  });
+
+  // Remembered, not read from the page: in a tab that is not open the rows are never shown, whatever the mode.
+  let pagedShown = true;
   const updateStructureBtns = () => {
     modeSelect.value = view.settings.flow;
     turnSelect.value = view.settings.pageTurn;
-    const on = view.settings.columns === 2;
-    colBtn.classList.toggle('is-active', on);
-    colBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    colToggle.setValue(view.settings.columns === 2);
     const paged = view.settings.flow !== 'scrolled';
-    colBtn.toggle(paged);
-    // A row coming or going changes the tab's shape, so it is laid out again — only then, not on every sync.
-    if (turnShown !== paged) {
-      turnShown = paged;
+    // Rows coming or going change the tab's shape, so it is laid out again — only then, not on every sync.
+    if (pagedShown !== paged) {
+      pagedShown = paged;
       turnWrap.toggle(paged);
+      colWrap.toggle(paged);
       view.fitDisplayDrawer?.();
     }
   };
@@ -382,13 +386,6 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     const newFlow = modeSelect.value as Flow;
     view.settings.flow = newFlow;
     view.saveSetting('flow', newFlow); // applied as the theme is, above
-    updateStructureBtns();
-  });
-
-  colBtn.addEventListener('click', () => {
-    const newCols = view.settings.columns === 2 ? 1 : 2;
-    view.settings.columns = newCols;
-    view.saveSetting('columns', newCols);
     updateStructureBtns();
   });
   updateStructureBtns();

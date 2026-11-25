@@ -37,7 +37,7 @@ The palette-icon button (`displayStyleBtn`) opens a two-level popup menu built b
 | Tab | Controls |
 |---|---|
 | Theme | Theme dropdown (the themes offered — see [Reader themes](reader-themes.md)); brightness slider (20–100%) |
-| Layout | Reading mode dropdown (paginated / scrolled); "Enable two columns" checkbox (disabled when scrolled) |
+| Layout | Reading mode dropdown (paginated / scrolled); Page turn dropdown and Two-column layout switch (both hidden when scrolled) |
 | Spacing | Margins slider (0–12%); line spacing slider (1.0–3.0×); Alignment dropdown (Follow the book / Left / Justified) |
 | Font | Font family dropdown; font size slider (80–300%) |
 

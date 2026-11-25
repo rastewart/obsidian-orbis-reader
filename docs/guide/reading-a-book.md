@@ -181,7 +181,7 @@ For what Focus mode hides on each device, see [Focus mode](#focus-mode).
 
 **Scrolled mode** shows the current section of the book as one long scroll. To change the mode, use the **Layout** tab of the display style bar. You can also run **Toggle scrolled mode** from the command palette.
 
-**Two-column layout** is available only in Paged mode. When it is enabled, and the screen is big enough, each page shows two columns. Its button is hidden in Scrolled mode. See [Display Settings](display-settings.md).
+**Two-column layout** is available only in Paged mode. When it is enabled, and the screen is big enough, each page shows two columns. Its switch is hidden in Scrolled mode. See [Display Settings](display-settings.md).
 
 ---
 

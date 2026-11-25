@@ -1891,3 +1891,18 @@ export function swipeIgnored(selectors: string[]): Record<string, boolean | null
   }
   return seen;
 }
+
+/**
+ * Selects the switch on the row labelled `label` in the display style tab `id`, as a reader does, and returns whether
+ * it is on afterwards. The tab must be open — see `openDisplayTab`.
+ */
+export function flipDrawerSwitch(id: string, label: string): boolean {
+  const drawer = document.getElementById(`orbis-drawer-${id}`);
+  if (!drawer) throw new Error(`no ${id} drawer`);
+  const text = (el: Element | null) => ((el as HTMLElement | null)?.innerText ?? '').replace(/\s+/g, ' ').trim();
+  const row = Array.from(drawer.children).find((r) => text(r.querySelector('.orbis-drawer-label')) === label);
+  const toggle = row?.querySelector<HTMLElement>('.checkbox-container');
+  if (!toggle || toggle.getClientRects().length === 0) throw new Error(`the ${id} tab shows no ${label} switch`);
+  toggle.click();
+  return toggle.classList.contains('is-enabled');
+}

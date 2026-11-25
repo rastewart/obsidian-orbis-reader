@@ -21,7 +21,7 @@ The display style bar has four tabs:
 | Tab | Controls |
 |---|---|
 | **Theme** | **Reader theme**, **Brightness** |
-| **Layout** | **Mode** (**Paged mode** or **Scrolled mode**), and the **Two-column layout** button. The button shows two columns of lines, and it is highlighted when the layout is enabled. **Page turn**, in **Paged mode** only |
+| **Layout** | **Mode** (**Paged mode** or **Scrolled mode**). In **Paged mode** only, **Page turn** and the **Two-column layout** switch |
 | **Spacing** | **Margins**, **Line spacing**, **Alignment**. Select **More** for **Character spacing**, **Word spacing**, **Paragraph spacing** and **Hyphenation** |
 | **Font** | **Font**, **Size**, **Bold text** |
 

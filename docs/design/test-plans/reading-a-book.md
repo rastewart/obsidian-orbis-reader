@@ -84,9 +84,9 @@ Use `annotation-workhorse.epub` from here on.
 
 - [ ] `once` Run **Toggle scrolled mode** from the command palette: the book scrolls. Run it again: back to pages.
 
-- [ ] `desktop` Select the two-column button, with the reader pane wide. The page shows two columns of text. Narrow the pane until it is too small for two: it falls back to one. Widen it again, then select the button again to go back to one column.
+- [ ] `desktop` Turn the **Two-column layout** switch on, with the reader pane wide. The page shows two columns of text. Narrow the pane until it is too small for two: it falls back to one. Widen it again, then turn the switch off to go back to one column.
 
-- [ ] `phone` Turn the two-column button on in portrait: one column still shows, since a phone is too narrow. Rotate to landscape: two columns. Rotate back, and turn the button off.
+- [ ] `phone` Turn the **Two-column layout** switch on in portrait: one column still shows, since a phone is too narrow. Rotate to landscape: two columns, and the **Layout** tab's three rows fit above Obsidian's toolbar. Rotate back, and turn the switch off.
 
 - [ ] `mobile` Rotate between portrait and landscape a few times. The book reflows each time and stays at about the same place.
 

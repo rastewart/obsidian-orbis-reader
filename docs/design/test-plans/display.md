@@ -75,9 +75,9 @@ The display style bar and **Settings → Appearance** change the same values. Fo
 
 - [ ] `phone` With **Page turn** on **Slide**, turn on the device's reduce-motion setting (iPhone: **Settings → Accessibility → Motion → Reduce Motion**; Android: **Remove animations**) and reopen the book: pages change at once. Turn the device setting off again.
 
-- [ ] `each` **Reading mode** and **Two-column layout** (display style bar: **Layout**). Set **Reading mode** to **Scrolled mode**: the two-column control and **Page turn** disappear from both surfaces, also when the display style bar was closed while you set it. Set it back to **Paged mode**: they are back on both, as they were.
+- [ ] `each` **Reading mode** and **Two-column layout** (display style bar: **Layout**). Set **Reading mode** to **Scrolled mode**: the **Two-column layout** switch and **Page turn** disappear from both surfaces, also when the display style bar was closed while you set it. Set it back to **Paged mode**: they are back on both, as they were.
 
-- [ ] `desktop` On a wide pane, turn **Two-column layout** off: one column. Turn it on: two. The bar's button is lit exactly when the Settings switch is on.
+- [ ] `desktop` On a wide pane, turn **Two-column layout** off: one column. Turn it on: two. The bar's switch is on exactly when the Settings switch is on.
 
 - [ ] `desktop` With the display style bar open and a tab selected, press Shift+Tab until **Bookmark this location** has the keyboard, then **Enter**. The bookmark is added, the display style bar closes, and the keyboard stays on **Bookmark this location**.
 

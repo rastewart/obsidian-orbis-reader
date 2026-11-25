@@ -11,6 +11,7 @@ import {
   emptyPageAtSectionEnd,
   fakeMobileNavbar,
   firstSlider,
+  flipDrawerSwitch,
   focusState,
   getDisplay,
   goToSectionWith,
@@ -264,21 +265,26 @@ export const displayTests: E2eTest[] = [
       );
       const empty = await page.run(emptyPageAtSectionEnd);
       expect(empty < 200, `sliding, the empty page at a chapter's end showed for ${empty}ms`);
-      // The setting is on the Layout tab in Paged mode only, also when the mode changes while the bar is closed.
+      // Page turn and Two-column layout are on the Layout tab in Paged mode only, also when the mode changes while
+      // the bar is closed.
       const layout = async () => {
         const { rows } = await page.run(openDisplayTab, 'structure', false);
         await page.run(closeDisplayBar);
-        return rows.includes('Page turn');
+        return rows.join(' | ');
       };
-      expect(await layout(), 'in Paged mode, the Layout tab has no Page turn');
+      const paged = 'Mode | Page turn | Two-column layout';
+      let rows = await layout();
+      expect(rows === paged, `in Paged mode, the Layout tab shows ${rows}`);
       await page.run(setDisplay, 'orbis-flow', 'scrolled');
       await sleep(800);
-      expect(!(await layout()), 'in Scrolled mode, the Layout tab has Page turn');
+      rows = await layout();
+      expect(rows === 'Mode', `in Scrolled mode, the Layout tab shows ${rows}`);
       expect(!(await page.run(paginatorHas, 'animated')), 'in Scrolled mode, foliate is still told to slide');
       await page.run(setDisplay, 'orbis-flow', 'paginated');
       await sleep(800);
       expect(await page.run(paginatorHas, 'animated'), 'back in Paged mode, Slide is not back');
-      expect(await layout(), 'back in Paged mode, the Layout tab has no Page turn');
+      rows = await layout();
+      expect(rows === paged, `back in Paged mode, the Layout tab shows ${rows}`);
       await page.run(setDisplay, 'orbis-page-turn', 'none');
       expect(!(await page.run(paginatorHas, 'animated')), 'with Page turn back on None, the page still slides');
     },
@@ -563,6 +569,31 @@ export const displayTests: E2eTest[] = [
         const moved = await turned(key);
         expect(moved === 0, `with Turn pages with the keyboard off, "${key}" still moved the page`);
       }
+    },
+  },
+  {
+    name: 'the Two-column layout switch turns two columns on and off, and follows a change made elsewhere',
+    async run(context) {
+      const { page } = context;
+      await open(context, 'fixtures/annotation-workhorse.epub');
+      await page.run(setDisplay, 'orbis-columns', '2');
+      await page.run(openDisplayTab, 'structure', false);
+      expect(!(await page.run(flipDrawerSwitch, 'structure', 'Two-column layout')), 'the switch did not turn off');
+      expect((await page.run(getDisplay, 'orbis-columns')) === '1', 'turned off, two columns are still stored');
+      expect(await page.run(flipDrawerSwitch, 'structure', 'Two-column layout'), 'the switch did not turn on');
+      expect((await page.run(getDisplay, 'orbis-columns')) === '2', 'turned on, two columns are not stored');
+      // A change from Settings or the palette moves the switch; selecting it then turns it back on.
+      await page.run(setDisplay, 'orbis-columns', '1');
+      await sleep(300);
+      expect(
+        await page.run(flipDrawerSwitch, 'structure', 'Two-column layout'),
+        'the switch missed a change made elsewhere'
+      );
+      expect(
+        (await page.run(getDisplay, 'orbis-columns')) === '2',
+        'after the outside change, two columns are not stored'
+      );
+      await page.run(closeDisplayBar);
     },
   },
   {
