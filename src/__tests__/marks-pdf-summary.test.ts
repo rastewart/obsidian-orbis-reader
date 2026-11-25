@@ -27,6 +27,7 @@ const options = (partial: Partial<MarksPdfOptions>, total = 45, included = 45): 
   chapters: Array.from({ length: total }, (_, i) => chapter(i, i < included)),
   selection: everything(),
   attribution: '',
+  font: '',
   coverSheet: true,
   includeMarks: true,
   downloadFonts: false,

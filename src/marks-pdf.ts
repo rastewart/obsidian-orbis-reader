@@ -16,6 +16,7 @@ import type { MarkSelection } from './mark-filter';
 import type { EmojiPictures } from './pdf-emoji';
 import type { FontBytes } from './pdf-fonts';
 import { collapseWhitespace, sanitizeForPdf } from './pdf-layout';
+import type { TextFaces } from './pdf-text-font';
 import { createPdfWriter, type MarkStyle, type PdfWriter } from './pdf-writer';
 import type { Highlight, Note } from './progress';
 import { cfiSortKey } from './reader/cfi-sort';
@@ -63,6 +64,11 @@ export interface MarksPdfOptions {
    * prints as `?`. Declining is allowed rather than encouraged: an export offline should still produce a file.
    */
   downloadFonts: boolean;
+  /**
+   * The vault font the book's text is drawn in, by family, or empty for the default (DejaVu Serif, or the built-in
+   * Times). Starts as the settings' `pdfFont`, and like the rest is not written back. See `pdf-text-font.ts`.
+   */
+  font: string;
   /**
    * What this export is narrowed to: which kinds of selection, and which marks on them.
    *
@@ -435,9 +441,11 @@ export async function buildMarksPdf(
   legend: readonly LegendEntry[] = [],
   fonts?: FontBytes,
   /** Where an emoji's picture comes from — see pdf-emoji.ts. */
-  pictures?: EmojiPictures
+  pictures?: EmojiPictures,
+  /** The font chosen for the passages, the book's own text — see pdf-text-font.ts. */
+  textFont?: TextFaces
 ): Promise<Uint8Array> {
-  const w = await createPdfWriter(fonts, pictures);
+  const w = await createPdfWriter(fonts, pictures, textFont);
   w.doc.setTitle(sanitizeForPdf(meta.title));
   if (meta.author) w.doc.setAuthor(sanitizeForPdf(meta.author));
   w.doc.setCreator('Orbis Reader');

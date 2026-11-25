@@ -1107,6 +1107,11 @@ export interface OrbisPluginSettings {
    */
   pdfAttribution: string;
   /**
+   * The vault font both PDFs draw the book's text in, by family; empty for the default (DejaVu Serif, or the built-in
+   * Times). One key behind a row on both PDF pages, like `pdfAttribution`. See `pdf-text-font.ts`.
+   */
+  pdfFont: string;
+  /**
    * Whether the whole-document PDF opens on a cover sheet.
    *
    * On by default, because the legend it carries is the only thing explaining what the marks mean. Off for someone
@@ -1186,6 +1191,7 @@ export const DEFAULT_PLUGIN_SETTINGS: OrbisPluginSettings = {
   bookPdfFolder: '/',
   markdownSameFolderAsBook: true,
   pdfAttribution: '',
+  pdfFont: '',
   bookPdfCoverSheet: true,
   bookPdfIncludeMarks: true,
   recordKinds: { passages: true, notes: true, bookmarks: false },

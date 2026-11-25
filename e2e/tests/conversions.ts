@@ -34,6 +34,7 @@ import {
 } from '../in-page';
 import { ROOT } from '../launch';
 import { dismissDialogs, type E2eTest, expect, type TestContext } from '../runner';
+import { katexFonts } from './fonts';
 
 /** The vault's text that changes from run to run: dates. */
 const undated = (text: string) => text.replace(/\b\d{4}-\d{2}-\d{2}(T[\d:.]+Z?)?\b/g, '<date>');
@@ -229,6 +230,40 @@ export const conversionTests: E2eTest[] = [
           `the PDF embeds ${pdf.fonts.join(', ') || 'no fonts'}, not DejaVu Serif`
         );
       } finally {
+        await page.run(deleteVaultFolder, '!orbis-data/fonts');
+        await page.run(removeVaultPath, book);
+      }
+    },
+  },
+  {
+    name: "save as PDF draws the book's text in the font chosen for PDFs",
+    timeoutMs: 120_000,
+    async run(context) {
+      const { page } = context;
+      // KaTeX_Main's four static faces, from the documentation site's packages — see `fonts.ts`.
+      const book = 'fixtures/resilience/Chosen Font Copy.epub';
+      try {
+        await page.run(copyVaultFile, 'fixtures/numbered-chapters.epub', book, null);
+        await page.run(openBook, book, 30_000);
+        await dismissDialogs(page);
+        await page.run(deleteVaultFolder, '!orbis-data/fonts');
+        for (const face of ['Regular', 'Italic', 'Bold', 'BoldItalic']) {
+          const file = `KaTeX_Main-${face}.ttf`;
+          const data = readFileSync(join(katexFonts(), file)).toString('base64');
+          await page.run(writeVaultBinary, `!orbis-data/fonts/KaTeX Main/${file}`, data);
+        }
+        await page.run(setPluginSetting, 'pdfFont', 'KaTeX_Main');
+        await new Promise((r) => setTimeout(r, 500));
+        const written = await saveWith(context, 'orbis-save-as-pdf', '.pdf');
+        expect(written.length === 1, `Save as PDF wrote ${written.length} files, not one`);
+        const pdf = await page.run(pdfInfo, written[0]);
+        await page.run(removeVaultPath, written[0]);
+        expect(
+          pdf.fonts.some((f) => f.startsWith('KaTeX_Main-Regular')),
+          `the PDF embeds ${pdf.fonts.join(', ') || 'no fonts'}, not KaTeX_Main`
+        );
+      } finally {
+        await page.run(setPluginSetting, 'pdfFont', '');
         await page.run(deleteVaultFolder, '!orbis-data/fonts');
         await page.run(removeVaultPath, book);
       }

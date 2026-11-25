@@ -330,6 +330,7 @@ These settings are in **Settings → Orbis Reader → Annotations → Save annot
 | **Default folder for PDF files** | Sets where PDFs are saved: **Same folder as the book** or **In the folder specified below**. The default is **Same folder as the book**. This setting is separate from the one in **Conversions → Save as PDF** |
 | **PDF folder path** | Sets the folder for PDFs. Shown only when **In the folder specified below** is selected |
 | **Marked up by** | Sets the name printed under the title of the PDF. **Conversions → Save as PDF** uses the same name. A change in one place also changes the other |
+| **Font** | Sets the font for the passages that you marked. Lists **Default** and the fonts in your vault that a PDF can use. **Conversions → Save as PDF** uses the same font. See [Save as PDF](save-as-pdf.md#the-font) |
 
 ---
 
@@ -410,6 +411,7 @@ These settings are in **Settings → Orbis Reader → Conversions → Save as PD
 | **Default folder for PDF files** | Sets where PDFs are saved: **Same folder as the book** or **In the folder specified below**. The default is **Same folder as the book**. This setting is separate from the one in **Annotations → Save annotations as PDF** |
 | **PDF folder path** | Sets the folder for PDFs. Shown only when **In the folder specified below** is selected |
 | **Marked up by** | Sets the name printed on the cover sheet. **Annotations → Save annotations as PDF** uses the same name. A change in one place also changes the other |
+| **Font** | Sets the font for the book's text. Lists **Default** and the fonts in your vault that a PDF can use. **Annotations → Save annotations as PDF** uses the same font. See [Save as PDF](save-as-pdf.md#the-font) |
 | **Include marks and notes** | Draws your marks in the book's text. When it is disabled, the PDF is a plain copy of the book. Enabled by default |
 | **Cover sheet** | Adds a first page with the title and a legend that shows what each mark means. Hidden when **Include marks and notes** is disabled. Enabled by default |
 

@@ -62,6 +62,7 @@ import { multiDeviceEnabled, setMultiDeviceEnabled } from './multi-device';
 import { whenDialogsClose } from './OrbisModal';
 import { PronunciationsModal } from './PronunciationsModal';
 import { downloadPdfFonts, FONT_DOWNLOAD_MB } from './pdf-fonts';
+import { pdfFontRow } from './pdf-text-font';
 import { LS_DEVICE_NAME, LS_IGNORE_OTHERS } from './progress';
 import { applyRecordsDestination, openRecordsDestinationDialog, recordsDestinationOf } from './RecordsDestinationModal';
 import { logToLibrary } from './reader/DebugLog';
@@ -3962,6 +3963,7 @@ export class OrbisSettings extends PluginSettingTab {
         desc: t('pdf_pages.name_desc_annotations'),
         control: { type: 'text', key: 'pdfAttribution', placeholder: t('pdf_pages.name_placeholder') },
       },
+      pdfFontRow(this.plugin.settings, () => this.plugin.saveSettings()),
     ];
   }
 
@@ -3984,6 +3986,7 @@ export class OrbisSettings extends PluginSettingTab {
         desc: t('pdf_pages.name_desc_book'),
         control: { type: 'text', key: 'pdfAttribution', placeholder: t('pdf_pages.name_placeholder') },
       },
+      pdfFontRow(this.plugin.settings, () => this.plugin.saveSettings()),
       {
         name: t('pdf_pages.marks'),
         control: { type: 'toggle', key: 'bookPdfIncludeMarks' },

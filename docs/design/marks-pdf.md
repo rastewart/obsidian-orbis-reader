@@ -70,6 +70,10 @@ asked for, and the hash is what says it arrived. A mismatch fails the download r
 are missing, and a row in settings to check afterwards or get the space back. Declining is allowed: the built-in
 fonts still draw the document, and an export made offline should produce a file rather than an error about a CDN.
 
+**A font for the book's text.** The reader can choose one of the vault's fonts for the four serif faces; DejaVu
+(or the built-in font) stays beneath it for the faces and characters it lacks. See
+[Fonts § The PDF font](fonts.md#the-pdf-font).
+
 **Subset on embed**, which is not optional at this size — seven whole faces would add 3.1 MB to every exported
 file. Subset, a document that uses six of them costs about 50 KB.
 

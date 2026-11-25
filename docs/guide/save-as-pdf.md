@@ -22,8 +22,9 @@ Use it to send the book with your annotations to another person, or to make a PD
 6. Optional: To make a PDF without your marks and notes, disable **Include marks and notes**.
 7. Optional: To leave out the first page with the title and the legend, disable **Cover sheet**.
 8. Optional: To draw only some marks, open **Marks to include**. See [Include only some marks](#include-only-some-marks).
-9. Optional: If the dialog shows **Download the expanded character set**, check or uncheck it.
-10. Select **Save**.
+9. Optional: To draw the book's text in another font, select it in **Font**. See [The font](#the-font).
+10. Optional: If the dialog shows **Download the expanded character set**, check or uncheck it.
+11. Select **Save**.
 
 You can also run **Save as PDF** from the command palette. Save as PDF is always available, even for a book with no annotations.
 
@@ -95,8 +96,9 @@ The line at the top of the dialog shows what the PDF will contain, for example *
 | **Cover sheet** | Adds a first page with the title and the legend. Enabled by default. Shown only when **Include marks and notes** is enabled |
 | **Marked up by** | Prints a name on the cover sheet. Shown only when **Cover sheet** is enabled |
 | **Marks to include** | Limits the marks that are drawn. Shown only when **Include marks and notes** is enabled |
+| **Font** | Sets the font for the book's text. See [The font](#the-font) |
 
-The dialog opens with the **Marked up by** name from your settings. A name that you type in the dialog is used for that PDF only.
+The dialog opens with the **Marked up by** name and the **Font** from your settings. A name or font that you select in the dialog is used for that PDF only.
 
 [Save Annotations as PDF](save-annotations-as-pdf.md) uses the same **Marked up by** name. When you change the name in the settings of one feature, the other feature uses the new name too.
 
@@ -109,6 +111,19 @@ Save annotations as PDF has a different default folder setting. You can save a c
 These characters cannot be in a file name: `\ / : * ? " < > | # ^ [ ]`. Orbis Reader changes each one to a space. This applies to names from the book's title and to names that you type. The header of **Save to** shows the name that will be written. A name longer than 120 characters is shortened.
 
 For saving the PDF outside the vault, see [Save the PDF outside the vault](#save-the-pdf-outside-the-vault).
+
+### The font
+
+**Font** sets the font for the book's text. Headings, notes and the cover sheet use a sans-serif font, and code uses a monospaced font. The default is DejaVu Serif when the expanded character set is on this device, and Times when it is not.
+
+The list has the fonts in your vault's fonts folder that a PDF can use, including fonts that you hid from the **Font** list on the display style bar. See [Fonts](settings-reference.md#fonts). A font is in the list when:
+
+- It has a Regular face in a file of its own. A font that comes only as variable files, one file for every weight, is not in the list. A PDF can draw a variable font at only one weight.
+- Its license lets it be embedded in a document.
+
+Text in a face that the font does not have, such as italic in a font with no italic, uses the default font. So does a character that the font cannot draw, such as an accented letter or a Greek word.
+
+If the font in your settings is not on this device, for example because it has not synced yet, the PDF uses the default font and a notice tells you.
 
 ### The expanded character set
 
@@ -157,6 +172,7 @@ These settings are in **Settings → Orbis Reader → Conversions → Save as PD
 | **Default folder for PDF files** | Sets where the PDF is saved: **Same folder as the book** or **In the folder specified below**. The default is **Same folder as the book** |
 | **PDF folder path** | Sets the folder for the PDF. Shown when **Default folder for PDF files** is **In the folder specified below** |
 | **Marked up by** | Sets the name printed on the cover sheet. Save annotations as PDF uses the same name. Empty by default |
+| **Font** | Sets the font for the book's text. Save annotations as PDF uses the same font. The default is **Default**. See [The font](#the-font) |
 | **Include marks and notes** | Draws your marks into the book's text. Enabled by default |
 | **Cover sheet** | Adds a first page with the title and what each mark means. Enabled by default. Shown when **Include marks and notes** is enabled |
 

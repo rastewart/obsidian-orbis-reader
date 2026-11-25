@@ -14,6 +14,7 @@ import { drawLegend, type LegendEntry } from './marks-pdf';
 import type { EmojiPictures } from './pdf-emoji';
 import type { FontBytes } from './pdf-fonts';
 import { sanitizeForPdf } from './pdf-layout';
+import type { TextFaces } from './pdf-text-font';
 import { createPdfWriter, type FontName, isExternalHref, type MarkStyle, type TextSpan } from './pdf-writer';
 
 /** One section of the book, in reading order. */
@@ -76,12 +77,14 @@ export async function buildDocumentPdf(
   /** How far through the drawing this is, for a dialog that stays open while it runs. */
   onProgress?: (done: number, total: number) => void,
   /** Where an emoji's picture comes from — see pdf-emoji.ts. */
-  pictures?: EmojiPictures
+  pictures?: EmojiPictures,
+  /** The font chosen for the book's text — see pdf-text-font.ts. */
+  textFont?: TextFaces
 ): Promise<Uint8Array> {
   // Who the comments are from. Empty when nobody typed a name, and the writer falls back to a neutral label
   // rather than to the mark — a comment attributed to "Follow up" is a comment attributed to nobody.
   const author = meta.attribution;
-  const w = await createPdfWriter(fonts, pictures);
+  const w = await createPdfWriter(fonts, pictures, textFont);
   w.doc.setTitle(sanitizeForPdf(meta.title));
   if (meta.author) w.doc.setAuthor(sanitizeForPdf(meta.author));
   w.doc.setCreator('Orbis Reader');

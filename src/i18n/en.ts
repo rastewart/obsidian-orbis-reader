@@ -3337,6 +3337,12 @@ const en = {
   'pdf_pages.name_desc_book':
     'Printed on the cover sheet. The same name is used by Annotations → Save annotations as PDF, which prints it under the title.',
   'pdf_pages.name_placeholder': 'Optional',
+  // The font for the book's text in both PDFs, on both settings pages and in the dialog — see `pdf-text-font.ts`.
+  'pdf_font.name': 'Font',
+  'pdf_font.desc': "For the book's text. Headings and notes use a sans-serif font.",
+  'pdf_font.default_dejavu': 'Default (DejaVu Serif)',
+  'pdf_font.default_times': 'Default (Times)',
+  'pdf_font.missing': '{{name}} (not in the vault)',
   // Book page only, by the rule that a control with one possible outcome should not exist: a digest of the marks
   // with the marks left out is not an artifact, and a digest prints its byline and legend inline rather than on a
   // cover sheet there is anything to turn off.
@@ -3515,6 +3521,7 @@ const en = {
   'pane_menu.save_as_pdf': 'Save as PDF…',
   'notices.pdf_fonts_downloading': 'Downloading the expanded character set…',
   'notices.pdf_fonts_failed': 'Could not download the fonts. The PDF will use the built-in ones.',
+  'notices.pdf_font_missing': '{{name}} is not in the vault on this device, so the PDF uses the default font.',
   'notices.marks_pdf_saved': 'Saved {{name}}',
   'notices.marks_pdf_failed': 'Could not write the PDF: {{error}}',
   'epub_export.save_to_label': 'Save to:',

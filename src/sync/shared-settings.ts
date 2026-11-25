@@ -72,6 +72,7 @@ export const SHARED_SETTINGS_KEYS = [
   'bookPdfSameFolderAsBook',
   'bookPdfFolder',
   'pdfAttribution',
+  'pdfFont',
   'bookPdfCoverSheet',
   'bookPdfIncludeMarks',
   // Where downloaded books land, and WHICH CATALOGS there are. The list travels: a set of servers you have

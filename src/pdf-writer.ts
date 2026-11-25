@@ -20,6 +20,7 @@ import {
   winAnsi,
   wrapLines,
 } from './pdf-layout';
+import type { TextFaces, TextSlot } from './pdf-text-font';
 import { pdfUriHex } from './pdf-uri';
 
 /** US Letter, in points. Not a setting: a page size nobody chose beats one more question on a dialog. */
@@ -39,8 +40,13 @@ type Emphasis = 'bold' | 'italic' | 'bold-italic' | 'code';
 /** An emphasized span, as offsets into the text being drawn. */
 type EmphasisSpan = { start: number; end: number; kind: Emphasis };
 
+/**
+ * A face the writer holds: one of the seven, or the face a chosen font took the place of (`body:under`), which draws
+ * what the chosen face cannot — see `createPdfWriter`.
+ */
+type FaceKey = FontName | `${TextSlot}:under`;
 /** What draws a run: one of the faces, or the emoji pictures (`pdf-emoji.ts`). */
-type Face = FontName | 'picture';
+type Face = FaceKey | 'picture';
 type Run = { start: number; end: number; font: Face };
 /** For a writer with no picture source: nothing is ever a picture. */
 const NO_PICTURES: ReadonlyMap<number, number> = new Map();
@@ -218,10 +224,14 @@ export interface PdfWriter {
  *   the page is limited to WinAnsi — see `pdf-fonts.ts` for why that limit was worth lifting.
  * @param pictures where an emoji's picture comes from — see `pdf-emoji.ts`. Without it an emoji no face can draw is
  *   left as a gap, as it always was.
+ * @param textFont the font the reader chose for the book's text, by face — see `pdf-text-font.ts`. Each face it has
+ *   takes its slot, and the face it replaced stays beneath it, drawing the characters the chosen face lacks. A face
+ *   it does not have is drawn as before.
  */
 export async function createPdfWriter(
   embedded?: FontBytes,
-  pictures?: EmojiPictures
+  pictures?: EmojiPictures,
+  textFont?: TextFaces
 ): Promise<PdfWriter & { doc: PDFDocument }> {
   const lib = await import('pdf-lib');
   const { PDFDocument, PDFHexString, PDFName, StandardFonts, rgb } = lib;
@@ -246,27 +256,59 @@ export async function createPdfWriter(
   };
   const SLOTS = Object.keys(STANDARD) as FontName[];
 
-  let covers: (font: FontName, code: number) => boolean = (_f, code) => winAnsi(code);
-  const fonts = {} as Record<FontName, PDFFont>;
+  const fonts = {} as Record<FaceKey, PDFFont>;
+  /** Whether each face can draw a character. fontkit is asked directly: pdf-lib's own font object cannot answer. */
+  const has = {} as Record<FaceKey, (code: number) => boolean>;
+  /** Every face, in the order a character none of a run's own faces can draw looks for one that can. */
+  const order: FaceKey[] = [...SLOTS];
+  const covers = (font: FaceKey, code: number): boolean => has[font](code);
+  const fontkit = embedded || textFont ? (await import('@pdf-lib/fontkit')).default : null;
+  if (fontkit) doc.registerFontkit(fontkit);
   let drawsEmbedded = false;
-  if (embedded) {
-    const fontkit = (await import('@pdf-lib/fontkit')).default;
-    doc.registerFontkit(fontkit);
+  if (embedded && fontkit) {
     try {
-      // fontkit is asked directly about coverage: pdf-lib's own font object cannot answer "do you have this
-      // character", and the answer is what decides which face draws each run.
-      const cmaps = {} as Record<FontName, { hasGlyphForCodePoint(code: number): boolean }>;
       // All read before any is embedded, so a file that is not a font leaves nothing half-done in the document.
-      for (const slot of SLOTS) cmaps[slot] = fontkit.create(embedded[slot]);
+      const cmaps = SLOTS.map((slot) => fontkit.create(embedded[slot]));
       for (const slot of SLOTS) fonts[slot] = await doc.embedFont(embedded[slot], { subset: true });
-      covers = (font, code) => cmaps[font].hasGlyphForCodePoint(code);
+      SLOTS.forEach((slot, i) => {
+        has[slot] = (code) => cmaps[i].hasGlyphForCodePoint(code);
+      });
       drawsEmbedded = true;
     } catch (err) {
       // A font file that cannot be read is a plainer PDF, not a failed export.
       console.error('[Orbis] could not embed the expanded character set; drawing with the built-in fonts —', err);
     }
   }
-  if (!drawsEmbedded) for (const slot of SLOTS) fonts[slot] = await doc.embedFont(STANDARD[slot]);
+  if (!drawsEmbedded) {
+    for (const slot of SLOTS) {
+      fonts[slot] = await doc.embedFont(STANDARD[slot]);
+      has[slot] = winAnsi;
+    }
+  }
+
+  /**
+   * The reader's font for the book's text, over the faces above. Each face it has moves the one it replaces beneath
+   * it (`body:under`), where it still draws what the chosen face cannot: an accented letter a display font stops
+   * short of, Greek, an arrow. Subset like DejaVu, except a CFF-outlined OpenType file, which pdf-lib embeds whole
+   * rather than risk a subset that viewers draw wrongly.
+   */
+  if (textFont && fontkit) {
+    for (const [slot, face] of Object.entries(textFont) as [TextSlot, NonNullable<TextFaces[TextSlot]>][]) {
+      try {
+        const cmap = fontkit.create(face.data);
+        const font = await doc.embedFont(face.data, { subset: face.subset });
+        const under: FaceKey = `${slot}:under`;
+        fonts[under] = fonts[slot];
+        has[under] = has[slot];
+        order.push(under);
+        fonts[slot] = font;
+        has[slot] = (code) => cmap.hasGlyphForCodePoint(code);
+      } catch (err) {
+        // That face is drawn as it would have been without the choice; the rest of the document is unaffected.
+        console.error(`[Orbis] could not embed the chosen font's ${slot} face; drawing it in the default font —`, err);
+      }
+    }
+  }
 
   /**
    * A character no face can draw is replaced; a character only ANOTHER face can draw switches face for that run.
@@ -274,7 +316,7 @@ export async function createPdfWriter(
    * The second half is what makes the tick in a checklist survive: DejaVu's serif faces stop short of `✓ ✗ ☐ ☑`
    * and its sans carries them, so a run that needs one is drawn in sans rather than lost to a `?`.
    */
-  const anyFaceHas = (code: number): boolean => SLOTS.some((slot) => covers(slot, code));
+  const anyFaceHas = (code: number): boolean => order.some((face) => covers(face, code));
 
   /** The emoji this document draws as pictures, where no face can — see `EmojiFonts`. */
   const emojiFonts = pictures ? new EmojiFonts(lib, doc, pictures, anyFaceHas) : null;
@@ -478,11 +520,22 @@ export async function createPdfWriter(
     return runs;
   };
 
-  /** The face that will actually draw the character at `i`: the one asked for, or the first that has the glyph. */
-  const faceFor = (text: string, i: number, want: FontName): FontName => {
+  /**
+   * The face that will actually draw the character at `i`: the one asked for, else the face a chosen font took the
+   * place of (the same style, so an accent in a Literata word is still serif and italic), else the first that has it.
+   */
+  const faceFor = (text: string, i: number, want: FontName): FaceKey => {
     const code = text.codePointAt(i);
     if (code === undefined || covers(want, code)) return want;
-    return SLOTS.find((slot) => covers(slot, code)) ?? want;
+    const under = `${want}:under` as FaceKey;
+    if (under in fonts && covers(under, code)) return under;
+    return order.find((face) => covers(face, code)) ?? want;
+  };
+
+  /** Whether every character of `clean` is drawn by `font` itself, so the text can be measured in one piece. */
+  const allIn = (clean: string, font: FontName): boolean => {
+    for (const ch of clean) if (!covers(font, ch.codePointAt(0) ?? 0)) return false;
+    return true;
   };
 
   /**
@@ -499,7 +552,8 @@ export async function createPdfWriter(
     const emphasis = opts.emphasis ?? [];
     const font = fonts[opts.font];
     // A line holding a picture is measured run by run, like one holding emphasis: a face cannot measure an emoji.
-    const byRuns = emphasis.length > 0 || picturesIn(clean).size > 0;
+    // So is one holding a character another face draws, so the width measured is the width drawn.
+    const byRuns = emphasis.length > 0 || picturesIn(clean).size > 0 || !allIn(clean, opts.font);
     return (slice, at) =>
       byRuns
         ? runsIn(clean, at, at + slice.length, opts.font, emphasis).reduce(
@@ -604,7 +658,6 @@ export async function createPdfWriter(
   };
 
   const text = (raw: string, opts: TextOptions): void => {
-    const font = fonts[opts.font];
     const indent = opts.indent ?? 0;
     // Never with `spans`, `emphasis` or `links`: all three are offsets into this string, and closing a gap moves
     // every character after it. The option is documented for headings only for that reason.
@@ -627,8 +680,11 @@ export async function createPdfWriter(
       }
       if (first) for (const key of opts.anchors ?? []) destinations.set(key, { page, y: y + opts.size + 6 });
       if (first && opts.prefix) {
-        page.drawText(encode(opts.prefix), {
-          x: x - font.widthOfTextAtSize(encode(opts.prefix), opts.size) - 4,
+        // In whichever face has it: a chosen font may have no bullet.
+        const prefix = encode(opts.prefix);
+        const font = fonts[faceFor(prefix, 0, opts.font)];
+        page.drawText(prefix, {
+          x: x - font.widthOfTextAtSize(prefix, opts.size) - 4,
           y,
           size: opts.size,
           font,

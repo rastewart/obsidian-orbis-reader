@@ -198,6 +198,7 @@ The tests run in the order below. Running every command is last, because it chan
 | | save as Markdown waits for a book being measured | Asked for while the book's location index is held unbuilt, the dialog waits with its notice, and the omnibus's notes still match `markdown-omnibus-epub.md` |
 | | save as PDF, save annotations as PDF | Each writes a PDF with pages |
 | | save as PDF draws with DejaVu from the fonts folder | With DejaVu unpacked into the fonts folder, as a download does, the PDF embeds DejaVu Serif. Needs `pnpm build:fonts` |
+| | save as PDF draws the book's text in the font chosen for PDFs | With KaTeX_Main in the fonts folder and chosen in the settings, the PDF embeds it |
 | | save as PDF carries the marks, with a cover sheet and a comment per note | Neither appears for a book with no marks |
 | | save note as EPUB makes a book that opens | The book's contents match `note-as-epub-contents.txt` |
 | | read in Orbis Reader opens a note as a book | The note's prose is in the book shown |

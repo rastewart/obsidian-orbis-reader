@@ -20,8 +20,9 @@ The digest does not include the book's text or your bookmarks. Use it to send yo
 4. Optional: To print your name on the PDF, open **Marked up by** and enter it.
 5. Optional: To leave out chapters, open **Chapters with marks and notes** and uncheck them.
 6. Optional: To include only some marks, open **Marks to include**. See [Include only some marks](#include-only-some-marks).
-7. Optional: If the dialog shows **Download the expanded character set**, check or uncheck it.
-8. Select **Save**.
+7. Optional: To draw the passages in another font, select it in **Font**.
+8. Optional: If the dialog shows **Download the expanded character set**, check or uncheck it.
+9. Select **Save**.
 
 You can also run **Save annotations as PDF** from the command palette.
 
@@ -74,6 +75,8 @@ The line at the top of the dialog shows what the PDF will contain, for example `
 
 **Marked up by** is printed under the title of the PDF. The dialog opens with the name from your settings. A name that you type in the dialog is used for that PDF only.
 
+**Font** sets the font for the passages that you marked, which are the book's text. Your notes and the headings use a sans-serif font. The dialog opens with the font from your settings, and a font that you select in the dialog is used for that PDF only. See [Save as PDF](save-as-pdf.md#the-font) for which fonts are in the list.
+
 [Save as PDF](save-as-pdf.md) uses the same **Marked up by** name. When you change the name in the settings of one feature, the other feature uses the new name too.
 
 ### Where the PDF is saved
@@ -120,6 +123,7 @@ These settings are in **Settings → Orbis Reader → Annotations → Save annot
 | **Default folder for PDF files** | Sets where the PDF is saved: **Same folder as the book** or **In the folder specified below**. The default is **Same folder as the book** |
 | **PDF folder path** | Sets the folder for the PDF. Shown when **Default folder for PDF files** is **In the folder specified below** |
 | **Marked up by** | Sets the name printed under the title of the PDF. Save as PDF uses the same name. Empty by default |
+| **Font** | Sets the font for the passages that you marked. Save as PDF uses the same font. The default is **Default** |
 
 These settings are shared with your other devices. See [Sync and Devices](sync-and-devices.md#settings-shared-between-devices).
 

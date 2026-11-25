@@ -4,9 +4,10 @@
 
 Fonts the reader can choose beyond the system's: where their files live, how a display style names one, how a book
 gets it, and what the Font list offers. The code is `src/fonts.ts` (the library), `src/font-file.ts` (reading a
-font file), `src/settings-fonts.ts` (the Fonts page) and `src/FontImportModal.ts` (importing).
+font file), `src/settings-fonts.ts` (the Fonts page), `src/FontImportModal.ts` (importing) and
+`src/pdf-text-font.ts` (the PDF font).
 
-Built in steps. This document describes step 1, the folder, importing and the reader. The later steps are listed at
+Built in steps: the folder, importing and the reader; downloads; the PDF font. The step still to come is listed at
 the end.
 
 ---
@@ -213,12 +214,39 @@ fonts.
 
 ---
 
+## The PDF font
+
+`pdfFont`, one setting behind a **Font** row on both PDF pages (like `pdfAttribution`), and a row in the export
+dialog that changes it for one export. It travels with the other PDF settings.
+
+- **The book's text only**: the four faces the writer calls `body`, `italic`, `bodyBold` and `bodyBoldItalic`. A PDF
+  sets the book in serif and the reader's own words — headings, notes, the byline, the cover sheet — in sans, so every
+  page says which words are whose; a chosen font does not undo that. Code stays monospaced.
+- **Every font in the vault a PDF can use**, switched on for reading or not. Can use means a Regular face in a static
+  file, with embedding bits that allow it (`embeddable`: not Restricted License, not Bitmap only). pdf-lib embeds a
+  variable font at its default weight, Thin or Light as often as Regular, so variable files are left out, and a
+  family with nothing else is not offered.
+- **Which file draws each face** (`pdfFacesOf`): static, embeddable, the nearest normal width, then the nearest
+  weight to 400, or 700 for bold. A SemiBold stands in for a missing Bold, as in the reader.
+- **What it lacks comes from beneath it.** Each face the chosen font has takes its slot in the writer, and the face
+  it replaced (DejaVu's, or the built-in one) stays beneath it as `body:under` and so on. A character the chosen
+  face cannot draw goes to the face beneath first, so an accent in an italic word is still serif and italic, then
+  to any face that has it. A face the family does not have is drawn by the default as it always was. Measuring
+  follows drawing: a line with a character another face draws is measured run by run.
+- **Subset, except CFF.** TrueType files are subset as DejaVu is. An OpenType file with CFF outlines is embedded
+  whole, rather than trusting pdf-lib's CFF subsetting, which some viewers draw wrongly.
+- **Never a failed export.** A face that cannot be embedded is drawn in the default, and a font not on this device —
+  not synced yet, or deleted — gives the default font and a notice.
+- **The default is named for what it is**: *Default (DejaVu Serif)* when DejaVu is here (or the dialog is about to
+  download it), *Default (Times)* otherwise. DejaVu Serif is then not listed a second time.
+
+---
+
 ## Later steps
 
 1. ~~The folder, importing, and the reader.~~
 2. ~~Downloads.~~
-3. A font for Save as PDF and Save annotations as PDF, falling back to DejaVu for missing characters and faces.
-   Its list offers every font in the vault: the Fonts page's switches are for reading only (see Decisions).
+3. ~~A font for Save as PDF and Save annotations as PDF.~~
 4. A font for Save as EPUB and Notes to EPUB, embedded in the book.
 
 ---
@@ -238,3 +266,6 @@ fonts.
 | Faces in a download | The project's own static files | A PDF embeds a variable font at its default weight |
 | DejaVu's old copy | Used until DejaVu is in the vault, then deleted | Moving it on every device would race in the synced folder |
 | What the switches cover | The reading Font list only | Exports offer every vault font; a font hidden for reading may still be wanted in a PDF |
+| What the PDF font sets | The book's text | Serif for the book, sans for the reader's words, kept |
+| A face or character it lacks | The default face beneath it | Missing glyphs print as `?` otherwise |
+| Variable files in a PDF | Not used | pdf-lib draws one at its default weight only |

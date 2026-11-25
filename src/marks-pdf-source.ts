@@ -39,6 +39,7 @@ import {
 import { chooseExportPath, outsideRoute, shareFile, writeExport } from './outside-vault';
 import { downloadPdfFonts, loadPdfFonts, pdfFontsReady } from './pdf-fonts';
 import { embeddableImage } from './pdf-image';
+import { loadTextFaces } from './pdf-text-font';
 import { type NotesData } from './reader/export-format';
 import type { ReaderContext } from './reader/ReaderContext';
 import { IOrbisReaderPlugin } from './settings';
@@ -168,6 +169,8 @@ export class MarksPdfSource {
         includeMarks: this.host.plugin.settings.bookPdfIncludeMarks,
         // Pre-checked. The offer is only made when the faces are missing, so a tick here means "fetch them now".
         downloadFonts: true,
+        // The settings' font for the book's text, which the dialog may change for this export only.
+        font: this.host.plugin.settings.pdfFont,
         // Two destinations, picked by which command this is: the digest and the book are different artifacts
         // with different audiences, which is why each has a folder setting of its own.
         folder: this.pdfFolder(scope, file?.parent?.path ?? '/'),
@@ -255,6 +258,9 @@ export class MarksPdfSource {
               }
             }
             const fonts = await loadPdfFonts(app, fontsFolder);
+            // The book's text in the font chosen, when this device has it; else the default, said once.
+            const textFont = opts.font ? await loadTextFaces(app, opts.font) : undefined;
+            if (opts.font && !textFont) new Notice(t('notices.pdf_font_missing', { name: opts.font }));
             // An emoji the fonts cannot draw is drawn as the device draws it — see pdf-emoji.ts.
             const pictures = canvasEmojiPictures() ?? undefined;
             const bytes =
@@ -275,14 +281,16 @@ export class MarksPdfSource {
                     opts.coverSheet && opts.includeMarks,
                     fonts,
                     (done, total) => report(t('marks_pdf.drawing', { done: String(done + 1), total: String(total) })),
-                    pictures
+                    pictures,
+                    textFont
                   )
                 : await buildMarksPdf(
                     digestSelection(opts, regroup(opts.selection).chapters),
                     meta,
                     legend,
                     fonts,
-                    pictures
+                    pictures,
+                    textFont
                   );
             report(t('marks_pdf.saving'));
             if (exportPath) {

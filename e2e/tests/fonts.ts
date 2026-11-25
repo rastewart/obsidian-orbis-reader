@@ -38,7 +38,7 @@ async function writeKatex(page: Parameters<E2eTest['run']>[0]['page'], folder: s
 }
 
 /** KaTeX's fonts folder, wherever pnpm put the package. */
-function katexFonts(): string {
+export function katexFonts(): string {
   const store = join(ROOT, 'node_modules', '.pnpm');
   const pkg = readdirSync(store).find((name) => name.startsWith('katex@'));
   if (!pkg) throw new Error('KaTeX is not installed: run pnpm install');
