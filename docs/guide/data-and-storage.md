@@ -23,7 +23,7 @@ Orbis Reader stores your reading data in the vault, in files that you can see. Y
 | Configuration shared between devices | In `!orbis-data/sync`, unless you change **Vault folder for configuration files** |
 | Notes and files that you make with Orbis Reader, such as title notes, covers, reading records, generated notes, Markdown and PDF files, and EPUB books made from notes | In the folders that you select in settings |
 | Books from book sources | In the **Downloads folder** that you select for book sources |
-| Fonts that you import | In `!orbis-data/fonts`, unless you change **Vault folder for fonts** |
+| Fonts that you import or download | In `!orbis-data/fonts`, unless you change **Vault folder for fonts** |
 
 The `.orbis`, annotation, location and configuration files are plain JSON. For the contents of the `.orbis` file, see [The .orbis File](orbis-file.md). For the files that your sync tool must copy, see [Sync and Devices](sync-and-devices.md#files-that-your-sync-tool-must-copy).
 
@@ -38,13 +38,13 @@ The plugin folder is `.obsidian/plugins/orbis-reader` in your vault. If you chan
 | `data.json` | The Orbis Reader settings that are the same on all your devices |
 | `data.backup.json` | A copy of `data.json`. If `data.json` cannot be read, Orbis Reader restores the settings from this copy |
 | `dictionary` | The offline dictionaries that you downloaded for **Look-up** |
-| `font-cache` | The fonts of the **Expanded character set** for PDF files, if you downloaded them |
+| `font-cache` | In versions before 0.1.9, the fonts of the **Expanded character set** for PDF files. Orbis Reader deletes this folder once those fonts are in your vault's fonts folder |
 | `piper-cache` | The speech engine and the Orbis voices that you downloaded |
 | `share` | On a phone or tablet, the file that you last shared with **Share…**, until the next share or the next time Orbis Reader starts. See [Files outside your vault](#files-outside-your-vault) |
 
 Orbis Reader downloads the dictionaries, the fonts, the speech engine and the voices only when you select a download.
 
-- **Dictionaries and fonts:** when it downloads one of these files, Orbis Reader compares the file with a checksum that is fixed in the plugin. If the file is different, Orbis Reader does not save it.
+- **Dictionaries and fonts:** when it downloads one of these files, Orbis Reader compares the file with a checksum that is fixed in the plugin. If the file is different, Orbis Reader does not save it. Fonts are saved in your vault's fonts folder, not in the plugin folder.
 - **The speech engine:** Orbis Reader compares each of its two modules with a checksum that is fixed in the plugin when it downloads the module, and again each time it loads the module. If a module is different, Orbis Reader does not use it. See [WebAssembly](#webassembly).
 - **Voices:** Orbis Reader does not compare a voice with a checksum. A voice is data that the speech engine reads, not code that runs.
 

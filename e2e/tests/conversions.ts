@@ -1,10 +1,15 @@
 // What Orbis makes of a book and of notes: a book saved as Markdown or as a PDF, marks saved as a PDF, and notes made
 // into a book and read in Orbis.
 
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { unzipSync } from 'fflate';
+import { FONT_PINS } from '../../src/font-pins';
 import {
   closeBooks,
   copyVaultFile,
   deleteInVault,
+  deleteVaultFolder,
   dialogsOpen,
   holdIndexBuilds,
   indexState,
@@ -24,7 +29,9 @@ import {
   setPluginSetting,
   shownBook,
   vaultFiles,
+  writeVaultBinary,
 } from '../in-page';
+import { ROOT } from '../launch';
 import { dismissDialogs, type E2eTest, expect, type TestContext } from '../runner';
 
 /** The vault's text that changes from run to run: dates. */
@@ -187,6 +194,39 @@ export const conversionTests: E2eTest[] = [
       const pdf = await context.page.run(pdfInfo, written[0]);
       expect(pdf.isPdf, `${written[0]} is not a PDF`);
       expect(pdf.pages > 5, `the book's PDF has ${pdf.pages} pages`);
+    },
+  },
+  {
+    name: 'save as PDF draws with DejaVu from the fonts folder',
+    timeoutMs: 120_000,
+    async run(context) {
+      const { page } = context;
+      // The zip the `fonts` release holds, unpacked into the vault as a download would — built by `pnpm build:fonts`.
+      const zip = join(ROOT, 'dist', 'fonts', `${FONT_PINS.dejavu.zip}`);
+      if (!existsSync(zip)) throw new Error(`${zip} is missing: run pnpm build:fonts`);
+      // A copy of its own: the test before this one saves the same book's PDF and leaves it, and a second save to that
+      // name would stop to ask whether to replace it.
+      const book = 'fixtures/resilience/DejaVu Copy.epub';
+      try {
+        await page.run(copyVaultFile, 'fixtures/numbered-chapters.epub', book, null);
+        await page.run(openBook, book, 30_000);
+        await dismissDialogs(page);
+        for (const [name, bytes] of Object.entries(unzipSync(readFileSync(zip)))) {
+          await page.run(writeVaultBinary, `!orbis-data/fonts/${name}`, Buffer.from(bytes).toString('base64'));
+        }
+        await new Promise((r) => setTimeout(r, 500));
+        const written = await saveWith(context, 'orbis-save-as-pdf', '.pdf');
+        expect(written.length === 1, `Save as PDF wrote ${written.length} files, not one`);
+        const pdf = await page.run(pdfInfo, written[0]);
+        await page.run(removeVaultPath, written[0]);
+        expect(
+          pdf.fonts.some((f) => f.startsWith('DejaVuSerif')),
+          `the PDF embeds ${pdf.fonts.join(', ') || 'no fonts'}, not DejaVu Serif`
+        );
+      } finally {
+        await page.run(deleteVaultFolder, '!orbis-data/fonts');
+        await page.run(removeVaultPath, book);
+      }
     },
   },
   {

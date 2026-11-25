@@ -7,6 +7,7 @@ import { type App, Notice, Setting, TFile, TFolder } from 'obsidian';
 import { askToConfirm } from './ConfirmModal';
 import { faceNames, importFonts } from './FontImportModal';
 import { folderPickerRow } from './folder-picker';
+import { downloadFontPackage, FONT_PACKAGES, packageInstalled, packageMegabytes, packageOf } from './font-downloads';
 import { FACE_SLOTS } from './font-file';
 import {
   DEFAULT_FONTS_FOLDER,
@@ -25,6 +26,8 @@ import {
   vaultFontValue,
 } from './fonts';
 import { t } from './i18n';
+import { forgetLegacyPdfFonts } from './pdf-fonts';
+import { downloadFailedMessage } from './reader/tts/asset-integrity';
 import type { OrbisPluginSettings } from './settings';
 
 /** What the page needs from the settings tab. */
@@ -77,6 +80,35 @@ export function buildFontsPage(el: HTMLElement, host: FontsPageHost): void {
   if (fonts.length === 0) vaultHeading.setDesc(t('fonts.none_in_vault'));
   for (const font of fonts) vaultFontRow(el, host, font);
 
+  // ── To download ──
+  // Each font not yet in the vault, with what it is for and its size. A download lands in the fonts folder, so the
+  // font moves up to the section above. See `font-downloads.ts`.
+  const toGet = FONT_PACKAGES.filter((pkg) => !packageInstalled(pkg, fonts));
+  new Setting(el)
+    .setName(t('fonts.downloads'))
+    .setHeading()
+    .setDesc(toGet.length ? t('fonts.downloads_desc') : t('fonts.downloads_all'));
+  for (const pkg of toGet) {
+    new Setting(el)
+      .setName(pkg.name)
+      .setDesc(t('fonts.download_desc', { purpose: t(pkg.purpose), size: packageMegabytes(pkg.id) }))
+      .addButton((b) =>
+        b.setButtonText(t('fonts.download')).onClick(async () => {
+          b.setDisabled(true).setButtonText(t('fonts.downloading'));
+          try {
+            await downloadFontPackage(app, pkg.id, fontsFolderOf(settings.fontsFolder));
+            if (pkg.pdf) await forgetLegacyPdfFonts(app, settings.fontsFolder);
+            new Notice(t('fonts.downloaded', { name: pkg.name }));
+          } catch (err) {
+            // A wrong file is not a connection problem, and trying again would fetch it again — see `WrongFileError`.
+            new Notice(downloadFailedMessage(err));
+          }
+          host.refreshViews();
+          host.redraw();
+        })
+      );
+  }
+
   // ── The system's ──
   new Setting(el).setName(t('fonts.system')).setHeading();
   const system = SYSTEM_FONTS.map((option) => ({ ...option, name: t(option.labelKey) })).sort((a, b) =>
@@ -127,7 +159,8 @@ function vaultFontRow(el: HTMLElement, host: FontsPageHost, font: VaultFont): vo
   const slots = slotsOf(font);
   const has = FACE_SLOTS.filter((s) => slots[s]);
   // The faces it has, and nothing about those it lacks: the guide says how a missing face is drawn.
-  const desc = faceNames(has);
+  // DejaVu's rows say what it is for here, and only here: the Font lists say nothing.
+  const desc = packageOf(font.family)?.pdf ? t('fonts.pdf_note', { faces: faceNames(has) }) : faceNames(has);
   const value = vaultFontValue(font.family);
   const row = new Setting(el).setName(font.family).setDesc(withSample(desc, value, true));
   // Delete before the switch, so every switch on the page lines up at the right edge, as on the system fonts' rows.

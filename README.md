@@ -190,7 +190,7 @@ The `.orbis` and location files are plain JSON that you can inspect, back up or 
 
 ## Network use
 
-Orbis Reader has no accounts, ads or telemetry, and it never sends your books, notes or reading data anywhere, unless you set up a speech server to record with (below). It connects to the internet only for the features below, and nothing is downloaded until you ask for it. Dictionaries, voices and fonts are saved on your device, so those features work offline after their first download.
+Orbis Reader has no accounts, ads or telemetry, and it never sends your books, notes or reading data anywhere, unless you set up a speech server to record with (below). It connects to the internet only for the features below, and nothing is downloaded until you ask for it. Dictionaries and voices are saved on your device, and fonts in your vault, so those features work offline after their first download.
 
 | Feature | Connects to | What for |
 |---|---|---|
@@ -198,7 +198,7 @@ Orbis Reader has no accounts, ads or telemetry, and it never sends your books, n
 | Look-up dictionaries | GitHub, from this repository's releases | Downloading Webster's 1913 and Open English WordNet |
 | Orbis voices | Hugging Face (`huggingface.co`), `cdnjs.cloudflare.com` and `cdn.jsdelivr.net` | Downloading the speech engine and the voices you choose to your device |
 | Recording with a speech server (off until you set it up) | The Kokoro or OpenAI-compatible server address you enter, such as one on your own computer | Sending the text being recorded, a sentence at a time, and getting the audio back. Recording on your device, the default, sends nothing |
-| Expanded character set for PDFs | `cdn.jsdelivr.net` | Downloading the DejaVu fonts |
+| Fonts | GitHub, from this repository's releases | Downloading the fonts you choose on the Fonts page, and the DejaVu fonts for PDFs (the **Expanded character set**) |
 | Download test fixtures (a developer command) | GitHub, from this repository's releases | Downloading the test books and notes for the test plans |
 
 Web look-ups and links in books open in your web browser, but only when you select them. When you select a link in a book, you are prompted to confirm that you want to visit it before it opens. System voices come from your operating system, which may use online services of its own.
@@ -296,11 +296,19 @@ it is **modified** — reshaped for offline look-up, as described in
 PDF export can use the [DejaVu fonts](https://dejavu-fonts.github.io/) as its
 **Expanded character set**, so a PDF can show arrows, Greek, Cyrillic,
 mathematical symbols and other characters beyond the standard PDF fonts. The
-fonts are not bundled with Orbis Reader; they are downloaded to your device on
+fonts are not bundled with Orbis Reader; they are downloaded into your vault on
 request, and each PDF includes only the characters it uses. Fonts are
 © Bitstream, Inc., and glyphs imported from the Arev fonts are © Tavmjong Bah;
 DejaVu's own changes are in the public domain. Full terms are in
 [`licenses/dejavu-fonts-LICENSE.txt`](licenses/dejavu-fonts-LICENSE.txt).
+
+The Fonts page offers six more fonts to download: OpenDyslexic, Atkinson
+Hyperlegible, Lexend, Literata, Source Serif 4 and EB Garamond. They are not
+bundled with Orbis Reader either. Each is licensed under the
+[SIL Open Font License 1.1](https://openfontlicense.org/), which allows using
+them in documents you share, and each is downloaded with its own licence file.
+They are the projects' own files, unchanged, from the `fonts` release of this
+repository, which `scripts/build-fonts.ts` builds from pinned sources.
 
 ---
 

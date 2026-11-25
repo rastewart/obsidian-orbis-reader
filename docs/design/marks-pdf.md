@@ -56,9 +56,10 @@ anyway. Seven faces, 3.1 MB. The license (Bitstream Vera derivative) permits red
 ships in `licenses/`.
 
 **Downloaded, not bundled.** Bundling would put 3.1 MB in `main.js`, loaded on every device for every user
-including everyone who never exports a PDF. They are fetched once to
-`.obsidian/plugins/orbis-reader/font-cache` and cached, the pattern Piper's voices use too: **bundle the code,
-download the data.** `@pdf-lib/fontkit` is the code half, and it is not free — it adds 0.9 MB to `main.js`, which
+including everyone who never exports a PDF. They are fetched once, as the `dejavu` zip of this repository's `fonts`
+release, into the vault's fonts folder — **bundle the code, download the data.** Before the Fonts page each device
+cached them in `.obsidian/plugins/orbis-reader/font-cache`; that copy is read until DejaVu is in the vault, then
+deleted. See [Fonts § DejaVu](fonts.md#dejavu). `@pdf-lib/fontkit` is the code half, and it is not free — it adds 0.9 MB to `main.js`, which
 is the price of being able to embed a font at all.
 
 **Verified, not trusted.** Each face's SHA-256 is in the manifest and checked on download. These bytes come from a
@@ -593,7 +594,7 @@ the swatch already says.
 | Platform print | Rejected | Desktop only, and this plugin holds Android/iPad parity as a rule |
 | Unencodable characters | Space for a pictograph, else `?`, length preserved | `drawText` throws — the alternative is no PDF at all. Length matters because marks are offsets |
 | Font | DejaVu, downloaded on request | Built-in fonts hold ~220 characters; DejaVu's faces cover arrows, mathematics, Greek, Cyrillic and more |
-| Font delivery | Download 3.1 MB once, cache on device | Bundling puts it in `main.js` for every user, including those who never export |
+| Font delivery | Download once (1.8 MB zip) into the vault's fonts folder | Bundling puts it in `main.js` for every user, including those who never export |
 | Font integrity | SHA-256 per face, checked on download | CDN bytes end up embedded in a document sent to someone else |
 | PDF strings | UTF-16 hex | A note or outline title in Greek is mangled otherwise, and no font can fix it |
 | Links | `/Link`, tinted not underlined | Underline is a mark treatment here, so a link wearing one reads as a mark |

@@ -61,7 +61,7 @@ import { type LibraryRecord, parseRecord } from './library/record';
 import { multiDeviceEnabled, setMultiDeviceEnabled } from './multi-device';
 import { whenDialogsClose } from './OrbisModal';
 import { PronunciationsModal } from './PronunciationsModal';
-import { downloadFonts, FONT_DOWNLOAD_MB, fontsInstalled, removeFonts } from './pdf-fonts';
+import { downloadPdfFonts, FONT_DOWNLOAD_MB } from './pdf-fonts';
 import { LS_DEVICE_NAME, LS_IGNORE_OTHERS } from './progress';
 import { applyRecordsDestination, openRecordsDestinationDialog, recordsDestinationOf } from './RecordsDestinationModal';
 import { logToLibrary } from './reader/DebugLog';
@@ -376,7 +376,6 @@ export class OrbisSettings extends PluginSettingTab {
   private previewPlaying: 'live' | 'recorded' | null = null;
   private readonly previewButtons: { live?: ExtraButtonComponent; recorded?: ExtraButtonComponent } = {};
   /** Last known PDF-font status line, cached for the same reason `dictionaryState` is. */
-  private fontState: string | null = null;
   /**
    * What Setup last found, and whether it is looking again.
    *
@@ -2514,8 +2513,6 @@ export class OrbisSettings extends PluginSettingTab {
    * and on a phone a toast over a settings page is gone before the download is.
    */
   private async runSetupDownload(id: SetupItemId, btn: ButtonComponent, done: () => void): Promise<void> {
-    const adapter = this.app.vault.adapter;
-    const dir = `${this.app.vault.configDir}/plugins/orbis-reader`;
     btn.setDisabled(true).setButtonText(t('lookup_page.downloading'));
     try {
       if (id === 'lookup') {
@@ -2525,7 +2522,7 @@ export class OrbisSettings extends PluginSettingTab {
         for (const service of this.plugin.dictionaries.all) {
           if (!(await service.isDownloaded())) await service.download();
         }
-      } else if (id === 'pdf-fonts') await downloadFonts(adapter, `${dir}/font-cache`);
+      } else if (id === 'pdf-fonts') await downloadPdfFonts(this.app, this.plugin.settings.fontsFolder);
     } catch (err) {
       // A wrong file is not a connection problem, and trying again would fetch it again — see `WrongFileError`.
       new Notice(downloadFailedMessage(err));
@@ -4000,13 +3997,8 @@ export class OrbisSettings extends PluginSettingTab {
         visible: () => this.plugin.settings.bookPdfIncludeMarks,
         control: { type: 'toggle', key: 'bookPdfCoverSheet' },
       },
-      {
-        name: t('pdf_pages.fonts'),
-        // Built from a cached answer for the same reason the dictionary row is: knowing whether ~3 MB of fonts
-        // are on disk takes an await, and `getSettingDefinitions()` must not.
-        desc: this.fontState ?? t('pdf_pages.fonts_desc'),
-        render: (setting) => this.buildPdfFontRow(setting),
-      },
+      // The expanded character set (DejaVu) is downloaded on the Fonts page, with every other font — see
+      // `settings-fonts.ts` — and offered by the export dialog at the moment it matters.
     ];
   }
 
@@ -4063,48 +4055,6 @@ export class OrbisSettings extends PluginSettingTab {
         render: (setting: Setting) => this.folderRow(setting, folderKey),
       },
     ] satisfies SettingDefinitionItem[];
-  }
-
-  /**
-   * The expanded character set: whether it is on this device, and a way to change that.
-   *
-   * The export dialog offers the download at the moment it matters, which is the right place to be ASKED. This is
-   * the place to check afterwards — and the only way to get the 3.1 MB back, which a settings tab should not make
-   * someone hunt for.
-   */
-  private buildPdfFontRow(row: Setting): void {
-    const dir = `${this.app.vault.configDir}/plugins/orbis-reader/font-cache`;
-    const adapter = this.app.vault.adapter;
-    let busy = false;
-
-    const paint = (installed: boolean): void => {
-      this.fontState = installed ? t('pdf_pages.fonts_installed') : t('pdf_pages.fonts_desc');
-      row.setDesc(this.fontState);
-      row.clear();
-      row.addButton((btn) => {
-        btn.setButtonText(installed ? t('action.remove') : t('pdf_pages.fonts_download'));
-        btn.setDisabled(busy);
-        btn.onClick(() => {
-          void (async () => {
-            if (busy) return;
-            busy = true;
-            btn.setDisabled(true);
-            try {
-              if (installed) await removeFonts(adapter, dir);
-              else await downloadFonts(adapter, dir);
-            } catch {
-              // The reason does not change what the reader can do about it, and the row repaints either way.
-              new Notice(t('notices.pdf_fonts_failed'));
-            }
-            busy = false;
-            paint(await fontsInstalled(adapter, dir));
-          })();
-        });
-      });
-    };
-    // Painted from the answer rather than assuming one: reading the cache is asynchronous, and a row that says
-    // "download" for a moment on a device that already has them is a row that lies.
-    void fontsInstalled(adapter, dir).then(paint);
   }
 
   private recordsItems(): SettingDefinitionItem[] {

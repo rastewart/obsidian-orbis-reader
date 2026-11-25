@@ -90,11 +90,11 @@ For saving the PDF outside the vault, see [Save the PDF outside the vault](#save
 
 Without the expanded character set, a PDF can show about 220 characters. This is enough for most English text. Other characters, such as arrows, Greek letters and mathematical symbols, print as `?`.
 
-If the expanded character set is not on this device, the dialog shows **Download the expanded character set**. It is checked by default. The download is 3.1 MB, one time, and it stays on this device. When the download is on the device, the option does not show again.
+If the expanded character set is not on this device, the dialog shows **Download the expanded character set**. It is checked by default. The download is 1.8 MB, one time, and it goes into your vault's fonts folder. When the download is on the device, the option does not show again.
 
 If you uncheck it, the PDF is still saved, with the smaller set of characters.
 
-Save annotations as PDF and Save as PDF use the same expanded character set. To remove it, go to **Settings → Orbis Reader → Conversions → Save as PDF**. See [Save as PDF](save-as-pdf.md#the-expanded-character-set).
+Save annotations as PDF and Save as PDF use the same expanded character set. To remove it, delete the DejaVu fonts on the **Fonts** page. See [Save as PDF](save-as-pdf.md#the-expanded-character-set).
 
 ---
 

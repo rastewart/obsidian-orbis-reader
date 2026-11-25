@@ -32,6 +32,7 @@
     "build:contrast-epub": "tsx scripts/make-contrast-epub.ts",
     "build:stylesheet-epub": "tsx scripts/make-stylesheet-epub.ts",
     "build:fixtures": "tsx scripts/build-fixtures.ts",
+    "build:fonts": "tsx scripts/build-fonts.ts",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"

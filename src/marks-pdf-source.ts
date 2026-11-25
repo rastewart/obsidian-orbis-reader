@@ -37,7 +37,7 @@ import {
   type MarksPdfScope,
 } from './marks-pdf';
 import { chooseExportPath, outsideRoute, shareFile, writeExport } from './outside-vault';
-import { downloadFonts, fontsInstalled, loadFonts } from './pdf-fonts';
+import { downloadPdfFonts, loadPdfFonts, pdfFontsReady } from './pdf-fonts';
 import { embeddableImage } from './pdf-image';
 import { type NotesData } from './reader/export-format';
 import type { ReaderContext } from './reader/ReaderContext';
@@ -243,18 +243,18 @@ export class MarksPdfSource {
              * A failed download does NOT fail the export: the built-in fonts still draw the document, just with
              * fewer characters, and someone who is offline should get their PDF rather than an error about a CDN.
              */
-            const fontDir = `${this.ctx.app.vault.configDir}/plugins/orbis-reader/font-cache`;
-            const adapter = this.ctx.app.vault.adapter;
-            if (opts.downloadFonts && !(await fontsInstalled(adapter, fontDir))) {
+            const { app } = this.ctx;
+            const fontsFolder = this.host.plugin.settings.fontsFolder;
+            if (opts.downloadFonts && !(await pdfFontsReady(app, fontsFolder))) {
               new Notice(t('notices.pdf_fonts_downloading'));
               try {
-                await downloadFonts(adapter, fontDir);
+                await downloadPdfFonts(app, fontsFolder);
               } catch (e) {
                 this.ctx.debug(`pdf fonts failed: ${String(e)}`, 'export');
                 new Notice(t('notices.pdf_fonts_failed'));
               }
             }
-            const fonts = await loadFonts(adapter, fontDir);
+            const fonts = await loadPdfFonts(app, fontsFolder);
             // An emoji the fonts cannot draw is drawn as the device draws it — see pdf-emoji.ts.
             const pictures = canvasEmojiPictures() ?? undefined;
             const bytes =
@@ -310,10 +310,7 @@ export class MarksPdfSource {
         }
       },
       // Offered only while the faces are missing: once they are cached the question has an answer.
-      !(await fontsInstalled(
-        this.ctx.app.vault.adapter,
-        `${this.ctx.app.vault.configDir}/plugins/orbis-reader/font-cache`
-      )),
+      !(await pdfFontsReady(this.ctx.app, this.host.plugin.settings.fontsFolder)),
       // Names for the chapters the contents page could not name — every one of them on MOBI, AZW3 and FB2.
       (list, onNamed, alive) => this.nameChapters(list, onNamed, alive),
       // Everything the mark filter needs. `usage` is over the whole book on purpose — see the parameter.

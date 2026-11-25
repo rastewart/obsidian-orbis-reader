@@ -71,12 +71,12 @@ At the top of the page are **Reader theme**, **Font size** and **Preview** from 
 | **Library dashboards** | **Set up** | Enables the library and prompts you for the folders for title notes and covers |
 | **Reading records** | **Set up** | Enables reading records and prompts you for their folder |
 | **Listening** | **Choose** | Opens a dialog where you preview and select a voice for this device |
-| **Expanded PDF character set** | **Download** | Downloads the fonts that PDFs need to show more than about 220 characters |
+| **Expanded PDF character set** | **Download** | Downloads the fonts that PDFs need to show more than about 220 characters, into your vault's fonts folder |
 | **Devices** | **Set up** | Opens a dialog where you name this device and select what it shares with your other devices |
 
 Each task has a description. A task that downloads something shows its size. When a task is done, it shows **Ready**.
 
-If Orbis Reader configuration sharing is enabled, the **Library dashboards** and **Reading records** tasks show **Ready** on your other devices. You do the other tasks on each device.
+If Orbis Reader configuration sharing is enabled, the **Library dashboards** and **Reading records** tasks show **Ready** on your other devices. The **Expanded PDF character set** task shows **Ready** on each device that your sync tool has copied the fonts to. You do the other tasks on each device.
 
 ---
 
@@ -143,6 +143,7 @@ These settings are in **Settings → Orbis Reader → Fonts**. They set where fo
 | **Vault folder for fonts** | Sets the folder for the fonts that you import. The default is `!orbis-data/fonts`. When you change the folder, Orbis Reader moves the fonts into it |
 | **Import fonts** | **Import…** opens your device's file picker. Select the TrueType or OpenType files (`.ttf` or `.otf`) of a font, or the zip file that you downloaded them in |
 | **Fonts in your vault** | Lists each font in the fonts folder with the faces it has, and a line of sample text in the font. The trash button moves the font's files to the trash. The switch shows or hides the font in the **Font** list |
+| **Fonts to download** | Lists the fonts that Orbis Reader offers and that are not in your vault yet, with what each is for and its size. **Download** puts the font in the fonts folder. See [Downloading a font](#downloading-a-font) |
 | **System fonts** | Lists the fonts that come with devices, in alphabetical order, with a line of sample text in each font. Each says whether this device has the font. The switch shows or hides the font in the **Font** list |
 
 All fonts are shown in the **Font** list by default. A font that is in use stays in the list when you hide it.
@@ -158,6 +159,24 @@ A font usually has four files, one for each face: Regular, Italic, Bold and Bold
 - If a zip file has both a variable font and separate files for each face, such as a download from Google Fonts, Orbis Reader imports the separate files only.
 
 Orbis Reader copies each font to its own folder in the fonts folder, named for the font, with its licence file if there is one. The font's name and faces come from the font files, not from their file names. You can also copy font files into the fonts folder yourself.
+
+### Downloading a font
+
+| Font | What it is for |
+|---|---|
+| **OpenDyslexic** | Made for readers with dyslexia |
+| **Atkinson Hyperlegible** | Made for readers with low vision, by the Braille Institute |
+| **Lexend** | Made to make reading easier. Lexend has no italic |
+| **Literata** | Made for reading on screens. It covers Greek, Cyrillic and Vietnamese |
+| **Source Serif 4** | A clear, traditional book font |
+| **EB Garamond** | A classic book font |
+| **DejaVu** | The expanded character set for PDFs: the characters that other fonts lack, such as arrows, mathematical symbols, Greek and Cyrillic. See [Save as PDF](save-as-pdf.md#the-expanded-character-set) |
+
+Orbis Reader downloads each font from its releases on GitHub, as one zip file with the font's files and its licence. It compares the zip with a checksum that is fixed in the plugin, and does not save a font that is different. The font goes into its own folder in the fonts folder, and then shows under **Fonts in your vault**.
+
+Every font in this list is free to use, including in a PDF or EPUB that you share. Each font's licence file is in its folder.
+
+DejaVu is three fonts: DejaVu Serif, DejaVu Sans and DejaVu Sans Mono. Under **Fonts in your vault**, their rows say *Used for PDF exports*. You can also read in them.
 
 ### Fonts on other devices
 
@@ -393,9 +412,8 @@ These settings are in **Settings → Orbis Reader → Conversions → Save as PD
 | **Marked up by** | Sets the name printed on the cover sheet. **Annotations → Save annotations as PDF** uses the same name. A change in one place also changes the other |
 | **Include marks and notes** | Draws your marks in the book's text. When it is disabled, the PDF is a plain copy of the book. Enabled by default |
 | **Cover sheet** | Adds a first page with the title and a legend that shows what each mark means. Hidden when **Include marks and notes** is disabled. Enabled by default |
-| **Expanded character set** | Downloads the fonts that a PDF needs to show more than about 220 characters, such as arrows, Greek, Cyrillic and mathematical symbols. Both Save as PDF and Save annotations as PDF use these fonts |
 
-To remove the expanded character set, use the **Remove** button on this page. You cannot remove it anywhere else.
+The expanded character set for PDFs is downloaded on the [Fonts](#fonts) page. See [Save as PDF](save-as-pdf.md#the-expanded-character-set).
 
 ### Save as EPUB
 

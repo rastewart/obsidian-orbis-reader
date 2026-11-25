@@ -411,7 +411,9 @@ export function copiedText(): string {
  * The pages are counted by their `/Type /Page` objects. A PDF can keep its objects in compressed object streams, so
  * each of those is inflated first, with the browser's own `DecompressionStream`.
  */
-export async function pdfInfo(path: string): Promise<{ isPdf: boolean; pages: number; comments: number }> {
+export async function pdfInfo(
+  path: string
+): Promise<{ isPdf: boolean; pages: number; comments: number; fonts: string[] }> {
   const app = (window as unknown as { app: { vault: { adapter: { readBinary(p: string): Promise<ArrayBuffer> } } } })
     .app;
   const bytes = new Uint8Array(await app.vault.adapter.readBinary(path));
@@ -436,6 +438,8 @@ export async function pdfInfo(path: string): Promise<{ isPdf: boolean; pages: nu
     pages: (objects.match(/\/Type\s*\/Page(?![s\w])/g) ?? []).length,
     // A note is a `/Text` annotation, the pin a viewer lists in its comments.
     comments: (objects.match(/\/Subtype\s*\/Text(?!\w)/g) ?? []).length,
+    // The embedded fonts' names, without the subset prefix: `ABCDEF+DejaVuSerif` is `DejaVuSerif`.
+    fonts: [...new Set([...objects.matchAll(/\/BaseFont\s*\/(?:[A-Z]{6}\+)?([\w-]+)/g)].map((m) => m[1]))].sort(),
   };
 }
 

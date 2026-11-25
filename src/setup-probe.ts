@@ -7,7 +7,7 @@
 // See docs/design/settings.md §Setup — the first page.
 
 import { deviceSetting } from './device-settings';
-import { fontsInstalled } from './pdf-fonts';
+import { pdfFontsReady } from './pdf-fonts';
 import { isOrbisVoiceDownloaded } from './reader/tts/PiperEngine';
 import { orbisVoiceOrDefault } from './reader/tts/voice-catalog';
 import type { IOrbisReaderPlugin } from './settings';
@@ -58,6 +58,6 @@ export function setupProbe(plugin: IOrbisReaderPlugin): SetupProbe {
     devicesSetUp: syncSetupDone(),
     dictionaryDownloaded: () => plugin.dictionaries.anyDownloaded(),
     voiceReady: () => voiceReady(plugin),
-    pdfFontsInstalled: () => fontsInstalled(plugin.app.vault.adapter, `${pluginDir(plugin)}/font-cache`),
+    pdfFontsInstalled: () => pdfFontsReady(plugin.app, plugin.settings.fontsFolder),
   };
 }

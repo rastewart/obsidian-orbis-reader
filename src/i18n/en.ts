@@ -690,6 +690,24 @@ const en = {
   'fonts.move_skipped': '{{count}} fonts stayed in {{from}}: fonts with the same names are already in the new folder.',
   'fonts.move_skipped_one': '1 font stayed in {{from}}: a font with the same name is already in the new folder.',
   'fonts.move_inside': 'The fonts folder cannot move from {{from}} to {{to}}, because one folder is inside the other.',
+  // The fonts Orbis offers to download — see `font-downloads.ts`. The heading says where they come from: the one
+  // network request on this page.
+  'fonts.downloads': 'Fonts to download',
+  'fonts.downloads_desc': "From Orbis Reader's releases on GitHub.",
+  'fonts.downloads_all': "All downloaded. From Orbis Reader's releases on GitHub.",
+  'fonts.download': 'Download',
+  'fonts.downloading': 'Downloading…',
+  'fonts.download_desc': '{{purpose}} {{size}} MB.',
+  'fonts.downloaded': '{{name}} downloaded.',
+  'fonts.purpose_opendyslexic': 'Made for readers with dyslexia.',
+  'fonts.purpose_atkinson': 'Made for readers with low vision.',
+  'fonts.purpose_lexend': 'Made to make reading easier. No italic.',
+  'fonts.purpose_literata': 'Made for reading on screens.',
+  'fonts.purpose_source_serif': 'A clear book font.',
+  'fonts.purpose_eb_garamond': 'A classic book font.',
+  'fonts.purpose_dejavu': 'For PDF exports: characters other fonts lack, such as arrows, Greek and Cyrillic.',
+  // On the Fonts page only, under DejaVu's families: the Font lists say nothing.
+  'fonts.pdf_note': '{{faces}}. Used for PDF exports.',
   'fonts.import_title': 'Import fonts',
   'fonts.import_faces': 'Faces: {{faces}}',
   'fonts.import_missing': 'No {{faces}}.',
@@ -3319,16 +3337,6 @@ const en = {
   'pdf_pages.cover': 'Cover sheet',
   'pdf_pages.cover_desc':
     'A first page with the title and what each mark means. Turn it off for the marked-up book on its own.',
-  // **The fonts live on the book page, and serve both commands.** One row, because it is one download — and it is
-  // here rather than on both because a second copy of a Download/Remove button is a second answer to a question
-  // with one. The book PDF is the one that draws whole pages of the author's text, so it is where the missing
-  // characters are noticed; the annotations dialog still offers the download at the moment it matters.
-  'pdf_pages.fonts': 'Expanded character set',
-  'pdf_pages.fonts_desc':
-    'Not downloaded. Without it a PDF can draw about 220 characters, so arrows, Greek, Cyrillic and mathematical symbols print as question marks.',
-  'pdf_pages.fonts_installed':
-    'Downloaded. PDFs can draw arrows, Greek, Cyrillic, mathematical symbols and the rest of the DejaVu character set.',
-  'pdf_pages.fonts_download': 'Download',
   'epub_export.title': 'Save note as EPUB',
   'epub_export.field_title': 'Title',
   'epub_export.field_author': 'Author',

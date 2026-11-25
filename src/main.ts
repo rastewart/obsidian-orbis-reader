@@ -35,7 +35,7 @@ import { openEpubExport, openFolderEpubExport, openSeparateEpubExport } from './
 import { checkReplace, setReplaceMessage, setSavedNotice } from './epub-replace';
 import { greetingFor, markSeenVersion, seenVersion } from './first-run';
 import { removeFoliatePatches } from './foliate-patches';
-import { fontsFolderOf, initFonts, watchFonts } from './fonts';
+import { fontsFolderOf, initFonts, onFontsChanged, watchFonts } from './fonts';
 import { initI18n, t } from './i18n';
 import type { TranslationKey } from './i18n/en';
 import { LibraryView, openLibraryView, refreshLibraryViews, VIEW_TYPE_ORBIS_LIBRARY } from './LibraryView';
@@ -99,6 +99,7 @@ import { OrbisSettings } from './OrbisSettings';
 import { ensureDataFolderAt } from './orbis-io';
 import { clearShareFolder, type OutsideTarget, outsideRoute, sendOutside } from './outside-vault';
 import { openNoteBeside } from './panes';
+import { forgetLegacyPdfFonts } from './pdf-fonts';
 import {
   bookAudioFolderPathFor,
   LS_DEVICE_NAME,
@@ -1939,6 +1940,8 @@ export default class OrbisReaderPlugin extends Plugin {
     this.app.workspace.onLayoutReady(() => {
       initFonts({ app: this.app, folder: () => fontsFolderOf(this.settings.fontsFolder) });
       watchFonts(this);
+      // DejaVu in the vault, downloaded here or synced in, retires this device's old copy — see `pdf-fonts.ts`.
+      onFontsChanged(() => void forgetLegacyPdfFonts(this.app, this.settings.fontsFolder));
     });
 
     // Once per vault: sidecars named the old way (from a book's basename, shared by every format of it) move to names

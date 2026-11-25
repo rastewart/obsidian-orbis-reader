@@ -214,14 +214,14 @@ Your answers to the setup questions for Library dashboards and Reading records a
 
 | Page | Settings on each device |
 |---|---|
-| **Setup** | The **Book sources**, **Look-up**, **Listening**, **Expanded PDF character set** and **Devices** tasks |
+| **Setup** | The **Book sources**, **Look-up**, **Listening** and **Devices** tasks |
 | **Appearance** | The **This device** display style, the display style in use, **Tooltip distance**, and every setting on the **Toolbar** page |
 | **Reading behavior** | **Turn pages with the keyboard**, **Show page arrows**, **Flash book text for navigation and search results**, **Link preview**, **Confirm before deleting notes**, the settings under **Opening a book**, the reading mode and bar for **Read in Orbis Reader**, and every setting under **Reading progress indicator** |
 | **Listening** | The **Live voice** and **Recorded voice** settings, **Downloaded voices**, every setting under **Playback**, and the playback speed |
 | **Look-up** | The offline dictionaries that are downloaded |
 | **Library dashboards** | **Show a notice when books are uncataloged**, the order of the dashboards, which dashboard is **Showing now**, and which dashboards are **Disabled** |
 | **Book sources** | **Book sources**, and the username and password for each feed |
-| **Conversions** | **Fetch remote images by default**, and the **Expanded character set** download |
+| **Conversions** | **Fetch remote images by default** |
 | **Devices** | **Use this vault on more than one device**, **Device name**, **Device ID**, **Share reading location with other devices** and **Share Orbis Reader configuration in the vault** |
 
 Notices that you dismissed, **Show what's new after an update** and the developer options also stay on each device.

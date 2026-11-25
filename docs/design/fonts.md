@@ -142,13 +142,57 @@ is not followed twice.
 
 ---
 
+## Downloads
+
+Seven fonts are offered on the Fonts page (`font-downloads.ts`): OpenDyslexic, Atkinson Hyperlegible, Lexend,
+Literata, Source Serif 4, EB Garamond, and DejaVu for the PDF export.
+
+**One zip per font, in this repository's `fonts` release.** A reader downloads only the fonts they want, and one font
+can be updated without the others. A zip is all or nothing: one download, one checksum, and every file unpacked or
+none, where loose files could leave three faces of four after a dropped connection. The zip carries the font's
+licence, so it lands beside the font in the vault, as the OFL asks.
+
+**Built by `pnpm build:fonts`** (`scripts/build-fonts.ts`):
+
+- **Every input pinned**: each file from a fixed commit of the font's own repository (DejaVu from a fixed npm
+  version), checked against its SHA-256 before it is packed.
+- **The projects' own static files, unchanged.** A PDF embeds a variable font at its default weight (Thin for
+  Bitter, Light for Merriweather), so each zip holds the separate Regular, Italic, Bold and Bold Italic files the
+  project publishes; Lexend has no italic. Converting a variable font to static faces ourselves would make a modified
+  version, which a font with a Reserved Font Name (Merriweather) may not be under its own name.
+- **The same bytes every time**: entries sorted and dated 1980-01-01, as the test fixtures are packed. It writes the
+  zips to `dist/fonts/` and `src/font-pins.ts` (each zip's name, size and SHA-256), formatted by Biome.
+- **A zip is never replaced once published.** An update is a new name (the font's own version is in it, e.g.
+  `literata-3.103.zip`) and a new pin, so an older build still downloads the zip it pinned.
+
+**Downloading** (`downloadFontPackage`) checks the size and SHA-256 against the pin and writes nothing on a mismatch,
+then unpacks into the fonts folder keeping the zip's folder. A font counts as downloaded when every one of its
+families is in the vault, however it got there. The heading of the section says where the fonts come from — the one
+network request on the page — and the README's network table lists GitHub for it.
+
+**Embedding.** Every font offered allows it: the OS/2 `fsType` of each file is 0 (installable) or, for OpenDyslexic,
+8 (editable), and each is under the SIL Open Font License 1.1 (DejaVu under the Bitstream Vera licence).
+
+### DejaVu
+
+DejaVu moved from the PDF settings, where each device downloaded it into the plugin's own `font-cache` folder, to the
+Fonts page and the vault (`pdf-fonts.ts`). The PDF export finds its seven files by name anywhere in the fonts folder.
+
+- **The old copy is used, not moved.** Until DejaVu is in the vault, the export reads the old cache. Moving it into the
+  vault on every device would be several devices writing the same files into a synced folder at once, which is how
+  sync conflicts begin.
+- **And then deleted**, on each device, once DejaVu is in the vault — downloaded there, or arrived from another
+  device (`forgetLegacyPdfFonts`, on every change to the fonts). Only that device's plugin folder is touched.
+- **Its three families are fonts like any other**, switched on and offered for reading. On the Fonts page only, their
+  rows say they are used for PDF exports; the Font lists say nothing.
+- **The Setup task** (*Expanded PDF character set*) now shows Ready on every device the fonts have synced to.
+
+---
+
 ## Later steps
 
 1. ~~The folder, importing, and the reader.~~
-2. Downloads: a `fonts` release in this repository, one zip per font (four static faces and the licence), pinned by
-   checksum: OpenDyslexic, Atkinson Hyperlegible, Lexend, Literata, Source Serif 4 and EB Garamond, with DejaVu
-   moving here from the PDF settings. DejaVu's three families (Serif, Sans, Sans Mono) are switched on like any
-   other font. On the Fonts page only, their rows say they are used for PDF exports; the Font lists say nothing.
+2. ~~Downloads.~~
 3. A font for Save as PDF and Save annotations as PDF, falling back to DejaVu for missing characters and faces.
    Its list offers every font in the vault: the Fonts page's switches are for reading only (see Decisions).
 4. A font for Save as EPUB and Notes to EPUB, embedded in the book.
@@ -166,4 +210,7 @@ is not followed twice.
 | Loading | `FontFace` per chapter document | No file addresses inside the book's frame |
 | Missing faces | Regular required, others wanted | Text needs Regular; the rest can be imitated |
 | The list | Switches off, all on by default | A font that arrives is offered without a step |
+| Downloads | One zip per font, from this repository's release | Pick what you want; all-or-nothing; licence travels with it |
+| Faces in a download | The project's own static files | A PDF embeds a variable font at its default weight |
+| DejaVu's old copy | Used until DejaVu is in the vault, then deleted | Moving it on every device would race in the synced folder |
 | What the switches cover | The reading Font list only | Exports offer every vault font; a font hidden for reading may still be wanted in a PDF |

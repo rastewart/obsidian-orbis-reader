@@ -114,17 +114,19 @@ For saving the PDF outside the vault, see [Save the PDF outside the vault](#save
 
 Without the expanded character set, a PDF can show about 220 characters. This is enough for most English text. Other characters, such as arrows, Greek letters and mathematical symbols, print as `?`.
 
-The expanded character set adds arrows, mathematical symbols, currency symbols, Greek, Cyrillic and accented Latin letters. The download is 3.1 MB, one time, and it stays on this device. Save as PDF and Save annotations as PDF use the same expanded character set.
+The expanded character set is the DejaVu fonts. It adds arrows, mathematical symbols, currency symbols, Greek, Cyrillic and accented Latin letters. The download is 1.8 MB, one time. It goes into your vault's fonts folder, so your sync tool copies it to your other devices. Save as PDF and Save annotations as PDF use the same expanded character set.
 
 You can download it in three places:
 
 - **Settings → Orbis Reader → Setup → Expanded PDF character set**.
 - The **Save as PDF** or **Save annotations as PDF** dialog, with **Download the expanded character set**. It is checked by default and shows only when the download is not on this device.
-- **Settings → Orbis Reader → Conversions → Save as PDF → Expanded character set**. This row shows whether the download is on this device.
+- **Settings → Orbis Reader → Fonts**, under **Fonts to download**. See [Fonts](settings-reference.md#fonts).
 
 If you do not download it, the PDF is still saved, with the smaller set of characters.
 
-To remove the expanded character set, go to **Settings → Orbis Reader → Conversions → Save as PDF → Expanded character set** and select **Remove**. This is the only place to remove it.
+To remove the expanded character set, delete the DejaVu fonts on the **Fonts** page.
+
+Versions of Orbis Reader before 0.1.9 kept the expanded character set in the plugin folder on each device. Orbis Reader still uses that copy, and deletes it once the DejaVu fonts are in your vault.
 
 ---
 
@@ -157,9 +159,8 @@ These settings are in **Settings → Orbis Reader → Conversions → Save as PD
 | **Marked up by** | Sets the name printed on the cover sheet. Save annotations as PDF uses the same name. Empty by default |
 | **Include marks and notes** | Draws your marks into the book's text. Enabled by default |
 | **Cover sheet** | Adds a first page with the title and what each mark means. Enabled by default. Shown when **Include marks and notes** is enabled |
-| **Expanded character set** | Shows whether the expanded character set is on this device. Select **Download** to add it or **Remove** to delete it |
 
-The expanded character set is stored on each device. The other settings are shared with your other devices. See [Sync and Devices](sync-and-devices.md#settings-shared-between-devices).
+These settings are shared with your other devices. See [Sync and Devices](sync-and-devices.md#settings-shared-between-devices).
 
 ---
 
