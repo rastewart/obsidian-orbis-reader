@@ -204,7 +204,13 @@ When you increase **Text margins** above this minimum, the gap between the colum
 | **Verdana** | Sans-serif font, wide and easy to read at small sizes |
 | **Trebuchet MS** | Sans-serif font, with more character |
 
+The **Font** list also offers the fonts that you import, by their names. After **Default (use book fonts)** and **Follow Obsidian**, the list is in alphabetical order. To import a font, or to hide a font from the list, see [Fonts](settings-reference.md#fonts).
+
+A font that this device does not have is shown as *not on this device*. This is a system font that the device does not come with, or an imported font whose files have not reached this device yet. Books use the default font until the font is on the device.
+
 A font other than **Default (use book fonts)** applies to all body text, including text that the book sets in its own font. Code, and text that the book sets in a monospace or symbol font, keep the book's font. A different font could change the meaning of this text.
+
+With **Default (use book fonts)**, text that the book gives no font is drawn in the device's default serif font.
 
 ---
 

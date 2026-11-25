@@ -14,6 +14,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 ### Added
 
+- **Fonts**, a new page in Orbis Reader settings. **Import…** adds a font's TrueType or OpenType files, or the zip file they came in, from your device to a fonts folder in the vault, `!orbis-data/fonts`, so the font reaches your other devices with the rest of the vault. Imported fonts are offered in the **Font** list of display styles. A switch for each font, imported or a system font, shows or hides it in the **Font** list. A font that this device does not have is marked *not on this device*. Changing **Vault folder for fonts** moves the fonts into the new folder.
 - **What's new**, a button on the last row of Orbis Reader settings, shows the changes in each release. After an update, a notice says that Orbis Reader was updated, with a link to what is new. To stop the notice on a device, turn off **Show what's new after an update** at the foot of the dialog.
 
 ### Changed

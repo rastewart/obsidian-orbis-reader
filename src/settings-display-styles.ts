@@ -19,6 +19,7 @@ import { BOLD_STROKE, parseBoldText, STORAGE_KEY_BOLD_TEXT } from './bold-text';
 import { confirmThen } from './ConfirmModal';
 import { deviceSetting, setDeviceSetting } from './device-settings';
 import { getOrCreateDeviceId } from './device-store';
+import { fontChoices, useFontFor } from './fonts';
 import { autoHyphenates, HYPHENATION_LABELS } from './hyphenation';
 import { t } from './i18n';
 import { PAGE_TURN_LABELS, parsePageTurn, STORAGE_KEY_PAGE_TURN } from './page-turn';
@@ -29,7 +30,6 @@ import {
   DISPLAY_DEFAULTS,
   DisplayStyle,
   displayStyleEntries,
-  FONT_FAMILY_OPTIONS,
   generateStyleId,
   IOrbisReaderPlugin,
   parseHyphenation,
@@ -568,10 +568,17 @@ export class DisplayStylesPage {
         render: (setting) => {
           setting.addDropdown((d) => {
             h.font = d;
+            const current = this.styleLs(STORAGE_KEY_FONT_FAMILY) ?? DISPLAY_DEFAULTS.fontFamily;
             const opts: Record<string, string> = {};
-            for (const { value, labelKey } of FONT_FAMILY_OPTIONS) opts[value] = t(labelKey);
+            for (const { value, label } of fontChoices(
+              this.host.plugin.settings.hiddenFonts ?? [],
+              current,
+              d.selectEl.doc
+            )) {
+              opts[value] = label;
+            }
             d.addOptions(opts)
-              .setValue(this.styleLs(STORAGE_KEY_FONT_FAMILY) ?? DISPLAY_DEFAULTS.fontFamily)
+              .setValue(current)
               .onChange((value) => {
                 this.styleDispatch(STORAGE_KEY_FONT_FAMILY, value);
                 this.applyStylePreview();
@@ -804,6 +811,9 @@ export class DisplayStylesPage {
     const theme = ls(STORAGE_KEY_THEME) ?? DISPLAY_DEFAULTS.theme;
     const { bg: background, fg: color } = themeColors(theme, this.host.plugin.settings, previewEl);
     const font = ls(STORAGE_KEY_FONT_FAMILY) ?? DISPLAY_DEFAULTS.fontFamily;
+    // A vault font has to be in the Settings window's own document before the sample can be drawn in it — and the
+    // preview may not be in that window yet when this runs. See `useFontFor`.
+    void useFontFor(previewEl, font);
     const fontFamily =
       font === 'obsidian'
         ? getComputedStyle(activeDocument.body).getPropertyValue('--font-text').trim() || ''

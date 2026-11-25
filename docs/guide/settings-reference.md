@@ -30,12 +30,13 @@ The results include the matching Orbis Reader settings.
 
 ## Settings pages
 
-The Orbis Reader settings open on a list of ten pages. Each row describes what its page contains. The last row shows the version of the plugin. Its **What's new** button shows the changes in each release, and its **User guide** button opens this guide in your browser.
+The Orbis Reader settings open on a list of eleven pages. Each row describes what its page contains. The last row shows the version of the plugin. Its **What's new** button shows the changes in each release, and its **User guide** button opens this guide in your browser.
 
 | Page | What it contains |
 |---|---|
 | [Setup](#setup) | The tasks that enable each feature, with a count of the tasks that are done |
 | [Appearance](#appearance) | How books look, and the buttons on the reader's toolbar |
+| [Fonts](#fonts) | The fonts folder, importing fonts, and which fonts the **Font** list offers |
 | [Reading behavior](#reading-behavior) | How the reader behaves while you read, and the progress indicator |
 | [Listening](#listening) | Voices, playback, the full-screen audio player and the pronunciation glossary |
 | [Annotations](#annotations) | Marks, reading records, and saving annotations as Markdown or PDF |
@@ -103,7 +104,7 @@ Most settings on this page change the display style that is selected in **Displa
 | **Word spacing** | Adds space between words, from 0% to 50% of the font size. 0% keeps the book's spacing |
 | **Paragraph spacing** | Sets the space between paragraphs, from 0% to 200% of the font size. 0% keeps the book's spacing |
 | **Hyphenation** | Sets whether long words break across lines with a hyphen. The values are **Follow the book**, **On** and **Off** |
-| **Font** | Sets the font for book text |
+| **Font** | Sets the font for book text. The list offers the fonts that are switched on in [Fonts](#fonts) |
 | **Font size** | Sets the size of book text, from 80% to 300% |
 | **Bold text** | Draws the book's text heavier. Words the book makes bold stay bolder |
 | **Preview** | Shows a sample of book text with your changes |
@@ -130,6 +131,43 @@ These settings are in **Settings → Orbis Reader → Appearance → Toolbar**. 
 | **Show focus mode button** | Shows the **Focus mode** button, which turns Focus mode on and off |
 
 If you hide a button, you can still run its command from the command palette.
+
+---
+
+## Fonts
+
+These settings are in **Settings → Orbis Reader → Fonts**. They set where fonts are kept, add fonts from your device, and choose which fonts the **Font** list for reading offers.
+
+| Setting | What it does |
+|---|---|
+| **Vault folder for fonts** | Sets the folder for the fonts that you import. The default is `!orbis-data/fonts`. When you change the folder, Orbis Reader moves the fonts into it |
+| **Import fonts** | **Import…** opens your device's file picker. Select the TrueType or OpenType files (`.ttf` or `.otf`) of a font, or the zip file that you downloaded them in |
+| **Fonts in your vault** | Lists each font in the fonts folder with the faces it has, and a line of sample text in the font. The trash button moves the font's files to the trash. The switch shows or hides the font in the **Font** list |
+| **System fonts** | Lists the fonts that come with devices, in alphabetical order, with a line of sample text in each font. Each says whether this device has the font. The switch shows or hides the font in the **Font** list |
+
+All fonts are shown in the **Font** list by default. A font that is in use stays in the list when you hide it.
+
+### Importing a font
+
+A font usually has four files, one for each face: Regular, Italic, Bold and Bold Italic. Select all four at once in the file picker, or select the zip file that the font came in. Before it copies the files, Orbis Reader shows each font with the faces that it found:
+
+- A font needs a Regular face. Without one, the font is not imported.
+- A font without an Italic, Bold or Bold Italic face is imported. Text in a missing face is drawn by slanting or thickening Regular.
+- A file that is not a TrueType or OpenType font is not imported. Web fonts (`.woff` and `.woff2`) and font collections (`.ttc`) are not imported.
+- From a zip file, Orbis Reader takes the `.ttf` and `.otf` files in any of its folders, and the font's licence file, such as `OFL.txt`. Other files in the zip are left out.
+- If a zip file has both a variable font and separate files for each face, such as a download from Google Fonts, Orbis Reader imports the separate files only.
+
+Orbis Reader copies each font to its own folder in the fonts folder, named for the font, with its licence file if there is one. The font's name and faces come from the font files, not from their file names. You can also copy font files into the fonts folder yourself.
+
+### Fonts on other devices
+
+The fonts folder is part of your vault, so your sync tool copies the fonts to your other devices. The **Vault folder for fonts** setting and which fonts are shown are shared too. See [Sync and Devices](sync-and-devices.md#settings-shared-between-devices).
+
+Until a font's files reach a device, the **Font** list on that device shows the font as *not on this device*, and books use the default font. A system font that a device does not have is shown the same way. A missing system font is drawn in a similar font that the device has: the device's serif font in place of Georgia, Palatino or Times New Roman, and its sans-serif font in place of Arial, Trebuchet MS or Verdana.
+
+Android answers some system font names with its own fonts. There, Georgia, Palatino and Times New Roman are drawn in the same serif font, and Arial and Verdana in the same sans-serif font. On Android, the **Fonts** page says *Same as the device's serif font* or *Same as the device's sans-serif font* for these, and the **Font** list adds *(device serif)* or *(device sans-serif)*. Trebuchet MS is not on Android.
+
+If you move or rename the fonts folder in Obsidian's file explorer, **Vault folder for fonts** changes to match.
 
 ---
 

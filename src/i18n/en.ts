@@ -392,6 +392,8 @@ const en = {
   // so it belongs in the guide.
   'settings_pages.library_desc': 'Build dashboards to browse, group and summarize your books.',
   'settings_pages.display_styles_desc': 'Change how books look and adjust the reader toolbar.',
+  'settings_pages.fonts': 'Fonts',
+  'settings_pages.fonts_desc': 'Import and manage fonts.',
   // No mention of annotation presets: the marks manager lives under Annotations, and a signpost naming a row that
   // is not on the page is worse than no signpost.
   'settings_pages.reading_desc': 'Adjust how the reader behaves while you read.',
@@ -643,6 +645,67 @@ const en = {
   'settings.guide_tooltip': 'Open the Orbis Reader user guide in your browser',
   // Extra words settings search matches the row on, comma-separated: what someone who is stuck types.
   'settings.guide_aliases': 'help, guide, user guide, documentation, docs, manual',
+  // The Fonts page and its import dialog — see `settings-fonts.ts` and `FontImportModal.ts`.
+  'fonts.folder': 'Vault folder for fonts',
+  // Short on purpose: syncing, and moving the fonts when the folder changes, are in the guide — and a move reports
+  // itself in a notice when it happens.
+  'fonts.folder_desc': 'Where imported fonts are stored.',
+  'fonts.folder_default': '{{folder}} (default)',
+  'fonts.import': 'Import fonts',
+  // The four faces are not asked for here: the import dialog shows which a font is missing.
+  'fonts.import_desc': 'TTF or OTF files, or a zip of them.',
+  'fonts.import_choose': 'Import…',
+  'fonts.in_vault': 'Fonts in your vault',
+  'fonts.none_in_vault': 'No fonts imported yet.',
+  'fonts.system': 'System fonts',
+  'fonts.on_this_device': 'On this device',
+  // The fallback is named on the row it applies to, not explained under the heading: a missing serif is drawn in the
+  // device's serif, a missing sans-serif in its sans-serif — the guide says so.
+  'fonts.not_on_this_device': 'Not on this device. A similar font is used.',
+  // A system font that Android answers with its own font: Georgia, Times New Roman and Palatino all draw the same
+  // serif there, Arial and Verdana the same sans-serif.
+  'fonts.same_as_serif': "Same as the device's serif font",
+  'fonts.same_as_sans': "Same as the device's sans-serif font",
+  // In the Font list, kept short: on a phone the list is narrow, and a longer label wraps onto a second line.
+  'fonts.same_as_serif_list': '{{name}} (device serif)',
+  'fonts.same_as_sans_list': '{{name}} (device sans-serif)',
+  // The line under each font on the Fonts page, drawn in that font. Every letter of the English alphabet.
+  'fonts.sample': 'The quick brown fox jumps over the lazy dog',
+  // In a Font list, after a font this device cannot draw: a system font it does not have, or a vault font not here yet.
+  'fonts.not_on_device': '{{name}} (not on this device)',
+  'fonts.show_in_list': 'Show in the Font list',
+  // A list of faces ending in "or": "Italic or Bold Italic", "Italic, Bold or Bold Italic".
+  'fonts.faces_or': '{{faces}} or {{last}}',
+  'fonts.face_regular': 'Regular',
+  'fonts.face_italic': 'Italic',
+  'fonts.face_bold': 'Bold',
+  'fonts.face_bold_italic': 'Bold Italic',
+  'fonts.delete': 'Delete {{name}}',
+  'fonts.delete_title': 'Delete {{name}}?',
+  'fonts.delete_message':
+    'The font files of {{name}} move to the trash. A display style that uses it shows the default font instead.',
+  'fonts.delete_confirm': 'Delete',
+  'fonts.moved': '{{count}} fonts moved to {{to}}.',
+  'fonts.moved_one': '1 font moved to {{to}}.',
+  'fonts.move_skipped': '{{count}} fonts stayed in {{from}}: fonts with the same names are already in the new folder.',
+  'fonts.move_skipped_one': '1 font stayed in {{from}}: a font with the same name is already in the new folder.',
+  'fonts.move_inside': 'The fonts folder cannot move from {{from}} to {{to}}, because one folder is inside the other.',
+  'fonts.import_title': 'Import fonts',
+  'fonts.import_faces': 'Faces: {{faces}}',
+  'fonts.import_missing': 'No {{faces}}.',
+  'fonts.import_needs_regular': 'Not imported: a font needs a Regular face. Choose its Regular file as well.',
+  'fonts.import_adds_to_existing': 'Already imported. Files with the same names are replaced.',
+  'fonts.import_refused': 'Not imported',
+  'fonts.problem_web_font': 'a web font (WOFF or WOFF2). Import the TTF or OTF file instead.',
+  'fonts.problem_collection': 'a font collection (.ttc). Import the fonts in it as separate files.',
+  'fonts.problem_not_a_font': 'not a font file.',
+  'fonts.problem_bad_zip': 'a zip file that could not be opened.',
+  'fonts.problem_empty_zip': 'a zip file with no TTF or OTF fonts in it.',
+  'fonts.import_licence': 'With its licence: {{files}}',
+  'fonts.import_button': 'Import',
+  'fonts.imported': '{{count}} font files imported.',
+  'fonts.imported_one': '1 font file imported.',
+  'fonts.import_failed': 'The fonts could not be imported. See the developer console for details.',
   // What's new — the release notes, from the version row in settings and from the notice after an update. See
   // `WhatsNewModal.ts`.
   'whats_new.button': "What's new",

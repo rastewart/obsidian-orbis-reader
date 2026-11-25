@@ -23,6 +23,7 @@ import { conversionTests } from './tests/conversions';
 import { displayTests } from './tests/display';
 import { epubTests } from './tests/epubs';
 import { existsTests } from './tests/exists';
+import { fontTests } from './tests/fonts';
 import { libraryTests } from './tests/library';
 import { linkTests } from './tests/links';
 import { marksTests } from './tests/marks';
@@ -49,6 +50,7 @@ const ALL: E2eTest[] = [
   ...checkTests,
   ...linkTests,
   ...displayTests,
+  ...fontTests,
   ...resilienceTests,
   ...recordsTests,
   ...libraryTests,

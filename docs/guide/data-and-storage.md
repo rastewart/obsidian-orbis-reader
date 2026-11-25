@@ -23,6 +23,7 @@ Orbis Reader stores your reading data in the vault, in files that you can see. Y
 | Configuration shared between devices | In `!orbis-data/sync`, unless you change **Vault folder for configuration files** |
 | Notes and files that you make with Orbis Reader, such as title notes, covers, reading records, generated notes, Markdown and PDF files, and EPUB books made from notes | In the folders that you select in settings |
 | Books from book sources | In the **Downloads folder** that you select for book sources |
+| Fonts that you import | In `!orbis-data/fonts`, unless you change **Vault folder for fonts** |
 
 The `.orbis`, annotation, location and configuration files are plain JSON. For the contents of the `.orbis` file, see [The .orbis File](orbis-file.md). For the files that your sync tool must copy, see [Sync and Devices](sync-and-devices.md#files-that-your-sync-tool-must-copy).
 
@@ -73,6 +74,7 @@ Orbis Reader reads and writes vault files through Obsidian. It gets the list of 
 | Look-up | Finds the vault notes that match the selected text |
 | Book sources | Finds a free file name for a book that you download |
 | Read in Orbis Reader | Finds the book that was made from a note |
+| Fonts | Finds the font files in the fonts folder |
 | Reading data from earlier versions | Once in each vault, finds the reading data files named differently by earlier versions of the plugin, and renames them so they can be used by the current release |
 
 Orbis Reader does not send the list of files, or the files, to any other place.

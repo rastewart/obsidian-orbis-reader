@@ -1,19 +1,20 @@
 import { setTooltip, ToggleComponent } from 'obsidian';
 import { parseBoldText } from './bold-text';
+import { fontChoices } from './fonts';
 import { autoHyphenates, HYPHENATION_LABELS } from './hyphenation';
 import { t } from './i18n';
 import { PAGE_TURN_LABELS, parsePageTurn } from './page-turn';
 import { navbarClearance } from './reader/viewport-insets';
 import { resolveThemeId, type ThemeSettings, themeChoices } from './reader-themes';
-import { DisplaySettings, Flow, FONT_FAMILY_OPTIONS, parseHyphenation, parseTextAlign } from './settings';
+import { DisplaySettings, Flow, parseHyphenation, parseTextAlign } from './settings';
 import { isSliderDragging } from './slider-input';
 import { SPACING_LABELS, TEXT_SPACING, type TextSpacing } from './text-spacing';
 import { ignoreObsidianSwipe, setSvgIcon } from './ui-utils';
 
 export interface DisplayMenuView {
   settings: DisplaySettings;
-  /** Which themes exist and which are offered — see `reader-themes.ts`. */
-  plugin: { settings: ThemeSettings };
+  /** Which themes exist and which are offered — see `reader-themes.ts` — and which fonts the Font list leaves out. */
+  plugin: { settings: ThemeSettings & { hiddenFonts?: string[] } };
   contentEl: HTMLElement;
   hostEl: HTMLElement | null;
   displayMenuWrapper?: HTMLElement;
@@ -400,8 +401,16 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     attr: { 'aria-label': t('display_menu.font') },
   });
   const fontSelect = fontSelectWrap.createEl('select', { cls: 'dropdown orbis-dropdown' });
-  FONT_FAMILY_OPTIONS.forEach((opt) => fontSelect.createEl('option', { value: opt.value, text: t(opt.labelKey) }));
-  fontSelect.value = view.settings.fontFamily || 'default';
+  // Refilled on every sync: a font imported, downloaded or switched off on the Fonts page changes the list.
+  const fillFonts = () => {
+    const current = view.settings.fontFamily || 'default';
+    fontSelect.empty();
+    for (const choice of fontChoices(view.plugin.settings.hiddenFonts ?? [], current, fontSelect.doc)) {
+      fontSelect.createEl('option', { value: choice.value, text: choice.label });
+    }
+    fontSelect.value = current;
+  };
+  fillFonts();
   fontSelect.addEventListener('change', () => {
     view.settings.fontFamily = fontSelect.value;
     view.saveSetting('fontFamily', fontSelect.value);
@@ -589,7 +598,7 @@ export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): v
     if (!isSliderDragging(brightSlider)) brightSlider.value = String(view.settings.brightness);
     if (!isFocused(brightNum)) brightNum.value = String(view.settings.brightness);
     updateStructureBtns();
-    fontSelect.value = view.settings.fontFamily || 'default';
+    fillFonts();
     boldToggle.setValue(view.settings.boldText === 'on');
     if (!isSliderDragging(fsSlider)) fsSlider.value = String(view.settings.fontSize);
     if (!isFocused(fsNum)) fsNum.value = String(view.settings.fontSize);

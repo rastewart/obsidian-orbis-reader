@@ -51,6 +51,7 @@ import {
   reportStaleRenderer,
   stampRenderer,
 } from './foliate-patches';
+import { useFontIn } from './fonts';
 import { GenerateNotesModal, NotesFilePickerModal, type PickerEntry } from './GenerateNotesModal';
 import { parseGoToInput } from './goto-parser';
 import { t } from './i18n';
@@ -949,6 +950,8 @@ export class OrbisReaderView
   // See docs/design/display-styles.md.
   applyPluginSettings(): void {
     this.settings = loadSettings(this.app, this.plugin.settings);
+    // A font that has just arrived — imported, or synced in — reaches the chapters already open.
+    this.loadedDocs.forEach((doc) => void useFontIn(doc, this.settings.fontFamily));
     // A theme edited or deleted in the Theme manager moves the colors of a book already using it.
     if (!this.refreshTheme('settings saved')) this.applyHostBg();
     this.syncDisplayMenu?.();
@@ -1182,6 +1185,8 @@ export class OrbisReaderView
     style.id = 'orbis-styles';
     style.textContent = css;
     doc.head?.appendChild(style);
+    // A font from the vault's fonts folder has to be put into this chapter's own document — see `fonts.ts`.
+    void useFontIn(doc, this.settings.fontFamily);
     paintPageColor(doc, colors.bg);
     repairChapterContrast(doc, colors, (msg) => this.addDebugEntry(msg, 'display')); // after the theme's styles
   }

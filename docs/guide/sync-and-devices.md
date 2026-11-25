@@ -34,6 +34,7 @@ Orbis Reader keeps your books and its data in ordinary files in the vault. None 
 | Configuration files, if you share them | The `.json` files in `!orbis-data/sync` |
 | Notes | Title notes, reading records and generated notes (`.md`), and the `.base` files for reading records |
 | Other files that you make | Cover images, recordings (`.mp3`) and PDF files |
+| Fonts, if you import them | The `.ttf` and `.otf` files in `!orbis-data/fonts` |
 
 If your sync tool does not copy a book or its `!orbis-data` folder, the book is missing on your other devices, or opens there without your annotations and reading location.
 
@@ -194,6 +195,7 @@ When **Share Orbis Reader configuration in the vault** is enabled on two devices
 | Page | Shared settings |
 |---|---|
 | **Appearance → Reader theme manager** | The reader themes, their order, and which reader themes are enabled |
+| **Fonts** | **Vault folder for fonts**, and which fonts are shown in the **Font** list |
 | **Reading behavior → Read in Orbis Reader** | **Type**, which sets the `type` property of the book's title note |
 | **Listening** | **How much the mark button marks** and **How much the note button captures** |
 | **Annotations → Reading records** | **Write a reading record for each book as you read**, **Where each book's reading record goes**, **Folder for reading records**, **Create one base covering every book**, **Folder for the base covering every book**, and the settings under **What gets added to the vault** |

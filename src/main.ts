@@ -35,6 +35,7 @@ import { openEpubExport, openFolderEpubExport, openSeparateEpubExport } from './
 import { checkReplace, setReplaceMessage, setSavedNotice } from './epub-replace';
 import { greetingFor, markSeenVersion, seenVersion } from './first-run';
 import { removeFoliatePatches } from './foliate-patches';
+import { fontsFolderOf, initFonts, watchFonts } from './fonts';
 import { initI18n, t } from './i18n';
 import type { TranslationKey } from './i18n/en';
 import { LibraryView, openLibraryView, refreshLibraryViews, VIEW_TYPE_ORBIS_LIBRARY } from './LibraryView';
@@ -1934,6 +1935,11 @@ export default class OrbisReaderPlugin extends Plugin {
     });
     // A PDF shared last session waits in the plugin's folder until now — see `clearShareFolder`.
     this.app.workspace.onLayoutReady(() => void clearShareFolder(this.app));
+    // The fonts in the vault's fonts folder, looked for once the vault's file list is complete, and kept current.
+    this.app.workspace.onLayoutReady(() => {
+      initFonts({ app: this.app, folder: () => fontsFolderOf(this.settings.fontsFolder) });
+      watchFonts(this);
+    });
 
     // Once per vault: sidecars named the old way (from a book's basename, shared by every format of it) move to names
     // built from the whole file name. After layout-ready, when the vault's file list is complete. See

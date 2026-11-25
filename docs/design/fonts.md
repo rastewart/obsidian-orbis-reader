@@ -1,0 +1,169 @@
+# Fonts
+
+← [Design Docs](README.md)
+
+Fonts the reader can choose beyond the system's: where their files live, how a display style names one, how a book
+gets it, and what the Font list offers. The code is `src/fonts.ts` (the library), `src/font-file.ts` (reading a
+font file), `src/settings-fonts.ts` (the Fonts page) and `src/FontImportModal.ts` (importing).
+
+Built in steps. This document describes step 1, the folder, importing and the reader. The later steps are listed at
+the end.
+
+---
+
+## Where fonts live
+
+**In the vault**, in one folder: `!orbis-data/fonts` unless the reader picks another (`fontsFolder`, empty for the
+default, beside the configuration folder `!orbis-data/sync`). A font imported on one device reaches the others with
+the rest of the vault. Obsidian Sync copies font files only with **Sync all other types** on; the guide already says
+so for every file Orbis writes.
+
+**The folder is looked through, not listed in a setting.** Every `.ttf` and `.otf` file in it, at any depth, is a
+font, and a family is whatever the files say they are. A reader who drops files in by hand has imported them. The
+import copies each family into a folder of its own name, so a licence file can sit beside its fonts, but nothing
+depends on that arrangement.
+
+**Both settings travel** (`SHARED_SETTINGS_KEYS`): the folder, and `hiddenFonts`. A display style that travels names
+a font, and the folder its files are in and the list it is chosen from should be the same on every device, as the
+reader themes are.
+
+---
+
+## What a font file says
+
+`readFontFile` reads the tables it needs and nothing else:
+
+- **`name`**: the typographic family (ID 16) or else the legacy one (ID 1), so a Light face joins its family rather
+  than becoming *Family Light*.
+- **`OS/2`**: the weight, italic or oblique (`fsSelection`), and the embedding bits (`fsType`). Without `OS/2`, the
+  style comes from `head.macStyle`.
+- **`fvar`**: a variable font's weight axis, so one file can be both regular and bold.
+
+**TrueType and OpenType only.** Those are what the reader, a PDF (pdf-lib through fontkit) and an EPUB can all use.
+WOFF and WOFF2 are compressed copies of the same tables, made for web pages, and WOFF2 needs Brotli to read. A
+collection (`.ttc`) is several fonts in one file. Both are refused with the reason.
+
+**The four faces.** `facesCovered` maps files to Regular, Italic, Bold and Bold Italic. Bold is weight 600 or more,
+so a SemiBold stands in where there is no Bold, as the browser would choose it anyway.
+
+---
+
+## Importing
+
+A file picker, then a dialog that shows each family with the faces its files cover, before anything is copied.
+`gatherImport` (`src/font-import.ts`) sorts what was chosen into families, with no Obsidian in it so it can be tested.
+
+- **A zip is opened, not refused**, since a font is usually downloaded as one. Its `.ttf` and `.otf` files are read
+  at any depth, macOS's `__MACOSX` and `._` copies are skipped, and a licence file in it (`OFL.txt`, `LICENSE…`) is
+  copied with every family the zip held, so the licence sits beside the font in the vault.
+- **Static files win over a variable copy of the same family.** Google's zip of a variable family holds the variable
+  files and a `static` folder of every weight. Both would give the browser two descriptions of the same faces, and
+  the static ones are what a PDF can use.
+
+- **A family needs a Regular face**: without one there is nothing to draw ordinary text with, so it is listed with
+  the reason and not imported.
+- **The other three are wanted, not required.** The reader slants or thickens Regular for a missing face. The
+  dialog names what is missing, so a reader who chose one file knows to choose the rest.
+- **The same family again** adds its files, replacing files of the same name.
+
+The picker is an `<input type="file">` in the document of the window the button is in: on a computer Settings is a
+window of its own, and a picker opened from the main window would appear behind it.
+
+---
+
+## A display style names a family
+
+A vault font's value is its family, quoted: `"Literata"`. A system font's value is the CSS list it always was. So:
+
+- **Moving the folder breaks nothing**, and a font that has not synced yet is still the font the style asks for.
+- **An older version of Orbis** reading a synced style gets a CSS family it cannot find, and draws the default font.
+
+---
+
+## How a book gets the font
+
+A book's chapters are separate documents, each with its own set of fonts. `useFontIn(doc, value)` reads the
+family's files once (kept in memory by path and modification time), and adds a `FontFace` for each face to the
+document, made with that document's own `FontFace` constructor. Called:
+
+- from `applyDocStyles`, as each chapter is styled;
+- from `applyPluginSettings`, for the chapters already open when a font arrives;
+- from the settings preview and the Fonts page, in the settings window's document.
+
+**`FontFace`, not `@font-face` with a file address.** Nothing has to resolve a URL inside the book's frame, which
+behaves the same on every platform. The engine already relays out when fonts finish loading (a resize observer on the
+body, and `fonts.ready`).
+
+---
+
+## The Fonts page
+
+Two sections, the vault's fonts and the system's, because their rows differ: only a vault font can be deleted. The
+system fonts are in alphabetical order, as the vault's are.
+
+**Names in Obsidian's font, a sample in the font.** Each row's description ends with a line of sample text drawn in
+the font. A name in its own typeface was tried first and dropped: a symbol or decorative font cannot draw its own
+name readably, fonts of very different sizes make the rows uneven, and a reader who chose a font for its legibility
+should not have to read the list in every other one. If a font cannot draw the sample, only the sample suffers.
+
+---
+
+## What the Font list offers
+
+`fontChoices(hidden, current)`: the book's own fonts, Obsidian's, then every font switched on.
+
+- **One alphabetical list** after those two, system fonts and the vault's together. The two lead because they choose
+  *which* font rather than being one.
+- **A system font this device does not have is marked** *(not on this device)*, found by measuring a line of text
+  with the font and a fallback against the fallback alone (`systemFontStatus`). `document.fonts.check()` cannot
+  answer this: it says true for a font that does not exist, since there is nothing to load.
+- **Android answers some names with its own fonts**: Georgia, Times New Roman and Palatino draw its serif, Arial and
+  Verdana its sans-serif, and only Trebuchet MS is missing (confirmed on a device). On Android only, a present font
+  is also measured against the device's serif and sans-serif, and a match is marked *(device serif)*.
+  Elsewhere the test would be wrong: on Windows and macOS, Times New Roman and Arial *are* the default serif and
+  sans-serif.
+- **The font in use is always offered**, switched off or not here yet, so the list never shows a value it cannot
+  hold.
+
+---
+
+## Keeping current
+
+`watchFonts` registers vault events: a font file created, deleted, renamed or changed in the folder starts a new look,
+and a look that finds something different tells every open book (`refreshViews`). A request during a look is
+answered by one more look, not the one under way: moving the folder fires an event per file before the one for the
+folder, and the setting follows only on the last.
+
+**Moving the folder.** The Fonts page moves what the old folder holds when the setting changes, through Obsidian's
+file manager so a sync tool sees a move: the whole folder when the new one does not exist, else entry by entry,
+leaving any whose name is taken. Only the device that changed the setting moves anything. **A folder moved in the file
+explorer** is followed: the setting changes to match. A move made by the Fonts page changes the setting first, so it
+is not followed twice.
+
+---
+
+## Later steps
+
+1. ~~The folder, importing, and the reader.~~
+2. Downloads: a `fonts` release in this repository, one zip per font (four static faces and the licence), pinned by
+   checksum: OpenDyslexic, Atkinson Hyperlegible, Lexend, Literata, Source Serif 4 and EB Garamond, with DejaVu
+   moving here from the PDF settings. DejaVu's three families (Serif, Sans, Sans Mono) are switched on like any
+   other font. On the Fonts page only, their rows say they are used for PDF exports; the Font lists say nothing.
+3. A font for Save as PDF and Save annotations as PDF, falling back to DejaVu for missing characters and faces.
+   Its list offers every font in the vault: the Fonts page's switches are for reading only (see Decisions).
+4. A font for Save as EPUB and Notes to EPUB, embedded in the book.
+
+---
+
+## Decisions
+
+| Decision | Chosen | Why |
+|---|---|---|
+| Where fonts live | A vault folder | One import or download for every device |
+| Which files | Everything in the folder | A font dropped in by hand is a font |
+| A style names | The family, quoted | Survives a moved folder and a slow sync |
+| File types | TTF and OTF | Usable by the reader, PDF and EPUB alike |
+| Loading | `FontFace` per chapter document | No file addresses inside the book's frame |
+| Missing faces | Regular required, others wanted | Text needs Regular; the rest can be imitated |
+| The list | Switches off, all on by default | A font that arrives is offered without a step |
+| What the switches cover | The reading Font list only | Exports offer every vault font; a font hidden for reading may still be wanted in a PDF |

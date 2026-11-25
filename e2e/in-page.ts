@@ -1974,3 +1974,137 @@ export function noticeWith(part: string, click = false): string | null {
   if (click) notice.querySelector<HTMLElement>('a')?.click();
   return (notice.textContent ?? '').trim();
 }
+
+/** Writes a binary file into the vault from base64, making its folders. */
+export async function writeVaultBinary(path: string, base64: string): Promise<void> {
+  const app = (
+    window as unknown as {
+      app: {
+        vault: {
+          getAbstractFileByPath(p: string): unknown;
+          createFolder(p: string): Promise<unknown>;
+          createBinary(p: string, d: ArrayBuffer): Promise<unknown>;
+        };
+      };
+    }
+  ).app;
+  let folder = '';
+  for (const part of path.split('/').slice(0, -1)) {
+    folder = folder ? `${folder}/${part}` : part;
+    if (!app.vault.getAbstractFileByPath(folder)) await app.vault.createFolder(folder);
+  }
+  const bin = atob(base64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  await app.vault.createBinary(path, bytes.buffer);
+}
+
+/** Deletes a folder of the vault and everything in it, if it is there. */
+export async function deleteVaultFolder(path: string): Promise<void> {
+  const app = (
+    window as unknown as {
+      app: { vault: { getAbstractFileByPath(p: string): unknown; delete(f: unknown, force: boolean): Promise<void> } };
+    }
+  ).app;
+  const folder = app.vault.getAbstractFileByPath(path);
+  if (folder) await app.vault.delete(folder, true);
+}
+
+/** The labels the Font list on the display style bar offers, with the value chosen. Opens the Font tab. */
+export function fontListShown(): { labels: string[]; value: string } {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as {
+    displayStyleBtn: HTMLElement | null;
+    displayMenuWrapper?: HTMLElement;
+  };
+  if (!view?.displayStyleBtn) throw new Error('no book is open');
+  if (!view.displayMenuWrapper?.offsetParent) view.displayStyleBtn.click();
+  document.getElementById('orbis-drawer-tab-font')?.click();
+  const select = Array.from(document.querySelectorAll<HTMLSelectElement>('.orbis-level3-drawer select')).find((s) =>
+    Array.from(s.options).some((o) => o.value === 'default')
+  );
+  if (!select) throw new Error('the Font tab has no Font list');
+  return { labels: Array.from(select.options).map((o) => o.text), value: select.value };
+}
+
+/**
+ * How the open book's chapters on screen use `family`: whether it is loaded in each chapter's document, and the
+ * font body text on screen is drawn with — or the first chapter's body, when none shown has body text.
+ */
+export function bookFontState(family: string): { loaded: boolean[]; paragraphFont: string } {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as {
+    foliateView: { renderer: { getContents(): { doc: Document }[] } };
+  };
+  const docs = view.foliateView.renderer.getContents().map((c) => c.doc);
+  const loaded = docs.map((doc) =>
+    Array.from(doc.fonts as unknown as Iterable<FontFace>).some(
+      (f) => f.family.replace(/"/g, '') === family && f.status === 'loaded'
+    )
+  );
+  // The first chapter on screen can be a cover, with no paragraph: body text if any chapter shown has some, else the
+  // body itself, which the display style's font is also set on.
+  const el =
+    docs.map((doc) => doc.querySelector<HTMLElement>('.orbis-body-text, p')).find(Boolean) ?? docs[0]?.body ?? null;
+  return { loaded, paragraphFont: el ? (el.ownerDocument.defaultView?.getComputedStyle(el).fontFamily ?? '') : '' };
+}
+
+/** Renames a file or folder through Obsidian's file manager, as moving it in the file explorer does. */
+export async function renameVaultPath(from: string, to: string): Promise<void> {
+  const app = (
+    window as unknown as {
+      app: {
+        vault: { getAbstractFileByPath(p: string): unknown };
+        fileManager: { renameFile(f: unknown, to: string): Promise<void> };
+      };
+    }
+  ).app;
+  const item = app.vault.getAbstractFileByPath(from);
+  if (!item) throw new Error(`${from} is not in the vault`);
+  await app.fileManager.renameFile(item, to);
+}
+
+/** One of Orbis's settings, as stored. */
+export function pluginSetting(key: string): unknown {
+  return (window as unknown as { app: { plugins: { plugins: Record<string, { settings: Record<string, unknown> }> } } })
+    .app.plugins.plugins['orbis-reader'].settings[key];
+}
+
+/** Opens `path` in a new Obsidian window of its own, and waits for the book to show. */
+export async function openBookInNewWindow(path: string, timeoutMs: number): Promise<void> {
+  const app = (
+    window as unknown as {
+      app: {
+        vault: { getAbstractFileByPath(p: string): unknown };
+        workspace: { openPopoutLeaf(): { openFile(f: unknown): Promise<void>; view: unknown } };
+      };
+    }
+  ).app;
+  const file = app.vault.getAbstractFileByPath(path);
+  if (!file) throw new Error(`${path} is not in the vault`);
+  const leaf = app.workspace.openPopoutLeaf();
+  await leaf.openFile(file);
+  const end = Date.now() + timeoutMs;
+  const view = () => leaf.view as { foliateView?: { renderer?: { getContents?(): { doc: Document }[] } } } | undefined;
+  while (Date.now() < end && !view()?.foliateView?.renderer?.getContents?.()?.length) {
+    await new Promise((r) => setTimeout(r, 200));
+  }
+}
+
+/** Whether the book in a window of its own has `family` loaded in every chapter on screen. */
+export function newWindowBookUses(family: string): { windows: number; loaded: boolean[] } {
+  const app = (window as unknown as { app: PageApp }).app;
+  const leaves = app.workspace.getLeavesOfType('orbis-reader') as unknown as {
+    view: { containerEl: HTMLElement; foliateView: { renderer: { getContents(): { doc: Document }[] } } };
+  }[];
+  const away = leaves.filter((l) => l.view.containerEl.ownerDocument !== document);
+  const docs = away.flatMap((l) => l.view.foliateView.renderer.getContents().map((c) => c.doc));
+  return {
+    windows: away.length,
+    loaded: docs.map((doc) =>
+      Array.from(doc.fonts as unknown as Iterable<FontFace>).some(
+        (f) => f.family.replace(/"/g, '') === family && f.status === 'loaded'
+      )
+    ),
+  };
+}

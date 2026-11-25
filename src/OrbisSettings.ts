@@ -118,6 +118,7 @@ import {
   STORAGE_KEY_ACTIVE_STYLE,
 } from './settings';
 import { DisplayStylesPage } from './settings-display-styles';
+import { buildFontsPage } from './settings-fonts';
 import { coerceSettingValue, readSettingKey, visibleCount, writeSettingKey } from './settings-keys';
 import { type ReorderRow, renderReorderList } from './settings-list';
 import { NoteStylesPage } from './settings-note-styles';
@@ -487,6 +488,17 @@ export class OrbisSettings extends PluginSettingTab {
         desc: t('settings_pages.display_styles_desc'),
         items: this.displayStyles.displayStyleItems(),
       },
+      // Beside Appearance, being where the Font list's choices come from: which fonts it offers, and the ones the
+      // vault keeps. Imperative, because its list changes with the folder — see `buildFontsPage`.
+      this.subPage(t('settings_pages.fonts'), t('settings_pages.fonts_desc'), (el) =>
+        buildFontsPage(el, {
+          app: this.app,
+          settings: this.plugin.settings,
+          save: () => this.plugin.saveSettings(),
+          redraw: () => this.renderSettings(),
+          refreshViews: () => this.plugin.refreshViews(),
+        })
+      ),
       {
         type: 'page',
         name: t('settings_pages.reading'),

@@ -955,6 +955,16 @@ export interface OrbisPluginSettings {
    */
   syncFolder?: string;
   /**
+   * Where fonts are kept. Empty means `!orbis-data/fonts`. A fact about the vault, so it travels — see `fonts.ts`.
+   */
+  fontsFolder: string;
+  /**
+   * The fonts switched off on the Fonts page, by the value a display style stores: a system font's CSS list, or a
+   * vault font's quoted family. Off rather than on, so a font that arrives — imported, downloaded, or synced from
+   * another device — is offered without anyone switching it on.
+   */
+  hiddenFonts: string[];
+  /**
    * Every device that has published into this vault: its id, its name, and roughly when it was last here.
    *
    * Written by each device for ITSELF and adopted like any other item, so this is the merged roster rather than a
@@ -1190,6 +1200,8 @@ export const DEFAULT_PLUGIN_SETTINGS: OrbisPluginSettings = {
   //
   // The switch that goes with it is NOT here: it is per device, in `sync/enabled.ts`.
   syncFolder: '',
+  fontsFolder: '',
+  hiddenFonts: [],
 };
 
 // Interface so views can reference the plugin without a circular import.

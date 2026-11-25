@@ -83,6 +83,10 @@ export const SHARED_SETTINGS_KEYS = [
   'bookSources',
   // Where sync's own published copies go. It can travel because nothing depends on it to FIND them.
   'syncFolder',
+  // Where fonts are kept, and which the Font list leaves out. A display style that travels names a font, and the
+  // folder its files are in and the list it is chosen from should be the same everywhere — like the reader themes.
+  'fontsFolder',
+  'hiddenFonts',
   // The look-up popup: which sections and destinations exist, their settings, and their order. Order travels here
   // where a dashboard's does not — the popup is one small stack of sections, and there is no reason for it to differ
   // by device.
