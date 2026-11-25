@@ -201,6 +201,9 @@ fonts.
   sync conflicts begin.
 - **And then deleted**, on each device, once DejaVu is in the vault — downloaded there, or arrived from another
   device (`forgetLegacyPdfFonts`, on every change to the fonts). Only that device's plugin folder is touched.
+- **Deleting one says what it costs.** The export needs all seven files, so deleting any of the three families puts
+  PDFs back on the built-in fonts. The delete confirmation for those rows says so, and DejaVu is offered under
+  Downloadable fonts again.
 - **Its three families are fonts like any other**, switched on and offered for reading. On the Fonts page only, their
   rows say they are used for PDF exports; the Font lists say nothing.
 - **The Setup task** (*Expanded PDF character set*) now shows Ready on every device the fonts have synced to.

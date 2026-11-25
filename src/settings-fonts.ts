@@ -230,7 +230,10 @@ async function changeFolder(host: FontsPageHost, path: string): Promise<void> {
 async function deleteFont(host: FontsPageHost, font: VaultFont): Promise<void> {
   const ok = await askToConfirm(host.app, {
     title: t('fonts.delete_title', { name: font.family }),
-    message: t('fonts.delete_message', { name: font.family }),
+    // DejaVu's families say what deleting one costs the PDF export, which needs all seven of its files.
+    message: t(packageOf(font.family)?.pdf ? 'fonts.delete_message_pdf' : 'fonts.delete_message', {
+      name: font.family,
+    }),
     confirmText: t('fonts.delete_confirm'),
   });
   if (!ok) return;

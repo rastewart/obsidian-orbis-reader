@@ -176,7 +176,7 @@ Orbis Reader downloads each font from its releases on GitHub, as one zip file wi
 
 Every font in this list is free to use, including in a PDF or EPUB that you share. Each font's license file is in its folder.
 
-DejaVu is three fonts: DejaVu Serif, DejaVu Sans and DejaVu Sans Mono. Under **Vault fonts**, their rows say *Used for PDF exports*. You can also read in them.
+DejaVu is three fonts: DejaVu Serif, DejaVu Sans and DejaVu Sans Mono. Under **Vault fonts**, their rows say *Used for PDF exports*. You can also read in them. If you delete any of the three, PDF exports use the built-in fonts, which have fewer characters, until you download DejaVu again. The delete confirmation says so.
 
 ### Fonts on other devices
 

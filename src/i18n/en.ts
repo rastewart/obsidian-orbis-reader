@@ -684,6 +684,9 @@ const en = {
   'fonts.delete_title': 'Delete {{name}}?',
   'fonts.delete_message':
     'The font files of {{name}} move to the trash. A display style that uses it shows the default font instead.',
+  // For DejaVu's three families, which the PDF export needs all of.
+  'fonts.delete_message_pdf':
+    'The font files of {{name}} move to the trash. A display style that uses it shows the default font instead. Until you download DejaVu again, PDF exports use the built-in fonts, which have fewer characters.',
   'fonts.delete_confirm': 'Delete',
   'fonts.moved': '{{count}} fonts moved to {{to}}.',
   'fonts.moved_one': '1 font moved to {{to}}.',
