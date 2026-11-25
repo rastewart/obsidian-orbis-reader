@@ -5,18 +5,26 @@ All notable changes to Orbis Reader are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis Reader uses [Semantic Versioning](https://semver.org/).
 
 <!-- Each release has its own Added, Changed, Fixed and Removed, so a heading may repeat under different releases. -->
+<!-- Orbis Reader shows these notes in its What's new dialog. Lines for maintainers and reviewers, not readers, go under Maintenance, which the dialog leaves out. -->
 <!-- markdownlint-configure-file { "MD024": { "siblings_only": true } } -->
 
 ---
 
 ## [Unreleased]
 
+### Added
+
+- **What's new**, a button on the last row of Orbis Reader settings, shows the changes in each release. After an update, a notice says that Orbis Reader was updated, with a link to what is new. To stop the notice on a device, turn off **Show what's new after an update** at the foot of the dialog.
+
 ### Changed
 
 - On a phone or tablet, a swipe that starts on a bar under the toolbar no longer opens Obsidian's side panels or command palette, so a slider or button on the bar can't open a panel by mistake. The bars are the display style bar, the search bar, the Go to bar, the listening bar and the marks bar. A swipe across the ‹ or › page button doesn't open them either. Swipes from the toolbar, and from the edges of the page above and below the page buttons, work as before.
 - **Two-column layout** on the display style bar's **Layout** tab is now a labelled switch under **Page turn**, like **Bold text** on the **Font** tab, in place of the icon button beside **Mode**. Like **Page turn**, it shows in **Paged mode** only.
-- The User Guide is checked against this release. Data and Storage now says which downloads are checked against a checksum and when, and the guide describes **Repair** in **Scan annotation data for problems**, the order of marks in copies and generated notes, and the search bar's controls in the order they show.
 - A slider on the display style bar is longer when a tab's controls are on one line, so **Size** and **Brightness** are easier to set. A tab without room for the longer slider stacks its controls in rows, as the **Font** tab now does on an iPad mini held upright.
+
+### Maintenance
+
+- The User Guide is checked against this release. Data and Storage now says which downloads are checked against a checksum and when, and the guide describes **Repair** in **Scan annotation data for problems**, the order of marks in copies and generated notes, and the search bar's controls in the order they show.
 
 ## [0.1.8] — 2026-11-24
 
@@ -52,26 +60,29 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 ### Added
 
 - **Hyphenation** in Settings → Appearance and on the display style bar's Spacing tab. It follows the book, hyphenates all body text, or turns hyphenation off. Obsidian on Windows and Linux does not hyphenate words automatically, so On has no effect there.
-- The User Guide's Data and Storage page and the README's Storage and permissions section explain how Orbis Reader uses each item in the Community directory's review.
-
-### Changed
-
-- The test fixtures for Download test fixtures (dev) are in a release of their own, and each build downloads the fixtures from its own commit. A release of Orbis Reader holds only the three files Obsidian installs.
 
 ### Fixed
 
 - On iPad and iPhone, the lines of a book that asks for balanced line breaks now break as they do on other devices. A page no longer ends with a short line that has room for more words.
+
+### Maintenance
+
+- The User Guide's Data and Storage page and the README's Storage and permissions section explain how Orbis Reader uses each item in the Community directory's review.
+- The test fixtures for Download test fixtures (dev) are in a release of their own, and each build downloads the fixtures from its own commit. A release of Orbis Reader holds only the three files Obsidian installs.
 
 ## [0.1.5] — 2026-11-21
 
 ### Changed
 
 - The squiggle in mark samples is drawn as a zigzag, as it is in the book.
+
+### Maintenance
+
 - Changes to Orbis Reader's stylesheet for the Community directory's review. Everything else looks and works as before.
 
 ## [0.1.4] — 2026-11-20
 
-### Changed
+### Maintenance
 
 - The reader engine, foliate-js, now comes from Orbis's own fork of it, [rastewart/foliate-js](https://github.com/rastewart/foliate-js), instead of a copy kept in this repository. The Community directory's checks of the repository are then of Orbis's own code. Books look and work as before.
 - Small changes to how Orbis adds elements to a book's pages, for the Community directory's review. Books look and work as before.
@@ -96,6 +107,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 ### Changed
 
 - The About dialog shows a build ID in place of the build time and commit. The same release always shows the same ID.
+
+### Maintenance
+
 - Small changes to the book renderer for the review of the Obsidian Community directory. Books look and work as before.
 
 ## [0.1.1] — 2026-11-19
@@ -104,7 +118,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 - On iPhone and iPad with iOS or iPadOS earlier than 16.4, Orbis Reader could not load: two patterns it uses on a book's styles were written in a way those versions cannot read.
 
-### Changed
+### Maintenance
 
 - Small changes to the book renderer for the review of the Obsidian Community directory. Books look and work as before.
 

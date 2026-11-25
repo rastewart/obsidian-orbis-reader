@@ -23,14 +23,16 @@ function openGuide(): void {
  * small grey text is easy to miss, and a button is a control the keyboard reaches. Found by searching settings for
  * "help" or "manual" too, which is what someone who is stuck types.
  */
-export function aboutRow(name: string, version: string): SettingDefinitionItem {
+export function aboutRow(name: string, version: string, openWhatsNew: () => void): SettingDefinitionItem {
   return {
     name,
     desc: t('settings.version', { version }),
-    aliases: t('settings.guide_aliases')
-      .split(',')
-      .map((word) => word.trim()),
+    aliases: `${t('settings.guide_aliases')},${t('whats_new.aliases')}`.split(',').map((word) => word.trim()),
     render: (setting) => {
+      // What's new first: it is about this version, which the row names, and the guide is about all of them.
+      setting.addButton((b) =>
+        b.setButtonText(t('whats_new.button')).setTooltip(t('whats_new.button_tooltip')).onClick(openWhatsNew)
+      );
       setting.addButton((b) =>
         b
           .setButtonText(t('settings.guide'))

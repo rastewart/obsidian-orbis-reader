@@ -139,6 +139,7 @@ import { syncEnabled, syncSetupDone } from './sync/enabled';
 import { annotationsSvg, HEADPHONES_SVG } from './system-glyphs';
 import { watchTooltipElement } from './tooltip-gap';
 import { liveDialogTitles, rebuildKeepingFocus, setSvgIcon } from './ui-utils';
+import { openWhatsNew } from './WhatsNewModal';
 import { renderDashboardBody } from './WidgetModal';
 
 /** Sentinel `previewingVoiceId` for the generation-voice audition (vs the catalog voice ids). */
@@ -531,7 +532,9 @@ export class OrbisSettings extends PluginSettingTab {
       },
       // LAST, not first: nobody opens settings to read a version number, and at the top it would push the row a
       // reader actually came for into second place. It also carries the guide's button — see `aboutRow`.
-      aboutRow(this.plugin.manifest.name, this.plugin.manifest.version),
+      aboutRow(this.plugin.manifest.name, this.plugin.manifest.version, () =>
+        openWhatsNew(this.app, this.plugin.manifest.version)
+      ),
     ];
   }
 

@@ -9423,3 +9423,45 @@ body.orbis-inset-debug .orbis-focus-overlay::before {
 body.orbis-inset-debug .orbis-focus-progress {
   outline: 1px solid #ff00ff;
 }
+
+/* ── What's new ──────────────────────────────────────────────────────────────
+   The release notes dialog (WhatsNewModal.ts). Each release is a heading, its date, and the changelog's own sections,
+   drawn by Obsidian's Markdown renderer at a size that reads as a dialog rather than a note. */
+/* One height for every release, so Older and Newer do not move as the notes get longer or shorter: the notes scroll
+   in the body, and the footer keeps its place at the bottom. */
+.modal.orbis-modal.orbis-whats-new {
+  height: min(640px, 85vh);
+  max-height: min(640px, 85vh);
+}
+.orbis-whats-new-release + .orbis-whats-new-release {
+  margin-top: var(--size-4-6, 24px);
+}
+.orbis-whats-new-version {
+  margin: 0;
+  font-size: var(--font-ui-large);
+}
+.orbis-whats-new-date {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+/* The same room above every heading. Obsidian's own heading rule gives 40px, more specific than one class, and a
+   list's bottom margin collapsed into it left a wide gap above Changed and Fixed but not above Added, the first. */
+.orbis-whats-new-release .orbis-whats-new-body h3 {
+  margin: var(--size-4-4, 16px) 0 var(--size-4-1, 4px);
+  font-size: var(--font-ui-medium);
+}
+.orbis-whats-new-release .orbis-whats-new-body > :first-child {
+  margin-top: 0;
+}
+.orbis-whats-new-release .orbis-whats-new-body ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+/* The switch for the notice, above the buttons in the footer. */
+.orbis-whats-new-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  cursor: var(--cursor);
+}

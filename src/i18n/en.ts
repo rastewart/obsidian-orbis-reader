@@ -643,6 +643,27 @@ const en = {
   'settings.guide_tooltip': 'Open the Orbis Reader user guide in your browser',
   // Extra words settings search matches the row on, comma-separated: what someone who is stuck types.
   'settings.guide_aliases': 'help, guide, user guide, documentation, docs, manual',
+  // What's new — the release notes, from the version row in settings and from the notice after an update. See
+  // `WhatsNewModal.ts`.
+  'whats_new.button': "What's new",
+  'whats_new.button_tooltip': 'See what changed in each release of Orbis Reader',
+  // More words settings search matches the version row on, for the What's new button.
+  'whats_new.aliases': "what's new, whats new, changelog, change log, release notes, updates",
+  'whats_new.title': "What's new in Orbis Reader",
+  // The heading of a beta's section: every beta of a version shares one, and it says which beta is installed.
+  'whats_new.beta': '{{version}} beta {{n}}',
+  // Under a beta's heading, in place of a date.
+  'whats_new.not_released': 'Not released yet',
+  // A build with no release notes in it — a test build, never a release.
+  'whats_new.none': 'There are no release notes in this build.',
+  'whats_new.newer': 'Newer',
+  'whats_new.older': 'Older',
+  'whats_new.close': 'Close',
+  // The switch at the foot of the dialog. On by default; per device.
+  'whats_new.show_after_update': "Show what's new after an update",
+  // The notice after an update. A sentence, then the link, which opens the dialog.
+  'whats_new.updated': 'Orbis Reader was updated to {{version}}.',
+  'whats_new.see': "See what's new",
   'link_preview_popup.could_not_load_preview': 'Could not load preview.',
   'link_preview_popup.go': 'Go',
   // The check every link out of a book passes through — see `LinkCheck`. Facts in rows, never a verdict: each line

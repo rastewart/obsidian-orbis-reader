@@ -121,6 +121,7 @@ import { ORBIS_VOICES } from './reader/tts/voice-catalog';
 import { onVoiceReadinessChanged, voiceReadinessChanged } from './reader/tts/voice-readiness';
 import { settleThemeList } from './reader-themes';
 import { BOOK_LOCATION, GLOBAL_LOCATION, resolveRecords } from './record-config';
+import { owedReleases } from './release-notes';
 import { removeRibbonAction } from './ribbon';
 import { runSyncSetup } from './SyncSetupModal';
 import {
@@ -170,6 +171,7 @@ import { migrateTextAlign } from './text-align';
 import { installTooltipGap } from './tooltip-gap';
 import { liveDialogTitles } from './ui-utils';
 import { migrateVoicePref, readVoicePref, writeVoicePref } from './voice-pref';
+import { installedReleases, showUpdateNotice } from './WhatsNewModal';
 
 /** Canonical JSON (object keys sorted) so a mere key-order difference between two devices' writes
  *  isn't mistaken for a foreign edit. */
@@ -1493,12 +1495,21 @@ export default class OrbisReaderPlugin extends Plugin {
    */
   private offerWelcome(): boolean {
     const current = this.manifest.version;
-    // No notes exist yet, and the flag that will carry them is what this stores. See docs/design/first-run.md —
-    // release notes come later, deliberately: with no earlier release there is nothing to write.
-    const greeting = greetingFor({ seen: seenVersion(), current, hasNotes: false });
-    // Stamped whatever was decided, including 'none'. Without this, a version with nothing to say would re-ask the
-    // same question on every launch — and the answer, being derived from a version that has not moved, cannot change.
+    const seen = seenVersion();
+    // What this device has not been told about yet: the releases since `seen`, without those that only had
+    // Maintenance. See `release-notes.ts`.
+    const owed = owedReleases(installedReleases(current), seen);
+    const greeting = greetingFor({ seen, current, hasNotes: owed.length > 0 });
+    // Stamped whatever was decided, including 'none', and with the notice switched off. Without this, a version with
+    // nothing to say would re-ask the same question on every launch — and switching the notice back on would bring
+    // back every release missed while it was off.
     markSeenVersion(current);
+    if (greeting === 'notes') {
+      // A notice, not a dialog — so it does not count as this launch's one dialog, and the multi-device offer may
+      // still follow. See `showUpdateNotice`.
+      if (deviceSetting('showWhatsNew')) showUpdateNotice(this.app, current, owed);
+      return false;
+    }
     if (greeting !== 'welcome') return false;
     this.welcomed = true;
     confirmThen(

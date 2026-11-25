@@ -148,6 +148,13 @@ export interface DeviceSettings {
    * `readInOrbisType` is unaffected either way — it is not one of the answers being followed.
    */
   readInOrbisOwnSettings: boolean;
+  /**
+   * Whether a notice says so when an update with release notes is installed. The switch is in the What's new dialog.
+   *
+   * **Per device, like the version it is compared with** (`first-run.ts`): each device is updated on its own, so each
+   * is told on its own. On by default, so a reader learns the dialog exists the first time there is something in it.
+   */
+  showWhatsNew: boolean;
 }
 
 export const DEFAULT_DEVICE_SETTINGS: DeviceSettings = {
@@ -191,6 +198,7 @@ export const DEFAULT_DEVICE_SETTINGS: DeviceSettings = {
   readInOrbisMode: 'standard',
   readInOrbisBar: 'listen',
   readInOrbisOwnSettings: false,
+  showWhatsNew: true,
 };
 
 export type DeviceSettingKey = keyof DeviceSettings;

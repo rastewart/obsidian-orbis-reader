@@ -30,7 +30,7 @@ The results include the matching Orbis Reader settings.
 
 ## Settings pages
 
-The Orbis Reader settings open on a list of ten pages. Each row describes what its page contains. The last row shows the version of the plugin. Its **User guide** button opens this guide in your browser.
+The Orbis Reader settings open on a list of ten pages. Each row describes what its page contains. The last row shows the version of the plugin. Its **What's new** button shows the changes in each release, and its **User guide** button opens this guide in your browser.
 
 | Page | What it contains |
 |---|---|
@@ -48,6 +48,12 @@ The Orbis Reader settings open on a list of ten pages. Each row describes what i
 Features such as Library dashboards, Reading records and Listening are optional. You can read books when none of them is enabled. To enable a feature, use the **Setup** page.
 
 Some settings are shared with your other devices, and some apply only to the device you set them on. See [Sync and Devices](sync-and-devices.md#settings-shared-between-devices).
+
+### What's new
+
+**What's new** opens a dialog of the changes in each release, starting with the version that is installed. **Newer** and **Older** move between releases. In a beta, the first release is the version that the beta leads up to, marked **Not released yet**.
+
+After an update, a notice says that Orbis Reader was updated. Select **See what's new** in the notice to open the dialog, with every release since the version you last used on the first page. To stop the notice on this device, turn off **Show what's new after an update** at the bottom of the dialog.
 
 ---
 

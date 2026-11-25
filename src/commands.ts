@@ -59,6 +59,7 @@ import { openRatingDialog, openStatusDialog } from './TitleFieldModal';
 import { addTestFixturesCommand } from './test-fixtures';
 import { nextTextAlign, TEXT_ALIGN_LABELS } from './text-align';
 import { type OrbisPopupHost } from './ui-utils';
+import { installedReleases, showUpdateNotice } from './WhatsNewModal';
 
 class SwitchStyleModal extends FuzzySuggestModal<DisplayStyle> {
   constructor(
@@ -924,6 +925,26 @@ export function registerCommands(plugin: OrbisReaderPlugin): void {
         forgetSeenVersion();
         // i18n-audit-disable-next-line -- dev-only test notice
         new Notice('Welcome forgotten for this device. Reload Obsidian to be greeted again.');
+      }
+      return true;
+    },
+  });
+
+  /**
+   * DEV: the notice an update shows, now, as if this device had last seen the version before this one.
+   *
+   * The newest release this build can show is what it offers — the beta's section on a beta. Shown whatever the
+   * What's new switch says, and nothing is stored: the remembered version stays as it is.
+   */
+  plugin.addCommand({
+    id: 'orbis-show-whats-new-notice',
+    // i18n-audit-disable-next-line -- dev-only test command
+    name: "Show what's new notice (dev)",
+    checkCallback: (checking) => {
+      if (!deviceSetting('showDevOptions')) return false;
+      if (!checking) {
+        const current = plugin.manifest.version;
+        showUpdateNotice(plugin.app, current, installedReleases(current).slice(0, 1));
       }
       return true;
     },

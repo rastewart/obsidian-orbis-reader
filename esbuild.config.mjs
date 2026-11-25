@@ -26,6 +26,8 @@ const BUILD_INPUTS = [
   'manifest.json',
   'esbuild.config.mjs',
   'tsconfig.json',
+  // Built in as the What's new dialog's notes, so a change to it is a change to the bundle.
+  'CHANGELOG.md',
 ];
 /** Under src, what is not built into main.js: the tests and the Obsidian mock. */
 const NOT_BUILT = new Set(['src/__tests__', 'src/__mocks__']);
@@ -98,6 +100,9 @@ await esbuild
       'import.meta.url': JSON.stringify(''),
       __ORBIS_BUILD_ID__: JSON.stringify(BUILD_ID),
       __PIPER_WORKER_SRC__: JSON.stringify(PIPER_WORKER_SRC),
+      // The release notes the What's new dialog shows — see `src/release-notes.ts`. Read here, not fetched, so they
+      // describe this build and work offline.
+      __ORBIS_CHANGELOG__: JSON.stringify(fs.readFileSync('CHANGELOG.md', 'utf8')),
     },
   })
   .then(() => {

@@ -33,6 +33,7 @@ import { recordsTests } from './tests/records';
 import { resilienceTests } from './tests/resilience';
 import { searchTests } from './tests/search';
 import { syncTests } from './tests/sync';
+import { whatsNewTests } from './tests/whats-new';
 
 // The commands run last: a command can change a setting, and the other tests start from the defaults.
 const ALL: E2eTest[] = [
@@ -52,6 +53,7 @@ const ALL: E2eTest[] = [
   ...recordsTests,
   ...libraryTests,
   ...syncTests,
+  ...whatsNewTests,
   ...commandTests,
 ];
 const DEFAULT_TIMEOUT_MS = 60_000;

@@ -7,7 +7,7 @@ dialog, one stored value, and the rule that decides which of two unprompted dial
 
 **Its own document, not part of [Settings](settings.md).** The Setup *page* is a settings surface and belongs
 there. This is a lifecycle concern: it fires from `onload`, it competes with the multi-device offer for the same
-moment, and it will carry release notes — three subjects that reach into three documents and belong to none of
+moment, and it carries release notes — three subjects that reach into three documents and belong to none of
 them. The Setup section of `settings.md` describes the page and links here.
 
 ---
@@ -43,8 +43,8 @@ two agree, so B never sees the notes at all. Same rule as every other consent in
 whose seen version a dev reset just forgot. Whether the file exists could only matter to a reader updating from a
 release older than this flag, and every release has kept it.
 
-**Inequality, not "is it newer".** A downgrade is rare, and showing the installed version's notes is the right
-answer for it anyway.
+**Inequality, not "is it newer".** `greetingFor` asks only whether the version moved; whether anything is new is
+`hasNotes`, which `owedReleases` answers. A downgrade owes nothing, so it is stamped and says nothing.
 
 **The version is stamped whatever was decided, including `none`.** Otherwise a release with nothing to say would
 re-ask the same question on every launch, and the answer — derived from a version that has not moved — cannot
@@ -132,29 +132,41 @@ Recorded on `ConfirmSpec.cancelText`, where the next dialog will look.
 
 ---
 
-## Release notes — designed, not built
+## Release notes
 
-The flag carries them; nothing writes them yet. The pipeline waits for the first release with notes to write, so
-that it is built against real content rather than rewritten the first time someone writes real notes.
+After an update, a notice says that Orbis was updated, with a link that opens **What's new**. The same dialog opens
+from the **What's new** button on the version row in settings (`aboutRow`). The rules are in `src/release-notes.ts`,
+the drawing in `src/WhatsNewModal.ts`.
 
-What is already decided:
-
-- **Opt-in per release.** A table keyed by version; no entry means `hasNotes` is false, the version is stamped
-  silently, and nothing is shown. A bugfix does not earn a dialog.
-- **A curated table, not `CHANGELOG.md`.** The changelog is not shipped — only `main.js`, `manifest.json` and
-  `styles.css` reach a vault — so it would have to be embedded at build time. The precedent exists
-  (`__ORBIS_BUILD_ID__` behind `src/build-info.ts`, which the About dialog reads), but
-  release notes for a reader are three lines about what is new, not a changelog for a maintainer.
-- **No link out.** There is no public repository to link to yet, and documentation hosting is still open in
-  `settings.md`.
-- **Its own button pair.** A what's-new dialog wants `Close`, perhaps `Read more` — which is the other reason not
-  to tune the welcome's labels until its sibling exists.
+- **`CHANGELOG.md` is the notes, built into `main.js`.** Only `main.js`, `manifest.json` and `styles.css` reach a
+  vault, so `esbuild.config.mjs` puts the file's text in the bundle as `__ORBIS_CHANGELOG__`, the way the build ID
+  gets there, and lists it among the build ID's inputs. Not fetched from GitHub: that would be a network request to
+  declare, would fail offline, would tell GitHub the reader's address after every update, and could show notes for
+  a build other than the one installed. Not a second, curated table: the changelog is written for readers, and two
+  lists drift apart.
+- **`### Maintenance` is left out.** Lines for maintainers and reviewers — changes for the Community directory's
+  review, the test fixtures, a check of the guide — go under that heading. The changelog and the GitHub release keep
+  them; the dialog drops them. A release with nothing else is left out of the dialog, and owes no notice: a release
+  with nothing to say for readers does not interrupt them.
+- **What a version shows.** A stable version shows every dated release up to itself. A beta has no section of its
+  own — every beta of 0.2.0 writes into `## [0.2.0] — Unreleased` — so a beta shows that section, headed with the
+  beta (*0.2.0 beta 3*, *Not released yet*), above the releases before it. A bare `## [Unreleased]` stands in when no
+  version is written yet. Each beta separately is not wanted: betas are for testers, and the whole section is what
+  they test.
+- **What is owed.** The releases newer than the version last seen, and also its own version when the version last
+  seen was a beta of it: from one beta to the next, or from the last beta to the release, the section has grown.
+  These go together on the dialog's first page; the releases before them follow one to a page, behind **Older**.
+- **A notice, not a dialog.** It asks nothing, so it blocks nothing, and the welcome and the multi-device offer keep
+  the one dialog a launch is allowed. It stays until it is clicked: Obsidian's few seconds go by unread on a phone.
+- **The switch is per device and on by default** — *Show what's new after an update*, at the foot of the dialog,
+  which is the only place it means anything. `showWhatsNew` in the device settings. Off, the version is still
+  stamped, so turning it back on does not bring back every release missed meanwhile.
 
 ---
 
 ## Testing it
 
-Two dev commands, and they are not the same tool.
+Three dev commands. The first two are not the same tool.
 
 - **`Reset the welcome (dev)`** forgets `orbis-seen-version`, and nothing else.
   Nothing else: no downloads to fetch again, no destinations to answer, no reload. This is the one to use.
@@ -162,6 +174,9 @@ Two dev commands, and they are not the same tool.
   device, deletes the three per-device caches (~90 MB to fetch again), **trashes every device's reading-position
   file**, and reloads. Books, notes, record notes, `.orbis` files and published sync folders are left exactly as
   they are.
+
+- **`Show what's new notice (dev)`** shows the notice an update shows, offering the newest release this build can
+  show, whatever the switch says. Nothing is stored. Its link opens the dialog as an update would.
 
 **The reading positions are the one vault reach, and they have to be.** They are the evidence
 `vaultUsedElsewhere` reads, so leaving them behind would produce a vault that is fresh in every respect except the
@@ -187,4 +202,7 @@ rather than following the code's.
 | Stamp timing | When shown | Set on answer, it returns until the reader gives in |
 | Two unprompted dialogs | Whichever is owed; other next open | Evidence cannot tell a reset device from a joining one |
 | The welcome's content | Two sentences, two buttons | A checklist in a modal duplicates the page and interrupts reading |
-| Release notes | Designed, not built | Built against the first release that has notes to write |
+| Release notes | `CHANGELOG.md`, built in | Written for readers already; works offline; matches the build |
+| Maintainer lines | `### Maintenance`, left out | The changelog keeps them; readers are not interrupted by them |
+| After an update | A notice with a link | Asks nothing, so it takes no dialog's place |
+| A beta's notes | Its version's Unreleased section | Every beta writes into one section |

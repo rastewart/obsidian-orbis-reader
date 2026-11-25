@@ -222,7 +222,7 @@ Your answers to the setup questions for Library dashboards and Reading records a
 | **Conversions** | **Fetch remote images by default**, and the **Expanded character set** download |
 | **Devices** | **Use this vault on more than one device**, **Device name**, **Device ID**, **Share reading location with other devices** and **Share Orbis Reader configuration in the vault** |
 
-Notices that you dismissed and the developer options also stay on each device.
+Notices that you dismissed, **Show what's new after an update** and the developer options also stay on each device.
 
 Orbis Reader stores the settings for each device on the device, not in the vault. If you clear Obsidian's app data, these settings go back to their defaults.
 

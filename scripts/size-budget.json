@@ -6,13 +6,13 @@
   "src/GenerateNotesModal.ts": 1190,
   "src/LibraryView.ts": 2363,
   "src/MarksPdfModal.ts": 925,
-  "src/OrbisReaderView.ts": 5106,
-  "src/OrbisSettings.ts": 4439,
+  "src/OrbisReaderView.ts": 5111,
+  "src/OrbisSettings.ts": 4442,
   "src/RecordingsModal.ts": 1803,
   "src/annotation-presets.ts": 1582,
   "src/book-extractor.ts": 1227,
-  "src/commands.ts": 1414,
-  "src/main.ts": 2662,
+  "src/commands.ts": 1435,
+  "src/main.ts": 2673,
   "src/markdown-epub.ts": 1293,
   "src/pdf-writer.ts": 991,
   "src/reader/AnnotationController.ts": 2795,
@@ -21,5 +21,5 @@
   "src/reader/export-format.ts": 905,
   "src/reader/tts/recording.ts": 1225,
   "src/settings.ts": 1485,
-  "src/ui-utils.ts": 2307
+  "src/ui-utils.ts": 2324
 }

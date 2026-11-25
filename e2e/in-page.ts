@@ -1916,3 +1916,61 @@ export function drawerSliders(id: string): { form: boolean; sliders: number[] } 
     .map((slider) => Math.round(slider.getBoundingClientRect().width));
   return { form: drawer.classList.contains('is-form'), sliders };
 }
+
+/**
+ * The What's new dialog as it reads: each release's heading and date, whether **Newer** and **Older** can be pressed,
+ * whether its switch is on, and its text. `null` when it is not open.
+ */
+export function whatsNewDialog(): {
+  versions: string[];
+  dates: string[];
+  newer: boolean;
+  older: boolean;
+  switchOn: boolean;
+  text: string;
+  /** The label of the button with the keyboard, or null when it is not a button. */
+  focused: string | null;
+  /** The dialog's height, and how far down the window its Older button is. */
+  height: number;
+  buttonsTop: number;
+} | null {
+  const modal = Array.from(document.querySelectorAll('.modal')).find((m) =>
+    m.querySelector('.orbis-whats-new-version')
+  );
+  if (!modal) return null;
+  const button = (label: string) =>
+    Array.from(modal.querySelectorAll<HTMLButtonElement>('button')).find((b) => b.textContent === label);
+  const texts = (selector: string) => Array.from(modal.querySelectorAll(selector)).map((el) => el.textContent ?? '');
+  return {
+    versions: texts('.orbis-whats-new-version'),
+    dates: texts('.orbis-whats-new-date'),
+    newer: !!button('Newer') && !button('Newer')?.disabled,
+    older: !!button('Older') && !button('Older')?.disabled,
+    switchOn: !!modal.querySelector<HTMLInputElement>('.orbis-whats-new-switch input')?.checked,
+    text: (modal.querySelector('.modal-content')?.textContent ?? '').replace(/\s+/g, ' '),
+    focused: document.activeElement instanceof HTMLButtonElement ? document.activeElement.textContent : null,
+    height: Math.round(modal.getBoundingClientRect().height),
+    buttonsTop: Math.round(button('Older')?.getBoundingClientRect().top ?? -1),
+  };
+}
+
+/** Press a button in the What's new dialog by its label, or its switch with `'switch'`. Whether it was there. */
+export function pressInWhatsNew(label: string): boolean {
+  const modal = Array.from(document.querySelectorAll('.modal')).find((m) =>
+    m.querySelector('.orbis-whats-new-version')
+  );
+  const target =
+    label === 'switch'
+      ? modal?.querySelector<HTMLElement>('.orbis-whats-new-switch input')
+      : Array.from(modal?.querySelectorAll<HTMLButtonElement>('button') ?? []).find((b) => b.textContent === label);
+  target?.click();
+  return !!target;
+}
+
+/** The text of the notice that contains `part`, or null. With `click`, its link is pressed. */
+export function noticeWith(part: string, click = false): string | null {
+  const notice = Array.from(document.querySelectorAll('.notice')).find((n) => (n.textContent ?? '').includes(part));
+  if (!notice) return null;
+  if (click) notice.querySelector<HTMLElement>('a')?.click();
+  return (notice.textContent ?? '').trim();
+}
