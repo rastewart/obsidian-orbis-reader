@@ -72,7 +72,14 @@ const OWN_BOOKKEEPING = ['orbis-seen-version', 'orbis-sync-clock', 'annotationPr
  * not counted as a failure, so the run stays a reliable yes or no while the bug stays in view. Each names where it is
  * tracked; remove it with the fix.
  */
-const KNOWN_ISSUES: { text: string; issue: string }[] = [];
+const KNOWN_ISSUES: { text: string; issue: string }[] = [
+  {
+    text: "Cannot destructure property 'nodeType' of 'undefined'",
+    issue:
+      "foliate patch 12's #redisplay: the place in a reloaded chapter frame is looked up outside its try, so a path " +
+      'that does not fit the fresh copy throws (docs/design/end-to-end-tests.md § Known issues)',
+  },
+];
 
 const args = process.argv.slice(2);
 const update = args.includes('--update');

@@ -42,6 +42,9 @@ describe('readFontFile', () => {
     const names = { 1: 'Test Sans Italic', 2: 'Regular', 16: 'Test Sans', 17: 'Italic' };
     expect(info({ names, fsSelection: 0xc0 })).toMatchObject({ family: 'Test Sans', weight: 400, italic: true });
     expect(info({ names: { 1: 'Test Italics', 2: 'Regular' } }).italic).toBe(false);
+    // A style name written without spaces, as some fonts have it.
+    expect(info({ names: { 1: 'Test Sans', 2: 'BoldItalic' } }).italic).toBe(true);
+    expect(info({ names: { 1: 'Test Sans', 2: 'SemiBoldOblique' } }).italic).toBe(true);
   });
 
   it('reads the style from the head table when there is no OS/2', () => {

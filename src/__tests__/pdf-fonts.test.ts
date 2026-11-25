@@ -161,15 +161,19 @@ describe('the downloads', () => {
     expect(vault.get('Assets/Fonts/Literata/Literata-Regular.ttf')).toEqual(new Uint8Array([1]));
   });
 
-  /** A package as the vault has it, whole: DejaVu's files by their own names, another's by family and face. */
+  /**
+   * A package as the vault has it, whole. Each face's file is named as DejaVu names its own — the family without
+   * spaces, then the face: `DejaVuSerif-BoldItalic.ttf` — so DejaVu's are the files the PDF export looks for.
+   */
   const whole = (id: string): VaultFont[] => {
     const pkg = FONT_PACKAGES.find((p) => p.id === id);
     if (!pkg) throw new Error(`no ${id}`);
-    const files = [...(pkg.files ?? [])];
+    const fileOf = (family: string, slot: string) =>
+      `${family.replace(/ /g, '')}${slot === 'regular' ? '' : `-${slot[0].toUpperCase()}${slot.slice(1)}`}.ttf`;
     return Object.entries(pkg.families).map(([family, slots]) => ({
       family,
       faces: slots.map((slot) => ({
-        path: `F/${files.shift() ?? `${family}-${slot}.ttf`}`,
+        path: `F/${fileOf(family, slot)}`,
         weight: slot.startsWith('bold') ? 700 : 400,
         italic: /italic/i.test(slot),
         weightRange: null,
@@ -223,6 +227,8 @@ describe('the downloads', () => {
 
   it('counts DejaVu only with the files the PDF export finds by name', () => {
     const fonts = whole('dejavu');
+    const names = fonts.flatMap((f) => f.faces.map((face) => face.path.slice(2)));
+    expect(names.sort()).toEqual([...(FONT_PACKAGES.find((p) => p.id === 'dejavu')?.files ?? [])].sort());
     fonts[0].faces[0].path = 'F/Renamed.ttf';
     expect(installed('dejavu', fonts)).toBe(false);
   });
