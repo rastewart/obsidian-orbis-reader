@@ -187,6 +187,8 @@ In the full-screen audio player, these buttons act on the text that is being rea
 
 To set how much text these buttons use, go to **Settings → Orbis Reader → Listening → Full-screen audio player**. To select the marks that these buttons apply, see [Annotations and Presets](annotations-and-presets.md#select-the-marks-for-listening-and-notes).
 
+Before version 0.1.7, a mark or note made on a whole **Paragraph** while a recording played was saved but did not show. To put these back on their paragraph, run **Scan annotation data for problems** and select **Repair**. See [Passage selections or notes do not show](troubleshooting.md#passage-selections-or-notes-do-not-show).
+
 For more about the player, see [Listening](listening.md).
 
 ---
@@ -246,6 +248,8 @@ Run one of these commands from the command palette.
 | **Copy notes to clipboard** | Copies the text of every annotation note in the current book |
 | **Copy bookmarks to clipboard** | Copies every bookmark and its location |
 | **Copy link to current location** | Copies a link that opens the book at your current location |
+
+The passage selections, notes and bookmarks are copied in the order that they appear in the book.
 
 To select chapters, use templates or filter by mark, use [Generate Notes](generate-notes.md).
 

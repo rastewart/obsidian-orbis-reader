@@ -6,7 +6,7 @@
 
 ## Overview
 
-This page lists every Orbis Reader command in the Obsidian command palette. You can run each command from the palette, and you can give each command a hotkey.
+This page lists every Orbis Reader command in the Obsidian command palette, except the developer commands, which are for testing and debugging. You can run each command from the palette, and you can give each command a hotkey.
 
 Most commands are for the book that is open in the active pane. The palette shows a command only when it can run.
 
@@ -217,9 +217,9 @@ The progress indicator modes show the book or chapter as a percentage, as locati
 | Command | What it does |
 |---|---|
 | Show reading data for this book | Opens the reading data of the book's .orbis file: the cover, reading activity, contents, passage selections, notes and linked vault notes |
-| Scan annotation data for problems | Opens the **Annotation data check** dialog. It lists passage selections and annotation notes that cannot be shown or gone to, and you can remove them |
+| Scan annotation data for problems | Opens the **Annotation data check** dialog. It lists passage selections and annotation notes that cannot be shown or gone to, and you can remove them. For those marked *can be repaired*, **Repair** puts them back where they were made |
 
-**Scan annotation data for problems** finds annotations with a broken range, and exact duplicates.
+**Scan annotation data for problems** finds annotations with a broken range, and exact duplicates. Some annotations with a broken range can be repaired: a mark or note made from the full-screen audio player while a recording played, with **How much the mark button marks** or **How much the note button captures** set to **Paragraph**, before version 0.1.7. These were saved but did not show. **Repair** puts each one back on its paragraph, with its mark and note.
 
 ### Advanced
 
@@ -231,16 +231,6 @@ The progress indicator modes show the book or chapter as a percentage, as locati
 | Toggle developer options | Shows or hides developer commands in the command palette, and developer settings |
 
 A debug log note stays in the vault after Obsidian closes, and you can read it on another device. You can run **Toggle debug button**, **Toggle writing the debug log to a note** and **Toggle developer options** when no book is open.
-
-### Developer options
-
-These commands are in the command palette only when developer options are enabled. To enable them, run **Toggle developer options**.
-
-| Command | What it does |
-|---|---|
-| Recalculate locations (dev) | Changes the location saved with each passage selection, annotation note and bookmark to the location where it begins |
-| Rebuild location index for current book (dev) | Deletes the book's location index and makes it again |
-| Download test fixtures (dev) | Downloads the test books and notes from this repository's `test-fixtures` release and, after asking, copies the files that differ into the `fixtures` folder |
 
 ---
 

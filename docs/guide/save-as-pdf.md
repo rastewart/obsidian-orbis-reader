@@ -90,7 +90,7 @@ The line at the top of the dialog shows what the PDF will contain, for example *
 
 | Option | What it does |
 |---|---|
-| **Chapters** | Lists every chapter in the book |
+| **Chapters** | Lists every chapter in the book, with the number of marks in each |
 | **Include marks and notes** | Draws your marks and adds your notes. Enabled by default. When disabled, the PDF is a copy of the book without your annotations, and **Cover sheet** and **Marked up by** do not show. Shown only when the book has passage selections or notes |
 | **Cover sheet** | Adds a first page with the title and the legend. Enabled by default. Shown only when **Include marks and notes** is enabled |
 | **Marked up by** | Prints a name on the cover sheet. Shown only when **Cover sheet** is enabled |
@@ -141,6 +141,8 @@ The cover sheet shows the title, the author, the date, the **Marked up by** name
 A mark shows in the PDF with its name, color and treatment, not with its badge. An emoji in the book's text prints in color, as it looks on the device that made the PDF.
 
 A chapter is a top-level entry in the book's table of contents, so a chapter includes the headings under it. An entry that groups chapters, such as a part or one novel of an omnibus, opens into those chapters.
+
+The **Chapters** list also has a row for each section that is not in the table of contents, named from the section's heading. A section with no heading shows as **Section *n***. A section that continues the chapter before it, such as the second half of a chapter that Calibre split into two files, has no row of its own: it is part of that chapter, and its marks count toward it. The rules are the same as in Save as Markdown. See [Sections that are not in the table of contents](save-as-markdown.md#sections-that-are-not-in-the-table-of-contents).
 
 ---
 

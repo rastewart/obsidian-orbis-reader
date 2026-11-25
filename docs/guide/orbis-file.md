@@ -89,7 +89,7 @@ The table shows the data from the reading-location files. A device shows after i
 
 ### Bookmarks, Passage selections and Notes
 
-Each section shows the number of items, and you can expand it. To go to the place that an item came from, select it.
+Each section shows the number of items, and you can expand it. The items are in the order that they appear in the book. To go to the place that an item came from, select it.
 
 - **Bookmarks** shows the chapter and the location.
 - **Passage selections** shows the mark, the chapter, the location and the passage.

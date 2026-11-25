@@ -116,6 +116,10 @@ const RETIRED: readonly Retired[] = [
         where: 'recordings_modal.front_matter',
         because: "the publishing term for a book's untitled opening sections, not a note's properties",
       },
+      {
+        where: 'docs/guide/save-as-markdown.md',
+        because: 'quotes the Front matter row label of the Chapters list, which is recordings_modal.front_matter',
+      },
     ],
   },
   // ── Standing rulings ────────────────────────────────────────────────────────

@@ -30,7 +30,7 @@ The toolbar is at the top of the reader. To hide a button, go to **Settings → 
 | **Annotation marks** | Opens the **Marks manager** for this book. See [Annotations and Presets](annotations-and-presets.md) |
 | **Focus mode** | Hides the toolbar. See [Focus mode](#focus-mode) |
 
-On a phone or tablet, a swipe that starts on a bar under the toolbar, or on the ‹ or › page button, doesn't open Obsidian's side panels or command palette. The bars are the display style bar, the search bar, the Go to bar, the listening bar and the marks bar. This keeps a slider or a button from opening a panel by mistake. To open a side panel or the command palette with a swipe, start the swipe on the toolbar, or at the edge of the page above or below the page buttons.
+On a phone or tablet, start a swipe on the toolbar to open Obsidian's side panels or command palette, not on a bar under it.
 
 ---
 
@@ -71,8 +71,10 @@ When you select a toolbar button, the keyboard focus goes back to the book, and 
 ## Turn pages
 
 - To turn a page, select the left or right edge of the page. The ‹ and › arrows show where to select.
-- On a touch screen, you can also swipe.
+- On a touch screen, you can also swipe. In a CBZ book or a fixed-layout EPUB that reads right to left, such as manga, a swipe turns the page in the book's own direction.
 - On a keyboard, press the left or right arrow, Space, Page Up or Page Down.
+
+To slide the page across as it turns, set **Page turn** to **Slide** on the **Layout** tab of the display style bar. See [Display Settings](display-settings.md#options-and-settings).
 
 To read the book as one long scroll, see [Paged mode and Scrolled mode](#paged-mode-and-scrolled-mode).
 

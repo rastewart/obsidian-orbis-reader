@@ -19,7 +19,7 @@ Orbis Reader stores your reading data in the vault, in files that you can see. Y
 | Data | Where Orbis Reader stores it |
 |---|---|
 | Books | Where you put them. Orbis Reader never changes a book file |
-| A book's reading data | In the `!orbis-data` folder beside the book. This folder contains the `.orbis` file, a file of annotations for each device, a reading location file for each device, and recordings in an `audio` folder |
+| A book's reading data | In the `!orbis-data` folder beside the book. This folder contains the `.orbis` file, a file of annotations for each device, a reading location file for each device, a file of the book's page locations (`.pages.json`), and recordings in an `audio` folder. For a book made with **Read in Orbis Reader**, it also contains a file that names the note the book was made from (`.origin.json`). A `!readme.md` file in the folder says what each file is |
 | Configuration shared between devices | In `!orbis-data/sync`, unless you change **Vault folder for configuration files** |
 | Notes and files that you make with Orbis Reader, such as title notes, covers, reading records, generated notes, Markdown and PDF files, and EPUB books made from notes | In the folders that you select in settings |
 | Books from book sources | In the **Downloads folder** that you select for book sources |
@@ -39,8 +39,13 @@ The plugin folder is `.obsidian/plugins/orbis-reader` in your vault. If you chan
 | `dictionary` | The offline dictionaries that you downloaded for **Look-up** |
 | `font-cache` | The fonts of the **Expanded character set** for PDF files, if you downloaded them |
 | `piper-cache` | The speech engine and the Orbis voices that you downloaded |
+| `share` | On a phone or tablet, the file that you last shared with **Share…**, until the next share or the next time Orbis Reader starts. See [Files outside your vault](#files-outside-your-vault) |
 
-Orbis Reader downloads the dictionaries, the fonts and the speech engine only when you select a download. Before it uses one of these files, Orbis Reader compares the file with a checksum that is fixed in the plugin. If the file is different, Orbis Reader does not use it.
+Orbis Reader downloads the dictionaries, the fonts, the speech engine and the voices only when you select a download.
+
+- **Dictionaries and fonts:** when it downloads one of these files, Orbis Reader compares the file with a checksum that is fixed in the plugin. If the file is different, Orbis Reader does not save it.
+- **The speech engine:** Orbis Reader compares each of its two modules with a checksum that is fixed in the plugin when it downloads the module, and again each time it loads the module. If a module is different, Orbis Reader does not use it. See [WebAssembly](#webassembly).
+- **Voices:** Orbis Reader does not compare a voice with a checksum. A voice is data that the speech engine reads, not code that runs.
 
 ---
 
@@ -64,10 +69,11 @@ Orbis Reader reads and writes vault files through Obsidian. It gets the list of 
 |---|---|
 | Library | Finds your books, title notes and covers, and the notes that link to a book |
 | Reading records | Finds the records that it keeps up to date |
-| Sync and devices | Finds the reading locations and configuration files of your other devices |
+| Sync and devices | Finds the reading locations and configuration files of your other devices, and the names of your other devices |
 | Look-up | Finds the vault notes that match the selected text |
 | Book sources | Finds a free file name for a book that you download |
 | Read in Orbis Reader | Finds the book that was made from a note |
+| Reading data from earlier versions | Once in each vault, finds the reading data files named differently by earlier versions of the plugin, and renames them so they can be used by the current release |
 
 Orbis Reader does not send the list of files, or the files, to any other place.
 
@@ -85,7 +91,7 @@ On Android, Orbis Reader also keeps the last image that you copied from a book i
 
 Orbis voices use two WebAssembly modules. One is the speech engine (ONNX Runtime). The other converts text to speech sounds (piper-phonemize). These modules are not part of the plugin's code.
 
-The first time that you download an Orbis voice, Orbis Reader downloads the two modules from `cdnjs.cloudflare.com` and `cdn.jsdelivr.net`. It compares each module with a checksum that is fixed in the plugin, and then saves it in the `piper-cache` folder. If you do not use Orbis voices, Orbis Reader does not download them.
+The first time that an Orbis voice speaks or plays a sample, Orbis Reader downloads the two modules from `cdnjs.cloudflare.com` and `cdn.jsdelivr.net`. **Download** in settings plays a sample after you download a voice. Orbis Reader compares each module with a checksum that is fixed in the plugin, and then saves it in the `piper-cache` folder. Each time it loads a module from that folder, it compares the module with the checksum again, and does not use a module that is different. If you do not use Orbis voices, Orbis Reader does not download them.
 
 The library that opens EPUB and CBZ files can also use a WebAssembly module. Orbis Reader does not use this module.
 
@@ -101,7 +107,7 @@ Orbis Reader connects to the internet only for the features that you use, and no
 
 On a computer, **Save as PDF**, **Save annotations as PDF**, **Save as Markdown**, **Generate notes** and **Notes to EPUB** have an **Export…** button. It opens your system's save dialog. Orbis Reader writes only the file that you name in the dialog, and only after you select **Save**.
 
-On a phone or tablet, the same dialogs have a **Share…** button instead. Selecting that button sends the file to your device's share sheet, and nothing is written outside the vault.
+On a phone or tablet, the same dialogs have a **Share…** button instead. Selecting that button writes the file to the `share` folder in the plugin folder, and then sends it to your device's share sheet. Nothing is written outside the vault. Orbis Reader empties the `share` folder before the next share, and each time it starts.
 
 Orbis Reader does not read or write any other file outside your vault.
 
@@ -122,7 +128,7 @@ The Community plugins directory reviews each release of Orbis Reader. This table
 | **Number of network request calls** | [The network](#the-network) |
 | **Code uses runtime base64 encode or decode calls** | See below |
 
-Orbis Reader decodes base64 to read the images inside FB2 books, the images that a book contains in its text, and the cover that a `.orbis` file contains. It encodes base64 to sign in to an OPDS feed that uses a username and password, and to make a short silent sound that keeps the listening controls active on a phone.
+Orbis Reader decodes base64 to read the images inside FB2 books, the images in book text, the cover embedded in a book's `.orbis` file, and a cover that an OPDS catalog sends in its list of books. It encodes base64 to sign in to an OPDS feed that uses a username and password and to make a short silent sound that keeps the listening controls active on a phone.
 
 ---
 

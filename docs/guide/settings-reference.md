@@ -88,7 +88,7 @@ Most settings on this page change the display style that is selected in **Displa
 | **Reader theme** | Sets the colors of books. The options are **Match light or dark mode**, **Match Obsidian's theme**, and the reader themes that are enabled in the **Reader theme manager** |
 | **Brightness** | Dims the page without changing the brightness of your screen, from 20% to 100% |
 | **Reading mode** | Sets **Paged mode** or **Scrolled mode** |
-| **Two-column layout** | Shows two columns when the window is wide enough. Hidden in **Scrolled mode** |
+| **Two-column layout** | Shows two columns when the window is wide enough. In a CBZ book or a fixed-layout EPUB, shows two pages side by side when the reading area is wider than it is tall. Hidden in **Scrolled mode** |
 | **Page turn** | Sets how a page turns in **Paged mode**. The values are **None** and **Slide**. Hidden in **Scrolled mode** |
 | **Text margins** | Sets the space around book text, from 0% to 12% |
 | **Line spacing** | Sets the space between lines, from 1.0× to 3.0× |
@@ -102,7 +102,7 @@ Most settings on this page change the display style that is selected in **Displa
 | **Bold text** | Draws the book's text heavier. Words the book makes bold stay bolder |
 | **Preview** | Shows a sample of book text with your changes |
 
-**Brightness**, **Text margins**, **Line spacing** and **Font size** have a slider and a number field.
+**Tooltip distance**, **Brightness**, **Text margins**, **Line spacing**, **Character spacing**, **Word spacing**, **Paragraph spacing** and **Font size** have a slider and a number field.
 
 The display style bar in the reader has the same controls. A change in one place also changes the other.
 

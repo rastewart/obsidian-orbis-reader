@@ -114,13 +114,15 @@ Some sections of a book are not in its table of contents. They show in the **Cha
 
 Orbis Reader names these rows from the section's first heading or its title. Until the name is found, the row shows **Section *n***. The name shows a moment later.
 
+Sections before the first chapter that have text but no heading of their own, such as a title page or a copyright page, show as **Front matter**. When there are several, they show as **Front matter 1 of 2**, **Front matter 2 of 2** and so on.
+
 The **not in contents** note shows only when some rows are in the book's table of contents. Some books have no table of contents that Orbis Reader can use. In those books, no row shows the note.
 
 #### Sections that continue a chapter
 
 A section with no name of its own, between two chapters, does not get its own row. Its text goes into the note of the chapter before it. When you check or uncheck that chapter, the section goes with it.
 
-Publishing software often splits a long chapter into several files. The later files contain only the book's title, the chapter's name again, or a name such as *Continued, Sample Book* or *Unknown*. For example, in a novel divided into three books, 48 such files can join the three books instead of becoming 48 notes.
+Publishing software often splits a long chapter into several files. The later files contain only the book's title, the chapter's name again, the same name as the file before them, or a name such as *Continued, Sample Book* or *Unknown*. Calibre, for example, gives each part of a split chapter the same name, such as *Chapter 3, Sample Book*. For example, in a novel divided into three books, 48 such files can join the three books instead of becoming 48 notes.
 
 These sections that are not in the table of contents get their own row:
 

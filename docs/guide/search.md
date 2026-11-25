@@ -82,9 +82,10 @@ From left to right, the search bar has the query field and these controls:
 | Control | What it does |
 |---|---|
 | **Advanced search** | Opens the **Advanced search** dialog. The button is highlighted when any setting in it is not the default |
-| **Previous result**, **Next result** | Go to the previous or next result |
-| Count | Shows the result you are on and the number of results, for example `3 / 14`. A **+** at the end shows that the search is still running. `…` shows that no result is found yet. `0` shows that there are no results |
+| **Previous result** | Goes to the previous result |
 | Kind icon | Shows the kind of the current result: book text, a passage selection, a note selection or note text |
+| Count | Shows the result you are on and the number of results, for example `3 / 14`. A **+** at the end shows that the search is still running. `…` shows that no result is found yet. `0` shows that there are no results |
+| **Next result** | Goes to the next result |
 
 The **Search in book** button on the toolbar is highlighted while the search bar is open.
 

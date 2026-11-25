@@ -97,6 +97,7 @@ Passage selections or notes that you added do not show when you open the book.
 - Check the `!orbis-data` folder beside the book for a `.orbis` file with the book's name. This file stores the book's annotations. If the file is missing or damaged, the annotations do not load.
 - If you moved the book file a short time ago, the connection to its .orbis file may be broken.
 - Go to the annotation's location. Annotations show when their part of the book is displayed.
+- Run **Scan annotation data for problems** from the command palette with the book open. It lists annotations that cannot be shown. A mark or note made from the full-screen audio player while a recording played, with the mark or note button set to **Paragraph**, before version 0.1.7, was saved but did not show. The dialog marks these *can be repaired*, and **Repair** puts them back on their paragraph. See [Command Reference](command-reference.md#book-data).
 
 ---
 

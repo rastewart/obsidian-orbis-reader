@@ -98,7 +98,7 @@ A single note has these parts, in this order:
 2. A heading with the book's title. If the book has no title, the heading is the file name.
 3. A **Contents** list with a link to each chapter's heading. The list shows when the note has annotations or chapter headings.
 4. A heading for each chapter, with an **↗ Open in book** link on the line under it. The link opens the book at that chapter.
-5. Under each chapter, a section for each annotation type: **Bookmarks**, **Passage selections** and **Notes**. The sections are in the order that the notes style sets.
+5. Under each chapter, a section for each annotation type: **Bookmarks**, **Passage selections** and **Notes**. The sections are in the order that the notes style sets. In each section, the annotations are in the order that they appear in the book.
 
 The **↗ Open in book** link is under the heading, not in it. Because of this, a link to a chapter from another note, such as `[[Sample Book Notes#Chapter One]]`, goes to the chapter.
 
