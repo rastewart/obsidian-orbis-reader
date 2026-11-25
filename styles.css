@@ -505,6 +505,15 @@ body {
   flex-wrap: wrap;
 }
 
+/* **On one line, a slider long enough to set by finger.** Left at its default, about 100px, Font size's 80–300% is two
+   values a point, and a tab that just fits on one line (Font on an iPad mini upright) kept that slider while a tab that
+   did not (Spacing) stacked and got one three times as long. With this width counted, a tab that has not the room for
+   it no longer fits on one line, so `fitDrawer` stacks it as a form, where the slider has the row. */
+.orbis-level3-drawer:not(.is-form) input[type="range"] {
+  width: 180px;
+  flex: none;
+}
+
 /* The Theme, Font and Spacing drawers once their rows no longer fit on one line (`fitDrawer`): a form, one row under
    another, each row the same grid of label, slider, number field and unit. The label and unit columns are as wide as
    the drawer's widest, measured by `fitDrawer`, so every row's columns line up. A dropdown spans the last three, so

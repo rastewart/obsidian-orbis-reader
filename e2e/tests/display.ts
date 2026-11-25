@@ -8,6 +8,7 @@ import {
   computedText,
   type DrawerShown,
   drawerRoom,
+  drawerSliders,
   emptyPageAtSectionEnd,
   fakeMobileNavbar,
   firstSlider,
@@ -410,6 +411,45 @@ export const displayTests: E2eTest[] = [
           await page.run(narrowDisplayBar, null);
         }
       } finally {
+        await page.send('Emulation.clearDeviceMetricsOverride');
+      }
+    },
+  },
+  {
+    name: 'a slider on a one-line tab is long enough to set, and a tab without the room for one stacks',
+    async run(context) {
+      const { page } = context;
+      await open(context, 'fixtures/annotation-workhorse.epub');
+      // Wide enough for every tab on one line, as `the Spacing tab's More page` sets it.
+      await page.send('Emulation.setDeviceMetricsOverride', {
+        width: 1600,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+      });
+      const MIN = 180;
+      try {
+        // At 700px the Font tab fit on one line with a 100px slider (about 660px of controls), and with 180px (about
+        // 740px) it cannot: as on an iPad mini upright, whose larger touch controls hit the same limit at 744.
+        for (const width of [null, 700]) {
+          const where = width ? `at ${width}px` : 'wide';
+          await page.run(narrowDisplayBar, width);
+          for (const tab of ['theme', 'spacing', 'font']) {
+            await page.run(openDisplayTab, tab, false);
+            await sleep(300);
+            const { form, sliders } = await page.run(drawerSliders, tab);
+            const short = sliders.filter((w) => w < MIN);
+            expect(
+              short.length === 0,
+              `${where}, the ${tab} tab (${form ? 'stacked' : 'one line'}) has sliders ${sliders}`
+            );
+            if (!width) expect(!form, `${where}, the ${tab} tab stacked`);
+            if (width && tab === 'font') expect(form, `${where}, the Font tab stayed on one line`);
+          }
+        }
+      } finally {
+        await page.run(narrowDisplayBar, null);
+        await page.run(closeDisplayBar);
         await page.send('Emulation.clearDeviceMetricsOverride');
       }
     },

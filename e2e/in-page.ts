@@ -1906,3 +1906,13 @@ export function flipDrawerSwitch(id: string, label: string): boolean {
   toggle.click();
   return toggle.classList.contains('is-enabled');
 }
+
+/** How the open display style tab `id` is laid out: stacked as a form or on one line, and its sliders' widths. */
+export function drawerSliders(id: string): { form: boolean; sliders: number[] } {
+  const drawer = document.getElementById(`orbis-drawer-${id}`);
+  if (!drawer || drawer.getClientRects().length === 0) throw new Error(`the ${id} tab is not open`);
+  const sliders = Array.from(drawer.querySelectorAll<HTMLInputElement>('input[type="range"]'))
+    .filter((slider) => slider.getClientRects().length > 0)
+    .map((slider) => Math.round(slider.getBoundingClientRect().width));
+  return { form: drawer.classList.contains('is-form'), sliders };
+}
