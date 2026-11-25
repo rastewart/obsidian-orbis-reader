@@ -8,7 +8,7 @@ import { resolveThemeId, type ThemeSettings, themeChoices } from './reader-theme
 import { DisplaySettings, Flow, FONT_FAMILY_OPTIONS, parseHyphenation, parseTextAlign } from './settings';
 import { isSliderDragging } from './slider-input';
 import { SPACING_LABELS, TEXT_SPACING, type TextSpacing } from './text-spacing';
-import { setSvgIcon } from './ui-utils';
+import { ignoreObsidianSwipe, setSvgIcon } from './ui-utils';
 
 export interface DisplayMenuView {
   settings: DisplaySettings;
@@ -174,6 +174,8 @@ function pageToggle(drawer: HTMLElement, firstPages: Array<() => void>, relayout
 export function buildDisplayMenu(view: DisplayMenuView, toolbar: HTMLElement): void {
   // Wrapper for overlay positioning
   view.displayMenuWrapper = view.contentEl.createDiv({ cls: 'orbis-display-menu-wrapper' });
+  // The tab row and every tab's controls: a sideways drag here is a slip, not a request for Obsidian's side panels.
+  ignoreObsidianSwipe(view.displayMenuWrapper);
   view.displayMenuWrapper.hide();
   toolbar.appendChild(view.displayMenuWrapper);
 

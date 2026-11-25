@@ -31,6 +31,7 @@ import {
   spacingInside,
   spacingOf,
   styleOf,
+  swipeIgnored,
   turnTo,
 } from '../in-page';
 import { dismissDialogs, type E2eTest, expect, type TestContext } from '../runner';
@@ -562,6 +563,29 @@ export const displayTests: E2eTest[] = [
         const moved = await turned(key);
         expect(moved === 0, `with Turn pages with the keyboard off, "${key}" still moved the page`);
       }
+    },
+  },
+  {
+    name: "Obsidian's swipe is off on the secondary bars, and on in the rest of the reader",
+    async run(context) {
+      const { page } = context;
+      await open(context, 'fixtures/annotation-workhorse.epub');
+      // Display styles is built on a lazy import, a moment after the book opens.
+      await sleep(500);
+      const off = [
+        '.orbis-level2-toolbar',
+        '.orbis-level3-drawer input[type="range"]',
+        '.orbis-search-bar',
+        '.orbis-goto-bar',
+        '.orbis-tts-bar',
+        '.orbis-highlight-drawer-row',
+      ];
+      const on = ['.orbis-toolbar-left', '.orbis-nav-prev', '.orbis-toc-panel', '.orbis-tts-player'];
+      const seen = await page.run(swipeIgnored, [...off, ...on]);
+      for (const selector of off)
+        expect(seen[selector] === true, `${selector} still takes Obsidian's swipe (${seen[selector]})`);
+      for (const selector of on)
+        expect(seen[selector] === false, `${selector} lost Obsidian's swipe (${seen[selector]})`);
     },
   },
 ];

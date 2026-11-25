@@ -9,6 +9,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- On a phone or tablet, a swipe that starts on a bar under the toolbar no longer opens Obsidian's side panels or command palette, so a slider or button on the bar can't open a panel by mistake. The bars are the display style bar, the search bar, the Go to bar, the listening bar and the marks bar. Swipes from the toolbar and the edges of the page work as before.
+
 ## [0.1.8] — 2026-11-24
 
 ### Added

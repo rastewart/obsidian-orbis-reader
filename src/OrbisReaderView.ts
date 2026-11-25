@@ -210,7 +210,7 @@ import {
   tocNeighbourHref,
   topLevelChapters,
 } from './toc-utils';
-import { createOrbisPopup, setSvgIcon } from './ui-utils';
+import { createOrbisPopup, ignoreObsidianSwipe, setSvgIcon } from './ui-utils';
 import { continuationSections } from './unlisted-sections';
 import { VoiceRecordingsModal } from './VoiceRecordingsModal';
 import { VIEW_TYPE_ORBIS } from './view-types';
@@ -4011,6 +4011,8 @@ export class OrbisReaderView
     // host fills the same box, so positioning is unchanged; focus mode re-applies the filter to
     // this container so the bars still match the dimmed book there (see the CSS rule).
     const overlayContainer = host.createDiv({ cls: 'orbis-overlay-container' });
+    // Search, Go to, Listening and the marks drawer: no Obsidian swipe from their controls (see the function).
+    ignoreObsidianSwipe(overlayContainer);
 
     // Move search bar into the overlay container so it floats over the book instead of pushing it down
     overlayContainer.appendChild(this.search.barEl!);

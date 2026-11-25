@@ -1875,3 +1875,19 @@ export function storeAsEmptyRanges(ids: string[]): void {
   annot.persistHighlights();
   annot.persistNotes();
 }
+
+/**
+ * For each selector, whether a touch on its first match in the open book would be skipped by Obsidian's mobile swipe:
+ * the same test Obsidian makes, an ancestor (or the element) with `data-ignore-swipe`. `null` when nothing matches.
+ */
+export function swipeIgnored(selectors: string[]): Record<string, boolean | null> {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as unknown as { containerEl: HTMLElement };
+  if (!view) throw new Error('no book is open');
+  const seen: Record<string, boolean | null> = {};
+  for (const selector of selectors) {
+    const el = view.containerEl.querySelector<HTMLElement>(selector);
+    seen[selector] = el ? !!el.closest('[data-ignore-swipe]') : null;
+  }
+  return seen;
+}

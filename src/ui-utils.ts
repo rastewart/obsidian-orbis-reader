@@ -1263,6 +1263,21 @@ export function createCollapsibleNote(
 }
 
 /**
+ * **No Obsidian swipe from anywhere in `el`**: a touch that starts inside it neither pulls in the side panels nor, by
+ * the same handler, pulls down the command palette. For the secondary bars (Listening, Search, Go to, the marks drawer
+ * and all of Display styles), whose sliders, fields and buttons sit where a sideways drag is a slip, not a request
+ * for a panel. The primary toolbar, the Navigator and Notes panels and the full-screen player keep Obsidian's swipes.
+ *
+ * Obsidian's mobile swipe skips a touch whose target has an ancestor with `data-ignore-swipe` — the attribute it puts
+ * on its own tab headers and resize handles. Not a documented plugin API: if a release drops it, Obsidian's swipes
+ * come back on the bars and nothing else changes, and `guardDragSwipe` still covers the sliders. Native scrolling and
+ * the controls' own touch handling are untouched, since nothing is stopped or prevented. No effect on desktop.
+ */
+export function ignoreObsidianSwipe(el: HTMLElement): void {
+  el.dataset.ignoreSwipe = 'true';
+}
+
+/**
  * Stop a horizontal touch-drag on `el` from also triggering Obsidian's mobile edge-swipe (which pulls
  * in the file / backlinks drawers) — a precise drag otherwise races the swipe gesture.
  *
