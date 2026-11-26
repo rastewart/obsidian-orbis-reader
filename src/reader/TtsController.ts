@@ -2335,7 +2335,6 @@ export class TtsController {
     if (sIdx < 0 || sIdx >= this.ctx.bookSections.length) return;
     const section = this.ctx.bookSections[sIdx] as unknown as {
       createDocument?: () => Promise<Document>;
-      unload?: () => void;
     };
     if (!section.createDocument) return;
     try {
@@ -2346,7 +2345,6 @@ export class TtsController {
         this.chapterCacheQueue.push(normalizeForSpeech(u.text, this.pronouncer()));
         if (++n >= 2) break;
       }
-      section.unload?.();
     } catch {
       /* best-effort background cache */
     }

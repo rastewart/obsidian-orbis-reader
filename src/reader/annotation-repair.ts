@@ -96,7 +96,7 @@ export function storedText(text: string): string {
 /** What `findRepairs` needs of the open book. */
 export interface RepairBook {
   /** The book's sections, each of which can load its document on its own. */
-  sections: readonly { createDocument?: () => Promise<Document>; unload?: () => void }[];
+  sections: readonly { createDocument?: () => Promise<Document> }[];
   /** The section a CFI is in, or undefined when the book cannot place it. */
   sectionOf: (cfi: string) => number | undefined;
   /** The CFI a range in a section is stored under, as a mark made on it would be. */
@@ -134,8 +134,6 @@ export async function findRepairs(
       book.debug(
         `repair: could not read section ${index} for ${problem.cfiRange}: ${e instanceof Error ? e.message : String(e)}`
       );
-    } finally {
-      section.unload?.();
     }
   }
   return repairs;

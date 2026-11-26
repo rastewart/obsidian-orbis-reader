@@ -1001,7 +1001,6 @@ async function generateChapterAudioInner(
   // behind. Answered here, before the folder is made and before a synth is troubled, and answered as its own
   // outcome rather than as an absence of audio — see `GenerateResult.noText`.
   if (!units.length) {
-    section.unload?.();
     opts.log?.(`chapter ${opts.chapterIndex}: no text to record — skipped`);
     return { segments: 0, failed: 0, durationSec: 0, fileBytes: 0, noText: true };
   }
@@ -1116,7 +1115,6 @@ async function generateChapterAudioInner(
     }
     topUp(); // a slot freed — launch the next request
   }
-  section.unload?.();
 
   if (opts.signal?.cancelled) {
     // Cancelled mid-chapter — write nothing. A chapter is all-or-nothing, so resume regenerates it

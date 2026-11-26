@@ -65,7 +65,7 @@ function holdingHarness(): { gen: RecordingGenerator; progress: GenProgress[]; s
   };
   const host = {
     app: {} as RecordingGeneratorHost['app'],
-    sections: [{ createDocument: () => new Promise<Document>(() => {}), unload: () => {} }],
+    sections: [{ createDocument: () => new Promise<Document>(() => {}) }],
     chapters: [part],
     audioDir: 'audio',
     bookBasename: 'book',

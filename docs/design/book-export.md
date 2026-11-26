@@ -18,13 +18,17 @@ This makes extraction format-agnostic: there is no separate unzipping, binary de
 
 ```typescript
 interface RawSection {
-  linear?: boolean;
+  linear?: string;
   size?: number;
   createDocument?(): Promise<Document>;
-  unload?(): void;
   resolveHref?: (href: string) => string;
 }
 ```
+
+**No `unload`.** foliate's sections have one, and it releases the reference `load` took for the chapter on screen.
+`createDocument` takes none, so calling `unload` after it released the reader's own reference: foliate revoked the
+chapter's resources, and an embedded font or image the page had not fetched yet failed to load. The document
+`createDocument` returns is freed when it is dropped. See `RawSection` in `src/reader/foliate-view.ts`.
 
 The `book` object available in `OrbisReaderView` also exposes:
 - `book.sections` — flat array of `RawSection` in reading order

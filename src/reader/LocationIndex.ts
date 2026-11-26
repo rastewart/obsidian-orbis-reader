@@ -18,7 +18,7 @@ import { computeLocWordCounts, computeSectionLocInfo, locAtChar } from './locati
 import type { ReaderContext } from './ReaderContext';
 import type { StatsTocItem } from './StatsHost';
 
-type RawSection = { size?: number; cfi?: string; createDocument?(): Promise<Document>; unload?(): void };
+type RawSection = { size?: number; cfi?: string; createDocument?(): Promise<Document> };
 
 /** What the index asks of foliate's book object for a contents entry it cannot place itself. MOBI's resolver is
  *  synchronous and KF8's asynchronous, so its answer is awaited either way; MOBI's throws on anything but `filepos:`. */
@@ -387,7 +387,6 @@ export class LocationIndex {
             }
             for (const [href, at] of elementCharOffsets(doc, wanted)) anchorCharOffsets.set(href, at);
           }
-          section.unload?.();
         }
       } catch {
         /* fall through to byte estimate */
@@ -614,7 +613,6 @@ export class LocationIndex {
             }
             this.tocStartFractions.set(href, frac);
           }
-          section.unload?.();
         } catch {
           if (firstLoc <= lastLoc) {
             for (let loc = firstLoc; loc <= lastLoc; loc++) {

@@ -44,7 +44,7 @@ Key state fields (private to `SearchController`):
    b. Walks all text nodes via `TreeWalker(body, SHOW_TEXT)`.
    c. For each text node, searches `textLower.indexOf(queryLower, pos)` in a loop — case-insensitive, substring match.
    d. For each match: constructs a DOM `Range`, converts it to a CFI via `cfiJoinIndir(baseCFI, cfiFromRange(range))`, builds an excerpt (50 chars of context either side), pushes a `SearchHit`.
-   e. Calls `section.unload?.()` to free memory.
+   e. Drops the document, which frees it. Not `section.unload?.()`: that releases the reader's own hold on the chapter on screen (see `RawSection` in `src/reader/foliate-view.ts`).
 5. After all sections: sets `loading = false`, stores results, calls `renderResults()`.
 6. If results exist, navigates to the first hit (`goTo(0)`). The panel remains open showing the results list.
 

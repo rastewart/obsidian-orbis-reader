@@ -379,7 +379,6 @@ export async function extractBook(
         .turndown(doc.body.innerHTML)
         .replace(/\n{3,}/g, '\n\n')
         .trim();
-      section.unload?.();
       if (!md) continue;
       if (i === 0 && coverEmbed && isImageOnly(md)) continue;
       const chapterTitle = options.chapterForSection?.(i) ?? '';
@@ -656,7 +655,6 @@ async function collectWholeSection(
     ctx.options.labelForSection?.(index) ||
     headingOf(doc, ctx.options.bookTitle, index) ||
     unclaimedLabelFor(index, ctx.options.sectionLabel);
-  section.unload?.();
   if (!cleaned) return 'empty';
 
   if (!chapterMap.has(key)) {
@@ -700,7 +698,6 @@ async function collectContinuation(
     .turndown(doc.body.innerHTML)
     .replace(/\n{3,}/g, '\n\n')
     .trim();
-  section.unload?.();
   const first = /^#{1,6}[ \t]+(.+?)[ \t]*(?:\n|$)/.exec(md);
   // Whitespace normalized, as `continuationSections` does: a technical book writes "1.&nbsp;First Steps" in its
   // heading and an ordinary space in its contents, so a plain comparison would let the rule call it a continuation
@@ -882,7 +879,6 @@ export async function collectByTocAnchors(
       continuing: leadContinues,
       boundary: (el) => pieceAtMarker.get(el) ?? null,
     });
-    section.unload?.();
 
     for (const piece of pieces) {
       /**
@@ -962,7 +958,6 @@ export async function collectBySectionFallback(
       ctx.options.labelForSection?.(i) ||
       headingOf(doc, ctx.options.bookTitle, i) ||
       unclaimedLabelFor(i, ctx.options.sectionLabel);
-    section.unload?.();
     if (!cleaned) continue;
 
     if (!chapterMap.has(chapterHref)) {

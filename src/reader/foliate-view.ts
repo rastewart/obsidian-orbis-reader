@@ -57,7 +57,15 @@ export type RawSection = {
   linear?: string;
   size?: number;
   cfi?: string;
+  /**
+   * The section's text as a document of its own: parsed, holding none of foliate's loaded resources, and freed when
+   * it is dropped like any object.
+   *
+   * **No `unload` here, on purpose.** foliate's `unload` releases a reference its `load` took — the one the paginator
+   * holds for the chapter on screen — and `createDocument` takes none. Called after `createDocument`, it released the
+   * reader's own reference to that chapter: at zero, foliate revoked the chapter's resources, and a book's embedded
+   * font or image the page had not fetched yet failed to load. Only the paginator loads and unloads a section.
+   */
   createDocument?(): Promise<Document>;
-  unload?(): void;
   resolveHref?: (href: string) => string;
 };

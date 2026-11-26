@@ -2005,12 +2005,7 @@ export class OrbisReaderView
   private async openingSentenceOf(sectionIndex: number): Promise<string> {
     const section = (this.bookSections as unknown as RawSection[])[sectionIndex];
     if (!section?.createDocument) return '';
-    const doc = await section.createDocument();
-    try {
-      return getReadingUnits(doc)[0]?.text ?? '';
-    } finally {
-      section.unload?.();
-    }
+    return getReadingUnits(await section.createDocument())[0]?.text ?? '';
   }
 
   /** TtsHost: load the active edition's chapter for playback (mix-aware), by its ordinal in `bookChapters`. */

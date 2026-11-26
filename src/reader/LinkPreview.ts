@@ -84,14 +84,12 @@ export class LinkPreview {
     } else {
       const rawSections = this.ctx.bookSections as unknown as Array<{
         createDocument?(): Promise<Document>;
-        unload?(): void;
       }>;
       const targetSection = rawSections[targetIdx];
       if (targetSection?.createDocument) {
         try {
           const targetDoc = await targetSection.createDocument();
           previewText = this.extractLinkPreviewText(targetDoc, anchorId);
-          targetSection.unload?.();
         } catch (err) {
           this.ctx.debug(
             `linkPreview: createDocument error: ${err instanceof Error ? err.message : String(err)}`,

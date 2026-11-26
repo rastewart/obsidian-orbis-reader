@@ -273,7 +273,6 @@ async function nameUnlistedRows(
       // writes carry one name.
       name = headingOf(doc, view.bookMeta.title, row.index);
       hasText.set(row.href, !!doc.body?.textContent?.trim());
-      section.unload?.();
     } catch {
       continue; // a section that will not render is one the export would skip anyway
     }

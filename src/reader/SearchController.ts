@@ -105,7 +105,7 @@ interface SearchHit {
   noteId?: string;
 }
 
-type RawSection = { cfi?: string; createDocument?(): Promise<Document>; unload?(): void };
+type RawSection = { cfi?: string; createDocument?(): Promise<Document> };
 
 // The `draw-annotation` event detail, as much of it as the search hit path uses.
 type DrawDetail = {
@@ -1058,7 +1058,6 @@ export class SearchController {
             pos = idx + q.length;
           }
         }
-        section.unload?.();
         this.ctx.debug(`search s${sIdx}: done hits=${this.results.length}`, 'search');
         this.sortResults(); // keep book + annotation hits in document order as sections stream in
         if (!navigated && firstResultSettled(this.results, sIdx)) {

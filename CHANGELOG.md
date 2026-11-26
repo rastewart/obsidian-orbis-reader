@@ -27,6 +27,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 - **Two-column layout** on the display style bar's **Layout** tab is now a labeled switch under **Page turn**, like **Bold text** on the **Font** tab, in place of the icon button beside **Mode**. Like **Page turn**, it shows in **Paged mode** only.
 - A slider on the display style bar is longer when a tab's controls are on one line, so **Size** and **Brightness** are easier to set. A tab without room for the longer slider stacks its controls in rows, as the **Font** tab now does on an iPad mini held upright.
 
+### Fixed
+
+- A book's own fonts, and its images that had not loaded yet, could fail to show in the chapter you were reading. Orbis's work in the background — counting locations, searching, reading aloud, exporting and link previews — let go of files the reader still needed. It happened only sometimes, depending on which finished first.
+
 ### Maintenance
 
 - `pnpm build:fonts` builds the zips of the `fonts` release from pinned sources, and pins each zip's size and SHA-256 in `src/font-pins.ts`.
