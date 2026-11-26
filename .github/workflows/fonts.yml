@@ -1,0 +1,187 @@
+name: Fonts
+
+# Builds the fonts the Fonts page offers and uploads them to the `fonts` release, where the plugin downloads them: one
+# zip per font, each holding the project's own files and its license (`scripts/build-fonts.ts`).
+#
+# **Runs when main's pins change, or by hand.** A push to main that changes `src/font-pins.ts` — a font added, or a new
+# version of one — starts it; so does Actions → Fonts → Run workflow.
+#
+# **Nothing is uploaded that the plugin would refuse.** `pnpm build:fonts` downloads each font's files from a fixed
+# commit, checks every one against the SHA-256 written in the script, and packs the same bytes every time. It also
+# writes `src/font-pins.ts`, so a build whose zips differ from the pins main's plugin downloads by changes that file,
+# and the run stops there. Find out why before changing a pin.
+#
+# **An uploaded zip is never replaced.** A plugin version already out pins the digest of the zip it downloads, so a
+# different file under the same name would break it. A new version of a font is a new name (its version is in it)
+# beside the old. A zip already in the release is downloaded and compared instead: the same file passes, a different
+# one stops the run.
+#
+# **Every zip built is attested**, uploaded now or not. A zip in the release is the same bytes this run built, so the
+# attestation is for it too: `gh attestation verify <zip> --repo <owner>/obsidian-orbis-reader` shows it was built
+# here, from main, including the zips uploaded by hand before this workflow existed.
+#
+# **Not the "latest" release.** The README links to the latest release for the plugin's own files, and a fonts release
+# made after a plugin release would otherwise take that place.
+
+on:
+  push:
+    branches: [main]
+    paths: ['src/font-pins.ts']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+# **Built without the write token, uploaded by a job that runs nothing of the repository's.** Installing and building
+# run dependency code, and the build downloads other people's files; none of it should hold the token that can write
+# releases. So `build` reads only and hands what it built to `upload`, which checks each zip again and runs `gh` and
+# GitHub's provenance attestation.
+jobs:
+  build:
+    name: Build the fonts
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    env:
+      TAG: fonts
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26.5.0'
+          # setup-node turns on a dependency cache from `packageManager` unless told not to.
+          package-manager-cache: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          run_install: false
+
+      # No dependency cache: a workflow that publishes should not restore what another run saved.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The plugin's pins, read before the build rewrites `src/font-pins.ts`, as `<digest>  <zip>` lines.
+      - name: Read the plugin's pins
+        run: |
+          set -euo pipefail
+          pnpm exec tsx scripts/font-pins.ts > "$RUNNER_TEMP/pins.txt"
+          cat "$RUNNER_TEMP/pins.txt"
+
+      # No token here: the build downloads from other people's repositories, and needs no access to this one.
+      - name: Build every zip
+        run: pnpm build:fonts
+
+      # The build writes the pins of what it made. Unchanged means every zip is the one the plugin downloads.
+      - name: Check the zips are the pinned ones
+        run: |
+          set -euo pipefail
+          if ! git diff --exit-code -- src/font-pins.ts; then
+            echo "::error::The fonts built differ from the pins in src/font-pins.ts. Nothing was uploaded."
+            exit 1
+          fi
+          (cd dist/fonts && sha256sum -c "$RUNNER_TEMP/pins.txt")
+
+      # `out/missing.txt` lists what the release lacks, as `<digest>  <zip>` lines; empty when it has every zip.
+      - name: Check what the release already has
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          : > out/missing.txt
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' > "$RUNNER_TEMP/existing.txt" 2> /dev/null; then
+            echo "The $TAG release exists."
+          else
+            echo "There is no $TAG release yet."
+            : > "$RUNNER_TEMP/existing.txt"
+          fi
+          while read -r digest file; do
+            if grep -qxF "$file" "$RUNNER_TEMP/existing.txt"; then
+              rm -rf "$RUNNER_TEMP/check"
+              gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$file" --dir "$RUNNER_TEMP/check"
+              if echo "$digest  $RUNNER_TEMP/check/$file" | sha256sum -c --quiet -; then
+                echo "$file: already in the release, and the same file."
+              else
+                echo "::error::$file is already in the release with a different digest. It was not replaced."
+                exit 1
+              fi
+            else
+              echo "$file: not in the release. It will be uploaded."
+              echo "$digest  $file" >> out/missing.txt
+            fi
+          done < "$RUNNER_TEMP/pins.txt"
+          cp "$RUNNER_TEMP/pins.txt" out/pins.txt
+          cp dist/fonts/*.zip out/
+          ls -l out
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: fonts
+          path: out/
+          if-no-files-found: error
+
+  upload:
+    name: Attest and upload the fonts
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # create the fonts release and add zips to it; nothing else
+      id-token: write # sign the provenance attestation
+      attestations: write # store it, so anyone can check a zip was built here, from main
+    env:
+      TAG: fonts
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: fonts
+          path: out
+
+      # Every zip is one the pins name, by a name a font's zip can have, and has the pinned digest.
+      - name: Check the zips again
+        run: |
+          set -euo pipefail
+          while read -r _ file; do
+            if ! [[ "$file" =~ ^[a-z0-9-]+-[0-9][0-9.]*\.zip$ ]]; then
+              echo "::error::Unexpected file name: $file"
+              exit 1
+            fi
+          done < <(cat out/pins.txt out/missing.txt)
+          (cd out && sha256sum -c pins.txt)
+          if [ "$(find out -maxdepth 1 -name '*.zip' | wc -l)" -ne "$(wc -l < out/pins.txt)" ]; then
+            echo "::error::The zips built are not the zips pinned."
+            exit 1
+          fi
+
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: out/*.zip
+
+      - name: Upload what the release lacks
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [ ! -s out/missing.txt ]; then
+            echo "Nothing to upload: every pinned zip is already in the release."
+            exit 0
+          fi
+          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --latest=false \
+              --title "Fonts" \
+              --notes "The fonts Orbis Reader's Fonts page downloads. Each zip holds one font's own files, unmodified, with its license. The plugin checks each zip against the size and SHA-256 pinned in it, and a zip here is never replaced: a new version of a font is a new file."
+            echo "Created the $TAG release."
+          fi
+          while read -r digest file; do
+            echo "$digest  out/$file" | sha256sum -c -
+            gh release upload "$TAG" --repo "$GITHUB_REPOSITORY" "out/$file"
+            echo "$file: uploaded."
+          done < out/missing.txt
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY"

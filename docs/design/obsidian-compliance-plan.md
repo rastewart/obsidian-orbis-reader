@@ -311,7 +311,8 @@ Import `moment` from `'obsidian'`, not from npm.
       and a job that runs only `gh` and the provenance attestation drafts the release with `main.js`,
       `manifest.json` and `styles.css`. First run `0.1.0-beta.1` (2026-11-15); four betas
       so far. Until `0.1.5` it also attached `orbis-test-fixtures.zip`; from `0.1.6` that zip has a release of its
-      own, `test-fixtures`, made by `.github/workflows/test-fixtures.yml` when main's fixtures change
+      own, `test-fixtures`, made by `.github/workflows/test-fixtures.yml` when main's fixtures change. The fonts
+      the Fonts page downloads have one too, `fonts`, made by `.github/workflows/fonts.yml` when main's pins change
 - [x] No `v` prefix: the workflow triggers only on tags without one, and the release check refuses a stable tag
       that differs from `manifest.json`'s version
 
