@@ -191,14 +191,13 @@ before the workflow existed and are the same bytes. The pins it checks are print
 plugin's own `FONT_PINS`.
 
 **Downloading** (`downloadFontPackage`) checks the size and SHA-256 against the pin and writes nothing on a mismatch,
-then unpacks into the fonts folder keeping the zip's folder. A font counts as downloaded when every face of every one
-of its families is in the vault, however it got there, and then it leaves this section for **Vault fonts**, where its
-families' rows keep its description after their faces. Only the download row says a font has no italic. In the
-vault, the faces listed say so. DejaVu also
-needs its seven files by name, as the PDF export does. A font that has lost a file, or whose file is damaged, is listed
-again, and the download replaces the files it has in the folder of the same name. The section's
-description says what the fonts are and where they come from — the one network request on the page — and the
-README's network table lists GitHub for it.
+then unpacks into the fonts folder keeping the zip's folder. A font counts as downloaded when every face of every one of
+its families is in the vault, however it got there, and then it leaves this section for **Vault fonts**, where its
+families' rows keep its description after their faces. Only the download row says a font has no italic. In the vault,
+the faces listed say so. DejaVu also needs its seven files by name, as the PDF export does. A font that has lost a file,
+or whose file is damaged, is listed again, and the download replaces the files it has in the folder of the same name.
+The section's description says what the fonts are and where they come from — the one network request on the page — and
+the README's network table lists GitHub for it.
 
 **Embedding.** Every font offered allows it: the OS/2 `fsType` of each file is 0 (installable) or, for OpenDyslexic,
 8 (editable), and each is under the SIL Open Font License 1.1 (DejaVu under the Bitstream Vera license).
