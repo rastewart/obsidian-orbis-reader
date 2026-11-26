@@ -53,7 +53,7 @@ Once enabled, the deploy scripts handle the full build-deploy-reload cycle witho
 
 Builds, copies `main.js` / `manifest.json` / `styles.css` to the test vault, and reloads the plugin via the Obsidian CLI. The `pnpm …` commands in the rest of this doc are the same on every platform.
 
-**Testing a beta:** `./deploy.sh --version 0.2.0-beta.1` (`.\deploy.ps1 -Version 0.2.0-beta.1`) sets that version in the deployed `manifest.json` only. Between releases main's `manifest.json` keeps the last stable version, so a plain deploy runs as that version: What's new leaves out the beta's notes, and BRAT may offer the published beta as an update.
+**Testing a beta:** `./deploy.sh --version 0.2.0-beta.1` (`.\deploy.ps1 -Version 0.2.0-beta.1`) sets that version in the deployed `manifest.json` only. Between releases main's `manifest.json` keeps the last stable version, so a plain deploy runs as that version. What's new then leaves out the beta's notes, and BRAT may offer the published beta as an update.
 
 **A vault of your own** — a synced vault you read in, say: copy `deploy.sh` or `deploy.ps1` and change its
 destination folder. `.gitignore` already lists `deploy-local.sh` and `deploy-to-vault.bat` for this, so a script

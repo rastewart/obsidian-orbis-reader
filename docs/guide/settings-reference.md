@@ -172,7 +172,7 @@ Orbis Reader copies each font to its own folder in the fonts folder, named for t
 | **EB Garamond** | A classic book font |
 | **DejaVu** | The expanded character set for PDFs. It has characters that other fonts lack, such as arrows, mathematical symbols, Greek and Cyrillic. See [Save as PDF](save-as-pdf.md#the-expanded-character-set) |
 
-Orbis Reader downloads each font from its releases on GitHub, as one zip file with the font's files and its license. It compares the zip with a checksum that is fixed in the plugin, and does not save a font that is different. The font goes into its own folder in the fonts folder, and then shows under **Vault fonts**, where its row still says what it is for.
+Orbis Reader downloads each font from its releases on GitHub, as one zip file with the font's files and its license. It compares the zip with a checksum that is fixed in the plugin, and does not save a font that is different. The font goes into its own folder in the fonts folder, and then shows under **Vault fonts**, where its row keeps the same description.
 
 Every font in this list is free to use, including in a PDF or EPUB that you share. Each font's license file is in its folder.
 

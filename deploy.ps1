@@ -6,6 +6,8 @@
 # Between releases main's manifest.json keeps the last stable version, because Obsidian's store reads it, so a plain
 # deploy runs as that version: What's new then leaves out the beta's notes, and BRAT may offer the published beta as an
 # update. Deploy as the beta you are testing to see what its readers see.
+# CmdletBinding makes an unknown parameter an error. Without it, PowerShell puts one in $args and the script runs on.
+[CmdletBinding()]
 param([string]$Version = '')
 
 $ErrorActionPreference = 'Stop'

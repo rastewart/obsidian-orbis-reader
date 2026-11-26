@@ -193,8 +193,8 @@ plugin's own `FONT_PINS`.
 **Downloading** (`downloadFontPackage`) checks the size and SHA-256 against the pin and writes nothing on a mismatch,
 then unpacks into the fonts folder keeping the zip's folder. A font counts as downloaded when every face of every one
 of its families is in the vault, however it got there, and then it leaves this section for **Vault fonts**, where its
-families' rows keep its line on what it is for after their faces. Only the download row says a font has no italic: in
-the vault, the faces listed say so. DejaVu also
+families' rows keep its description after their faces. Only the download row says a font has no italic. In the
+vault, the faces listed say so. DejaVu also
 needs its seven files by name, as the PDF export does. A font that has lost a file, or whose file is damaged, is listed
 again, and the download replaces the files it has in the folder of the same name. The section's
 description says what the fonts are and where they come from — the one network request on the page — and the
@@ -219,7 +219,7 @@ fonts.
   PDFs back on the built-in fonts. The delete confirmation for those rows says so, and DejaVu is offered under
   Downloadable fonts again.
 - **Its three families are fonts like any other**, switched on and offered for reading. On the Fonts page only, their
-  rows say they are for PDF exports, as every downloaded font's rows say what it is for; the Font lists say nothing.
+  rows say they are for PDF exports, as every downloaded font's rows keep its description. The Font lists say nothing.
 - **The Setup task** (*Expanded PDF character set*) now shows Ready on every device the fonts have synced to.
 
 ---
