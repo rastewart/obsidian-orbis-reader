@@ -39,7 +39,7 @@ import {
 import { chooseExportPath, outsideRoute, shareFile, writeExport } from './outside-vault';
 import { downloadPdfFonts, loadPdfFonts, pdfFontsReady } from './pdf-fonts';
 import { embeddableImage } from './pdf-image';
-import { loadTextFaces } from './pdf-text-font';
+import { loadTextFaces, pdfFontValue } from './pdf-text-font';
 import { type NotesData } from './reader/export-format';
 import type { ReaderContext } from './reader/ReaderContext';
 import { IOrbisReaderPlugin } from './settings';
@@ -258,9 +258,11 @@ export class MarksPdfSource {
               }
             }
             const fonts = await loadPdfFonts(app, fontsFolder);
-            // The book's text in the font chosen, when this device has it; else the default, said once.
-            const textFont = opts.font ? await loadTextFaces(app, opts.font) : undefined;
-            if (opts.font && !textFont) new Notice(t('notices.pdf_font_missing', { name: opts.font }));
+            // The book's text in the font chosen, when this device has it; else the default, said once. DejaVu Serif
+            // is the default itself once DejaVu draws the PDF, and is not embedded a second time.
+            const family = pdfFontValue(opts.font, !!fonts);
+            const textFont = family ? await loadTextFaces(app, family) : undefined;
+            if (family && !textFont) new Notice(t('notices.pdf_font_missing', { name: family }));
             // An emoji the fonts cannot draw is drawn as the device draws it — see pdf-emoji.ts.
             const pictures = canvasEmojiPictures() ?? undefined;
             const bytes =

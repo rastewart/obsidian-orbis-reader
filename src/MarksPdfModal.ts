@@ -22,7 +22,7 @@ import {
 import { openOrbisDialog } from './OrbisModal';
 import type { OutsideRoute } from './outside-vault';
 import { FONT_DOWNLOAD_MB } from './pdf-fonts';
-import { pdfFontOptions } from './pdf-text-font';
+import { pdfFontOptions, pdfFontValue } from './pdf-text-font';
 import { annotationsSvg, CONVERSION_SVG } from './system-glyphs';
 import {
   answerFold,
@@ -570,29 +570,30 @@ export function openMarksPdfExport(
     if (filter && (opts.scope === 'digest' || opts.includeMarks)) renderMarkFilter(stage);
 
     /**
+     * The font for the book's text, from the settings, for this export only. The default is named for what it will
+     * be: DejaVu Serif once DejaVu is here or is about to be downloaded, Times otherwise — so the download switch
+     * below repaints this.
+     */
+    const dejavu = !offerFonts || opts.downloadFonts;
+    new Setting(stage)
+      .setName(t('pdf_font.name'))
+      .setDesc(t('pdf_font.desc'))
+      .addDropdown((d) => {
+        d.selectEl.dataset.orbisFocus = 'pdf-font';
+        d.addOptions(pdfFontOptions(opts.font, dejavu))
+          .setValue(pdfFontValue(opts.font, dejavu))
+          .onChange((v) => {
+            opts.font = v;
+          });
+      });
+
+    /**
      * The one-time font download, offered where the decision is made rather than in settings.
      *
      * Pre-checked because the answer is almost always yes: without it the page falls back to the built-in fonts,
      * which hold about 220 characters, and an arrow or a Greek word prints as `?`. It disappears for good once
      * the faces are cached.
      */
-    /**
-     * The font for the book's text, from the settings, for this export only. The default is named for what it will
-     * be: DejaVu Serif once DejaVu is here or is about to be downloaded, Times otherwise — so the download switch
-     * below repaints this.
-     */
-    new Setting(stage)
-      .setName(t('pdf_font.name'))
-      .setDesc(t('pdf_font.desc'))
-      .addDropdown((d) => {
-        d.selectEl.dataset.orbisFocus = 'pdf-font';
-        d.addOptions(pdfFontOptions(opts.font, !offerFonts || opts.downloadFonts))
-          .setValue(opts.font)
-          .onChange((v) => {
-            opts.font = v;
-          });
-      });
-
     if (offerFonts) {
       new Setting(stage)
         .setName(t('marks_pdf.fonts'))

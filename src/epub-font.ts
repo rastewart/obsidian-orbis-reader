@@ -48,6 +48,12 @@ export async function loadEpubFont(app: App, family: string): Promise<EpubFont |
   };
 }
 
+/** The family a list's value stands for, as the list names it, matched in any case. Empty for none. */
+export function epubFontValue(current: string, fonts = pdfFontChoices()): string {
+  const key = current.toLowerCase();
+  return current ? (fonts.find((f) => f.toLowerCase() === key) ?? current) : '';
+}
+
 /**
  * The Font list for an EPUB: none first, which leaves the font to the reading app, then every family a book can embed.
  * A family `current` names that is not in the vault is kept, marked, so the list never shows a value it cannot hold.
@@ -55,7 +61,8 @@ export async function loadEpubFont(app: App, family: string): Promise<EpubFont |
 export function epubFontOptions(current: string, fonts = pdfFontChoices()): Record<string, string> {
   const options: Record<string, string> = { '': t('epub_font.default') };
   for (const family of fonts) options[family] = family;
-  if (current && !(current in options)) options[current] = t('pdf_font.missing', { name: current });
+  const value = epubFontValue(current, fonts);
+  if (!(value in options)) options[value] = t('pdf_font.missing', { name: value });
   return options;
 }
 
@@ -72,7 +79,7 @@ export function epubFontRow(settings: { epubFont: string }, save: () => Promise<
     render: (setting) => {
       setting.addDropdown((d) => {
         d.addOptions(epubFontOptions(settings.epubFont))
-          .setValue(settings.epubFont)
+          .setValue(epubFontValue(settings.epubFont))
           .onChange(async (v) => {
             settings.epubFont = v;
             await save();

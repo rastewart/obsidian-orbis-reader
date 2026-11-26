@@ -142,9 +142,9 @@ For where the book's title comes from, see [How the book is named](#how-the-book
 
 **Font** puts a font from your vault into the book, and sets the book's text in it, headings included. Code stays in a monospaced font. The default is **None (the reading app chooses)**, which adds no font. The dialog opens with the font from your settings, and a font that you select in the dialog is used for that conversion only.
 
-The list has the fonts in your vault's fonts folder that a book can carry, including fonts that you hid from the **Font** list on the display style bar. These are the same fonts that [Save as PDF](save-as-pdf.md#the-font) lists: a font with a Regular face in a file of its own, whose license lets it be embedded. See [Fonts](settings-reference.md#fonts).
+The list has the fonts in your vault's fonts folder that a book can carry, including fonts that you hid from the **Font** list on the display style bar. These are the same fonts that [Save as PDF](save-as-pdf.md#the-font) lists. Each has a Regular face in a file of its own, and a license that lets it be embedded. See [Fonts](settings-reference.md#fonts).
 
-The font's files go into the EPUB, so the book looks the same on every device. Most reading apps use the book's font unless you choose another one. In Orbis Reader, the book's font shows when **Font** in the display style is **Default**.
+The font's files go into the EPUB, so the book looks the same on every device. Most reading apps use the book's font unless you select another one. In Orbis Reader, the book's font shows when **Font** in the display style is **Default**.
 
 If the font in your settings is not on this device, for example because it has not synced yet, the book is made without a font and a notice tells you.
 

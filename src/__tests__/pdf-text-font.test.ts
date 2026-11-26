@@ -3,8 +3,18 @@
 
 import { PDFDict, PDFDocument, PDFName } from 'pdf-lib';
 import { describe, expect, it, vi } from 'vitest';
+import { epubFontOptions, epubFontValue } from '../epub-font';
 import type { VaultFace, VaultFont } from '../fonts';
-import { embeddable, pdfFacesOf, pdfFontChoices, pdfFontOptions, type TextFaces } from '../pdf-text-font';
+import {
+  embeddable,
+  pdfFacesOf,
+  pdfFontChoices,
+  pdfFontOptions,
+  pdfFontValue,
+  subsetAllowed,
+  type TextFaces,
+  textFacesOf,
+} from '../pdf-text-font';
 import { createPdfWriter } from '../pdf-writer';
 
 // Node's own modules at run time, since the plugin's tsconfig has no Node types (see `asset-integrity.test.ts`).
@@ -78,6 +88,44 @@ describe('the Font list', () => {
 
   it('keeps a chosen font that is not in the vault, marked', () => {
     expect(pdfFontOptions('Gone', true, fonts).Gone).toBe('Gone (not in the vault)');
+  });
+
+  it('takes DejaVu Serif, chosen before DejaVu was whole, as the default once it is', () => {
+    expect(pdfFontValue('DejaVu Serif', true, fonts)).toBe('');
+    expect(pdfFontOptions('DejaVu Serif', true, fonts)).toEqual({ '': 'Default (DejaVu Serif)', Literata: 'Literata' });
+    expect(pdfFontValue('DejaVu Serif', false, fonts)).toBe('DejaVu Serif');
+  });
+
+  it('matches a chosen font in any case, as the list names it', () => {
+    expect(pdfFontValue('LITERATA', true, fonts)).toBe('Literata');
+    expect(Object.keys(pdfFontOptions('LITERATA', true, fonts))).toEqual(['', 'Literata']);
+    expect(epubFontValue('literata', ['Literata'])).toBe('Literata');
+    expect(Object.keys(epubFontOptions('literata', ['Literata']))).toEqual(['', 'Literata']);
+    expect(epubFontValue('', ['Literata'])).toBe('');
+  });
+});
+
+describe('subsetting', () => {
+  const read = (format: 'ttf' | 'otf', fsType: number) => ({ format, face: face({ fsType }) });
+
+  it('subsets TrueType outlines, unless the license bits say No subsetting', () => {
+    expect(subsetAllowed(read('ttf', 0))).toBe(true);
+    expect(subsetAllowed(read('ttf', 8))).toBe(true);
+    expect(subsetAllowed(read('ttf', 0x0100))).toBe(false);
+    expect(subsetAllowed(read('ttf', 0x0104))).toBe(false);
+  });
+
+  it('embeds CFF outlines whole', () => {
+    expect(subsetAllowed(read('otf', 0))).toBe(false);
+  });
+
+  it('carries the answer to the writer, face by face', () => {
+    const data = new Uint8Array([1]);
+    const faces = textFacesOf([
+      { slot: 'regular', face: face({}), name: 'R.ttf', data, format: 'ttf' },
+      { slot: 'bold', face: face({ fsType: 0x0100 }), name: 'B.ttf', data, format: 'ttf' },
+    ]);
+    expect(faces).toEqual({ body: { data, subset: true }, bodyBold: { data, subset: false } });
   });
 });
 

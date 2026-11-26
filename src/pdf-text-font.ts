@@ -19,6 +19,7 @@ import { FONT_PACKAGES, packageInstalled } from './font-downloads';
 import { FACE_SLOTS, type FaceSlot } from './font-file';
 import { fontInfoOf, knownFonts, scanFonts, type VaultFace, type VaultFont } from './fonts';
 import { t } from './i18n';
+import { pdfFontsReady } from './pdf-fonts';
 
 /** The writer's faces for the book's text. Mirrors those `FontName`s in `pdf-writer.ts`. */
 export type TextSlot = 'body' | 'italic' | 'bodyBold' | 'bodyBoldItalic';
@@ -117,14 +118,39 @@ export async function readFaces(app: App, family: string): Promise<ReadFace[] | 
   }
 }
 
+/**
+ * Whether pdf-lib may embed only the glyphs a face draws. Not for CFF outlines, whose subsets some viewers draw
+ * wrongly (see `createPdfWriter`), and not when the face's license bits say No subsetting (0x0100), which asks for
+ * the whole font in any document it goes into.
+ */
+export function subsetAllowed(face: Pick<ReadFace, 'format' | 'face'>): boolean {
+  return face.format === 'ttf' && (face.face.fsType & 0x0100) === 0;
+}
+
+/** Read faces as the writer takes them, by its slots. */
+export function textFacesOf(faces: readonly ReadFace[]): TextFaces {
+  const text: TextFaces = {};
+  for (const f of faces) text[TEXT_SLOT_OF[f.slot]] = { data: f.data, subset: subsetAllowed(f) };
+  return text;
+}
+
 /** The faces of `family` for a PDF, by the writer's slots, or undefined as `readFaces` says. */
 export async function loadTextFaces(app: App, family: string): Promise<TextFaces | undefined> {
   const faces = await readFaces(app, family);
-  if (!faces) return undefined;
-  const text: TextFaces = {};
-  // Subset when the outlines are TrueType; a CFF file is embedded whole — see `createPdfWriter`.
-  for (const f of faces) text[TEXT_SLOT_OF[f.slot]] = { data: f.data, subset: f.format === 'ttf' };
-  return text;
+  return faces ? textFacesOf(faces) : undefined;
+}
+
+/**
+ * The family a list's value stands for, as the list names it. Empty for the default, which is also what DejaVu Serif
+ * is when `dejavu` says the default is DejaVu: a font chosen while DejaVu was not whole is the default once it is,
+ * and is not embedded twice. A family is matched in any case, as the reader matches it. One the vault does not have
+ * is returned as it is.
+ */
+export function pdfFontValue(current: string, dejavu: boolean, fonts: readonly VaultFont[] = knownFonts()): string {
+  if (!current) return '';
+  const key = current.toLowerCase();
+  if (dejavu && key === 'dejavu serif') return '';
+  return pdfFontChoices(fonts).find((f) => f.toLowerCase() === key) ?? current;
 }
 
 /**
@@ -141,11 +167,16 @@ export function pdfFontOptions(
   for (const family of pdfFontChoices(fonts)) {
     if (!(dejavu && family.toLowerCase() === 'dejavu serif')) options[family] = family;
   }
-  if (current && !(current in options)) options[current] = t('pdf_font.missing', { name: current });
+  const value = pdfFontValue(current, dejavu, fonts);
+  if (!(value in options)) options[value] = t('pdf_font.missing', { name: value });
   return options;
 }
 
-/** Whether DejaVu is whole in the vault, so the default the settings pages name is DejaVu Serif rather than Times. */
+/**
+ * Whether DejaVu is whole in the vault's fonts, so the default the settings pages name is DejaVu Serif rather than
+ * Times. Known at once, from the fonts already looked through. `pdfFontsReady` is the export's own answer, which also
+ * counts the old cache, and the settings row corrects itself by it.
+ */
 export function dejavuInVault(): boolean {
   const pkg = FONT_PACKAGES.find((p) => p.pdf);
   return !!pkg && packageInstalled(pkg, knownFonts());
@@ -157,19 +188,33 @@ export function dejavuInVault(): boolean {
  * **Listed in `render`, not in the definition**, like the Library's status row: the settings tab's definitions are
  * made at plugin load, before the fonts folder has been looked through, so a list made there holds no fonts and
  * stays so. `render` runs as the page opens.
+ *
+ * **The default named as the export will draw it.** The list opens by `dejavuInVault`, then is made again if
+ * `pdfFontsReady` says otherwise: a device with DejaVu only in the old cache draws its PDFs in DejaVu Serif.
  */
-export function pdfFontRow(settings: { pdfFont: string }, save: () => Promise<void>): SettingDefinitionItem {
+export function pdfFontRow(
+  app: App,
+  settings: { pdfFont: string; fontsFolder: string },
+  save: () => Promise<void>
+): SettingDefinitionItem {
   return {
     name: t('pdf_font.name'),
     desc: t('pdf_font.desc'),
     render: (setting) => {
       setting.addDropdown((d) => {
-        d.addOptions(pdfFontOptions(settings.pdfFont, dejavuInVault()))
-          .setValue(settings.pdfFont)
-          .onChange(async (v) => {
-            settings.pdfFont = v;
-            await save();
-          });
+        const fill = (dejavu: boolean) => {
+          d.selectEl.empty();
+          d.addOptions(pdfFontOptions(settings.pdfFont, dejavu)).setValue(pdfFontValue(settings.pdfFont, dejavu));
+        };
+        const guess = dejavuInVault();
+        fill(guess);
+        d.onChange(async (v) => {
+          settings.pdfFont = v;
+          await save();
+        });
+        void pdfFontsReady(app, settings.fontsFolder).then((ready) => {
+          if (ready !== guess) fill(ready);
+        });
       });
     },
   };

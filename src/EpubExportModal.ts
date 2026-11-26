@@ -14,7 +14,7 @@ import {
   pickListHeader,
   pickRow,
 } from './controls';
-import { epubFontOptions } from './epub-font';
+import { epubFontOptions, epubFontValue } from './epub-font';
 import { orderNotes } from './folder-epub';
 import { destinationGrid, type FilingState } from './folder-picker';
 import { t } from './i18n';
@@ -468,13 +468,6 @@ function knownTypes(app: App): string[] {
 }
 
 /**
- * The medium, as a dropdown of what the vault already uses with a `+` to name one it does not.
- *
- * A dropdown rather than a text box: the answer is almost always one you have used before, and typing "blog post"
- * for the ninth time is nine chances to write "blog Post" and split the group. The `+` is the same escape hatch
- * the folder rows have, for the first time a type exists.
- */
-/**
  * The font the book is set in and carries, a cell of the details grid like the type: from the settings, for this
  * conversion only. Every vault font a book can embed, switched on for reading or not — see `epub-font.ts`.
  */
@@ -482,7 +475,7 @@ function renderFontRow(grid: HTMLElement, conv: { font: string }, repaint: () =>
   const cell = fieldCell(grid, t('epub_font.name'));
   const select = cell.createEl('select', { cls: 'dropdown' });
   for (const [value, text] of Object.entries(epubFontOptions(conv.font))) select.createEl('option', { value, text });
-  select.value = conv.font;
+  select.value = epubFontValue(conv.font);
   select.setAttribute('aria-label', t('epub_font.name'));
   select.addEventListener('change', () => {
     conv.font = select.value;
@@ -491,6 +484,13 @@ function renderFontRow(grid: HTMLElement, conv: { font: string }, repaint: () =>
   });
 }
 
+/**
+ * The medium, as a dropdown of what the vault already uses with a `+` to name one it does not.
+ *
+ * A dropdown rather than a text box: the answer is almost always one you have used before, and typing "blog post"
+ * for the ninth time is nine chances to write "blog Post" and split the group. The `+` is the same escape hatch
+ * the folder rows have, for the first time a type exists.
+ */
 function renderTypeRow(app: App, grid: HTMLElement, conv: EpubConversion, rerender: () => void): void {
   // A cell of the metadata grid, like every field beside it — the select and its "+" share the control column
   // the way the folder picker and its "+" do in the destination fold.

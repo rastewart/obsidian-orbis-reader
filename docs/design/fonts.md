@@ -7,7 +7,7 @@ gets it, and what the Font list offers. The code is `src/fonts.ts` (the library)
 font file), `src/settings-fonts.ts` (the Fonts page), `src/FontImportModal.ts` (importing) and
 `src/pdf-text-font.ts` (the PDF font) and `src/epub-font.ts` (the EPUB font).
 
-Built in four steps: the folder, importing and the reader; downloads; the PDF font; the EPUB font.
+Built in four steps. They are the folder, importing and the reader, then downloads, the PDF font and the EPUB font.
 
 ---
 
@@ -231,13 +231,17 @@ dialog that changes it for one export. It travels with the other PDF settings.
   it replaced (DejaVu's, or the built-in one) stays beneath it as `body:under` and so on. A character the chosen
   face cannot draw goes to the face beneath first, so an accent in an italic word is still serif and italic, then
   to any face that has it. A face the family does not have is drawn by the default as it always was. Measuring
-  follows drawing: a line with a character another face draws is measured run by run.
-- **Subset, except CFF.** TrueType files are subset as DejaVu is. An OpenType file with CFF outlines is embedded
-  whole, rather than trusting pdf-lib's CFF subsetting, which some viewers draw wrongly.
+  follows drawing, so a line with a character another face draws is measured run by run.
+- **Subset, except CFF and No subsetting** (`subsetAllowed`). TrueType files are subset as DejaVu is. An OpenType
+  file with CFF outlines is embedded whole, rather than trusting pdf-lib's CFF subsetting, which some viewers draw
+  wrongly. So is a face whose license bits say No subsetting (0x0100).
 - **Never a failed export.** A face that cannot be embedded is drawn in the default, and a font not on this device —
   not synced yet, or deleted — gives the default font and a notice.
 - **The default is named for what it is**: *Default (DejaVu Serif)* when DejaVu is here (or the dialog is about to
-  download it), *Default (Times)* otherwise. DejaVu Serif is then not listed a second time.
+  download it), *Default (Times)* otherwise. DejaVu Serif is then not listed a second time, and a setting that names it, made
+  while DejaVu was not whole, is the default (`pdfFontValue`). The settings row opens by the fonts already looked
+  through and corrects itself by `pdfFontsReady`, which also counts the old cache. A chosen family is matched in any
+  case.
 
 ---
 
@@ -245,18 +249,18 @@ dialog that changes it for one export. It travels with the other PDF settings.
 
 `epubFont`, a **Font** row on the Save as EPUB page, and a field in **Book details** of each of the three conversion
 dialogs that changes it for one conversion. It travels with the other EPUB settings. Read in Orbis Reader adds no
-font: it makes a book to read here, where the display style decides.
+font, since it makes a book to read here, where the display style decides.
 
 - **The whole book.** An EPUB holds no words of the reader's to set apart, so the body takes the font and the
   headings with it. Code keeps its monospace rule, which is more specific.
 - **The same fonts as the PDF** (`readFaces`, shared): static files, embeddable. An EPUB could carry a variable font,
-  but a reading app that cannot draw one draws nothing, and a book travels to more apps than it is made in.
+  but a reading app that cannot draw one draws nothing, and a book travels to more apps than the one that made it.
 - **Embedded.** Each face's file goes in `fonts/` with a name an archive path can hold, manifested as `font/ttf` or
   `font/otf` (EPUB 3.3's core types), and `style.css` gains an `@font-face` per face, at the face's own weight and
-  style, and `body { font-family }`. No generic fallback is named: a reading app that refuses the font uses its own.
+  style, and `body { font-family }`. No generic fallback is named, so a reading app that refuses the font uses its own.
 - **The license travels in the font.** The OFL asks for its notice with every copy, and accepts it in the font's
   own metadata. Each of the seven downloads carries its copyright and license text in its `name` table (checked
-  when this was built); a font the reader imported may not, and is theirs to judge. No license file is added: a
+  when this was built); a font the reader imported may not, and is theirs to judge. No license file is added, since a
   manifest item of a type EPUB does not know needs a fallback, and nothing in the book refers to it.
 - **The stylesheet's rule bent once.** It declares no typography so the reading app's settings win; a font the
   maker chose is the exception, since it was asked for. A reading app still lets the reader override it, and Orbis
