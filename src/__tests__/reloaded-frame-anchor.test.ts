@@ -1,6 +1,7 @@
 // ORBIS patch 12: a chapter frame the browser reloads is shown again at the place it was showing. The place is a
 // Range in the discarded document, carried into the fresh copy by its path. The redisplay itself needs a real
-// browser — moving a frame is what reloads it — so this checks the carrying.
+// browser — moving a frame is what reloads it — so this checks the carrying. Patch 44 catches a path that does not
+// fit the fresh copy, which the last test shows throws.
 
 import { fromRange, parse, toRange } from 'foliate-js/epubcfi.js';
 import { describe, expect, it } from 'vitest';
@@ -38,5 +39,19 @@ describe('a position carried into a reloaded chapter', () => {
 
     const carried = toRange(parseDoc(CHAPTER), parse(fromRange(range)));
     expect(carried.toString()).toBe('Chapter');
+  });
+
+  // Why patch 44 catches it: the anchor is resolved later, in `#display`, outside patch 12's `try`. A path that leads
+  // into an element the fresh copy has empty throws, rather than coming back empty — foliate lists the element's
+  // children and reads the first, which is not there — so without the catch a reload rejected instead of showing the
+  // section's start.
+  it('throws for a place inside an element the fresh copy has empty', () => {
+    const before = parseDoc(CHAPTER);
+    const text = before.querySelectorAll('p')[1].firstChild as Text;
+    const range = before.createRange();
+    range.setStart(text, 4);
+    range.setEnd(text, 20);
+    const emptied = parseDoc(CHAPTER.replace(/<p>By the time[^<]*<\/p>/, '<p></p>'));
+    expect(() => toRange(emptied, parse(fromRange(range)))).toThrow(/nodeType/);
   });
 });

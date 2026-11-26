@@ -187,8 +187,8 @@ importers:
         specifier: 0.8.3
         version: 0.8.3
       foliate-js:
-        specifier: github:rastewart/foliate-js#6c91e5e3243f8484ce8ba2b97f1023ae00e3f32c
-        version: https://codeload.github.com/rastewart/foliate-js/tar.gz/6c91e5e3243f8484ce8ba2b97f1023ae00e3f32c
+        specifier: github:rastewart/foliate-js#a7521af70436226fd690c5e72bf7ea487e6e5078
+        version: https://codeload.github.com/rastewart/foliate-js/tar.gz/a7521af70436226fd690c5e72bf7ea487e6e5078
       lamejs:
         specifier: link:src/vendor/lamejs
         version: link:src/vendor/lamejs
@@ -2158,8 +2158,8 @@ packages:
   focus-trap@7.8.0:
     resolution: {integrity: sha512-/yNdlIkpWbM0ptxno3ONTuf+2g318kh2ez3KSeZN5dZ8YC6AAmgeWz+GasYYiBJPFaYcSAPeu4GfhUaChzIJXA==}
 
-  foliate-js@https://codeload.github.com/rastewart/foliate-js/tar.gz/6c91e5e3243f8484ce8ba2b97f1023ae00e3f32c:
-    resolution: {gitHosted: true, integrity: sha512-6Mu/LsdkiGamONCOzYuwBF9qxsnrOPm4U2qUgJoog4G02X28gAT9ZLDFfvOlOJ+jS9EsGhc6bF+UBXuRn74yHA==, tarball: https://codeload.github.com/rastewart/foliate-js/tar.gz/6c91e5e3243f8484ce8ba2b97f1023ae00e3f32c}
+  foliate-js@https://codeload.github.com/rastewart/foliate-js/tar.gz/a7521af70436226fd690c5e72bf7ea487e6e5078:
+    resolution: {gitHosted: true, integrity: sha512-BLC+CuMsKlaNOhge/NI1YTsEflYDuZN1CHjfVqXhaE2BLMyoLi2tMQdClwCV/XTJ+V8Wm+6v6/P0IUeL1Zd+Rg==, tarball: https://codeload.github.com/rastewart/foliate-js/tar.gz/a7521af70436226fd690c5e72bf7ea487e6e5078}
     version: 1.0.1-orbis
 
   for-each@0.3.5:
@@ -5524,7 +5524,7 @@ snapshots:
     dependencies:
       tabbable: 6.5.1
 
-  foliate-js@https://codeload.github.com/rastewart/foliate-js/tar.gz/6c91e5e3243f8484ce8ba2b97f1023ae00e3f32c:
+  foliate-js@https://codeload.github.com/rastewart/foliate-js/tar.gz/a7521af70436226fd690c5e72bf7ea487e6e5078:
     dependencies:
       construct-style-sheets-polyfill: 3.1.0
 

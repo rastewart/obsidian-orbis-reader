@@ -264,19 +264,8 @@ start and end at the same place (see *What the tests found*).
 seen rather than failing the run, so the run stays a reliable yes or no while the bug stays in view. Remove an entry
 with its fix.
 
-One entry is open:
-
-- **A reloaded chapter frame can throw instead of going to the chapter's start.** `TypeError: Cannot destructure
-  property 'nodeType' of 'undefined'`, from foliate patch 12's `#redisplay()` in `paginator.js`. When the browser
-  reloads a chapter's frame, the patch carries the place it was showing into the fresh copy as an EPUB CFI path. Its
-  comment says that if this fails, the section's start is shown, but the `try` covers only reading the path from the
-  old copy. Finding it in the new one (`toRange(doc, parts)`) runs later in `#display`, outside any `try`, and throws
-  when the path does not fit. Seen once, in *the reading data folder mends itself* in a full run on macOS (2026-11-25),
-  and not again in five runs of that test alone or with the tests around it. The patch dates from the first public
-  release. The fix is in the fork: fall back to 0 when `toRange` throws, then update the pin in `package.json`. The
-  entry matches the error's message only, which another bug could share; remove it with the fix.
-
-Each earlier entry was an error from foliate's paginator, fixed in the fork (its `ORBIS-CHANGES.md`).
+The list is empty. Each entry so far was an error from foliate's paginator, fixed in the fork (its
+`ORBIS-CHANGES.md`).
 
 - **The paginator walked a chapter's document before the document had a body**, in about one run in three. Fixed by
   foliate patch 40.
@@ -285,9 +274,14 @@ Each earlier entry was an error from foliate's paginator, fixed in the fork (its
 - **A resize while the paginator had no section reported a place in it.** Closing a book's tab mid-load left the
   paginator's section index at -1 or undefined, and the view's `getCFI` read `book.sections[index].cfi` for it. Fixed
   by foliate patch 42.
+- **A reloaded chapter frame could throw instead of going to the chapter's start.** Patch 12 carries the place a
+  frame was showing into the fresh copy the browser reloads, as a CFI path. The path is looked up later, outside
+  patch 12's `try`, and one leading into an element the copy has empty threw (`Cannot destructure property
+  'nodeType' of 'undefined'`). Seen once, in *the reading data folder mends itself*. Fixed by foliate patch 44;
+  `reloaded-frame-anchor.test.ts` reproduces the throw.
 
-The last two came from a book's tab closing while foliate was still at work, which *the reading data folder mends
-itself* and *a deleted book takes its reading data with it* meet.
+The second and third came from a book's tab closing while foliate was still at work, which *the reading data folder
+mends itself* and *a deleted book takes its reading data with it* meet.
 
 ---
 
