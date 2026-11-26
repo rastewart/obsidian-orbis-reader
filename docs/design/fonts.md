@@ -181,6 +181,15 @@ license, so it lands beside the font in the vault, as the OFL asks.
 - **A zip is never replaced once published.** An update is a new name (the font's own version is in it, e.g.
   `literata-3.103.zip`) and a new pin, so an older build still downloads the zip it pinned.
 
+**Published by `.github/workflows/fonts.yml`**, like the dictionaries and the test fixtures: on a push to main that
+changes `src/font-pins.ts`, or by hand. A job that can only read runs `pnpm build:fonts`, and stops unless the build
+leaves `src/font-pins.ts` unchanged, which means every zip is the one main's plugin pins. A zip already in the release
+is downloaded and compared, never replaced; one it lacks is uploaded by a second job that holds the write token and
+runs nothing of the repository's. Every zip built is attested, so `gh attestation verify <zip> --repo
+<owner>/obsidian-orbis-reader` shows it was built from main — the seven first zips too, which were uploaded by hand
+before the workflow existed and are the same bytes. The pins it checks are printed by `scripts/font-pins.ts`, from the
+plugin's own `FONT_PINS`.
+
 **Downloading** (`downloadFontPackage`) checks the size and SHA-256 against the pin and writes nothing on a mismatch,
 then unpacks into the fonts folder keeping the zip's folder. A font counts as downloaded when every face of every one
 of its families is in the vault, however it got there, and then it leaves this section for **Vault fonts**. DejaVu also

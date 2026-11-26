@@ -33,7 +33,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Orbis R
 
 ### Maintenance
 
-- `pnpm build:fonts` builds the zips of the `fonts` release from pinned sources, and pins each zip's size and SHA-256 in `src/font-pins.ts`.
+- `pnpm build:fonts` builds the zips of the `fonts` release from pinned sources, and pins each zip's size and SHA-256 in `src/font-pins.ts`. The `fonts.yml` workflow builds them on main, checks them against the pins and the zips already in the release, uploads only what the release lacks, and attests every zip.
 - The User Guide is checked against this release. Data and Storage now says which downloads are checked against a checksum and when, and the guide describes **Repair** in **Scan annotation data for problems**, the order of marks in copies and generated notes, and the search bar's controls in the order they show.
 
 ## [0.1.8] — 2026-11-24
