@@ -102,9 +102,16 @@ export function buildFontsPage(el: HTMLElement, host: FontsPageHost): void {
     .setHeading()
     .setDesc(toGet.length ? t('fonts.downloads_desc') : t('fonts.downloads_all'));
   for (const pkg of toGet) {
+    // A missing italic is said here, before the download: once the font is in the vault, its row lists its faces.
+    const noItalic = !Object.values(pkg.families).some((slots) => slots.includes('italic'));
     new Setting(el)
       .setName(pkg.name)
-      .setDesc(t('fonts.download_desc', { purpose: t(pkg.purpose), size: packageMegabytes(pkg.id) }))
+      .setDesc(
+        t(noItalic ? 'fonts.download_desc_no_italic' : 'fonts.download_desc', {
+          purpose: t(pkg.purpose),
+          size: packageMegabytes(pkg.id),
+        })
+      )
       .addButton((b) =>
         b.setButtonText(t('fonts.download')).onClick(async () => {
           b.setDisabled(true).setButtonText(t('fonts.downloading'));
@@ -160,9 +167,10 @@ function withSample(text: string, value: string, vaultFont = false): DocumentFra
 function vaultFontRow(el: HTMLElement, host: FontsPageHost, font: VaultFont): void {
   const slots = slotsOf(font);
   const has = FACE_SLOTS.filter((s) => slots[s]);
-  // The faces it has, and nothing about those it lacks: the guide says how a missing face is drawn.
-  // DejaVu's rows say what it is for here, and only here: the Font lists say nothing.
-  const desc = packageOf(font.family)?.pdf ? t('fonts.pdf_note', { faces: faceNames(has) }) : faceNames(has);
+  // The faces it has, and nothing about those it lacks: the guide says how a missing face is drawn. A font Orbis offers
+  // to download keeps saying what it is for, as it did under Downloadable fonts — here only: the Font lists say nothing.
+  const pkg = packageOf(font.family);
+  const desc = pkg ? t('fonts.vault_desc', { faces: faceNames(has), purpose: t(pkg.purpose) }) : faceNames(has);
   const value = vaultFontValue(font.family);
   const row = new Setting(el).setName(font.family).setDesc(withSample(desc, value, true));
   // Delete before the switch, so every switch on the page lines up at the right edge, as on the system fonts' rows.

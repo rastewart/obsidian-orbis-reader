@@ -29,9 +29,9 @@ export interface FontPackage {
   name: string;
   /** The families its files hold, and the faces of each. It is downloaded when every one of them is in the vault. */
   families: Readonly<Record<string, readonly FaceSlot[]>>;
-  /** What it is for, in a line. */
+  /** What it is for, in a line: under Downloadable fonts, and on its families' rows once it is in the vault. */
   purpose: TranslationKey;
-  /** Used by the PDF export to draw characters the chosen font lacks — said on its row of the Fonts page only. */
+  /** Used by the PDF export to draw characters the chosen font lacks — its purpose says so. */
   pdf?: true;
   /** Files it is downloaded only with, by name, for a use that finds them so: the PDF export. */
   files?: readonly string[];

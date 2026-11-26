@@ -172,11 +172,11 @@ Orbis Reader copies each font to its own folder in the fonts folder, named for t
 | **EB Garamond** | A classic book font |
 | **DejaVu** | The expanded character set for PDFs. It has characters that other fonts lack, such as arrows, mathematical symbols, Greek and Cyrillic. See [Save as PDF](save-as-pdf.md#the-expanded-character-set) |
 
-Orbis Reader downloads each font from its releases on GitHub, as one zip file with the font's files and its license. It compares the zip with a checksum that is fixed in the plugin, and does not save a font that is different. The font goes into its own folder in the fonts folder, and then shows under **Vault fonts**.
+Orbis Reader downloads each font from its releases on GitHub, as one zip file with the font's files and its license. It compares the zip with a checksum that is fixed in the plugin, and does not save a font that is different. The font goes into its own folder in the fonts folder, and then shows under **Vault fonts**, where its row still says what it is for.
 
 Every font in this list is free to use, including in a PDF or EPUB that you share. Each font's license file is in its folder.
 
-DejaVu is three fonts: DejaVu Serif, DejaVu Sans and DejaVu Sans Mono. Under **Vault fonts**, their rows say *Used for PDF exports*. You can also read in them. If you delete any of the three, PDF exports use the built-in fonts, which have fewer characters, until you download DejaVu again. The delete confirmation says so.
+DejaVu is three fonts: DejaVu Serif, DejaVu Sans and DejaVu Sans Mono. Under **Vault fonts**, their rows say they are for PDF exports. You can also read in them. If you delete any of the three, PDF exports use the built-in fonts, which have fewer characters, until you download DejaVu again. The delete confirmation says so.
 
 ### Fonts on other devices
 

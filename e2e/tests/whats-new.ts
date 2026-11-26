@@ -49,6 +49,8 @@ export const whatsNewTests: E2eTest[] = [
           seen.push(...state.versions);
         }
         expect(seen.at(-1) === '0.1.0', `the last page is ${seen.at(-1)}, not 0.1.0`);
+        // Each release once: the first page's releases are not shown again on the next.
+        expect(new Set(seen).size === seen.length, `a release was shown twice: ${seen.join(', ')}`);
         expect(!seen.includes('0.1.4'), '0.1.4 only had Maintenance, and should be left out');
         expect(state.newer && !state.older, 'Newer should be on and Older off, on the last page');
 

@@ -704,17 +704,20 @@ const en = {
   'fonts.download': 'Download',
   'fonts.downloading': 'Downloading…',
   'fonts.download_desc': '{{purpose}} {{size}} MB.',
+  // A font with no italic says so before it is downloaded; once it is, its row under Vault fonts lists its faces.
+  'fonts.download_desc_no_italic': '{{purpose}} No italic. {{size}} MB.',
   'fonts.downloaded': '{{name}} downloaded.',
   'fonts.purpose_opendyslexic': 'Made for readers with dyslexia.',
   'fonts.purpose_atkinson': 'Made for readers with low vision.',
-  'fonts.purpose_lexend': 'Made to make reading easier. No italic.',
+  'fonts.purpose_lexend': 'Made to make reading easier.',
   'fonts.purpose_literata': 'Made for reading on screens.',
   'fonts.purpose_source_serif': 'A clear book font.',
   'fonts.purpose_eb_garamond': 'A classic book font.',
   'fonts.purpose_dejavu':
     'For PDF exports. It has characters that other fonts lack, such as arrows, Greek and Cyrillic.',
-  // On the Fonts page only, under DejaVu's families: the Font lists say nothing.
-  'fonts.pdf_note': '{{faces}}. Used for PDF exports.',
+  // A downloaded font's row under Vault fonts: its faces, then what it is for, as its download row said. On the Fonts
+  // page only: the Font lists say nothing.
+  'fonts.vault_desc': '{{faces}}. {{purpose}}',
   'fonts.import_title': 'Import fonts',
   'fonts.import_faces': 'Faces: {{faces}}',
   'fonts.import_missing': 'No {{faces}}.',

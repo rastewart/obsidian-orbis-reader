@@ -147,4 +147,9 @@ describe('whatsNewPages', () => {
     const owed = owedReleases(rs, '0.1.0');
     expect(whatsNewPages(rs, owed).map(versions)).toEqual([['0.4.0-beta.1', '0.3.0'], ['0.1.0']]);
   });
+
+  it('leaves out what is owed when it comes from another reading of the changelog, as the notice gives it', () => {
+    const owed = owedReleases(releasesFor(parseChangelog(CHANGELOG), '0.4.0-beta.1'), '0.3.0');
+    expect(whatsNewPages(rs, owed).map(versions)).toEqual([['0.4.0-beta.1'], ['0.3.0'], ['0.1.0']]);
+  });
 });

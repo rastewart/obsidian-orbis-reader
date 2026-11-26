@@ -146,13 +146,21 @@ export function owedReleases(releases: readonly Release[], seen: string | null):
   });
 }
 
+/** A release by version and beta, which stay the same however many times the changelog is read. */
+const releaseKey = (r: Release): string => `${r.version ?? ''}#${r.beta ?? ''}`;
+
 /**
  * The dialog's pages, each one or more releases.
  *
  * After an update, the first page holds everything the reader has not seen, so nothing new is a button away; the
  * releases before it follow one to a page. Opened from settings, every page is one release.
+ *
+ * **`owed` is matched by version, not as the same objects.** The update notice works out what is owed when the plugin
+ * loads, and the dialog its link opens reads the changelog again: the same releases, as new objects. Matched as
+ * objects, none of them was left out of the pages after the first, and the newest release was shown twice.
  */
 export function whatsNewPages(releases: readonly Release[], owed: readonly Release[] = []): Release[][] {
   if (owed.length === 0) return releases.map((r) => [r]);
-  return [[...owed], ...releases.filter((r) => !owed.includes(r)).map((r) => [r])];
+  const shown = new Set(owed.map(releaseKey));
+  return [[...owed], ...releases.filter((r) => !shown.has(releaseKey(r))).map((r) => [r])];
 }
