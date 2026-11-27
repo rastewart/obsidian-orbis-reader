@@ -23,7 +23,9 @@
 // eslint-plugin-obsidianmd 0.5, the rule lets an assignment of `''` or `null` through, since it clears a style. The
 // review of 0.1.1 reported `el.style.padding = ''` all the same: it runs the rule as it was up to 0.4, which flags
 // every literal. So the code that ships and the vendored code are checked for that too. To clear a style, use
-// `style.removeProperty('padding')`, which no version flags.
+// `style.removeProperty('padding')`, which no version flags. `prefer-create-el` is read the same way: from 0.5 it
+// reports `createElement` only on the global `document`, and the review of 0.1.9's main branch still reported
+// `doc.createElement('canvas')`. So the code that ships is checked for `createElement` on any document.
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ESLint, type Rule } from 'eslint';
@@ -145,7 +147,40 @@ const literalStyleRule: Rule.RuleModule = {
   }),
 };
 
-/** Checks the code that ships and the vendored code for literal style assignments. Returns how many there are. */
+/**
+ * `x.createElement(…)` on any document: `prefer-create-el` as it was to 0.4. From 0.5 the rule reports it only on the
+ * global `document`, so `doc.createElement('canvas')` passes `eslint src` and the directory's review still reports it.
+ * Use Obsidian's `createEl`, or, in a document that has none, `createElementNS(HTML_NS, …)` (see `book-element.ts`).
+ */
+const createElementRule: Rule.RuleModule = {
+  meta: {
+    type: 'problem',
+    schema: [],
+    messages: {
+      createElement:
+        "createElement, which the directory's review reports on any document — use createEl, or " +
+        'createElementNS(HTML_NS, …) in a document Obsidian does not own',
+    },
+  },
+  create: (context) => ({
+    CallExpression(node) {
+      const { callee } = node;
+      if (
+        callee.type === 'MemberExpression' &&
+        !callee.computed &&
+        callee.property.type === 'Identifier' &&
+        callee.property.name === 'createElement'
+      )
+        context.report({ node, messageId: 'createElement' });
+    },
+  }),
+};
+
+/**
+ * Checks the code that ships and the vendored code for literal style assignments, and the code that ships for
+ * `createElement`: the two rules the directory's review runs as they were to 0.4. Returns how many there are. The
+ * foliate fork is checked for styles only, since the review does not scan it and its frames have no `createEl`.
+ */
 async function lintLiteralStyles(rel: (r: ESLint.LintResult) => string): Promise<number> {
   const eslint = new ESLint({
     cwd: ROOT,
@@ -158,16 +193,17 @@ async function lintLiteralStyles(rel: (r: ESLint.LintResult) => string): Promise
       {
         files: ['src/**/*.{ts,js}', ...FOLIATE_FILES],
         linterOptions: { reportUnusedDisableDirectives: 'off' },
-        plugins: { orbis: { rules: { 'literal-style': literalStyleRule } } },
+        plugins: { orbis: { rules: { 'literal-style': literalStyleRule, 'create-element': createElementRule } } },
         rules: { 'orbis/literal-style': 'error' },
       },
+      { files: ['src/**/*.{ts,js}'], rules: { 'orbis/create-element': 'error' } },
     ],
   });
   const kept = (await eslint.lintFiles(['src', ...FOLIATE_FILES]))
     // `ignore: false` turns off the `ignores` above as well, so the tests and mocks are left out here.
     .filter((r) => !NOT_SHIPPED.test(rel(r)))
     .map((r) => {
-      const messages = r.messages.filter((m) => m.ruleId === 'orbis/literal-style' || m.fatal);
+      const messages = r.messages.filter((m) => m.ruleId?.startsWith('orbis/') || m.fatal);
       return {
         ...r,
         messages,
@@ -181,7 +217,9 @@ async function lintLiteralStyles(rel: (r: ESLint.LintResult) => string): Promise
     .filter((r) => r.messages.length > 0);
   const errors = kept.reduce((n, r) => n + r.errorCount, 0);
 
-  console.log("\nLiteral style assignments, as the directory's review reads them (shipping and vendored code):");
+  console.log(
+    "\nLiteral style assignments and createElement, as the directory's review reads them (shipping and vendored code):"
+  );
   if (errors === 0) {
     console.log('  0 errors');
     return 0;

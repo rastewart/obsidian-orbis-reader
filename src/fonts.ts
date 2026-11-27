@@ -18,6 +18,7 @@
 import { type App, type EventRef, normalizePath, Platform, TFile, TFolder, Vault } from 'obsidian';
 import { FACE_SLOTS, type FaceSlot, type FontFileInfo, facesCovered, isLicenseFile, readFontFile } from './font-file';
 import { t } from './i18n';
+import { HTML_NS } from './reader/book-element';
 import { ensureVaultFolder } from './reader/record-move';
 import { FONT_FAMILY_OPTIONS } from './settings';
 
@@ -101,7 +102,9 @@ export function systemFontStatus(
 ): SystemFontStatus {
   const known = systemAnswers.get(value);
   if (known !== undefined) return known;
-  const ctx = doc.createElement('canvas').getContext('2d');
+  // Made by `doc` itself, so a test can pass a document of its own, and with `createElementNS`: the Community
+  // directory's review flags `createElement` on any document (see `book-element.ts`).
+  const ctx = (doc.createElementNS(HTML_NS, 'canvas') as HTMLCanvasElement).getContext('2d');
   if (!ctx) return 'here';
   const sample = 'mmmmmmmmmmlliWWQq 0123456789';
   const width = (font: string) => {

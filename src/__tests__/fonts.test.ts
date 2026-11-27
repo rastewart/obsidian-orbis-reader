@@ -167,7 +167,7 @@ describe('systemFontStatus', () => {
         return { width: widths[drawn] };
       },
     };
-    return { createElement: () => ({ getContext: () => ctx }) } as unknown as Document;
+    return { createElementNS: () => ({ getContext: () => ctx }) } as unknown as Document;
   }
 
   it('says whether a device has a font', () => {
