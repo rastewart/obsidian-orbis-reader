@@ -33,7 +33,7 @@ import { clearAllDeviceValues, getOrCreateDeviceId, initDeviceStore } from './de
 import { migrateDeviceStyle, readDeviceStyle, writeDeviceStyle } from './device-style';
 import { openEpubExport, openFolderEpubExport, openSeparateEpubExport } from './EpubExportModal';
 import { checkReplace, setReplaceMessage, setSavedNotice } from './epub-replace';
-import { greetingFor, markSeenVersion, seenVersion } from './first-run';
+import { greetingFor, markSeenVersion, noteUpdatedFrom, seenVersion } from './first-run';
 import { removeFoliatePatches } from './foliate-patches';
 import { fontsFolderOf, initFonts, onFontsChanged, scanFonts, watchFonts } from './fonts';
 import { initI18n, t } from './i18n';
@@ -1506,6 +1506,7 @@ export default class OrbisReaderPlugin extends Plugin {
     // Maintenance. See `release-notes.ts`.
     const owed = owedReleases(installedReleases(current), seen);
     const greeting = greetingFor({ seen, current, hasNotes: owed.length > 0 });
+    noteUpdatedFrom(seen, current);
     // Stamped whatever was decided, including 'none', and with the notice switched off. Without this, a version with
     // nothing to say would re-ask the same question on every launch — and switching the notice back on would bring
     // back every release missed while it was off.
@@ -1513,7 +1514,7 @@ export default class OrbisReaderPlugin extends Plugin {
     if (greeting === 'notes') {
       // A notice, not a dialog — so it does not count as this launch's one dialog, and the multi-device offer may
       // still follow. See `showUpdateNotice`.
-      if (deviceSetting('showWhatsNew')) showUpdateNotice(this.app, current, owed);
+      if (deviceSetting('showWhatsNew')) showUpdateNotice(this.app, current);
       return false;
     }
     if (greeting !== 'welcome') return false;

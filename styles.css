@@ -9433,14 +9433,25 @@ body.orbis-inset-debug .orbis-focus-progress {
   height: min(640px, 85vh);
   max-height: min(640px, 85vh);
 }
+/* A line between releases, so the first page after an update, which holds several, reads as one release after
+   another rather than one long list. */
 .orbis-whats-new-release + .orbis-whats-new-release {
   margin-top: var(--size-4-6, 24px);
+  padding-top: var(--size-4-6, 24px);
+  border-top: 1px solid var(--background-modifier-border);
+}
+/* Above the first page after an update: from which release to which. */
+.orbis-whats-new-from {
+  margin: 0 0 var(--size-4-4, 16px);
+  color: var(--text-muted);
 }
 .orbis-whats-new-version {
   margin: 0;
   font-size: var(--font-ui-large);
 }
+/* Room below the date, or Not released yet, so the first heading of the notes does not sit right on it. */
 .orbis-whats-new-date {
+  margin-bottom: var(--size-4-2, 8px);
   color: var(--text-muted);
   font-size: var(--font-ui-small);
 }

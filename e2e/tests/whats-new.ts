@@ -1,19 +1,24 @@
 // What's new: the notice an update shows, and the dialog its link opens.
 //
 // The notice comes from the developer command, which shows it as an update would without changing the version this
-// device last saw. The button in settings is not tested here: on desktop, Settings opens in a window of its own,
-// which this harness does not drive. `guide.test.ts` checks the button.
+// device last saw. The release the device was updated from is set by the test, as an update would set it. The button
+// in settings is not tested here: on desktop, Settings opens in a window of its own, which this harness does not
+// drive. `guide.test.ts` checks the button.
 
-import { noticeWith, pressInWhatsNew, runCommand, whatsNewDialog } from '../in-page';
+import { noticeWith, pressInWhatsNew, runCommand, swapUpdatedFrom, whatsNewDialog } from '../in-page';
 import { dismissDialogs, type E2eTest, expect } from '../runner';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export const whatsNewTests: E2eTest[] = [
   {
-    name: "the update notice opens What's new, which pages through the releases at one size and leaves out Maintenance",
+    name:
+      "the update notice opens What's new on every release since the one updated from, then pages through the rest " +
+      'at one size and leaves out Maintenance',
     async run({ page }) {
       await page.run(runCommand, 'orbis-reader:orbis-toggle-developer-options');
+      // As after an update from 0.1.5: every release since it on the first page.
+      const stored = await page.run(swapUpdatedFrom, '0.1.5');
       try {
         expect(await page.run(runCommand, 'orbis-reader:orbis-show-whats-new-notice'), 'the dev command did not run');
         await sleep(300);
@@ -22,8 +27,18 @@ export const whatsNewTests: E2eTest[] = [
         await sleep(500);
         const first = await page.run(whatsNewDialog);
         expect(first !== null, "the notice's link did not open What's new");
-        expect(first.versions.length === 1, `the first page shows ${first.versions.join(', ')}`);
-        expect(/\d{4}/.test(first.dates[0]), `the first release is dated "${first.dates[0]}"`);
+        expect(
+          new RegExp(
+            String.raw`^Orbis Reader was updated from 0\.1\.5 to \d+\.\d+\.\d+( Beta \d+)?\. ` +
+              `The notes for ${first.versions.length} releases are below, newest first\\.$`
+          ).test(first.fromLine ?? ''),
+          `the line above the first page reads "${first.fromLine}"`
+        );
+        expect(
+          first.versions.length >= 2 && first.versions.at(-1) === '0.1.6',
+          `the first page shows ${first.versions.join(', ')}, not every release since 0.1.5, newest first`
+        );
+        expect(/\d{4}/.test(first.dates.at(-1) ?? ''), `0.1.6 is dated "${first.dates.at(-1)}"`);
         expect(!first.newer && first.older, 'Newer should be off and Older on, on the first page');
         expect(first.switchOn, 'the switch for the notice should be on by default');
         expect(
@@ -45,6 +60,8 @@ export const whatsNewTests: E2eTest[] = [
             `${next.versions[0]} moved the dialog: ${next.height}px tall with its buttons at ${next.buttonsTop}, ` +
               `against ${first.height} and ${first.buttonsTop} on the first page`
           );
+          expect(next.fromLine === null, `${next.versions[0]}'s page has the line "${next.fromLine}"`);
+          if (i === 0) expect(next.versions.join() === '0.1.5', `Older went to ${next.versions.join(', ')}, not 0.1.5`);
           state = next;
           seen.push(...state.versions);
         }
@@ -63,8 +80,20 @@ export const whatsNewTests: E2eTest[] = [
         await page.run(pressInWhatsNew, 'Close');
         await sleep(300);
         expect((await page.run(whatsNewDialog)) === null, 'Close did not close the dialog');
+
+        // A device that has not been updated: one release to a page, and no line.
+        await page.run(swapUpdatedFrom, null);
+        await page.run(runCommand, 'orbis-reader:orbis-show-whats-new-notice');
+        await sleep(300);
+        await page.run(noticeWith, 'Orbis Reader was updated', true);
+        await sleep(500);
+        const fresh = await page.run(whatsNewDialog);
+        expect(fresh !== null, "the notice's link did not open What's new the second time");
+        expect(fresh.versions.length === 1, `with no update, the first page shows ${fresh.versions.join(', ')}`);
+        expect(fresh.fromLine === null, `with no update, the first page has the line "${fresh.fromLine}"`);
       } finally {
         await dismissDialogs(page);
+        await page.run(swapUpdatedFrom, stored);
         await page.run(runCommand, 'orbis-reader:orbis-toggle-developer-options');
       }
     },

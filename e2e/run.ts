@@ -62,10 +62,10 @@ const DEFAULT_TIMEOUT_MS = 60_000;
 
 /**
  * Settings Orbis changes by itself, which the runner leaves as they are after a test: the version it last greeted
- * this device with, the clock its sync keeps (which only ever moves forward), and the shipped preset it installs
- * again whenever it loads. Putting them back would only make Orbis write them again.
+ * this device with and the release it was updated from, the clock its sync keeps (which only ever moves forward), and
+ * the shipped preset it installs again whenever it loads. Putting them back would only make Orbis write them again.
  */
-const OWN_BOOKKEEPING = ['orbis-seen-version', 'orbis-sync-clock', 'annotationPresets'];
+const OWN_BOOKKEEPING = ['orbis-seen-version', 'orbis-updated-from', 'orbis-sync-clock', 'annotationPresets'];
 
 /**
  * Errors Orbis is known to report that are not yet fixed, by a part of their text. One of these is printed as seen,

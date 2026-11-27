@@ -59,7 +59,7 @@ import { openRatingDialog, openStatusDialog } from './TitleFieldModal';
 import { addTestFixturesCommand } from './test-fixtures';
 import { nextTextAlign, TEXT_ALIGN_LABELS } from './text-align';
 import { type OrbisPopupHost } from './ui-utils';
-import { installedReleases, showUpdateNotice } from './WhatsNewModal';
+import { showUpdateNotice } from './WhatsNewModal';
 
 class SwitchStyleModal extends FuzzySuggestModal<DisplayStyle> {
   constructor(
@@ -931,10 +931,9 @@ export function registerCommands(plugin: OrbisReaderPlugin): void {
   });
 
   /**
-   * DEV: the notice an update shows, now, as if this device had last seen the version before this one.
-   *
-   * The newest release this build can show is what it offers — the beta's section on a beta. Shown whatever the
-   * What's new switch says, and nothing is stored: the remembered version stays as it is.
+   * DEV: the notice an update shows, now. Its link opens What's new as it opens from anywhere: every release since the
+   * one this device was updated from on the first page. Shown whatever the What's new switch says, and nothing is
+   * stored: the remembered versions stay as they are.
    */
   plugin.addCommand({
     id: 'orbis-show-whats-new-notice',
@@ -944,7 +943,7 @@ export function registerCommands(plugin: OrbisReaderPlugin): void {
       if (!deviceSetting('showDevOptions')) return false;
       if (!checking) {
         const current = plugin.manifest.version;
-        showUpdateNotice(plugin.app, current, installedReleases(current).slice(0, 1));
+        showUpdateNotice(plugin.app, current);
       }
       return true;
     },

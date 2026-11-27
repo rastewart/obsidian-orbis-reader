@@ -6,7 +6,15 @@
 import type { App } from 'obsidian';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { setDeviceStoreApp } from '../device-store';
-import { forgetSeenVersion, type GreetingFacts, greetingFor, markSeenVersion, seenVersion } from '../first-run';
+import {
+  forgetSeenVersion,
+  type GreetingFacts,
+  greetingFor,
+  markSeenVersion,
+  markUpdatedFrom,
+  seenVersion,
+  updatedFrom,
+} from '../first-run';
 
 const facts = (over: Partial<GreetingFacts> = {}): GreetingFacts => ({
   seen: null,
@@ -74,5 +82,13 @@ describe('the seen version', () => {
     markSeenVersion('0.2.0');
     forgetSeenVersion();
     expect(seenVersion()).toBeNull();
+  });
+
+  it('is kept apart from the release updated from, which the dev reset forgets too', () => {
+    markSeenVersion('0.2.0');
+    markUpdatedFrom('0.1.0');
+    expect([seenVersion(), updatedFrom()]).toEqual(['0.2.0', '0.1.0']);
+    forgetSeenVersion();
+    expect(updatedFrom()).toBeNull();
   });
 });

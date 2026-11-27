@@ -1944,8 +1944,25 @@ export function drawerSliders(id: string): { form: boolean; sliders: number[] } 
  * The What's new dialog as it reads: each release's heading and date, whether **Newer** and **Older** can be pressed,
  * whether its switch is on, and its text. `null` when it is not open.
  */
+/**
+ * Set the release this device was updated from (`orbis-updated-from`, see `first-run.ts`), or forget it with null, and
+ * return what it was. What's new reads it as it opens.
+ */
+export function swapUpdatedFrom(value: string | null): string | null {
+  const app = (
+    window as unknown as {
+      app: { loadLocalStorage(key: string): unknown; saveLocalStorage(key: string, value: unknown): void };
+    }
+  ).app;
+  const was = app.loadLocalStorage('orbis-updated-from');
+  app.saveLocalStorage('orbis-updated-from', value);
+  return typeof was === 'string' ? was : null;
+}
+
 export function whatsNewDialog(): {
   versions: string[];
+  /** The line above the first page after an update, or null where there is none. */
+  fromLine: string | null;
   dates: string[];
   newer: boolean;
   older: boolean;
@@ -1966,6 +1983,7 @@ export function whatsNewDialog(): {
   const texts = (selector: string) => Array.from(modal.querySelectorAll(selector)).map((el) => el.textContent ?? '');
   return {
     versions: texts('.orbis-whats-new-version'),
+    fromLine: modal.querySelector('.orbis-whats-new-from')?.textContent ?? null,
     dates: texts('.orbis-whats-new-date'),
     newer: !!button('Newer') && !button('Newer')?.disabled,
     older: !!button('Older') && !button('Older')?.disabled,

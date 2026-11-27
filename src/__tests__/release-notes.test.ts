@@ -1,8 +1,15 @@
 // Which release notes a reader sees: the changelog split into releases, Maintenance left out, a beta's own section
-// shown above the releases before it, and after an update everything not yet seen on the first page.
+// shown above the releases before it, and after an update every release since the one updated from on the first page.
 
 import { describe, expect, it } from 'vitest';
-import { owedReleases, parseChangelog, type Release, releasesFor, whatsNewPages } from '../release-notes';
+import {
+  nextUpdatedFrom,
+  owedReleases,
+  parseChangelog,
+  type Release,
+  releasesFor,
+  whatsNewPages,
+} from '../release-notes';
 
 const CHANGELOG = `# Changelog
 
@@ -136,20 +143,64 @@ describe('owedReleases', () => {
   });
 });
 
+describe('nextUpdatedFrom', () => {
+  const all = parseChangelog(CHANGELOG);
+
+  it('is the release last run, after an update from a release', () => {
+    expect(nextUpdatedFrom(null, '0.1.0', '0.3.0', all)).toBe('0.1.0');
+    expect(nextUpdatedFrom('0.0.9', '0.1.0', '0.4.0-beta.1', all)).toBe('0.1.0');
+  });
+
+  it('stays as stored from one beta to the next, and from the last beta to the release', () => {
+    expect(nextUpdatedFrom('0.1.0', '0.4.0-beta.1', '0.4.0-beta.2', all)).toBe('0.1.0');
+    expect(nextUpdatedFrom('0.1.0', '0.4.0-beta.2', '0.4.0', all)).toBe('0.1.0');
+  });
+
+  it("is the release before a beta's version when nothing is stored, as on a device that ran a beta before this", () => {
+    // 0.2.0 only had Maintenance and is still where a beta of 0.3.0 came from.
+    expect(nextUpdatedFrom(null, '0.3.0-beta.2', '0.3.0-beta.3', all)).toBe('0.2.0');
+    expect(nextUpdatedFrom(null, '0.4.0-beta.1', '0.4.0-beta.1', all)).toBe('0.3.0');
+  });
+
+  it('stays as stored at a load with no update, and is null on a new device', () => {
+    expect(nextUpdatedFrom('0.1.0', '0.3.0', '0.3.0', all)).toBe('0.1.0');
+    expect(nextUpdatedFrom(null, '0.3.0', '0.3.0', all)).toBeNull();
+    expect(nextUpdatedFrom(null, null, '0.3.0', all)).toBeNull();
+  });
+
+  it('is the newer release after a downgrade', () => {
+    expect(nextUpdatedFrom('0.1.0', '0.3.0', '0.1.0', all)).toBe('0.3.0');
+  });
+});
+
 describe('whatsNewPages', () => {
   const rs = releasesFor(parseChangelog(CHANGELOG), '0.4.0-beta.1');
+  const versionsOf = (pages: Release[][]) => pages.map(versions);
 
-  it('gives every release its own page when nothing is owed', () => {
-    expect(whatsNewPages(rs).map(versions)).toEqual([['0.4.0-beta.1'], ['0.3.0'], ['0.1.0']]);
+  it('gives every release its own page on a device that has not been updated', () => {
+    expect(whatsNewPages(rs, null)).toEqual({ pages: rs.map((r) => [r]), from: null });
   });
 
-  it('puts everything owed on the first page, and the releases before it one to a page', () => {
-    const owed = owedReleases(rs, '0.1.0');
-    expect(whatsNewPages(rs, owed).map(versions)).toEqual([['0.4.0-beta.1', '0.3.0'], ['0.1.0']]);
+  it('puts every release since the one updated from on the first page, newest first, then the rest one to a page', () => {
+    const { pages, from } = whatsNewPages(rs, '0.1.0');
+    expect(versionsOf(pages)).toEqual([['0.4.0-beta.1', '0.3.0'], ['0.1.0']]);
+    expect(from).toBe('0.1.0');
   });
 
-  it('leaves out what is owed when it comes from another reading of the changelog, as the notice gives it', () => {
-    const owed = owedReleases(releasesFor(parseChangelog(CHANGELOG), '0.4.0-beta.1'), '0.3.0');
-    expect(whatsNewPages(rs, owed).map(versions)).toEqual([['0.4.0-beta.1'], ['0.3.0'], ['0.1.0']]);
+  it("puts only a beta's section on the first page after an update from the release before it", () => {
+    const { pages, from } = whatsNewPages(rs, '0.3.0');
+    expect(versionsOf(pages)).toEqual([['0.4.0-beta.1'], ['0.3.0'], ['0.1.0']]);
+    expect(from).toBe('0.3.0');
+  });
+
+  it('counts from a release that only had Maintenance, which has no page of its own', () => {
+    const { pages, from } = whatsNewPages(rs, '0.2.0');
+    expect(versionsOf(pages)).toEqual([['0.4.0-beta.1', '0.3.0'], ['0.1.0']]);
+    expect(from).toBe('0.2.0');
+  });
+
+  it('gives every release its own page, with no from, when nothing is newer, as after a downgrade', () => {
+    const stable = releasesFor(parseChangelog(CHANGELOG), '0.1.0');
+    expect(whatsNewPages(stable, '0.3.0')).toEqual({ pages: [[stable[0]]], from: null });
   });
 });

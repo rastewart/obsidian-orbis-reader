@@ -14,7 +14,9 @@ them. The Setup section of `settings.md` describes the page and links here.
 
 ## The value stored
 
-One key in the per-device store: **`orbis-seen-version`**, the plugin version this device was last told about.
+One key in the per-device store: **`orbis-seen-version`**, the plugin version this device was last told about. What's
+new keeps a second one, **`orbis-updated-from`**, the release this device was last updated from (see
+[Release notes](#release-notes)).
 
 **A version, not a boolean.** A boolean answers "has this device been welcomed" and nothing else; the same moment is
 where release notes belong, and a plugin that greets you once and then never speaks again has no way to say what
@@ -150,12 +152,28 @@ the drawing in `src/WhatsNewModal.ts`.
   with nothing to say for readers does not interrupt them.
 - **What a version shows.** A stable version shows every dated release up to itself. A beta has no section of its
   own — every beta of 0.2.0 writes into `## [0.2.0] — Unreleased` — so a beta shows that section, headed with the
-  beta (*0.2.0 beta 3*, *Not released yet*), above the releases before it. A bare `## [Unreleased]` stands in when no
+  beta (*0.2.0 Beta 3*, *Not released yet*), above the releases before it. A bare `## [Unreleased]` stands in when no
   version is written yet. Each beta separately is not wanted: betas are for testers, and the whole section is what
   they test.
 - **What is owed.** The releases newer than the version last seen, and also its own version when the version last
   seen was a beta of it: from one beta to the next, or from the last beta to the release, the section has grown.
-  These go together on the dialog's first page; the releases before them follow one to a page, behind **Older**.
+  This decides whether the notice shows. It does not decide what the dialog shows.
+- **The first page after an update.** It holds every release since the one this device was updated from, newest
+  first, under a line that names both versions, such as *Orbis Reader was updated from 0.1.8 to 0.1.9 Beta 2.* When
+  the page holds more than one release, a second sentence gives their number, such as *The notes for 3 releases are
+  below, newest first.*, so the reader scrolls past the first. A line divides one release from the next. The older
+  releases follow one to a page, behind **Older**, starting with the release before the update. The other pages have no
+  such line.
+- **Updated from a release, not a beta.** `orbis-updated-from` is set as the plugin loads, before the seen version is
+  stamped (`nextUpdatedFrom`). After a release it becomes that release. After a beta it stays as it was, because a
+  beta's section already holds everything since the release before it, so beta 1 to beta 2, and the last beta to the
+  release, are both still an update from that release. A device that ran a beta before this value existed counts from
+  the newest release before the beta's version.
+- **The same from everywhere, until the next update.** The notice, the **What's new** button and the dev command all
+  open the dialog from `orbis-updated-from`. Worked out from the notice alone, the first page was lost once the notice
+  closed, because the seen version is stamped at every load.
+- **No first page when there is nothing to group.** A new device has no `orbis-updated-from`. A downgrade stores the
+  newer release it came from, and nothing installed is newer than that. Either way every page is one release.
 - **A notice, not a dialog.** It asks nothing, so it blocks nothing, and the welcome and the multi-device offer keep
   the one dialog a launch is allowed. It stays until it is clicked: Obsidian's few seconds go by unread on a phone.
 - **The switch is per device and on by default** — *Show what's new after an update*, at the foot of the dialog,
@@ -168,15 +186,15 @@ the drawing in `src/WhatsNewModal.ts`.
 
 Three dev commands. The first two are not the same tool.
 
-- **`Reset the welcome (dev)`** forgets `orbis-seen-version`, and nothing else.
+- **`Reset the welcome (dev)`** forgets `orbis-seen-version` and `orbis-updated-from`, and nothing else.
   Nothing else: no downloads to fetch again, no destinations to answer, no reload. This is the one to use.
 - **`Factory reset — back to a new install (dev)`** deletes `data.json`, forgets every stored value for this
   device, deletes the three per-device caches (~90 MB to fetch again), **trashes every device's reading-position
   file**, and reloads. Books, notes, record notes, `.orbis` files and published sync folders are left exactly as
   they are.
 
-- **`Show what's new notice (dev)`** shows the notice an update shows, offering the newest release this build can
-  show, whatever the switch says. Nothing is stored. Its link opens the dialog as an update would.
+- **`Show what's new notice (dev)`** shows the notice an update shows, whatever the switch says. Nothing is stored.
+  Its link opens the dialog as it opens from anywhere, from `orbis-updated-from`.
 
 **The reading positions are the one vault reach, and they have to be.** They are the evidence
 `vaultUsedElsewhere` reads, so leaving them behind would produce a vault that is fresh in every respect except the

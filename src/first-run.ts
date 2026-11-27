@@ -13,6 +13,7 @@
 // See docs/design/first-run.md.
 
 import { readDeviceValue, writeDeviceValue } from './device-store';
+import { CHANGELOG, nextUpdatedFrom, parseChangelog } from './release-notes';
 
 const SEEN_VERSION_KEY = 'orbis-seen-version';
 
@@ -31,9 +32,36 @@ export function markSeenVersion(version: string): void {
   writeDeviceValue(SEEN_VERSION_KEY, version);
 }
 
+const UPDATED_FROM_KEY = 'orbis-updated-from';
+
+/**
+ * The release this device was last updated from, or null on a device that has not been updated. What's new opens on
+ * every release since it. Set as the plugin loads, by `nextUpdatedFrom` in `release-notes.ts`.
+ *
+ * **Its own value, not worked out from the seen version**, which is stamped with the current version at every load.
+ * Once stamped, the version before it is gone, and What's new would lose its first page when the notice closed.
+ */
+export function updatedFrom(): string | null {
+  return readDeviceValue(UPDATED_FROM_KEY);
+}
+
+export function markUpdatedFrom(version: string | null): void {
+  writeDeviceValue(UPDATED_FROM_KEY, version);
+}
+
+/**
+ * Store the release What's new counts from, as the plugin loads. Called before the seen version is stamped, while
+ * `seen` still says where this device came from, and whether or not the notice is switched on, so What's new opened
+ * from settings or the command palette shows the same thing.
+ */
+export function noteUpdatedFrom(seen: string | null, current: string): void {
+  markUpdatedFrom(nextUpdatedFrom(updatedFrom(), seen, current, parseChangelog(CHANGELOG)));
+}
+
 /** For the dev resets: be a device that has never run Orbis. */
 export function forgetSeenVersion(): void {
   writeDeviceValue(SEEN_VERSION_KEY, null);
+  writeDeviceValue(UPDATED_FROM_KEY, null);
 }
 
 /** What, if anything, this device is owed. */

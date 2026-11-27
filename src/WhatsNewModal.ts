@@ -6,6 +6,7 @@
 import { type App, Component, MarkdownRenderer, Notice } from 'obsidian';
 import { actionButton, actionRow } from './controls';
 import { deviceSetting, setDeviceSetting } from './device-settings';
+import { updatedFrom } from './first-run';
 import { t } from './i18n';
 import { OrbisModal } from './OrbisModal';
 import { CHANGELOG, parseChangelog, type Release, releasesFor, whatsNewPages } from './release-notes';
@@ -15,9 +16,15 @@ export function installedReleases(current: string): Release[] {
   return releasesFor(parseChangelog(CHANGELOG), current);
 }
 
-/** `0.2.0`, or `0.2.0 beta 3` for a beta's section. */
+/** `0.2.0`, or `0.2.0 Beta 3` for a beta's section. */
 function releaseName(r: Release): string {
   return r.beta ? t('whats_new.beta', { version: r.version ?? '', n: String(r.beta) }) : (r.version ?? '');
+}
+
+/** A manifest version as the headings write it: `0.2.0-beta.3` is `0.2.0 Beta 3`. */
+function versionName(version: string): string {
+  const m = /^(.+)-beta\.(\d+)$/.exec(version);
+  return m ? t('whats_new.beta', { version: m[1], n: m[2] }) : version;
 }
 
 /** `24 November 2026` in the reader's language — read as a calendar date, so no time zone moves it a day. */
@@ -42,7 +49,9 @@ class WhatsNewModal extends OrbisModal {
 
   constructor(
     app: App,
-    private readonly pages: Release[][]
+    private readonly pages: Release[][],
+    /** Above the first page, when it holds every release since an update: from that release to this one. */
+    private readonly updateLine: string | null
   ) {
     super(app);
   }
@@ -92,6 +101,9 @@ class WhatsNewModal extends OrbisModal {
     contentEl.scrollTop = 0;
     const releases = this.pages[this.page] ?? [];
     if (releases.length === 0) contentEl.createEl('p', { text: t('whats_new.none') });
+    // On the first page only: it says what that page holds, and the pages after it are older releases.
+    if (this.page === 0 && this.updateLine)
+      contentEl.createEl('p', { cls: 'orbis-whats-new-from', text: this.updateLine });
     for (const r of releases) {
       const section = contentEl.createDiv({ cls: 'orbis-whats-new-release' });
       section.createEl('h2', { cls: 'orbis-whats-new-version', text: releaseName(r) });
@@ -112,10 +124,24 @@ class WhatsNewModal extends OrbisModal {
   }
 }
 
-/** Open What's new. With `owed`, its first page is those releases together — see `whatsNewPages`. */
-export function openWhatsNew(app: App, current: string, owed: readonly Release[] = []): void {
-  const releases = installedReleases(current);
-  new WhatsNewModal(app, whatsNewPages(releases, owed)).open();
+/**
+ * Open What's new. After an update its first page holds every release since the one this device was updated from,
+ * under a line that names both — see `whatsNewPages`. The same from the notice, the settings button and the command
+ * palette, until the next update.
+ */
+export function openWhatsNew(app: App, current: string): void {
+  const { pages, from } = whatsNewPages(installedReleases(current), updatedFrom());
+  // A second sentence when the first page holds more than one release, so the reader scrolls past the first.
+  const count = pages[0]?.length ?? 0;
+  const line =
+    from === null
+      ? null
+      : t(count > 1 ? 'whats_new.updated_from_many' : 'whats_new.updated_from', {
+          from: versionName(from),
+          to: versionName(current),
+          count: String(count),
+        });
+  new WhatsNewModal(app, pages, line).open();
 }
 
 /**
@@ -125,14 +151,14 @@ export function openWhatsNew(app: App, current: string, owed: readonly Release[]
  * one dialog a launch is allowed. It stays until it is clicked — Obsidian's few seconds go by unread on a phone, and
  * a click anywhere on it closes it, as on any notice.
  */
-export function showUpdateNotice(app: App, current: string, owed: readonly Release[]): void {
+export function showUpdateNotice(app: App, current: string): void {
   const message = createFragment((frag) => {
     frag.appendText(t('whats_new.updated', { version: current }));
     frag.appendText(' ');
     const link = frag.createEl('a', { text: t('whats_new.see'), href: '#' });
     link.addEventListener('click', (ev) => {
       ev.preventDefault();
-      openWhatsNew(app, current, owed);
+      openWhatsNew(app, current);
     });
   });
   new Notice(message, 0);

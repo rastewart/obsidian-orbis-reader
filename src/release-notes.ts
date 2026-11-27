@@ -146,21 +146,61 @@ export function owedReleases(releases: readonly Release[], seen: string | null):
   });
 }
 
-/** A release by version and beta, which stay the same however many times the changelog is read. */
-const releaseKey = (r: Release): string => `${r.version ?? ''}#${r.beta ?? ''}`;
+/** The newest dated release older than `base`, with notes or without: the release a beta of `base` came after. */
+function releaseBefore(all: readonly Release[], base: string): string | null {
+  const older = all
+    .filter((r) => r.version !== null && r.date !== null && parseInstalled(r.version)?.beta === null)
+    .map((r) => r.version as string)
+    .filter((v) => compare(v, base) < 0)
+    .sort((a, b) => compare(b, a));
+  return older[0] ?? null;
+}
 
 /**
- * The dialog's pages, each one or more releases.
+ * The release this device was updated from, worked out as the plugin loads, before `current` is stamped as seen:
+ * the last release, not beta, it ran before this version. What's new opens on everything since.
  *
- * After an update, the first page holds everything the reader has not seen, so nothing new is a button away; the
- * releases before it follow one to a page. Opened from settings, every page is one release.
+ * - **From a release**, that release, whenever the version moved.
+ * - **From a beta**, what was stored stays: a beta's section holds everything since the release before it, so
+ *   0.2.0 beta 1 to beta 2, or the last beta to 0.2.0, is still an update from 0.1.9.
+ * - **Nothing stored and coming from a beta**, as on a device that ran a beta before this was stored, the newest
+ *   release before the beta's version.
+ * - **Nothing seen**, a new device, has no update to tell of.
  *
- * **`owed` is matched by version, not as the same objects.** The update notice works out what is owed when the plugin
- * loads, and the dialog its link opens reads the changelog again: the same releases, as new objects. Matched as
- * objects, none of them was left out of the pages after the first, and the newest release was shown twice.
+ * A downgrade stores the newer release it came from. Nothing is newer than that, so What's new opens without a
+ * grouped page, as `whatsNewPages` says.
  */
-export function whatsNewPages(releases: readonly Release[], owed: readonly Release[] = []): Release[][] {
-  if (owed.length === 0) return releases.map((r) => [r]);
-  const shown = new Set(owed.map(releaseKey));
-  return [[...owed], ...releases.filter((r) => !shown.has(releaseKey(r))).map((r) => [r])];
+export function nextUpdatedFrom(
+  stored: string | null,
+  seen: string | null,
+  current: string,
+  all: readonly Release[]
+): string | null {
+  if (seen === null) return null;
+  const last = parseInstalled(seen);
+  if (!last) return stored;
+  if (last.beta === null) return seen === current ? stored : seen;
+  return stored ?? releaseBefore(all, last.base);
+}
+
+/** The dialog's pages, and the release the first one counts from when it holds the releases since an update. */
+export interface WhatsNewPages {
+  pages: Release[][];
+  /** The release the reader updated from, when the first page holds every release since it. Otherwise null. */
+  from: string | null;
+}
+
+/**
+ * The dialog's pages, each one or more releases, newest first.
+ *
+ * After an update, the first page holds every release since `from`, newest first, so nothing new is a button away;
+ * the releases before it follow one to a page, `from` first. It is the same from the notice, the settings button or
+ * the command palette, until the next update. With no `from`, as on a new device, or nothing newer than it, as after
+ * a downgrade, every page is one release.
+ */
+export function whatsNewPages(releases: readonly Release[], from: string | null): WhatsNewPages {
+  const base = from === null ? null : (parseInstalled(from)?.base ?? null);
+  const since = base === null ? [] : releases.filter((r) => compare(r.version as string, base) > 0);
+  if (since.length === 0) return { pages: releases.map((r) => [r]), from: null };
+  return { pages: [since, ...releases.filter((r) => !since.includes(r)).map((r) => [r])], from };
 }

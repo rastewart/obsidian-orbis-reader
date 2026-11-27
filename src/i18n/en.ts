@@ -743,11 +743,19 @@ const en = {
   'whats_new.aliases': "what's new, whats new, changelog, change log, release notes, updates",
   'whats_new.title': "What's new in Orbis Reader",
   // The heading of a beta's section: every beta of a version shares one, and it says which beta is installed.
-  'whats_new.beta': '{{version}} beta {{n}}',
+  // Capitalized as the name of the build, as Release Candidate would be. Not all capitals, which some screen readers
+  // spell out letter by letter.
+  'whats_new.beta': '{{version}} Beta {{n}}',
   // Under a beta's heading, in place of a date.
   'whats_new.not_released': 'Not released yet',
   // A build with no release notes in it — a test build, never a release.
   'whats_new.none': 'There are no release notes in this build.',
+  // Above the first page after an update, which holds every release since the one this device came from, newest
+  // first. `from` is a release; `to` is the version installed, a beta written as the headings write it. With more
+  // than one release on the page, the second sentence says so, so the reader knows to scroll past the first.
+  'whats_new.updated_from': 'Orbis Reader was updated from {{from}} to {{to}}.',
+  'whats_new.updated_from_many':
+    'Orbis Reader was updated from {{from}} to {{to}}. The notes for {{count}} releases are below, newest first.',
   'whats_new.newer': 'Newer',
   'whats_new.older': 'Older',
   'whats_new.close': 'Close',
