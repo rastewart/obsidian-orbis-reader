@@ -54,7 +54,9 @@ Some settings are shared with your other devices, and some apply only to the dev
 
 **What's new** opens a dialog of the changes in each release, starting with the version that is installed. **Newer** and **Older** move between releases. In a beta, the first release is the version that the beta leads up to, marked **Not released yet**.
 
-After an update, a notice says that Orbis Reader was updated. Select **See what's new** in the notice to open the dialog. Its first page names the version before the update and the version after it, and shows every release since the earlier one, newest first. **Older** then goes to the release before the update. The first page stays the same until the next update, however you open the dialog. A beta's notes include everything since the release before it. To stop the notice on this device, uncheck **Show what's new after an update** at the bottom of the dialog.
+After an update, a notice shows that Orbis Reader was updated. Select **See what's new** in the notice to open the dialog. To stop the notice on this device, uncheck **Show what's new after an update** at the bottom of the dialog.
+
+After an update, the dialog's first page names the version before the update and the version after it. It shows every release since the earlier one, newest first. **Older** then goes to the release before the update. The first page stays the same until the next update, however you open the dialog. A beta's notes include everything since the release before it.
 
 ---
 
