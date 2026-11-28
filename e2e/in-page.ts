@@ -73,6 +73,13 @@ interface ReaderView {
     offeredPreset(): unknown;
   };
   writeNotesFile(path: string, config: unknown, insertAtBottom: boolean, openAfter: boolean): Promise<void>;
+  /** The location index, which also holds the printed edition's page numbers. */
+  locIndex: {
+    isReady: boolean;
+    pages: { label: string; cfi: string }[];
+    getPageForCfi(cfi: string): { position: number; label: string } | null;
+    getPageTotal(): number | null;
+  };
 }
 
 /** What a test learns about a book it opened. */
@@ -115,6 +122,25 @@ export async function openBook(path: string, timeoutMs: number): Promise<OpenedB
     if (Date.now() - started > timeoutMs) throw new Error(`${path} did not render within ${timeoutMs} ms`);
     await new Promise((r) => setTimeout(r, 200));
   }
+}
+
+/** The open book's page numbers, once its location index is up: every label, "of N", and the page at the top. */
+export async function pageNumbers(
+  timeoutMs: number
+): Promise<{ labels: string[]; total: number | null; top: string | null }> {
+  const app = (window as unknown as { app: PageApp }).app;
+  const view = app.workspace.getLeavesOfType('orbis-reader')[0]?.view as ReaderView | undefined;
+  if (!view) throw new Error('no book is open');
+  const started = Date.now();
+  while (!view.locIndex.isReady) {
+    if (Date.now() - started > timeoutMs) throw new Error(`the location index was not up within ${timeoutMs} ms`);
+    await new Promise((r) => setTimeout(r, 200));
+  }
+  return {
+    labels: view.locIndex.pages.map((p) => p.label),
+    total: view.locIndex.getPageTotal(),
+    top: view.lastCfi ? (view.locIndex.getPageForCfi(view.lastCfi)?.label ?? null) : null,
+  };
 }
 
 /**

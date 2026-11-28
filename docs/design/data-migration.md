@@ -111,6 +111,8 @@ Every bump gets a row here, for every artifact, added in the same change that bu
 | `LOCS_CACHE_VERSION` | 5 | `anchorCharOffsets` also holds the contents entries only foliate can place (Kindle `kindle:pos:`, MOBI `filepos:`), so chapter locations on those books count from where each chapter begins. A cache from 4 has none of them. |
 | `LOCS_CACHE_VERSION` | 6 | Adds `tocAnchorIds`, the id each of those entries points at, so every chapter split cuts a Kindle chapter where it starts. A cache from 5 has none of them. |
 | `LOCS_CACHE_VERSION` | 7 | A cache built before the reader had its contents list measured no chapter starts — the build begins on the first page, which came first. The list now comes before the page; this drops every cache built in that race. |
+| `LOCS_CACHE_VERSION` | 8 | `sectionHeadings` names a book's first page "Cover" when it holds only a picture, as an old MOBI's cover page does. |
+| `LOCS_CACHE_VERSION` | 9 | Adds `pages`, a printed edition's page numbers, each where its text starts ([Page Numbers](page-numbers.md)). Written on every build, empty for a book without them, so a cache from 8 cannot say whether a book has page numbers. |
 | `CURRENT_SETTINGS_VERSION` | 1 | Baseline. |
 
 ---

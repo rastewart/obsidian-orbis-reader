@@ -2,7 +2,8 @@
 
 ← [Design Docs](README.md)
 
-**NOT BUILT.** This is the agreed design; its status is in the [Roadmap](roadmap.md).
+**IN PROGRESS.** This is the agreed design. The page index is built (`src/reader/page-index.ts`); the reader,
+annotations and notes are not. Its status is in the [Roadmap](roadmap.md).
 
 A book that carries the page numbers of a printed edition shows them: in the progress indicator, the Stats tab, the
 contents, Go to, annotations, reading records and notes. A book without them looks and works as it does now, except
@@ -86,6 +87,15 @@ page itself, from the page index, by the position at the top (`lastCfi`).
 Each page-list target is resolved to a CFI once, in the location index's measuring pass, which already loads every
 section of the book. The result is cached in the book's `.pages.json` beside the locations, as an ordered list of
 `{ label, cfi }`, and `LOCS_CACHE_VERSION` goes up so every book's cache is rebuilt once.
+
+**A target that is not in the book is dropped**: a file the book does not have, or an id its file does not have.
+foliate keeps both, and would open the second at the top of its file, which looks like a page but is not one.
+
+**A page starts at the first text at or after its marker**, a plain text position like a location's start, because a
+CFI beside an empty element is not one foliate reads back as written. A page whose marker has only white space before
+it in its file, the usual marker inside a chapter's heading, starts at the file's own start; otherwise the top of the
+chapter would count as the page before. The list is put in reading order before it is stored, so one entry out of place
+cannot throw the search off.
 
 `pageAtCfi` answers the page a position is in by a binary search in reading order, as `locAtCfi` does for locations.
 One lookup serves the indicator, the Stats tab, annotations, bookmarks and the device locations.

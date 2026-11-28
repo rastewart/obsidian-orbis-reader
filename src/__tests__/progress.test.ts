@@ -674,16 +674,58 @@ describe('LocationsCache round trip', () => {
       sectionCharCounts: [200],
       sectionHeadings: ['CHAPTER I'],
       anchorCharOffsets: new Map([['text.xhtml#day2', 400]]),
+      pages: [
+        { label: 'xii', cfi: 'epubcfi(/6/4!/4/2/1:0)' },
+        { label: '1', cfi: 'epubcfi(/6/6!)' },
+      ],
     });
     const cache = await readLocsCache(app, file);
     expect(cache).not.toBeNull();
-    expect(cache!.version).toBe(8);
+    expect(cache!.version).toBe(9);
     expect(cache!.totalLocs).toBe(100);
     expect(cache!.locNavCache).toEqual({ '1': 'epubcfi(a)' });
     expect(cache!.sectionWordCounts).toEqual([50]);
     expect(cache!.sectionHeadings).toEqual(['CHAPTER I']);
     // Where each chapter starts inside its file — what sizes the chapters of a book that keeps many in one.
     expect(cache!.anchorCharOffsets).toEqual({ 'text.xhtml#day2': 400 });
+    // A printed edition's page numbers, each where its text starts.
+    expect(cache!.pages).toEqual([
+      { label: 'xii', cfi: 'epubcfi(/6/4!/4/2/1:0)' },
+      { label: '1', cfi: 'epubcfi(/6/6!)' },
+    ]);
+  });
+
+  // "Measured, no page numbers" is an answer, as an empty heading is: the array is written even when it is empty.
+  it('keeps an empty page list', async () => {
+    const { app } = createMockApp();
+    const file = mockFile('Sample Book', 'Books');
+    await saveLocsCache(app, file, {
+      sectionLocInfo: [{ startLoc: 0, locCount: 100 }],
+      locNavCache: new Map(),
+      totalLocs: 100,
+      sectionWordCounts: [50],
+      pages: [],
+    });
+    expect((await readLocsCache(app, file))!.pages).toEqual([]);
+  });
+
+  it('drops a damaged page entry, and keeps the rest of the cache', async () => {
+    const { app, files } = createMockApp();
+    const file = mockFile('Sample Book', 'Books');
+    files.set(
+      progressFilePath(file).replace('.orbis', '.pages.json'),
+      JSON.stringify({
+        version: 9,
+        totalLocs: 1,
+        sectionLocInfo: [{ startLoc: 1, locCount: 1 }],
+        locNavCache: {},
+        sectionWordCounts: [1],
+        pages: [{ label: '1', cfi: 'epubcfi(/6/2!)' }, { label: 2, cfi: 'epubcfi(/6/4!)' }, null, { label: '3' }],
+      })
+    );
+    const cache = await readLocsCache(app, file);
+    expect(cache!.totalLocs).toBe(1);
+    expect(cache!.pages).toEqual([{ label: '1', cfi: 'epubcfi(/6/2!)' }]);
   });
 
   // A section with no heading of its own stores '', and the array survives the round trip full-length — the

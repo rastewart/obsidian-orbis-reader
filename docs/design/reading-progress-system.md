@@ -100,6 +100,7 @@ interface LocationsCache {
   sectionWordCounts?: number[];                // per-section word counts, layout-independent
   sectionCharCounts?: number[];                // per-section char counts, layout-independent
   tocStartFractions?: Record<string, number>;  // href → fraction of total content (0–1)
+  pages?:             Array<{ label: string; cfi: string }>;  // printed page numbers, in reading order
 }
 ```
 
@@ -110,6 +111,9 @@ The cache is used by:
 - **Time-remaining estimation**: `sectionWordCounts`/`sectionCharCounts` (per-section, layout-independent) are used by `wordsInFractionRange()` to estimate words remaining between the current position and a target fraction — this feeds the `book-time`/`chapter-time` progress modes. This is separate from `locWordCounts` (a live, per-rendered-location map rebuilt on every layout change), which feeds WPM *sampling* instead — see "Reading stats" below.
 - **Total location display**: `totalLocs` drives "location N of M" progress modes.
 - **Chapter boundaries on fraction-only formats**: `tocStartFractions` gives layout-independent chapter start positions, used when a book (e.g. AZW3/MOBI) has no usable `sectionLocInfo` and boundaries must be computed from content fraction instead.
+- **Page numbers**: `pages` holds a printed edition's page numbers, each with the CFI its text starts at, and
+  `pageAtCfi` searches it for the page any position is on. Empty for a book without page numbers. See
+  [Page Numbers](page-numbers.md#the-page-index).
 - **Sync modal and the Orbis DataView**: `locNavCache` resolves a device's location before the live index is built (needed because the live index isn't ready until the first `relocate` event, which fires after `view.open()`), by the same search.
 
 ---

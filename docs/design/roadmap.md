@@ -245,8 +245,8 @@ annotations and notes.
 
 - [x] **The test books** (2026-11-27). `page-numbers.epub`, with roman front matter, a gap, a mid-page chapter and a
       numbered index; `page-numbers-ncx.epub`, with an EPUB 2 `<pageList>`; and `broken-page-list.epub`
-- [ ] **The page index.** Page-list targets resolved to CFIs in the location index's measuring pass, cached in
-      `.pages.json`, and `pageAtCfi`
+- [x] **The page index** (2026-11-27). Page-list targets resolved to CFIs in the location index's measuring pass,
+      cached in `.pages.json`, and `pageAtCfi`
 - [ ] **The reader.** The **Page numbers or locations** setting, the position modes and `loc.`/`p.` labels, the Stats
       tab, the contents and Go to
 - [ ] **Annotations and what leaves the reader.** The stored page and its restamp, the Annotations tab, reading data,

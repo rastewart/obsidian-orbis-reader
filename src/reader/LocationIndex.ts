@@ -15,6 +15,15 @@ import { readLocsCache, saveLocation, saveLocsCache } from '../progress';
 import type { LocationIndexHost } from './LocationIndexHost';
 import { type LocStarts, locAtCfi, locStartsOf } from './loc-lookup';
 import { computeLocWordCounts, computeSectionLocInfo, locAtChar } from './location-math';
+import {
+  type PageStart,
+  type PageTarget,
+  pageAtCfi,
+  pagesInOrder,
+  pageTargetsBySection,
+  pageTotal,
+  placePageTargets,
+} from './page-index';
 import type { ReaderContext } from './ReaderContext';
 import type { StatsTocItem } from './StatsHost';
 
@@ -25,6 +34,8 @@ type RawSection = { size?: number; cfi?: string; createDocument?(): Promise<Docu
 type FoliateBook = {
   splitTOCHref?(href: string): unknown;
   resolveHref?(href: string): unknown;
+  /** A printed edition's page numbers, EPUB only: the nav document's `page-list`, or the NCX's `<pageList>`. */
+  pageList?: ReadonlyArray<{ label?: unknown; href?: unknown }> | null;
 };
 
 /** An element finder per contents entry, by section — the entries only foliate can place. */
@@ -59,6 +70,9 @@ export class LocationIndex {
   anchorCharOffsets = new Map<string, number>();
   /** Contents href → the id of the element it points at, for the entries only foliate can place (`anchorOf`). */
   tocAnchorIds = new Map<string, string>();
+  /** The printed edition's pages, in reading order, each where its text starts — empty for a book without page
+   *  numbers, or with a page list that goes nowhere. See docs/design/page-numbers.md and `page-index`. */
+  pages: PageStart[] = [];
   totalBookChars = 0;
   totalBookWords = 0;
   locWordCounts = new Map<number, number>(); // loc → word count (rebuilt each layout)
@@ -108,6 +122,7 @@ export class LocationIndex {
     this.sectionHeadings = [];
     this.anchorCharOffsets = new Map();
     this.tocAnchorIds = new Map();
+    this.pages = [];
     this.totalBookChars = 0;
     this.totalBookWords = 0;
     this.tocStartFractions = new Map();
@@ -270,7 +285,7 @@ export class LocationIndex {
       this.locationIndexBuilding = false;
       return;
     }
-    const { charCounts, sectionWordCounts, sectionHeadings, anchorCharOffsets, totalChars } = measured;
+    const { charCounts, sectionWordCounts, sectionHeadings, anchorCharOffsets, pages, totalChars } = measured;
     // Before the placing pass, which asks `anchorOf` where each contents entry starts.
     this.tocAnchorIds = measured.tocAnchorIds;
 
@@ -284,6 +299,7 @@ export class LocationIndex {
     this.sectionWordCounts = sectionWordCounts;
     this.sectionHeadings = sectionHeadings;
     this.anchorCharOffsets = anchorCharOffsets;
+    this.pages = pages;
     this.totalBookChars = totalChars;
     this.totalBookWords = sectionWordCounts.reduce((s, v) => s + v, 0);
 
@@ -296,7 +312,7 @@ export class LocationIndex {
       this.calibrateToSectionStart(this.ctx.tocItemHref, this.host.lastSection.current);
     }
     this.ctx.debug(
-      `buildLocationIndex done — pages:${this.locNavCache.size} fractions:${this.tocStartFractions.size} totalLocs:${totalLocs}` +
+      `buildLocationIndex done — pages:${this.locNavCache.size} page-numbers:${pages.length} fractions:${this.tocStartFractions.size} totalLocs:${totalLocs}` +
         ` measure:${Math.round(measuredAt - started)}ms place:${Math.round(placedAt - measuredAt)}ms`,
       'index'
     );
@@ -311,6 +327,7 @@ export class LocationIndex {
         sectionHeadings: this.sectionHeadings,
         anchorCharOffsets: this.anchorCharOffsets,
         tocAnchorIds: this.tocAnchorIds,
+        pages: this.pages,
       });
     }
     this.host.indexReady();
@@ -329,6 +346,7 @@ export class LocationIndex {
     sectionHeadings: string[];
     anchorCharOffsets: Map<string, number>;
     tocAnchorIds: Map<string, string>;
+    pages: PageStart[];
     totalChars: number;
   } | null> {
     const charCounts: number[] = [];
@@ -340,6 +358,9 @@ export class LocationIndex {
     // (which is most of them, on most books) costs nothing extra.
     const anchorsBySection = this.tocAnchorsBySection();
     const placedByFoliate = await this.foliatePlacedAnchors();
+    // The page list's targets, placed from the same open documents: where each printed page starts.
+    const pageTargets = this.pageTargets();
+    const placedPages = new Map<number, string>();
     // What the pass had to work from: a build that saw no contents measures no chapter starts, silently.
     const count = (m: Map<number, unknown[]>): number => [...m.values()].reduce((n, l) => n + l.length, 0);
     this.ctx.debug(
@@ -387,6 +408,11 @@ export class LocationIndex {
             }
             for (const [href, at] of elementCharOffsets(doc, wanted)) anchorCharOffsets.set(href, at);
           }
+          const targets = pageTargets.get(index);
+          if (targets?.length) {
+            const base = section.cfi ?? cfiFake.fromIndex(index);
+            for (const [i, cfi] of withIndexCache(() => placePageTargets(doc, base, targets))) placedPages.set(i, cfi);
+          }
         }
       } catch {
         /* fall through to byte estimate */
@@ -400,9 +426,22 @@ export class LocationIndex {
       // build divide by the same figure.
       totalChars += chars;
     }
+    const pages = pagesInOrder([...pageTargets.values()].flat(), placedPages);
+    if (pageTargets.size) {
+      this.ctx.debug(`page list — placed ${pages.length} of ${this.foliateBook()?.pageList?.length ?? 0}`, 'index');
+    }
     return totalChars === 0
       ? null
-      : { charCounts, sectionWordCounts, sectionHeadings, anchorCharOffsets, tocAnchorIds, totalChars };
+      : { charCounts, sectionWordCounts, sectionHeadings, anchorCharOffsets, tocAnchorIds, pages, totalChars };
+  }
+
+  /**
+   * The page list's entries by section, EPUB only: foliate reads no page numbers from any other format (MOBI and AZW3
+   * keep theirs in a separate APNX file, FB2 has none), and a comic's pages are left out by design.
+   */
+  private pageTargets(): Map<number, PageTarget[]> {
+    if (this.ctx.currentFile?.extension.toLowerCase() !== 'epub') return new Map();
+    return pageTargetsBySection(this.foliateBook()?.pageList, (href) => this.hrefToSectionIndex(href));
   }
 
   /** Section index → the [href, anchor] pairs of the contents entries that land in it and carry a fragment. A
@@ -676,6 +715,7 @@ export class LocationIndex {
           this.anchorCharOffsets = new Map(Object.entries(cache.anchorCharOffsets));
         }
         if (cache.tocAnchorIds) this.tocAnchorIds = new Map(Object.entries(cache.tocAnchorIds));
+        this.pages = cache.pages ?? [];
         this.locationIndexReady = true;
         this.ctx.debug(
           `locsCache load — pages:${this.locNavCache.size} sections:${this.sectionLocInfo.length}`,
@@ -732,6 +772,7 @@ export class LocationIndex {
     this.sectionLocInfo = [];
     this.locNavCache.clear();
     this.locStarts = null;
+    this.pages = [];
     await this.buildLocationIndex();
   }
 
@@ -814,6 +855,27 @@ export class LocationIndex {
     if (!this.locationIndexReady || this.locNavCache.size === 0) return null;
     this.locStarts ??= locStartsOf(this.locNavCache);
     return locAtCfi(this.locStarts, cfi);
+  }
+
+  /** Whether the book has page numbers: a page list with at least one target in the book. False until the index is up. */
+  get hasPageNumbers(): boolean {
+    return this.locationIndexReady && this.pages.length > 0;
+  }
+
+  /**
+   * The printed page a position is on — the last one that starts at or before it (`pageAtCfi`): its position in the
+   * book's pages, counted from 0, and its label. Null until the index is up, without page numbers, and before the
+   * first page (a cover).
+   */
+  getPageForCfi(cfi: string): { position: number; label: string } | null {
+    if (!this.hasPageNumbers) return null;
+    const position = pageAtCfi(this.pages, cfi);
+    return position === null ? null : { position, label: this.pages[position].label };
+  }
+
+  /** "Of N" for the book's page numbers (`pageTotal`), or null without them. */
+  getPageTotal(): number | null {
+    return this.hasPageNumbers ? pageTotal(this.pages) : null;
   }
 
   /**

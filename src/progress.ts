@@ -24,6 +24,7 @@ import {
   rememberOwnWrite,
   serialOrbisWrite,
 } from './orbis-io';
+import type { PageStart } from './reader/page-index';
 import { type BookRecordConfig, parseBookRecordConfig } from './record-config';
 import { audioFolderName, sidecarStem, sidecarSuffix } from './sidecar-names';
 import { notesSetChanges, recordsChange } from './sync/book-marks';
@@ -438,7 +439,10 @@ function locsCacheFilePath(bookFile: TFile): string {
 //
 // 8: sectionHeadings names a book's first page "Cover" when it holds only a picture — an old MOBI's cover page, which
 // has neither a heading nor a title of its own.
-const LOCS_CACHE_VERSION = 8;
+//
+// 9: added pages — a printed edition's page numbers, each where its text starts (`page-index`). An empty list says
+// "measured, found none", so a cache from before has to be rebuilt to say anything about a book's page numbers.
+const LOCS_CACHE_VERSION = 9;
 
 export interface LocationsCache {
   version: number;
@@ -462,6 +466,9 @@ export interface LocationsCache {
   // Contents href → the id of the element it points at, for the entries only foliate can place (Kindle `kindle:pos:`,
   // MOBI `filepos:`) — see `LocationIndex.anchorOf`.
   tocAnchorIds?: Record<string, string>;
+  // A printed edition's pages in reading order, each a label as the book writes it and the CFI its text starts at.
+  // Written on every build, empty for a book without page numbers — see `page-index`.
+  pages?: PageStart[];
 }
 
 export async function readLocsCache(app: App, bookFile: TFile): Promise<LocationsCache | null> {
@@ -470,6 +477,15 @@ export async function readLocsCache(app: App, bookFile: TFile): Promise<Location
   if (!Array.isArray(data.sectionLocInfo) || typeof data.totalLocs !== 'number') return null;
   if (typeof data.locNavCache !== 'object' || data.locNavCache === null || Array.isArray(data.locNavCache)) return null;
   if (!Array.isArray(data.sectionWordCounts)) return null;
+  // A damaged entry is dropped, not the cache: the rest of it is still good, and a page short is better than a rebuild.
+  if (data.pages !== undefined) {
+    data.pages = Array.isArray(data.pages)
+      ? data.pages.filter(
+          (p: unknown): p is PageStart =>
+            typeof (p as PageStart)?.label === 'string' && typeof (p as PageStart)?.cfi === 'string'
+        )
+      : [];
+  }
   return data as unknown as LocationsCache;
 }
 
@@ -485,6 +501,7 @@ export interface LocsCacheInput {
   sectionHeadings?: string[];
   anchorCharOffsets?: Map<string, number>;
   tocAnchorIds?: Map<string, string>;
+  pages?: PageStart[];
 }
 
 export async function saveLocsCache(app: App, bookFile: TFile, input: LocsCacheInput): Promise<void> {
@@ -507,6 +524,8 @@ export async function saveLocsCache(app: App, bookFile: TFile, input: LocsCacheI
     cache.anchorCharOffsets = Object.fromEntries(input.anchorCharOffsets.entries());
   }
   if (input.tocAnchorIds?.size) cache.tocAnchorIds = Object.fromEntries(input.tocAnchorIds.entries());
+  // Kept when empty, as sectionHeadings is: "measured, none" is an answer.
+  if (input.pages) cache.pages = input.pages;
   await app.vault.adapter.write(locsCacheFilePath(bookFile), JSON.stringify(cache, null, 2));
 }
 

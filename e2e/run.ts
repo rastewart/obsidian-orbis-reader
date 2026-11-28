@@ -29,6 +29,7 @@ import { linkTests } from './tests/links';
 import { marksTests } from './tests/marks';
 import { navigationTests } from './tests/navigation';
 import { notesTests } from './tests/notes';
+import { pageNumberTests } from './tests/page-numbers';
 import { placeTests } from './tests/place';
 import { recordsTests } from './tests/records';
 import { resilienceTests } from './tests/resilience';
@@ -40,6 +41,7 @@ import { whatsNewTests } from './tests/whats-new';
 const ALL: E2eTest[] = [
   ...bookTests,
   ...placeTests,
+  ...pageNumberTests,
   ...navigationTests,
   ...notesTests,
   ...marksTests,
