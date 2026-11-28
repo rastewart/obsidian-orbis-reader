@@ -19,6 +19,7 @@ per-requirement detail behind §5.
 | **Blocking release** | Nothing: Orbis Reader is listed in the Community directory (2026-11-19). The announcement is left (§5.7) |
 | **Documentation** | The end-user guide (§4) — every page exists; what is left is read-throughs, not gaps |
 | **Development environment** | Two cross-platform items (§4b): the CLI reload off Windows, and CI on Ubuntu |
+| **In progress** | Page numbers from a book's page list (§8.16) |
 | **Not scheduled** | The [backlog](#backlog--ideas-unscheduled) |
 | **Deferred by choice** | Translations (§6), and the deferrals kept under §8.1, §8.2, §8.4, §8.5 and §8.14 |
 | **Standing** | Attribution as dependencies change, large-book profiling, foliate-js upstream, the quarterly dependency audit and the `onnxruntime-web` recheck (both due 2026-12), and removing the sidecar-name migration before 1.0 |
@@ -236,6 +237,22 @@ Found while testing `0.1.1-beta.1` (2026-11-19). Each waits until `0.1.1` ships.
       stay, the book's `rendition:spread` included. A fixed-layout EPUB follows the setting too, even one that asks
       for spreads: turning two columns off is the reader asking for one page. `applyRenderer` needed no change. Format
       Support's *CBZ* section and Display Settings say so
+
+### 8.16 Page numbers
+
+See [Page Numbers](page-numbers.md): a printed edition's page numbers, from a book's page list, in the reader,
+annotations and notes.
+
+- [ ] **The test books.** The EPUB 3 fixture with roman front matter, gaps, a mid-page chapter and a numbered index;
+      the EPUB 2 `<pageList>` fixture; the broken list
+- [ ] **The page index.** Page-list targets resolved to CFIs in the location index's measuring pass, cached in
+      `.pages.json`, and `pageAtCfi`
+- [ ] **The reader.** The **Page numbers or locations** setting, the position modes and `loc.`/`p.` labels, the Stats
+      tab, the contents and Go to
+- [ ] **Annotations and what leaves the reader.** The stored page and its restamp, the Annotations tab, reading data,
+      the device locations, reading records, `{{page}}` and `{{loc}}` with the template migration, `{{link}}`, Save
+      as Markdown, Save annotations as PDF and `page=` links
+- [ ] **Docs and tests.** The guide, terminology, the test plans and the CHANGELOG, as the design doc lists
 
 ---
 

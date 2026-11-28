@@ -51,6 +51,7 @@ Internal developer documentation covering architecture and subsystem design.
 | [Annotations](design/annotations.md) | Highlights, notes, bookmarks — data model and storage |
 | [Listening (TTS & Recording)](design/text-to-speech.md) | Read-aloud engines (Web Speech + on-device Piper), voice picker, player, pacing, OS controls, and the recording generation MVP + roadmap |
 | [Reading Progress & Sync](design/reading-progress-system.md) | Location files, pages cache, WPM, progress modes |
+| [Page Numbers](design/page-numbers.md) | A printed edition's page numbers in the reader, annotations and notes (not built yet) |
 | [Display Styles](design/display-styles.md) | DisplayStyle data model, localStorage, style lifecycle |
 | [Orbis Data View](design/orbis-data-view.md) | `.orbis` file format, `orbis-data/` folder, vault event handlers, custom view |
 | [Notes Export](design/notes-export.md) | Note Styles, output formats, merge/diff flow |
