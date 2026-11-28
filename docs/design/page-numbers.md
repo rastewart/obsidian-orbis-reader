@@ -261,7 +261,7 @@ name for.
 
 ## The test book
 
-A fixture built by `scripts/build-fixtures.ts`, with invented text only:
+`page-numbers.epub`, built by `scripts/build-fixtures.ts` with invented text only:
 
 - an EPUB 3 page list with page-break markers in the text;
 - roman-numeral front matter (`i`–`xii`), then `1` onwards;
@@ -271,8 +271,9 @@ A fixture built by `scripts/build-fixtures.ts`, with invented text only:
 - an index numbered on from the text, so "of N" is checked to include it;
 - `a11y:pageBreakSource` naming an invented edition.
 
-A second, smaller fixture carries an EPUB 2 NCX `<pageList>`, and a third has a page list whose targets do not exist,
-to show that a broken list counts as none.
+`page-numbers-ncx.epub`, a smaller book, carries an EPUB 2 NCX `<pageList>` and no nav document. In
+`broken-page-list.epub`, every target of the page list is missing, some ids and one file, to show that a broken list
+counts as none. The comment above each book in `scripts/fixtures/books.ts` gives its pages.
 
 ---
 
@@ -325,4 +326,6 @@ to show that a broken list counts as none.
 1. Whether an older version keeps a field it does not know when it rewrites a `.orbis` file. The design does not
    depend on it, but the answer belongs in [Annotations](annotations.md).
 2. The indicator's longest label, `📖 p. xviii of 1,204`, at phone width beside the toolbar's buttons.
-3. foliate's parsing of an EPUB 2 `<pageList>` against the second fixture, since no book in the vault has one yet.
+3. ~~foliate's parsing of an EPUB 2 `<pageList>`.~~ Checked 2026-11-27: foliate reads all ten entries of
+   `page-numbers-ncx.epub`'s NCX as `{ label, href }`, as it reads the 53 of `page-numbers.epub`'s nav document. It
+   also keeps all four of `broken-page-list.epub`'s, so the page index has to find the targets missing itself.

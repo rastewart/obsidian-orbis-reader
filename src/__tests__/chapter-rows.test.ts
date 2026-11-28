@@ -5,7 +5,7 @@
 // chapters many to a file as a few rows each holding several chapters, so one tick would take twelve and "only
 // chapter 1" could not be asked for.
 //
-// "They agree" is not a property a reader can check by looking, so it is checked here, over the shapes of twenty-two
+// "They agree" is not a property a reader can check by looking, so it is checked here, over the shapes of twenty-six
 // books: the generated fixtures in test-vault/fixtures, read from their spine and nav by `pnpm build:fixtures`. Each
 // one reproduces a contents shape found in real books (see scripts/fixtures/books.ts and findings.ts), so the two
 // implementations are compared on structures they meet, not only on ones a unit test thought to write down.
@@ -97,8 +97,8 @@ function pdfRows(shape: Shape): { key: string; label: string; unlisted: boolean 
 const books = Object.entries(shapes as Record<string, Shape>);
 
 describe('the chapter list every export picks from', () => {
-  it('has all twenty-three books to compare', () => {
-    expect(books.length).toBe(23);
+  it('has all twenty-six books to compare', () => {
+    expect(books.length).toBe(26);
   });
 
   for (const [name, shape] of books) {

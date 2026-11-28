@@ -243,8 +243,8 @@ Found while testing `0.1.1-beta.1` (2026-11-19). Each waits until `0.1.1` ships.
 See [Page Numbers](page-numbers.md): a printed edition's page numbers, from a book's page list, in the reader,
 annotations and notes.
 
-- [ ] **The test books.** The EPUB 3 fixture with roman front matter, gaps, a mid-page chapter and a numbered index;
-      the EPUB 2 `<pageList>` fixture; the broken list
+- [x] **The test books** (2026-11-27). `page-numbers.epub`, with roman front matter, a gap, a mid-page chapter and a
+      numbered index; `page-numbers-ncx.epub`, with an EPUB 2 `<pageList>`; and `broken-page-list.epub`
 - [ ] **The page index.** Page-list targets resolved to CFIs in the location index's measuring pass, cached in
       `.pages.json`, and `pageAtCfi`
 - [ ] **The reader.** The **Page numbers or locations** setting, the position modes and `loc.`/`p.` labels, the Stats

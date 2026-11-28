@@ -65,7 +65,7 @@ export function titleFromFile(file: string): string {
     .replace(/\.[^.]+$/, '')
     .split('-')
     .map((w, i) => {
-      if (/^fb2$/i.test(w)) return 'FB2';
+      if (/^(fb2|ncx)$/i.test(w)) return w.toUpperCase();
       const lower = w.toLowerCase();
       return i > 0 && small.has(lower) ? lower : lower.charAt(0).toUpperCase() + lower.slice(1);
     })
@@ -1119,6 +1119,324 @@ export function cafeAndCo(): Built {
   );
 }
 
+/** One page of a printed edition, as a fixture's text carries it. */
+interface PrintedPage {
+  /** The page number as the edition prints it: `xii`, `12`, `[42]`. */
+  label: string;
+  /** About how many characters of text the page holds. */
+  chars?: number;
+  /** The page's text, when it is not invented prose: a copyright page, an index. */
+  lines?: string[];
+  /** Where the page begins: after a paragraph (the default), partway through one, or partway through a sentence. */
+  breaks?: 'paragraph' | 'mid-paragraph' | 'mid-sentence';
+  /** The page began in the file before: this file opens partway down it, with no marker and no page-list entry. */
+  continues?: boolean;
+  /** A word worked into the page's text, for the index to cite. */
+  term?: string;
+}
+
+/** A page's marker id: `page-xii`, `page-12`, and `page-42-unnumbered` for the bracketed `[42]`. */
+const pageId = (label: string) => {
+  const bare = /^\[(.+)\]$/.exec(label)?.[1];
+  return bare ? `page-${bare}-unnumbered` : `page-${label}`;
+};
+
+/** An EPUB 3 page-break marker, as publishers write one: where page `label` of the printed edition begins. */
+const pageBreak = (label: string) =>
+  `<span epub:type="pagebreak" role="doc-pagebreak" id="${pageId(label)}" aria-label="${esc(label)}"></span>`;
+
+/** An EPUB 2 page target: a bare anchor, since EPUB 2 has no page-break markup. */
+const pageAnchor = (label: string) => `<a id="${pageId(label)}"></a>`;
+
+/**
+ * A file of printed pages, under one heading: its body, its page-list entries, and where each `term` landed.
+ *
+ * A page that begins with the heading puts its marker inside the heading, so the heading counts as on that page, not on
+ * the one before. Every other marker sits inside a paragraph: at its start, partway through it, or three words into a
+ * sentence.
+ */
+function printedFile(
+  p: ReturnType<typeof proseFrom>,
+  file: string,
+  heading: string,
+  pages: PrintedPage[],
+  marker = pageBreak
+): { file: EpubFile; list: NavEntry[]; terms: [string, string][] } {
+  const blocks: string[] = [];
+  const list: NavEntry[] = [];
+  const terms: [string, string][] = [];
+  pages.forEach((pg, i) => {
+    const text = pg.lines ?? p.paragraphsOf(pg.chars ?? 0, pg.term);
+    if (pg.term) terms.push([pg.term, pg.label]);
+    const m = pg.continues ? '' : marker(pg.label);
+    if (!pg.continues) list.push({ label: pg.label, href: `${file}#${pageId(pg.label)}` });
+    if (i === 0) blocks.push(`<h2 id="c">${m}${esc(heading)}</h2>`, ...text.map((t) => `<p>${esc(t)}</p>`));
+    else {
+      const [first, ...rest] = text;
+      const at = pg.breaks ?? 'paragraph';
+      if (at === 'paragraph') blocks.push(`<p>${m}${esc(first)}</p>`);
+      else {
+        const words = first.split(' ');
+        const joined =
+          at === 'mid-paragraph'
+            ? `${m}${esc(first)}`
+            : `${esc(words.slice(0, 3).join(' '))} ${m}${esc(words.slice(3).join(' '))}`;
+        blocks[blocks.length - 1] = blocks[blocks.length - 1].replace(/<\/p>$/, ` ${joined}</p>`);
+      }
+      blocks.push(...rest.map((t) => `<p>${esc(t)}</p>`));
+    }
+  });
+  return { file: page(file, heading, blocks.join('\n')), list, terms };
+}
+
+const run = (from: number, to: number, chars: number, skip: number[] = []): PrintedPage[] =>
+  Array.from({ length: to - from + 1 }, (_, i) => String(from + i))
+    .filter((l) => !skip.includes(Number(l)))
+    .map((label) => ({ label, chars }));
+
+const romanLower = (n: number) => ROMAN[n - 1].toLowerCase();
+
+/** A page in a run, changed: `at(pages, '3', { breaks: 'mid-paragraph' })`. */
+function at(pages: PrintedPage[], label: string, change: Partial<PrintedPage>): PrintedPage[] {
+  const i = pages.findIndex((pg) => pg.label === label);
+  if (i < 0) throw new Error(`no page ${label} in this run`);
+  pages[i] = { ...pages[i], ...change };
+  return pages;
+}
+
+/** A printed page's worth of text, near enough. */
+const PAGE = 1600;
+
+/** The edition the page numbers are said to come from: invented, and saying so. */
+const PRINTED_EDITION = 'Orbis Reader test edition, never printed, 2026';
+
+/**
+ * Page numbers: an EPUB 3 book with a printed edition's page numbers — `nav epub:type="page-list"`, page-break markers
+ * in the text, and `a11y:pageBreakSource` naming the edition. Every case the page index and the reader have to get
+ * right (see [Page Numbers](../../docs/design/page-numbers.md)):
+ *
+ * - **The cover has no page number**, so the first view of the book is before page `i`.
+ * - **Roman front matter**, `i` to `xii`: the title page and its copyright page, the contents, and a foreword.
+ * - **A page break partway through a paragraph** (page 3) **and partway through a sentence** (page 5).
+ * - **A gap.** Page 17 is a plate in the printed edition and is not in the book, so the list goes from 16 to 18.
+ * - **A chapter that starts partway down a page.** Chapter Two ends a little way down page 24 and Chapter Three begins
+ *   below it, in a file of its own with no marker: page 24 counts in both chapters.
+ * - **A short chapter with no page break inside it.** Chapter Four sits wholly on page 31: `p. 1 of 1`.
+ * - **An index numbered on from the text**, pages 40 and 41, so "of 41", not "of 39". Its entries cite the pages
+ *   their words are really on, roman ones included, so Go to can be checked against it.
+ * - **An unnumbered page after the last numbered one**, `[42]`, which does not count towards "of 41".
+ *
+ * The list has 53 entries (twelve roman, forty numbered, one unnumbered), so a count of entries is told apart from the
+ * highest page number. The contents page prints each chapter's page number, as the contents panel should show it.
+ */
+export function pageNumbers(): Built {
+  const p = proseFrom(1501);
+  const TITLE = titleFromFile('page-numbers.epub');
+  const chapters: { file: string; name: string; pages: PrintedPage[] }[] = [
+    {
+      file: 'chapter-1.xhtml',
+      name: 'Chapter One: The Pilot House',
+      pages: at(
+        at(at(run(1, 8, PAGE), '3', { breaks: 'mid-paragraph', term: 'tide table' }), '5', { breaks: 'mid-sentence' }),
+        '7',
+        { term: 'brass compass' }
+      ),
+    },
+    {
+      file: 'chapter-2.xhtml',
+      name: 'Chapter Two: Low Water',
+      pages: [
+        ...at(
+          at(at(at(run(9, 23, PAGE, [17]), '12', { term: 'signal lamp' }), '14', { term: 'river pilot' }), '18', {
+            term: 'tide table',
+          }),
+          '22',
+          { term: 'harbor survey' }
+        ),
+        { label: '24', chars: 500 },
+      ],
+    },
+    {
+      file: 'chapter-3.xhtml',
+      name: 'Chapter Three: The Ferry Timetable',
+      pages: [
+        { label: '24', chars: 900, continues: true, term: 'ferry timetable' },
+        ...at(at(run(25, 30, PAGE), '25', { term: 'signal lamp' }), '29', { term: 'river pilot' }),
+        { label: '31', chars: 400 },
+      ],
+    },
+    {
+      file: 'chapter-4.xhtml',
+      name: 'Chapter Four: An Interval',
+      pages: [{ label: '31', chars: 700, continues: true, term: 'lock keeper' }],
+    },
+    {
+      file: 'chapter-5.xhtml',
+      name: 'Chapter Five: The Lock',
+      pages: at(at(at(run(32, 39, PAGE), '33', { term: 'signal lamp' }), '36', { term: 'brass compass' }), '38', {
+        term: 'ferry timetable',
+      }),
+    },
+  ];
+  const foreword = Array.from({ length: 9 }, (_, i): PrintedPage => ({ label: romanLower(i + 4), chars: PAGE }));
+  foreword[4].term = 'harbor survey';
+
+  const body = chapters.map((c) => printedFile(p, c.file, c.name, c.pages));
+  const forewordFile = printedFile(p, 'foreword.xhtml', 'Foreword', foreword);
+  const terms = [...forewordFile.terms, ...body.flatMap((b) => b.terms)];
+  const termList = [...new Set(terms.map(([t]) => t))].sort();
+  const indexLine = (t: string) =>
+    `${t}, ${terms
+      .filter(([x]) => x === t)
+      .map(([, l]) => l)
+      .join(', ')}`;
+  const half = Math.ceil(termList.length / 2);
+  const index = printedFile(p, 'index.xhtml', 'Index', [
+    { label: '40', lines: termList.slice(0, half).map(indexLine) },
+    { label: '41', lines: termList.slice(half).map(indexLine) },
+  ]);
+  const colophon = printedFile(p, 'colophon.xhtml', 'About This Edition', [
+    {
+      label: '[42]',
+      lines: [
+        'This page is not numbered in the printed edition. Its page number is in brackets, as a cataloguer writes one.',
+        `The page numbers in this book are those of the ${PRINTED_EDITION}.`,
+      ],
+    },
+  ]);
+  const startOf = (c: (typeof chapters)[number]) => c.pages[0].label;
+  const contents = printedFile(p, 'contents.xhtml', 'Contents', [
+    {
+      label: 'iii',
+      lines: ['Foreword iv', ...chapters.map((c) => `${c.name} ${startOf(c)}`), 'Index 40'],
+    },
+  ]);
+  const title = printedFile(p, 'title.xhtml', TITLE, [
+    { label: 'i', lines: [AUTHOR.name] },
+    {
+      label: 'ii',
+      lines: [
+        `The page numbers in this book are those of the ${PRINTED_EDITION}.`,
+        'Page 17 of that edition is a plate, which this book does not include.',
+        FIXTURE_COVER_LINE,
+      ],
+    },
+  ]);
+
+  const files: EpubFile[] = [
+    ...coverFiles(6, TITLE),
+    css(),
+    title.file,
+    contents.file,
+    forewordFile.file,
+    ...body.map((b) => b.file),
+    index.file,
+    colophon.file,
+  ];
+  const nav: NavEntry[] = [
+    { label: 'Contents', href: 'contents.xhtml#c' },
+    { label: 'Foreword', href: 'foreword.xhtml#c' },
+    ...chapters.map((c) => ({ label: c.name, href: `${c.file}#c` })),
+    { label: 'Index', href: 'index.xhtml#c' },
+    { label: 'About This Edition', href: 'colophon.xhtml#c' },
+  ];
+  return epub(
+    'page-numbers.epub',
+    {
+      version: 3,
+      opfDir: 'OEBPS',
+      title: TITLE,
+      creators: [AUTHOR],
+      identifier: 'urn:orbis-fixture:page-numbers',
+      files,
+      spine: files.filter((f) => f.path.endsWith('.xhtml')).map((f) => ({ path: f.path })),
+      nav,
+      coverImage: 'cover.png',
+      pageList: [title, contents, forewordFile, ...body, index, colophon].flatMap((f) => f.list),
+      pageSource: PRINTED_EDITION,
+    },
+    6
+  );
+}
+
+/**
+ * Page numbers in an EPUB 2 book: the NCX's `<pageList>`, bare `<a id>` anchors in the text, `dc:source` naming the
+ * edition, and no nav document, so foliate reads the NCX. Roman `i` and `ii`, then 1 to 8 over two chapters. The NCX
+ * gives each page a `type` — `front` for the roman ones, `normal` with a `value` for the rest.
+ */
+export function pageNumbersNcx(): Built {
+  const p = proseFrom(1601);
+  const TITLE = titleFromFile('page-numbers-ncx.epub');
+  const title = printedFile(
+    p,
+    'title.xhtml',
+    TITLE,
+    [
+      { label: 'i', lines: [AUTHOR.name] },
+      {
+        label: 'ii',
+        lines: [`The page numbers in this book are those of the ${PRINTED_EDITION}.`, FIXTURE_COVER_LINE],
+      },
+    ],
+    pageAnchor
+  );
+  const chapters = [
+    printedFile(p, 'chapter-1.xhtml', 'Chapter One: The Towpath', run(1, 4, PAGE), pageAnchor),
+    printedFile(p, 'chapter-2.xhtml', 'Chapter Two: The Wharf', run(5, 8, PAGE), pageAnchor),
+  ];
+  const files = [css(), title.file, ...chapters.map((c) => c.file)];
+  return epub('page-numbers-ncx.epub', {
+    version: 2,
+    opfDir: 'OEBPS',
+    title: TITLE,
+    creators: [AUTHOR],
+    identifier: 'urn:orbis-fixture:page-numbers-ncx',
+    files,
+    spine: files.filter((f) => f.path.endsWith('.xhtml')).map((f) => ({ path: f.path })),
+    nav: [
+      { label: 'Chapter One: The Towpath', href: 'chapter-1.xhtml#c' },
+      { label: 'Chapter Two: The Wharf', href: 'chapter-2.xhtml#c' },
+    ],
+    pageList: [title, ...chapters].flatMap((f) => f.list),
+    pageSource: PRINTED_EDITION,
+  });
+}
+
+/**
+ * A page list that goes nowhere, which counts as no page list: the book must look like one without page numbers.
+ * Its entries point at ids the text does not have (pages 1, 2 and 4) and at a file the book does not have (page 3) —
+ * both kinds, since a missing id inside a file that exists would otherwise land at the top of that file and look
+ * like a page.
+ */
+export function brokenPageList(): Built {
+  const p = proseFrom(1701);
+  const TITLE = titleFromFile('broken-page-list.epub');
+  const files = [
+    css(),
+    page('chapter-1.xhtml', 'Chapter One', `<h2 id="c">Chapter One</h2>\n${ps(p.paragraphsOf(3000))}`),
+    page('chapter-2.xhtml', 'Chapter Two', `<h2 id="c">Chapter Two</h2>\n${ps(p.paragraphsOf(3000))}`),
+  ];
+  return epub('broken-page-list.epub', {
+    version: 3,
+    opfDir: 'OEBPS',
+    title: TITLE,
+    creators: [AUTHOR],
+    identifier: 'urn:orbis-fixture:broken-page-list',
+    files,
+    spine: files.filter((f) => f.path.endsWith('.xhtml')).map((f) => ({ path: f.path })),
+    nav: [
+      { label: 'Chapter One', href: 'chapter-1.xhtml#c' },
+      { label: 'Chapter Two', href: 'chapter-2.xhtml#c' },
+    ],
+    pageList: [
+      { label: '1', href: 'chapter-1.xhtml#page-1' },
+      { label: '2', href: 'chapter-1.xhtml#page-2' },
+      { label: '3', href: 'missing.xhtml#page-3' },
+      { label: '4', href: 'chapter-2.xhtml#page-4' },
+    ],
+  });
+}
+
 /** Every fixture, in the order `book-shapes.json` lists them. */
 export const ALL = [
   firstOpen,
@@ -1137,4 +1455,7 @@ export const ALL = [
   noContents,
   speechSampler,
   cafeAndCo,
+  pageNumbers,
+  pageNumbersNcx,
+  brokenPageList,
 ];

@@ -83,6 +83,11 @@ author: Orbis Tester
   A font in spans
   Code and symbols keep their font
   One wrapper, many paragraphs
+=== fixtures/broken-page-list.epub
+title: Broken Page List
+author: Orbis Tester
+  Chapter One
+  Chapter Two
 === fixtures/cafe-and-co.epub
 title: Café & Co.
 author: Zoë Lefèvre & Søren Ågård
@@ -770,6 +775,23 @@ author: Orbis Tester
   Acknowledgments
     To the Readers
     To the Printers
+=== fixtures/page-numbers-ncx.epub
+title: Page Numbers NCX
+author: Orbis Tester
+  Chapter One: The Towpath
+  Chapter Two: The Wharf
+=== fixtures/page-numbers.epub
+title: Page Numbers
+author: Orbis Tester
+  Contents
+  Foreword
+  Chapter One: The Pilot House
+  Chapter Two: Low Water
+  Chapter Three: The Ferry Timetable
+  Chapter Four: An Interval
+  Chapter Five: The Lock
+  Index
+  About This Edition
 === fixtures/parts-and-chapters.azw3
 title: Parts and Chapters
 author: Orbis Tester

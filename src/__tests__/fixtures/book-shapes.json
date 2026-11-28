@@ -4162,6 +4162,153 @@
       }
     ]
   },
+  "page-numbers.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/cover.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/title.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/contents.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/foreword.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-2.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-3.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-4.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-5.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/index.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/colophon.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Contents",
+        "href": "OEBPS/contents.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Foreword",
+        "href": "OEBPS/foreword.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter One: The Pilot House",
+        "href": "OEBPS/chapter-1.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Two: Low Water",
+        "href": "OEBPS/chapter-2.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Three: The Ferry Timetable",
+        "href": "OEBPS/chapter-3.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Four: An Interval",
+        "href": "OEBPS/chapter-4.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Five: The Lock",
+        "href": "OEBPS/chapter-5.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Index",
+        "href": "OEBPS/index.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "About This Edition",
+        "href": "OEBPS/colophon.xhtml#c"
+      }
+    ]
+  },
+  "page-numbers-ncx.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/title.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-2.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Chapter One: The Towpath",
+        "href": "OEBPS/chapter-1.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Two: The Wharf",
+        "href": "OEBPS/chapter-2.xhtml#c"
+      }
+    ]
+  },
+  "broken-page-list.epub": {
+    "spine": [
+      {
+        "id": "OEBPS/chapter-1.xhtml",
+        "linear": true
+      },
+      {
+        "id": "OEBPS/chapter-2.xhtml",
+        "linear": true
+      }
+    ],
+    "toc": [
+      {
+        "depth": 1,
+        "label": "Chapter One",
+        "href": "OEBPS/chapter-1.xhtml#c"
+      },
+      {
+        "depth": 1,
+        "label": "Chapter Two",
+        "href": "OEBPS/chapter-2.xhtml#c"
+      }
+    ]
+  },
   "keyword-sizes.epub": {
     "spine": [
       {

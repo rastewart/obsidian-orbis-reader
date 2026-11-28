@@ -45,6 +45,9 @@ The technical book and *Café & Co.* have no publication date, and `--pubdate` k
 | `long-chapter.epub` | Listening: a 79-minute chapter divided into three tracks, between two chapters of three minutes to record |
 | `no-contents.epub` | Listening: four files of text, no headings and an empty contents, so each file is a track of the book |
 | `speech-sampler.epub` | Listening: one chapter for each way the text is rewritten before a voice reads it — capitals, initialisms, headings in capitals, dotted forms, Roman numerals, web and email addresses — for hearing how each is read |
+| `page-numbers.epub` | Page numbers from an EPUB 3 page list: roman front matter, a gap at page 17, breaks partway through a paragraph and a sentence, a chapter starting partway down page 24, a chapter wholly on page 31, an index on pages 40–41 citing real pages, and an unnumbered `[42]` |
+| `page-numbers-ncx.epub` | Page numbers from an EPUB 2 NCX `<pageList>`, with no nav document |
+| `broken-page-list.epub` | A page list whose targets are all missing, so the book has no page numbers |
 | `keyword-sizes.epub` | Body text sized with `small`, `x-large` and the other keywords |
 | `body-text-styles.epub` | A book that justifies, line-spaces and sets fonts on its own paragraphs, beside centered lines and code |
 | `gutenberg-style.epub` | Project Gutenberg's layout, with a placeholder publisher in its boilerplate |

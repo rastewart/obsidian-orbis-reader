@@ -59,6 +59,14 @@ export interface EpubSpec {
   nav: NavEntry[];
   /** The path of the cover image in `files`, if there is one. */
   coverImage?: string;
+  /**
+   * A printed edition's page numbers, in reading order: the nav document's `page-list` in EPUB 3, the NCX's
+   * `<pageList>` in EPUB 2. Only one of the two, so each book tries one parser — foliate reads the NCX only when there
+   * is no nav document.
+   */
+  pageList?: NavEntry[];
+  /** The printed edition the page numbers come from: `a11y:pageBreakSource` in EPUB 3, `dc:source` in EPUB 2. */
+  pageSource?: string;
 }
 
 const idOf = (p: string) => `f-${p.replace(/[^A-Za-z0-9]+/g, '-')}`;
@@ -104,6 +112,9 @@ function opf(spec: EpubSpec, navPath: string | null, ncxPath: string): string {
     `<dc:publisher>${esc(spec.publisher ?? FIXTURE_PUBLISHER)}</dc:publisher>`,
     `<dc:description>${esc(FIXTURE_DESCRIPTION)}</dc:description>`,
     spec.date ? `<dc:date>${esc(spec.date)}</dc:date>` : '',
+    spec.pageSource && !v3 ? `<dc:source>${esc(spec.pageSource)}</dc:source>` : '',
+    spec.pageSource && v3 ? `<meta property="a11y:pageBreakSource">${esc(spec.pageSource)}</meta>` : '',
+    spec.pageList && v3 ? '<meta property="schema:accessibilityFeature">printPageNumbers</meta>' : '',
     v3 ? '<meta property="dcterms:modified">2026-01-01T00:00:00Z</meta>' : '',
     spec.series ? `<meta name="calibre:series" content="${esc(spec.series.name)}"/>` : '',
     spec.series ? `<meta name="calibre:series_index" content="${spec.series.index}"/>` : '',
@@ -148,12 +159,19 @@ function opf(spec: EpubSpec, navPath: string | null, ncxPath: string): string {
 function navDoc(spec: EpubSpec): string {
   const li = (e: NavEntry): string =>
     `<li><a href="${esc(e.href)}">${esc(e.label)}</a>${e.children?.length ? `<ol>${e.children.map(li).join('')}</ol>` : ''}</li>`;
+  const pages = spec.pageList
+    ? `\n<nav epub:type="page-list" id="page-list" hidden="hidden"><h2>Pages</h2><ol>${spec.pageList.map(li).join('\n')}</ol></nav>`
+    : '';
   return xhtml(
     spec.title,
-    `<nav epub:type="toc" id="toc"><h1>Contents</h1><ol>${spec.nav.map(li).join('\n')}</ol></nav>`,
+    `<nav epub:type="toc" id="toc"><h1>Contents</h1><ol>${spec.nav.map(li).join('\n')}</ol></nav>${pages}`,
     ''
   );
 }
+
+/** A page's NCX `type`: `front` for roman numerals, `normal` for a number, `special` for anything else. */
+const pageType = (label: string) =>
+  /^\d+$/.test(label) ? 'normal' : /^[ivxlcdm]+$/i.test(label) ? 'front' : 'special';
 
 function ncx(spec: EpubSpec): string {
   let order = 0;
@@ -164,11 +182,26 @@ function ncx(spec: EpubSpec): string {
     )}"/>${(e.children ?? []).map(point).join('')}</navPoint>`;
   };
   const depth = (es: NavEntry[]): number => Math.max(0, ...es.map((e) => 1 + depth(e.children ?? [])));
+  const navMap = spec.nav.map(point).join('\n');
+  // EPUB 2 only: see `pageList` on EpubSpec. Its play order follows the contents'. `value` is the page's number, which
+  // only a plain number has.
+  const pageList =
+    spec.version === 2 && spec.pageList
+      ? `\n<pageList><navLabel><text>Pages</text></navLabel>${spec.pageList
+          .map((e) => {
+            order++;
+            const type = pageType(e.label);
+            return `<pageTarget id="pt${order}" type="${type}"${type === 'normal' ? ` value="${e.label}"` : ''} playOrder="${order}"><navLabel><text>${esc(
+              e.label
+            )}</text></navLabel><content src="${esc(e.href)}"/></pageTarget>`;
+          })
+          .join('\n')}</pageList>`
+      : '';
   return `<?xml version="1.0" encoding="utf-8"?>
 <ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">
 <head><meta name="dtb:uid" content="${esc(spec.identifier)}"/><meta name="dtb:depth" content="${depth(spec.nav)}"/></head>
 <docTitle><text>${esc(spec.title)}</text></docTitle>
-<navMap>${spec.nav.map(point).join('\n')}</navMap>
+<navMap>${navMap}</navMap>${pageList}
 </ncx>
 `;
 }

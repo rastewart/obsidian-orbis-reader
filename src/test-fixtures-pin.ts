@@ -9,7 +9,7 @@
 // **Changed by `pnpm pin:fixtures`, never by hand.** A fixture added or changed without it fails the gate
 // (`test-fixtures-pin.test.ts`). This file imports nothing, so the scripts can read it under `tsx`.
 
-export const TEST_FIXTURES_SHA256 = 'ba3bf3013780bb7104f682b5a5a38c6ce3e7695fe790a8e172a563b5d14f9501';
+export const TEST_FIXTURES_SHA256 = 'd9f28d0eb6724f94a36e26ad5864653e99b1b77dce85e89fd8b4011a7f1f9e3e';
 
 /** The release file holding the fixtures with this digest: its first twelve hex digits are in the name. */
 export function testFixturesFile(sha256: string = TEST_FIXTURES_SHA256): string {
